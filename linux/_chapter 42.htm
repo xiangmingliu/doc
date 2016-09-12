@@ -1,0 +1,588 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 42</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 41.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 43.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 42. Python</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-42-SECT-1">42.1 What Is Python?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-42-SECT-2">42.2 Installation and Distutils</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-42-SECT-3">42.3 Python Basics</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-42-SECT-4">42.4 Python and the Web</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-42-SECT-5">42.5 urllib</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-42-SECT-6">42.6 urllib2</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-42-SECT-7">42.7 htmllib and HTMLParser</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-42-SECT-8">42.8 cgi</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-42-SECT-9">42.9 mod_python</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-42-SECT-10">42.10 What About Perl?</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-42-SECT-1">42.1 What Is Python?</h3>
+<p class="docText">Python is an interpreted scripting language, much like Perl 
+or Tcl. Python's primary focus is on clear, concise code, and it has a feature 
+set and wide variety of available modules designed to support this goal. In many 
+ways, Python is an extremely scalable language; complex systems can be 
+relatively easily built in Python without losing maintainability. From the 
+Python home page (<a class="docLink" href="http://www.python.org" target="_blank">http://www.python.org</a>):
+</p>
+<blockquote>
+  <p class="docText">Python is an <span class="docEmphasis">interpreted, 
+  interactive, object-oriented</span> programming language. It is often compared 
+  to Tcl, Perl, Scheme or Java. </p>
+  <p class="docText">Python combines remarkable power with very clear syntax. It 
+  has modules, classes, exceptions, very high level dynamic data types, and 
+  dynamic typing. There are interfaces to many system calls and libraries, as 
+  well as to various windowing systems (X11, Motif, Tk, Mac, MFC). New built-in 
+  modules are easily written in C or C++. Python is also usable as an extension 
+  language for applications that need a programmable interface. </p>
+  <p class="docText">The Python implementation is portable: it runs on many 
+  brands of UNIX, on Windows, DOS, OS/2, Mac, Amiga... If your favorite system 
+  isn't listed here, it may still be supported, if there's a C compiler for it. 
+  Ask around on comp.lang.python — or just try compiling Python yourself. </p>
+  <p class="docText">Python is copyrighted but freely usable and distributable, 
+  even for commercial use. </p>
+</blockquote>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-42-SECT-2">42.2 Installation and Distutils</h3>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: python</p>
+<p class="docText">Installing Python is generally very simple. Either install 
+the appropriate binary package for your platform, or download the latest source 
+from <a class="docLink" href="http://www.python.org" target="_blank">
+http://www.python.org</a>. (Note that some Linux distributions include Python by 
+default.) A source install is as simple as untarring the distribution, then 
+running: </p>
+<pre>% <b>./configure</b>
+% <b>make</b>
+% <b>make install</b></pre>
+<p class="docText">You can run the Python interpreter interactively and find out 
+what version you have and details about its compilation. As an example, on my 
+laptop (which runs Windows but also has a Cygwin Unix-like environment 
+installed), Python reports: </p>
+<pre>% <b>python</b>
+Python 2.2 (#1, Dec 31 2001, 15:21:18)
+[GCC 2.95.3-5 (cygwin special)] on cygwin
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;</pre>
+<p class="docText">To see which modules are compiled into your version of 
+Python, examine <tt>sys.builtin_module_names</tt>: </p>
+<pre>&gt;&gt;&gt; <b>import sys</b>
+&gt;&gt;&gt; <b>print sys.builtin_module_names</b>
+('_ _builtin_ _', '_ _main_ _', '_socket', '_sre', '_symtable', 'exceptions',
+ 'gc', 'imp', 'marshal', 'new', 'posix', 'signal', 'sys', 'xxsubtype')</pre>
+<p class="docText">These are just the modules that are an integral part of your 
+version of the interpreter. For a complete list of modules installed in your 
+Python, look in all of the directories listed in <tt>sys.path</tt>: </p>
+<pre>&gt;&gt;&gt; <b>print sys.path</b>
+['', '/usr/lib/python2.2', '/usr/lib/python2.2/plat-cygwin',
+ '/usr/lib/python2.2/lib-tk', '/usr/lib/python2.2/lib-dynload',
+ '/usr/lib/python2.2/site-packages']</pre>
+<p class="docText">Generally, checking the documentation for the version of 
+Python you have will tell you which modules are normally installed; the <i>
+site-packages</i> directory is where further packages installed on your machine 
+will likely have been installed. </p>
+<p class="docText">There is a large repository of modules (and other Python code 
+resources) for Python available at the Vaults of Parnassus (<a class="docLink" href="http://www.vex.net/parnassus/" target="_blank">http://www.vex.net/parnassus/</a>), 
+which includes a search mechanism for finding what you're looking for. Most 
+modules will use Distutils to package their distributions. </p>
+<p class="docText">If you download a module source distribution, you can tell 
+pretty quickly if it was packaged and distributed with Distutils. First, the 
+distribution's name and version number will be featured prominently in the name 
+of the downloaded archive, for example, <i>foo-1.0.tar.gz</i> or <i>
+widget-0.9.7.zip</i>. Next, the archive will unpack into a similarly-named 
+directory: <i>foo-1.0</i> or <i>widget-0.9.7</i>. Additionally, the distribution 
+will contain a setup script, <i>setup.py</i>, and a <i>README</i>, which should 
+explain that building and installing the module distribution is a simple matter 
+of running: </p>
+<pre>% <b>python setup.py install</b></pre>
+<p class="docText">Modules that are not packaged using the standard Distutils 
+will generally include detailed instructions for installing them. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-42-SECT-3">42.3 Python Basics</h3>
+<p class="docText">If you've written code in a procedural or functional language 
+before, many parts of Python will seem familiar. Here's a quick overview of the 
+flavor of the language. There is a lot of both reference and tutorial 
+information available on the web (start at
+<a class="docLink" href="http://www.python.org" target="_blank">
+http://www.python.org</a>) as well as in books like O'Reilly's <i>Programming 
+Python</i>. In fact, much of the information in this chapter was gleaned or 
+paraphrased from the official Python reference documentation. </p>
+<h4  id="upt3-CHP-42-SECT-3.1" class="docSection2Title">42.3.1 Indentation</h4>
+<p class="docText">The number one complaint of Python detractors is almost 
+always its use of indentation as a significant part of its syntax. Most 
+languages use begin/end tags or curly braces (<tt>{}</tt>) to mark blocks of 
+code and have line termination punctuation (many use the semicolon (<tt>;</tt>) 
+as a line termination marker). In Python, indentation is used to define blocks 
+of code, and lines are terminated with a return. The actual amount of 
+indentation within a block is arbitrary, but it must be consistent: </p>
+<pre>if a:
+    statement1
+    statement2    # Consistent indentation
+else:
+    statement3
+      statement4  # Inconsistent indentation (error)</pre>
+<p class="docText">Python assumes eight-space tab characters. If you have your 
+editor set to four-space tabs, for example, this can bite you if there are mixed 
+spaces and tabs. Either use eight-space tabs, or stick to spaces. </p>
+<p class="docText">Long statements can span multiple lines by using the 
+backslash (<tt>\</tt>) to continue the line: </p>
+<pre>&gt;&gt;&gt; <b>a = math.cos( 3 * ( x - n ) ) + \</b>
+... <b>    math.sin( 3 * ( y - n ) )</b></pre>
+<p class="docText">Lines that are already grouped within triple-quotes, 
+parentheses <tt>(</tt>...<tt>)</tt>, brackets <tt>[</tt>...<tt>],</tt> or braces
+<tt>{</tt>...<tt>}</tt> can span multiple lines without needing to use the 
+backslash. </p>
+<p class="docText">Python's indentation requirements take a little getting used 
+to, but they guarantee a certain level of readability, and editors like vim and 
+emacs can keep track of the details for you trivially. (vim has a syntax 
+configuration for editing Python, and emacs and xemacs both have a python-mode 
+specifically for dealing with Python.) </p>
+<h4  id="upt3-CHP-42-SECT-3.2" class="docSection2Title">42.3.2 Functions</h4>
+<p class="docText">Both procedural and functional languages organize programs by 
+dividing them into smaller units called <span class="docEmphasis">functions</span>. 
+Python's approach to functions is inspired by functional languages like Lisp and 
+Scheme, where anonymous functions (<span class="docEmphasis">lambdas</span>) and 
+operations like eval, apply, map, and reduce are fundamentals of the language.
+</p>
+<p class="docText">Functions are defined with the <tt>def</tt> statement. To 
+define an <tt>add</tt> function that adds together two arguments and returns the 
+result: </p>
+<pre>&gt;&gt;&gt; <b>def add(a, b):</b>
+... <b>    return a + b</b></pre>
+<p class="docText">This defines a function and attaches it to the name <tt>add</tt> 
+in the current namespace; anything with access to this namespace can call this 
+function by simply passing arguments to it: </p>
+<pre>&gt;&gt;&gt; <b>print add(3, 5)</b>
+8</pre>
+<p class="docText">Function arguments can be defined with default values, and 
+variable-length argument lists and keyword arguments are also supported. </p>
+<p class="docText">Procedural programming languages like Perl and C generally 
+leave functions at that. Functional languages like Lisp, Scheme, and Python take 
+functions to the next level; functions are first-class objects and can be 
+directly manipulated and stored. </p>
+<p class="docText">Anonymous functions, which are not automatically attached to 
+the current namespace, are created with the <tt>lambda</tt> statement: </p>
+<pre>&gt;&gt;&gt; <b>add = lambda a, b: a + b</b></pre>
+<p class="docText">Lambdas are very useful for traditional functional 
+programming tricks such as using <tt>map( )</tt>. <tt>map( )</tt> takes its 
+first argument (which should be a function or lambda) and runs it over and over, 
+passing each element of the list to the function in turn, generating a new list 
+of the results: </p>
+<pre>&gt;&gt;&gt; <b>def timesThree(a):</b>
+... <b>    return 3 * a</b>
+&gt;&gt;&gt; <b>def sum(x, y):</b>
+... <b>    return x + y</b>
+
+&gt;&gt;&gt; <b>ints = [1, 2, 3, 4, 5]</b>
+&gt;&gt;&gt; <b>multiples = map(timesThree, ints)</b>
+&gt;&gt;&gt; <b>print multiples</b>
+[3, 6, 9, 12, 15]
+&gt;&gt;&gt; <b>print reduce(sum, multiples)</b>
+45</pre>
+<p class="docText">If you use functions like <tt>map( )</tt> and its cousins <tt>
+apply( )</tt>, <tt>reduce( )</tt>, and <tt>filter( )</tt> a lot, your code can 
+get pretty messy before long. Using a lambda allows you to use these functions 
+without having to define a named function with <tt>def</tt>; instead you can 
+just put the lambda right into the function call as an argument: </p>
+<pre>&gt;&gt;&gt; <b>ints = [1, 2, 3, 4, 5]</b>
+&gt;&gt;&gt; <b>multiples = map(lambda a: 3 * a, ints)</b>
+&gt;&gt;&gt; <b>print multiples</b>
+[3, 6, 9, 12, 15]
+&gt;&gt;&gt; <b>print reduce(lambda x, y: x + y, multiples)</b>
+45</pre>
+<p class="docText">Lambdas are limited to a single expression, though that 
+expression may be complex. Multiple statements and nonexpression statements like
+<tt>print</tt> and <tt>while</tt> can't be used in a lambda. </p>
+<h4  id="upt3-CHP-42-SECT-3.3" class="docSection2Title">42.3.3 Everything's an Object</h4>
+<p class="docText">Everything in Python is an <span class="docEmphasis">object</span>. 
+Each object has an <span class="docEmphasis">identity</span> , a
+<span class="docEmphasis">type</span>, and a <span class="docEmphasis">value</span>. 
+For example, <tt>a = 42</tt> creates an object of type integer with the value 
+42. You can think of the identity of an object as its address in memory; in this 
+case, we've given the name <tt>a</tt> to that identity. Python's built-in types 
+include fundamental building blocks such as numbers, strings, lists, 
+dictionaries, and files, as well as structuring types like functions, modules, 
+lambdas, and metaclasses. (Yes, a function is an object; it's just an object 
+that implements the &quot;function call&quot; operator.) </p>
+<p class="docText">Python allows the creation of new types of objects via the
+<tt>class</tt> statement. User-defined classes can have
+<span class="docEmphasis">class variables</span> and <span class="docEmphasis">
+methods</span>, which are shared across all <span class="docEmphasis">instances</span> 
+of that class. In Python, methods are just functions that happen to be 
+associated with a class (and generally take an instance of that class as the 
+first argument). Instances can also have their own <span class="docEmphasis">
+instance variables</span>, specific to each instance. </p>
+<p class="docText">Instances are created by calling the class object as if it 
+were a function, which creates a new object and calls the <tt>_ _init_ _( )</tt> 
+method of the class (if one is defined): </p>
+<pre>class Account:
+    &quot;A simple example class&quot;
+    kind = &quot;Checking&quot;
+    def _ _init_ _(self, accountHolder, startingBalance):
+        self.accountHolder = accountHolder;
+        self.balance = startingBalance;
+
+&gt;&gt;&gt; <b>account = Account(&quot;Deb&quot;, 86753.09)</b></pre>
+<p class="docText">This creates a new <tt>Account</tt> object and sets the <tt>
+accountHolder</tt> instance variable to <tt>Deb</tt> and the <tt>balance</tt> 
+instance variable to $86,753.09. Now, in order to be able to do anything with 
+our <tt>Account</tt>, we need to define methods to allow manipulation of the 
+balance: </p>
+<pre>class Account:
+    ...
+    def deposit(self, depositAmount):
+        &quot;Deposit money&quot;
+        self.balance = self.balance + depositAmount
+    def withdraw(self, withdrawalAmount):
+        &quot;Withdraw money&quot;
+        self.balance = self.balance - withdrawalAmount
+    def inquireBalance(self):
+        &quot;Balance inquiry&quot;
+        return self.balance
+
+&gt;&gt;&gt; <b>account.deposit(1504.36)</b>
+&gt;&gt;&gt; <b>account.withdraw(40.00)</b>
+&gt;&gt;&gt; <b>print &quot;Account balance is now $%.2f&quot; % account.inquireBalance( )</b>
+Account balance is now $88217.45</pre>
+<h4  id="upt3-CHP-42-SECT-3.4" class="docSection2Title">42.3.4 Modules and Packages</h4>
+<p class="docText"><span class="docEmphasis">Modules</span> and
+<span class="docEmphasis">packages</span> allow you to organize your code more 
+effectively. Generally, software for Python is also distributed as a module or a 
+package. A module groups a set of functions and classes; a package is a 
+collection of modules and subpackages. </p>
+<p class="docText">Any Python source file is a module, if you load it using the 
+import statement. Importing a module creates an isolated namespace for the 
+symbols within that file and attaches that namespace to the name of the module. 
+It also executes the code within that module, defining variables, functions, and 
+classes. For example, we might put our <tt>Account</tt> class in a file <i>
+account.py</i>, and then, in another file: </p>
+<pre>import account
+
+checking = account.Account(&quot;Deb&quot;, 86753.09)</pre>
+<p class="docText">Note that we can't refer to <tt>Account</tt> directly; we 
+have to refer to it through its imported name, <tt>account.Account</tt>. If, for 
+convenience, we'd like to access the <tt>Account</tt> class directly, we can 
+tell Python to import the class into our current namespace as well: </p>
+<pre>from account import Account
+
+checking = Account(&quot;Deb&quot;, 86753.09)</pre>
+<p class="docText">Modules are compiled into bytecodes the first time they are 
+imported, allowing them to run faster and be more compact. </p>
+<p class="docText">Given that a Python module is just a file, it will probably 
+come as no surprise that a Python package is simply a directory with modules in 
+it. To tag a directory as a package rather than just any directory, create a 
+file called <i>_ _init_ _.py</i> (the same name as the method to initialize an 
+object) within that directory. Code within <i>_ _init_ _.py</i> will get run 
+whenever any part of its package is imported. Subpackages are, of course, just 
+subdirectories with their own <i>_ _init_ _.py</i> files. </p>
+<h4  id="upt3-CHP-42-SECT-3.5" class="docSection2Title">42.3.5 I/O and Formatting</h4>
+<p class="docText">Dealing with input and output in Python is fairly 
+straightforward; files are objects, and there is a set of methods for dealing 
+with file objects that will be familiar to anyone who's ever done any Unix I/O. 
+Files are opened with <tt>open( )</tt>, closed with <tt>close( )</tt>, and read 
+with methods such as <tt>read( )</tt> and <tt>readline( )</tt>. </p>
+<p class="docText">Unix standard input, standard output and standard error are 
+represented by file objects in the <tt>sys</tt> module: <tt>sys.stdin</tt> , <tt>
+sys.stdout</tt>, and <tt>sys.stderr</tt>, respectively. </p>
+<p class="docText">The <tt>print</tt> statement prints its arguments to standard 
+output. <tt>print</tt> can print any object by printing its string 
+representation. Nicely formatted strings are generated using the string 
+formatting (<tt>%</tt>) operator. <tt>%</tt> works a lot like C's <tt>sprintf( )</tt> 
+routine; you provide a string with special keywords in it and the objects to 
+format and you get back a formatted string: </p>
+<pre>&gt;&gt;&gt; <b>print &quot;Account balance is now $%.2f&quot; % account.inquireBalance( )</b>
+Account balance is now $86753.09
+&gt;&gt;&gt; <b>print &quot;Error:  %s(%s).&quot; % (error, error.number)</b>
+Error:  File not found(2)</pre>
+<p class="docText"><tt>%</tt> takes a string and a list of arguments. (If 
+there's only one argument, it can be any object instead of a list.) Any place 
+that you might want to use a string, you can use the string formatting operator. 
+For example: </p>
+<pre>&gt;&gt;&gt; <b>obj.name = &quot;MyObject: %s&quot; % name</b>
+&gt;&gt;&gt; <b>url = urlopen(&quot;%s://%s:%d/%s&quot; % (protocol, host, port, path))</b></pre>
+<h4  id="upt3-CHP-42-SECT-3.6" class="docSection2Title">42.3.6 wxPython</h4>
+<p class="docText">Python has a couple of ways to build graphical user 
+interfaces. The first was to use Tk, the GUI toolkit from Tcl. More recently, a 
+Python interface to the wxWindows toolkit has been developed and has become very 
+popular. </p>
+<p class="docText">Extensive information about wxPython is available at
+<a class="docLink" href="http://wxpython.org" target="_blank">
+http://wxpython.org</a> including documentation and the wxPython distribution 
+itself. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-42-SECT-4">42.4 Python and the Web</h3>
+<p class="docText">Python has a number of core modules designed to deal with 
+interacting with the web. Python can act as a web client, pulling down web 
+resources and POSTing form results. Python has support for SSL connections in a 
+reasonably transparent fashion. CGI scripts are easy to write in Python, and 
+there is also an Apache module for running Python scripts within the webserver 
+itself. </p>
+<ul>
+  <li>
+  <p class="docList"><span class="docEmphBold">urllib</span> (<a class="docLink" href="_chapter 42.htm#upt3-CHP-42-SECT-5">Section 
+  42.5</a>) provides basic functions for opening and retrieving web resources 
+  via their URLs. </li>
+  <li>
+  <p class="docList"><span class="docEmphBold">urllib2</span> (<a class="docLink" href="_chapter 42.htm#upt3-CHP-42-SECT-6">Section 
+  42.6</a>) provides an extended, extensible interface for accessing web 
+  resources. </li>
+  <li>
+  <p class="docList"><span class="docEmphBold">htmllib</span> and
+  <span class="docEmphBold">HTMLParser</span> (<a class="docLink" href="_chapter 42.htm#upt3-CHP-42-SECT-7">Section 
+  42.7</a>) provide the ability to parse HTML. </li>
+  <li>
+  <p class="docList"><span class="docEmphBold">cgi</span> (<a class="docLink" href="_chapter 42.htm#upt3-CHP-42-SECT-8">Section 
+  42.8</a>) provides functions for writing CGI scripts. </li>
+  <li>
+  <p class="docList"><span class="docEmphBold">mod_python</span> (<a class="docLink" href="_chapter 42.htm#upt3-CHP-42-SECT-9">Section 
+  42.9</a>) is an Apache module for running Python within the Apache webserver, 
+  rather than seperately as with CGI scripts. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-42-SECT-5">42.5 urllib</h3>
+<p class="docText">The application-level access to most web client activities is 
+through modules called <span class="docEmphBold">urllib and urllib2</span> (<a class="docLink" href="_chapter 42.htm#upt3-CHP-42-SECT-6">Section 
+42.6</a>). <tt>urllib</tt> is the simple web interface; it provides basic 
+functions for opening and retrieving web resources via their URLs. </p>
+<p class="docText">The primary functions in <tt>urllib</tt> are <tt>urlopen( )</tt>, 
+which opens an URL and returns a file-like object, and <tt>urlretrieve( )</tt>, 
+which retrieves the entire web resource at the given URL. The file-like object 
+returned by urlopen supports the following methods: <tt>read( )</tt>, <tt>
+readline( )</tt>, <tt>readlines( )</tt>, <tt>fileno( )</tt>, <tt>close( )</tt>,
+<tt>info( )</tt>, and <tt>geturl( )</tt>. The first five methods work just like 
+their file counterparts. <tt>info( )</tt> returns a <tt>mimetools.Message</tt> 
+object, which for HTTP requests contains the HTTP headers associated with the 
+URL. <tt>geturl( )</tt> returns the real URL of the resource, since the client 
+may have been redirected by the web server before getting the actual content.
+</p>
+<p class="docText"><tt>urlretrieve( )</tt> returns a tuple <tt>(filename, info)</tt>, 
+where <tt>filename</tt> is the local file to which the web resource was copied 
+and <tt>info</tt> is the same as the return value from urlopen's <tt>info( )</tt> 
+method. </p>
+<p class="docText">If the result from either <tt>urlopen( )</tt> or <tt>
+urlretrieve( )</tt> is HTML, you can use <tt>htmllib</tt> to parse it. </p>
+<p class="docText"><tt>urllib</tt> also provides a function <tt>urlencode( )</tt>, 
+which converts standard tuples or dictionaries into properly URL-encoded 
+queries. Here is an example session that uses the GET method to retrieve a URL 
+containing parameters: </p>
+<pre>&gt;&gt;&gt; <b>import urllib</b>
+&gt;&gt;&gt; <b>params = urllib.urlencode({'spam': 1, 'eggs': 2, 'bacon': 0})</b>
+&gt;&gt;&gt; <b>f = urllib.urlopen(&quot;http://www.musi-cal.com/cgi-bin/query?%s&quot; % params)</b>
+&gt;&gt;&gt; <b>print f.read( )</b></pre>
+<p class="docText">The following example performs the same query but uses the 
+POST method instead: </p>
+<pre>&gt;&gt;&gt; <b>import urllib</b>
+&gt;&gt;&gt; <b>params = urllib.urlencode({'spam': 1, 'eggs': 2, 'bacon': 0})</b>
+&gt;&gt;&gt; <b>f = urllib.urlopen(&quot;http://www.musi-cal.com/cgi-bin/query&quot;, params)</b>
+&gt;&gt;&gt; <b>print f.read( )</b></pre>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-42-SECT-6">42.6 urllib2</h3>
+<p class="docText"><tt>urllib2</tt> provides an extended, extensible interface 
+to web resources. <tt>urllib2</tt>'s application-level interface is essentially 
+identical to <span class="docEmphBold">urllib's urlopen( ) function</span> (<a class="docLink" href="_chapter 42.htm#upt3-CHP-42-SECT-5">Section 
+42.5</a>). Underneath, however, <tt>urllib2</tt> explicitly supports proxies, 
+caching, basic and digest authentication, and so forth. </p>
+<p class="docText"><tt>urllib2</tt> uses an <tt>Opener</tt>, made up of a series 
+of <tt>Handlers</tt>, to open a URL; if you know you want to use a particular 
+set of features, you tell <tt>urllib2</tt> which <tt>Handlers</tt> to use before 
+you call <tt>urlopen( )</tt>. <tt>urllib2</tt> is extensible largely because if 
+you need to deal with some odd set of interactions, you can write a <tt>Handler</tt> 
+object to deal with just those interactions and incorporate it into an <tt>
+Opener</tt> with existing <tt>Handlers</tt>. This allows you to deal with 
+complex behavior by just combining very simple sets of code. </p>
+<p class="docText">For example, to retrieve a web resource that requires basic 
+authentication over a secure socket connection: </p>
+<pre>&gt;&gt;&gt; <b>import urllib2</b>
+&gt;&gt;&gt; <b>authHandler = urllib2.HTTPBasicAuthHandler( )</b>
+&gt;&gt;&gt; <b>authHandler.add_password(&quot;private, &quot;https://www.domain.com/private&quot;,</b>
+... <b>                         &quot;user&quot;, &quot;password&quot;)</b>
+&gt;&gt;&gt; <b>opener = urllib2.build_opener(authHandler)</b>
+&gt;&gt;&gt; <b>urllib2.install_opener(opener)</b>
+&gt;&gt;&gt; <b>resource = urllib2.urlopen(&quot;https://www.domain.com/private/foo.html&quot;)</b>
+&gt;&gt;&gt; <b>print resource.read( )</b></pre>
+<p class="docText">To implement a new <tt>Handler</tt>, you simply subclass from
+<tt>urllib2.BaseHandler</tt> and implement the methods appropriate to the 
+behavior you want to handle. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-42-SECT-7">42.7 htmllib and HTMLParser</h3>
+<p class="docText">Python provides the <tt>htmllib</tt> module for parsing HTML 
+content, which is often useful when dealing with web resources. Python also has 
+an <tt>HTMLParser</tt> module, which handles both XHTML and HTML and provides a 
+slightly lower-level view of the content. <tt>HTMLParser</tt> is also slightly 
+simpler to use, since <tt>htmllib</tt> uses <tt>sgmllib</tt> and thus 
+understands many of the complexities of SGML. </p>
+<p class="docText"><tt>HTMLParser</tt> provides a class that the user subclasses 
+from, defining methods that are called as tags are found in the input. The 
+example below is a very basic HTML parser that uses the <tt>
+HTMLParser.HTMLParser</tt> class to print out tags as they are encountered: </p>
+<pre>from HTMLParser import HTMLParser
+
+class MyHTMLParser(HTMLParser):
+    def handle_starttag(self, tag, attrs):
+        print &quot;Encountered the beginning of a %s tag&quot; % tag
+    def handle_endtag(self, tag):
+        print &quot;Encountered the end of a %s tag&quot; % tag</pre>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-42-SECT-8">42.8 cgi</h3>
+<p class="docText">Python provides the <tt>cgi</tt> module for writing CGI 
+scripts. Much of the grunt work of writing a CGI script is in dealing with 
+parsing the parameters handed to the script by the web server. The <tt>cgi</tt> 
+module deals with all of those details and more. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">To use the <tt>cgi</tt> module, use <tt>import</tt>
+        <tt>cgi</tt> rather than <tt>from</tt> <tt>cgi</tt> <tt>import*</tt>. 
+        The <tt>cgi</tt> module defines a lot of symbols (many for backwards 
+        compatibility) that you don't want polluting your namespace. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">When you write a new script, consider adding the line:</p>
+<pre>import cgitb; cgitb.enable( )</pre>
+<p class="docText">This activates a special exception handler that will display 
+detailed reports in the web browser if any errors occur. If you'd rather not 
+show the guts of your program to users of your script, you can have the reports 
+saved to files instead, with a line like this: </p>
+<pre>import cgitb; cgitb.enable(display=0, logdir=&quot;/tmp&quot;)</pre>
+<p class="docText">It's very helpful to use this feature during script 
+development. The reports produced by <tt>cgitb</tt> provide information that can 
+save you a lot of time tracking down bugs. You can always remove the <tt>cgitb</tt> 
+line later when you have tested your script and are confident that it works 
+correctly. </p>
+<p class="docText">To get to information submitted to the CGI script, 
+instantiate a <tt>FieldStorage</tt> object: </p>
+<pre>form = cgi.FieldStorage( )</pre>
+<p class="docText">The FieldStorage object acts much like a dictionary of CGI 
+information; it implements the methods <tt>has_key( )</tt> and <tt>keys( )</tt> 
+and can be accessed using the <tt>[ ]</tt> operator. For instance, the following 
+code (which assumes that the <tt>Content-Type</tt>: header and blank line have 
+already been printed) checks that the fields <tt>name</tt> and <tt>addr</tt> are 
+both set to a non-empty string: </p>
+<pre>form = cgi.FieldStorage( )
+if not (form.has_key(&quot;name&quot;) and form.has_key(&quot;addr&quot;)):
+    print &quot;&lt;H1&gt;Error&lt;/H1&gt;&quot;
+    print &quot;Please fill in the Name and Address fields.&quot;
+    return
+print &quot;&lt;p&gt;Name: %s&lt;/p&gt;&quot; % form[&quot;name&quot;].value
+print &quot;&lt;p&gt;Address: %s&lt;/p&gt;&quot; % form[&quot;addr&quot;].value
+...further form processing here...</pre>
+<p class="docText">The <tt>cgi</tt> module also supports ways to deal with 
+multiple-selection form elements and uploaded files. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-42-SECT-9">42.9 mod_python</h3>
+<p class="docText"><tt>mod_python</tt> is an Apache module for running Python 
+within the Apache webserver. It's much faster than CGI scripts and generally 
+uses less resources overall. <tt>mod_python</tt> also allows advanced 
+functionality such as maintaining persistent database connections across web 
+requests and access to internal Apache APIs. Information on <tt>mod_python</tt> 
+and distributions are available at
+<a class="docLink" href="http://www.modpython.org" target="_blank">
+http://www.modpython.org</a>. </p>
+<p class="docText">Apache's basic methodology for handling web requests is to 
+deal with them in phases. There is a phase for each significant element of 
+handling the request, including authentication, content generation, and logging. 
+Apache modules can provide a seperate handler for each phase; <tt>mod_python</tt> 
+simply allows you to write those handlers in Python. This allows complete 
+control over everything Apache does to process a request. </p>
+<p class="docText">A <tt>mod_python</tt> handler is a function that takes the
+<tt>Request</tt> object as an argument; a <tt>Request</tt> represents a single 
+web request and contains all the information Apache knows about that request 
+(requested URL, method, headers, and so forth). </p>
+<p class="docText">Each phase's handler has a specific name that Apache 
+recognizes (and uses in its configuration file): <tt>PythonHandler</tt>, <tt>
+PythonAuthenHandler</tt>, <tt>PythonLogHandler</tt> and so forth. Most <tt>
+mod_python</tt> scripts need to implement only the main handler, <tt>
+PythonHandler</tt>. </p>
+<p class="docText"><tt>mod_python</tt> finds the appropriate function to call by 
+dropping the leading <tt>Python</tt> from the handler name, and using an 
+all-lowercase function name. Thus, most <tt>mod_python</tt> scripts will look 
+something like this: </p>
+<pre>from mod_python import apache
+
+def handler(request):
+    request.content_type = &quot;text/plain&quot;
+    request.send_http_header( )
+    request.write(&quot;Hello World!&quot;)
+    return apache.OK</pre>
+<p class="docText">This handler simply imports the <tt>apache</tt> API and then 
+responds to every request with a plain text <tt>Hello World!</tt>. It returns
+<tt>apache.OK</tt> to tell Apache that the request was successful. </p>
+<p class="docText">For more information on dealing with <tt>mod_python</tt>, 
+read the documentation. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">One gotcha: <tt>mod_python</tt>'s way of installing a
+        <tt>mod_python</tt> handler is a little counterintuitive due to the way 
+        Apache handlers work. Make sure you understand how <tt>mod_python</tt> 
+        finds which module to import. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-42-SECT-10">42.10 What About Perl?</h3>
+<p class="docText">Comparing languages can generate a lot of heat and very 
+little light. However, &quot;Why not just use Perl?&quot; is such a common question that 
+I'll try to provide at least a basic understanding of the relative strengths and 
+weaknesses of Python versus Perl. Remember that you can write good code or bad 
+code in pretty much any language, but understanding whether your tool is best at 
+driving nails or screws is always useful. </p>
+<p class="docText">Perl's driving motto is &quot;There's more than one way to do it.&quot; 
+Because of this priority and the huge archive of Perl modules on CPAN, Perl is 
+an incredibly useful tool for building quick one-off scripts or hacking together 
+tools in a very short time. However, it also means that it's very easy to write 
+Perl code that will be impenetrable six months down the road. Perl provides very 
+little assistance to someone who wants to write complex systems clearly. 
+Features like <tt>perl</tt> <tt>-w</tt> (warnings), <tt>use strict</tt>, and 
+Perl's module support help maintainability, but it still requires a great deal 
+of care and discipline. </p>
+<p class="docText">Python's support for maintainability, on the other hand, is 
+excellent. Python's rich collection of modules and the fact that it's an 
+interpreted language allow relatively fast development, if not quite as fast as 
+in Perl. Generally, the more complex the system you're trying to build and the 
+longer you expect to use it, the more potential there is for gain in using 
+Python over Perl. </p>
+<p class="docText">Personally, when tossing together quick one-offs or scripts 
+that are very regular expression-heavy, I use Perl. Perl's regular expression 
+support is so fundamental to the language that it's worth it, and its 
+Swiss-Army-knife nature is perfect for things I don't expect to need again 
+later. I also tend to use Perl when I want to write a very portable script, as 
+most Unixes include Perl as part of the base system these days, whereas Python, 
+while just as portable, tends to need to be installed seperately. When I want to 
+build more complex scripts or larger systems, and maintainability is thus a 
+higher priority, I use Python. I often use Python even for smaller things if I 
+intend to keep them around for a while. </p>
+<p class="docText">In the end, of course, it comes down to a matter of personal 
+taste and judgment. Personally, I value being able to understand my code six 
+months (or six years!) down the road far more than having every tool imaginable 
+at my fingertips, so I tend to lean towards languages that help you write clear, 
+readable code, like Python. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span> </p>
+
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 41.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 43.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

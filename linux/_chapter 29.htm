@@ -1,0 +1,1183 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 29</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 28.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 30.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 29. Custom Commands</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-1">29.1 Creating Custom Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-2">29.2 Introduction to Shell Aliases</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-3">29.3 C-Shell Aliases with Command-Line Arguments</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-4">29.4 Setting and Unsetting Bourne-Type Aliases</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-5">29.5 Korn-Shell Aliases</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-6">29.6 zsh Aliases</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-7">29.7 Sourceable Scripts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-8">29.8 Avoiding C-Shell Alias Loops</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-9">29.9 How to Put if-then-else in a C-Shell Alias</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-10">29.10 Fix Quoting in csh Aliases with makealias and quote</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-11">29.11 Shell Function Basics</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-12">29.12 Shell Function Specifics</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-13">29.13 Propagating Shell Functions</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-29-SECT-14">29.14 Simulated Bourne Shell Functions and Aliases</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-1">29.1 Creating Custom Commands</h3>
+<ul>
+  <li>
+  <p class="docList">In most shells, aliases are an easy way to shorten a long 
+  command line or do a short series of commands.
+  <a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">
+  Section 29.2</a> through
+  <a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-10">
+  Section 29.10</a> cover C shell aliases.
+  <a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-4">
+  Section 29.4</a> through
+  <a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-14">
+  Section 29.14</a> cover aliases in <i>bash</i>, <i>pdksh</i>, and <i>zsh</i>.
+  </li>
+  <li>
+  <p class="docList">All except the oldest Bourne-type shells have
+  <span class="docEmphBold">shell functions</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+  29.11</a>), which are explained in
+  <a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">
+  Section 29.11</a> through
+  <a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-13">
+  Section 29.13</a>. These are a cross between aliases and shell scripts. 
+  They're good both for shortening command lines and for running a short or long 
+  series of commands. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-2">29.2 Introduction to Shell Aliases</h3>
+<p class="docText">All shells except the original Bourne shell have an &quot;alias&quot; 
+facility that lets you define abbreviations for commands. </p>
+<p class="docText">The simplest C shell aliases, which are similar to the alias 
+facility in newer Bourne-type shells, are simply a short name for a command and, 
+often, command options or arguments too. The C shell's aliases can get very 
+complicated.
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-3">
+Section 29.3</a> describes how a C shell alias can use arguments from its 
+command line as it's invoked. </p>
+<p class="docText">As we've said, aliases in Bourne-type shells (<i>bash</i>, <i>
+zsh</i>, and <i>ksh</i>) are simpler.
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-4">
+Section 29.4</a> covers some of the differences between those shells and the C 
+shells. Still, the ideas for custom C shell commands are useful in any kind of 
+shell, and if you can't write something in a simple Bourne-type alias, you 
+almost certainly can do it in a <span class="docEmphBold">shell function</span> 
+(<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>). </p>
+<p class="docText">You can define aliases from the command line, for use in just 
+your current shell. Any aliases you define can also be placed in your
+<span class="docEmphBold">shell setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>), so they'll be available whenever you're using your shell. </p>
+<p class="docText">Note that aliases are <span class="docEmphasis">not</span> 
+passed to <span class="docEmphBold">subprocesses</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>), so putting them in a setup file that's read only by login shells or 
+top-level shells probably isn't what you want. (One exception is an alias for a 
+command that you want to run <span class="docEmphasis">only</span> in a login 
+shell. For instance, you could define an alias named <i>X</i> that starts your X 
+Window System. If that alias isn't defined in subshells, you'll get a message 
+like <tt>X: command not found</tt> if you try to start the window system from an 
+existing window.) </p>
+<p class="docText">A common approach is to create separate files for each shell 
+that store your aliases (such as <i>.bash_aliases</i> for <i>bash</i> or <i>.aliases.csh</i> 
+for the C shell), so that you may source them whenever you like. </p>
+<p class="docText">Here's one last note that applies to all shells. Anytime you 
+want a list of the aliases currently set, just type <tt>alias</tt>. </p>
+<p class="docText"><span class="docEmphasis">—JP, ML, DG, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-3">29.3 C-Shell Aliases with Command-Line Arguments</h3>
+<p class="docText">It's convenient for your aliases to use command-line 
+arguments. For example, let's think about an alias named <i>phone</i>: </p>
+<pre>alias phone 'cat ~/phonelist | grep -i'</pre>
+<p class="docText">After you define that alias, you could type <tt>phone smith</tt>. 
+The shell would find the <i>phone</i> alias and execute it
+<span class="docEmphBold">with the argument (smith) at the end</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>) this way: </p>
+<pre>cat ~/phonelist | grep -i smith</pre>
+<p class="docText">Using <i>cat</i> and a pipe that way is
+<span class="docEmphBold">inefficient</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-2">Section 
+43.2</a>). It might be more sensible to have an alias that worked like this: </p>
+<pre>grep -i <tt><i>name</i></tt> ~/phonelist</pre>
+<p class="docText">How do we do this? The C shell's <span class="docEmphBold">
+history</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+30.8</a>) facility lets us use the notation <tt>!$</tt> to refer to the last 
+word in the previous command; the notation <tt>!*</tt> refers to all the 
+arguments of the previous command. Assuming that we only want to look up aliases 
+one at a time, we can use <tt>!$</tt> and write our alias like this: </p>
+<pre>alias phone grep -i \!$ ~/phonelist</pre>
+<p class="docText">When we use the <i>phone</i> command, its final argument will 
+be substituted into the alias. That is, when we type <tt>phone bill</tt>, the 
+shell executes the command <tt>grep -i bill ~/phonelist</tt>. </p>
+<p class="docText">In this example, we needed another kind of quoting. We had to 
+put a backslash before the exclamation point to prevent the shell from replacing
+<tt>!$</tt> with the previous command's last argument. That is, we don't want 
+the shell to expand <tt>!$</tt> when we define the alias — that's nonsense. We 
+want the shell to insert the previous argument when we use the alias (in which 
+case, the previous argument is just the argument for the alias itself — clear?).
+</p>
+<p class="docText">But why couldn't we just use <span class="docEmphBold">single 
+quotes or double quotes</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>)? This isn't the right place for a full explanation, but neither 
+single quotes nor double quotes protect the exclamation point.
+<span class="docEmphBold">The backslash does</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">Section 
+27.13</a>). If you want to be convinced, experiment with some commands like: </p>
+<pre>% <b>echo '!!'     </b><i> Print your last command</i>
+% <b>echo '\!!'    </b><i> Print !!</i></pre>
+<p class="docText">The first <i>echo</i> command shows that the shell performs 
+history substitution (i.e., replaces <tt>!!</tt> with your previous command) in 
+spite of the single quotes. The second example shows that the backslash can 
+prevent the shell from interpreting <tt>!</tt> as a special character. </p>
+<p class="docText">Let's look at another alias. We want to pipe the output of <i>
+ls -l</i> into <i>more</i>. In this case, we would want all the arguments from 
+the command line instead of merely the last argument (or the only argument). 
+Here's the alias: </p>
+<pre>alias lm 'ls -l \!* | more'</pre>
+<p class="docText">This time, we needed both kinds of quoting: a backslash 
+prevents the shell from interpreting the exclamation point immediately. Single 
+quotes protect the pipe symbol and the asterisk (<tt>*</tt>). If you don't 
+protect them both, and protect only the pipe (with a backslash), look what 
+happens: </p>
+<pre>% <b>alias lm ls -l \!* | more</b>
+alias: No match.</pre>
+<p class="docText">Because the backslash temporarily stops the special meaning 
+of the <tt>!</tt>, the shell next tries to find filenames that match the
+<span class="docEmphBold">wildcard</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+1.13</a>) pattern <tt>!*</tt>. That fails (except in the unusual case when you 
+have a file in the current directory whose name starts with a <tt>!</tt>). </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Here's a good general rule for quoting aliases. 
+        Unless you're trying to do something special with an alias and you 
+        understand quoting well, put single quotes (<tt>'</tt>) around the whole 
+        definition and put a backslash before every exclamation point (<tt>\!</tt>).
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">If you want to pick one argument from the command line, use
+<tt>\!</tt>:<tt><i>n</i></tt>, where <tt><i>n</i></tt> is the number of the 
+argument. Here's a sample alias. It uses <span class="docEmphBold">cat</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">Section 
+12.2</a>) to add a header file to the file named in the first argument, then 
+writes them both into the file named in the second argument: </p>
+<p class="docText"><tt>~</tt>
+<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">
+Section 31.11</a></p>
+<pre>alias addhead 'cat ~/txt/header \!:1 &gt; \!:2'</pre>
+<p class="docText">This alias has two arguments: the file to which you want to 
+add a header and the output file. When you type: </p>
+<pre>% <b>addhead foo bar</b></pre>
+<p class="docText">the C shell substitutes the filename <tt>foo</tt> for <tt>
+\!:1</tt>, and the filename <tt>bar</tt> for <tt>\!:2</tt>, executing the 
+command: </p>
+<pre>cat ~/txt/header foo &gt; bar</pre>
+<p class="docText">Finally, if you need to append fixed text strings to these 
+arguments, you need to separate the argument text from the fixed text. For 
+instance, here's an alias that tells the Netscape browser to go to a URL
+<span class="docEmphasis">http://info/proj23/</span><tt><i>xxx1.html</i></tt>, 
+where <tt><i>xxx</i></tt> is a word like <span class="docEmphasis">report</span>,
+<span class="docEmphasis">summary</span>, etc., that you're typing on the 
+command line (as an argument to the alias). For instance, to go to the page
+<span class="docEmphasis">http://info/proj23/report1.html</span>, you'd type:
+</p>
+<pre>% <b>proj report</b></pre>
+<p class="docText">The first alias below shows the wrong way to do this. The 
+second one shows how to quote the argument in curly braces (<tt>{}</tt>) so the 
+shell doesn't think the <tt>1</tt> after the argument is part of the number 
+(giving you argument 11 instead of what you want: argument 1 with the digit
+<span class="docEmphasis">1</span> after it): </p>
+<pre>alias proj 'netscape -remote &quot;openURL(http://info/proj23/\!:11.html)&quot;'   <i>...wrong</i>
+alias proj 'netscape -remote &quot;openURL(http://info/proj23/\!{:1}1.html)&quot;' <i>...right</i></pre>
+<p class="docText">If you haven't seen this <i>netscape</i> -<i>remote</i> 
+technique, by the way, it's very handy. It sends a message to an already-open 
+Netscape browser. You can use it from a command line (shell prompt) or by 
+defining a button or menu item on your window system desktop. Recent Unix 
+versions of Mozilla have also begun to support this API, as well. On the 
+Macintosh, remote control is supported via Apple Events, but not from the 
+command line as of this writing. </p>
+<p class="docText"><span class="docEmphasis">—ML, JP, and SJC </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-4">29.4 Setting and Unsetting Bourne-Type Aliases</h3>
+<p class="docText">A lot of what we said about aliases in
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">
+Section 29.2</a> applies to the Korn shell (<i>ksh</i>), <i>zsh</i>, and <i>bash</i>. 
+This article, along with
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-5">
+Section 29.5</a> and
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-6">
+Section 29.6</a>, have an overview of what's different. </p>
+<p class="docText">One thing that's different from C shells is the syntax of the
+<i>alias</i> command, which is: </p>
+<pre>$ <b>alias  </b><i>name </i><b>= </b><i>definition </i></pre>
+<p class="docText">That is, you need an equal sign (no spaces) between the name 
+and the definition. A good guideline is to use single quotes (<tt>'</tt>) around 
+the <tt>definition</tt> unless you're doing something specialized and you 
+understand how <span class="docEmphBold">quoting</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) works in aliases. </p>
+<p class="docText">You can't put arguments inside an alias as the
+<span class="docEmphBold">C shell's \! operator</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-3">Section 
+29.3</a>) does. To do that, use a <span class="docEmphBold">shell function</span> 
+(<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>). </p>
+<p class="docText">As in the C shells, <i>unalias</i> removes an alias. To 
+remove all aliases, use <i>unalias</i> -<i>a</i> in <i>ksh</i> and <i>bash</i> 
+or <i>unhash</i> -<i>a</i> in <i>zsh</i>. <i>alias</i> with no arguments lists 
+aliases that are currently defined. </p>
+<p class="docText"><i>bash</i> aliases are pretty basic; this section covers 
+them. Korn shell and <i>zsh</i> aliases do more. </p>
+<p class="docText"><span class="docEmphasis">—JP and SC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-5">29.5 Korn-Shell Aliases</h3>
+<p class="docText"><i>pdksh</i> (the public domain <i>ksh</i>) has three types 
+of aliases. First is the regular command alias covered in
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-4">
+Section 29.4</a>. </p>
+<p class="docText">Tracked aliases keep track of the locations of
+<span class="docEmphBold">external</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+1.9</a>) executables. The shell has a default list of commands to track (see the
+<i>ksh</i> manpage). The first time <i>ksh</i> searches the PATH for an 
+executable command that's marked as a tracked alias, it saves the full path of 
+that command. This saves the shell the trouble of performing the path search 
+each time a command is invoked. The tracked aliases aren't reset unless one 
+becomes invalid or you change the PATH. The command <i>alias</i> -<i>t</i> lists 
+and creates tracked aliases. Here's an example with a newly invoked Korn shell:
+</p>
+<pre>$ <b>alias -t</b>
+$ <b>cat somefile &gt; somewhere</b>
+$ <b>alias -t</b>
+cat=/bin/cat
+$ <b>alias -t less</b>
+$ <b>alias -t</b>
+cat=/bin/cat
+less=/usr/bin/less</pre>
+<p class="docText">At first, there are no tracked aliases. But the <i>cat</i> 
+command is marked for tracking; as soon as I use it, the shell saves its 
+location, as the next <tt>alias -t</tt> shows. Next, I add a tracked alias for
+<span class="docEmphBold">less</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>) (which isn't one of the default commands to track). The Korn shell 
+won't track a command unless it's one of the defaults or you mark it for 
+tracking. </p>
+<p class="docText">The third kind of alias, directory aliases, set with <i>alias</i> 
+-<i>d</i>, let you use a tilde abbreviation like <tt>~<i>dir</i></tt> for any 
+directory. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-6">29.6 zsh Aliases</h3>
+<p class="docText"><i>zsh</i> has the regular command alias covered in
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-4">
+Section 29.4</a>. <i>zsh</i> is compatible with the C shell in many ways, but it 
+doesn't accept <i>csh</i> alias syntax without an equal sign (<tt>=</tt>) 
+between the name and value. That's probably because, as in other Bourne-type 
+shells, <i>zsh</i> allows you to set multiple aliases with one command, like 
+this: </p>
+<pre>zsh$ <b>alias ri='rm -i' mi='mv -i' </b>  <i> ...and so on</i></pre>
+<p class="docText">In <i>zsh</i>, <i>alias</i> -<i>g</i> defines a <i>zsh</i> 
+global alias: a word that's expanded anywhere (as long as it isn't quoted). 
+These are like a <span class="docEmphBold">shell variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>) that doesn't need a dollar sign (<tt>$</tt>) to be expanded. Maybe you 
+have a log file you read and edit often. You could make a global alias named
+<span class="docEmphasis">log</span>: </p>
+<pre>zsh$ <b>alias -g log=/work/beta/p2/worklog</b>
+
+zsh$ <b>less log</b>
+zsh$ <b>cp log logtemp</b></pre>
+<p class="docText">Global aliases are expanded only when they stand alone and 
+aren't quoted. So if there's a global alias <span class="docEmphasis">dir</span> 
+for a directory, you cannot use <tt>emacs dir/file</tt> to refer to a file in 
+that directory. Also, if you defined the global alias <span class="docEmphasis">
+fserv</span> for the hostname <span class="docEmphasis">fserv.bkk.ac.uk</span>, 
+you could type <tt>telnet fserv</tt> — but if you type <tt>mail</tt> <tt>ed@fserv</tt>, 
+the shell wouldn't expand it into a hostname. Named directories and shell 
+variables work better in cases like those. </p>
+<p class="docText"><i>alias</i> -<i>m</i> lists aliases that match a 
+wildcard-type pattern; <tt>alias -m 'hi*</tt>' shows all alias names that start 
+with <span class="docEmphasis">hi</span> (like <span class="docEmphasis">hi</span>,
+<span class="docEmphasis">hist</span>, and so on). This matches regular command 
+aliases as well as global aliases. You can use <i>-m</i> with <i>unalias</i>, 
+too, to remove all aliases matching a pattern. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-7">29.7 Sourceable Scripts</h3>
+<p class="docText">Aliases are a powerful concept in <i>csh</i>. Another great 
+capability is <span class="docEmphBold">shell scripts</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-8">Section 
+1.8</a>). Each has its strengths. An alias is just right for common sequences of 
+commands, calling a command by a different name, and so on. Scripts are great 
+for more flexible processing and batch processing. There are limitations to 
+both, and I will show a way around them. </p>
+<p class="docText">The limitation to aliases is that you are working pretty much 
+with one command line. Consider this example, which manages various stages of 
+changing directories, updating the prompt, and so forth: </p>
+<pre>alias pp 'set o2=$cwd; popd; set old=$o2; dir_number; record_dir pp; \\
+  prompt_set; set cd_attempt=(\!*); if ($#cd_attempt &gt; 0) cd $cd_attempt'</pre>
+<p class="docText">Now this works fine for me, and it served me well for a few 
+years and thousands of invocations, but it's at the point where I start thinking 
+that a script is more suited to the job. This brings me to the limitation of 
+scripts. </p>
+<p class="docText">Shell scripts are great for accomplishing some task that 
+might change a file, start a program, etc. They are limited by the fact that any 
+changes they make to shell or environment variables <span class="docEmphBold">
+are not visible</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>) to the parent shell that started them. In other words, you can write 
+some really cool script that will change directories for you if you don't touch 
+the keyboard for five seconds, but once the script exits, you are still in the 
+same place you started. </p>
+<p class="docText">The answer is to combine the best of both worlds. Consider 
+this:</p>
+<pre>alias pp 'set cd_attempt=(\!*); source ~/bin/pp_csh'</pre>
+<p class="docText">We set up a variable and source a script. The concept is 
+this: put your command-line arguments into a variable and then
+<span class="docEmphBold">source</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">Section 
+35.29</a>) a script to accomplish something. The difference here is that because 
+you are not starting a <span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>) for the script, it can do everything an alias can and more. This is 
+much like <span class="docEmphBold">Bourne shell functions</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>). </p>
+<p class="docText">Some hints on using this technique:</p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Naming</span></i> </dt>
+  <dd>
+  <p class="docList">I like to name the script that is doing all of the work 
+  after the alias, with <span class="docEmphasis">_csh</span> or
+  <span class="docEmphasis">.csh</span> at the end of its name. I put all of the 
+  scripts in my <span class="docEmphBold">~/bin</span> (<a class="docLink" href="_chapter 7.htm#upt3-CHP-7-SECT-4">Section 
+  7.4</a>). [Instead of names ending in <span class="docEmphasis">.csh</span>, I 
+  put mine in a directory named <i>~/.lib/csh</i>. <span class="docEmphasis">— 
+  JP</span>] </dd>
+  <dt><i><span class="docPubcolor">Feedback</span></i> </dt>
+  <dd>
+  <p class="docList">You don't want to execute the script directly. You want to 
+  source it. Here's a good first line that detects this: </p>
+  <pre>#! /bin/echo sorry,try:source</pre>
+  </dd>
+  <dt><i><span class="docPubcolor">Usage statement</span></i> </dt>
+  <dd>
+  <p class="docList">Check the variable that you expect to see from the alias. 
+  If it isn't there, you can show a usage statement and do a
+  <span class="docEmphasis">goto</span> to the end of the script: </p>
+  <p class="docList"><tt>&lt;&lt;</tt>
+  <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-16">
+  Section 27.16</a></p>
+  <pre>if ($#lg_args == 0) then
+    cat &lt;&lt; +++
+usage: lg [-a][-p] pattern [command]
+    -a  lists all (.dot files)
+    -p  pipe resulting list into command
++++
+    goto lg_end
+endif
+   ...
+lg_end:</pre>
+  </dd>
+  <dt><i><span class="docPubcolor">Alias options</span></i> </dt>
+  <dd>
+  <p class="docList">You aren't limited to what an alias can do, since you are 
+  sourcing a script. You gain some flexibility here. Here's one way of handling 
+  options: </p>
+  <p class="docList"><tt>set</tt>
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+  Section 35.9</a></p>
+  <pre>unset ls_arg
+while (! $?ls_arg)
+    switch (&quot;$lg_args[1]&quot;)
+        case &quot;-a&quot;:
+            set ls_arg=&quot;-a&quot;
+            shift lg_args
+        case &quot;-p&quot;:
+            set use_pipe
+            shift lg_args
+        default:
+            set ls_arg
+            breaksw
+    endsw
+end</pre>
+  </dd>
+</dl>
+<p class="docText">Have fun with this! You may find yourself tossing some old 
+aliases and rewriting them as sourceable scripts. They're also easier to 
+maintain. </p>
+<p class="docText"><span class="docEmphasis">— DS</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-8">29.8 Avoiding C-Shell Alias Loops</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-9">
+Section 27.9</a> has similar information for <i>bash</i>. </p>
+<p class="docText">Here's a situation that came up on the Net a while ago. 
+Someone wanted an <span class="docEmphBold">exit</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>) alias that would run a <span class="docEmphBold">~/.exit file</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-13">Section 
+31.13</a>) before leaving the shell. The obvious solution is: </p>
+<pre>alias exit &quot;source ~/.exit; exit&quot;</pre>
+<p class="docText">This doesn't work; when you use the <span class="docEmphasis">
+exit</span> alias, the C shell thinks that the alias is trying to execute 
+itself. Recursive aliases aren't allowed on many shells, so the C shell prints 
+an error message (<tt>Alias loop</tt>) and gives up. </p>
+<p class="docText">There are many ways to break the loop. Here's the best (in my 
+opinion): </p>
+<pre>alias exit 'source ~/.exit; &quot;&quot;exit'</pre>
+<p class="docText">
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-10">
+Section 27.10</a> has the hairy details of what works and why. To summarize, if 
+you need to use the alias's name within a C shell alias, you can use: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor">&quot;&quot;<tt><i>name</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Where <tt><i>name</i></tt> is the name of a
+  <span class="docEmphBold">built-in</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+  1.9</a>) command or any &quot;regular&quot; command. </dd>
+  <dt><span class="docPubcolor">\<tt><i>name</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Where <tt><i>name</i></tt> is the name of any &quot;regular&quot; 
+  command, but not a built-in command. </dd>
+</dl>
+<p class="docText">Tempting as this all may sound (and I have to admit, if it 
+didn't sound a bit tempting, I wouldn't be writing this article), I can't really 
+recommend the practice of &quot;redefining&quot; commands with aliases. You should leave 
+the original commands as they are. The original author could have avoided all 
+these problems by calling his alias <span class="docEmphasis">quit</span> rather 
+than <span class="docEmphasis">exit</span>. </p>
+<p class="docText">If you redefine commands with aliases and then use another 
+account where your alias isn't defined, it's easy for things to go wrong. That's 
+especially true for commands that do something permanent — overwriting or 
+removing files, for example. It also can cause problems if you let someone type 
+a command on your account and the person isn't expecting an aliased version. </p>
+<p class="docText">Let me give one more example to show you what problems you 
+can have. Let's say you've aliased the <i>exit</i> command to <i>source</i> a <i>
+.exit</i> file before quitting. Fair enough. But now, let's say that you're not 
+in your login shell, that you've <span class="docEmphasis">set ignoreeof</span>, 
+and that, for no apparent reason, your <i>.exit</i> file disappears (maybe it 
+develops a bad block, so the system can't read it; such things happen). </p>
+<p class="docText">Now you're stuck. If you type <tt>exit</tt>, the <i>source</i> 
+command will fail, and the &quot;real&quot; <i>exit</i> command will never be executed. 
+You can't leave the shell. Of course, if you remember what you did, you can 
+always type <tt>unalias exit</tt> and get the original command back. Or you can 
+type <tt>&quot; &quot;exit</tt>. Or finally, you could simply write the alias such that it 
+tests for the existence of the file before trying to read it. But if you've 
+foisted this alias on a beginner, he or she might not know that. All of a 
+sudden, you're stuck in some shell that you apparently can't get out of. </p>
+<p class="docText">The biggest virtue of Unix is that it's infinitely 
+extendable. However, you aren't helping if your extensions hide the basic 
+operations that make everything work. So — extend all you want. But when you 
+write your extensions, give them <span class="docEmphasis">new names</span>. End 
+of sermon. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-9">29.9 How to Put if-then-else in a C-Shell Alias</h3>
+<p class="docText">The C shell's brain damage keeps you from using an <i>if</i> 
+with an <i>else</i> in an alias. You have to use a <span class="docEmphBold">
+sourceable script</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-7">Section 
+29.7</a>). Or that's what I thought until I saw an article by Lloyd Zusman on
+<span class="docEmphasis">comp.unix.questions</span> in December 1987. He'd 
+saved an earlier posting on that group (but without its author's name) that 
+showed how. The trick: use enough backslashes (<tt>\</tt>) and the
+<span class="docEmphBold">eval</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-8">Section 
+27.8</a>) command. </p>
+<p class="docText">As an example, here's an alias named
+<span class="docEmphasis">C</span> for compiling C programs. It needs the
+<span class="docEmphasis">executable</span> filename (like <tt>C prog</tt>), not 
+the source filename (like <tt>C prog.c</tt>). If you type a filename ending in
+<span class="docEmphasis">.c</span>, it complains and quits. Else, it does the 
+following: </p>
+<ul>
+  <li>
+  <p class="docList">Renames any old <tt><i>prog</i></tt> file to <i>prog.old</i>.
+  </li>
+  <li>
+  <p class="docList">Prints the message <tt><i>prog</i></tt> <tt>SENT TO cc</tt>.
+  </li>
+  <li>
+  <p class="docList">Compiles <i>prog.c</i>.</li>
+  <li>
+  <p class="docList">And — if there's a <tt><i>prog</i></tt> file (if the 
+  compile succeeded) — runs <i>chmod 311 prog</i> to protect the file from 
+  accidental reading with a command like <i>cat *</i> or <i>more *</i>. </li>
+</ul>
+<p class="docText">Your alias doesn't need to be as complicated. But this one 
+shows some tricks, such as putting an <i>if</i> inside the <i>if</i>, that you 
+might want to use. Watch your quoting — remember that the shell strips off one 
+level of quoting <span class="docEmphBold">when you set the alias</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-3">Section 
+29.3</a>) and another during the first pass of the <i>eval</i>. Follow this 
+example and you'll probably be fine: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: if-else-alias.cs</p>
+<pre># COMPILE AND chmod C PROGRAMS; DON'T USE .c ON END OF FILENAME.
+alias C 'eval &quot;if (\!* =~ *.c) then \\
+   echo &quot;C quitting: no .c on end of \!* please.&quot; \\
+else \\
+   if (-e \!*) mv \!* \!*.old \\
+   echo \!*.c SENT TO cc \\
+   cc -s \!*.c -o \!* \\
+   if (-e \!*) chmod 311 \!* \\
+endif&quot;'</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-10">29.10 Fix Quoting in csh Aliases with makealias and 
+quote</h3>
+<p class="docText">Getting quoting right in C shell aliases can be a real 
+problem. Dan Bernstein wrote two aliases called <i>makealias</i> and <i>quote</i> 
+that take care of this for you. </p>
+<p class="docText">For example, here I use <i>makealias</i> to avoid having to 
+quote <tt>!</tt> and <tt>*</tt>: </p>
+<pre>% <b>makealias mycat</b>
+cat `ls | sed '1,/!*/d'` | less
+CTRL-d
+alias mycat 'cat `ls | sed '\''1,/\!*/d'\''` | less'</pre>
+<p class="docText">I typed the <tt>makealias mycat</tt> command and the line 
+starting with <tt>cat</tt>, then pressed CTRL-d and got back an alias definition 
+with all the quoting done correctly. </p>
+<p class="docText">The properly quoted alias definition is sent to the standard 
+output. That line is what you would use to define the alias.<span id="ENB29-1"><a class="docLink" href="#EN29-1"><sup>[1]</sup></a></span>
+</p>
+<p class="docText">Here are the <i>quote</i> and <i>makealias</i> aliases 
+themselves: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: makealias.csh</p>
+<pre>alias quote     &quot;/bin/sed -e 's/\\!/\\\\\!/g' \\
+   -e 's/'\\\''/'\\\'\\\\\\\'\\\''/g' \\
+   -e 's/^/'\''/' -e 's/&quot;\$&quot;/'\''/'&quot;
+alias makealias &quot;quote | /bin/sed 's/^/alias \!:1 /' \!:2*&quot;</pre>
+<p class="docText">Pretty gross, but they do the job. On Darwin, as on many 
+BSD-derived systems, <i>sed</i> is in <i>/usr/bin</i>, not <i>/bin</i>. You may 
+wish simply to use the command name without the explicit path, or use the 
+explicit (but correct) path. On Linux, the script above does not work with <i>
+tcsh</i>, which handles multi-line aliases anyway. </p>
+<p class="docText"><span class="docEmphasis">—JIK and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-11">29.11 Shell Function Basics</h3>
+<p class="docText">Most shells have <span class="docEmphBold">aliases</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>). Almost all Bourne-type shells have functions, which are like aliases, 
+but richer and more flexible. Here are four examples. </p>
+<h4  id="upt3-CHP-29-SECT-11.1" class="docSection2Title">29.11.1 Simple Functions: ls with Options</h4>
+<p class="docText">Let's start with two aliases from
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">
+Section 29.2</a>, changed into shell functions: The <i>la</i> function includes 
+&quot;hidden&quot; files in <i>ls</i> listings. The <i>lf</i> function labels the names as 
+directories, executable files, and so on. </p>
+<pre>function la ( ) { ls -a &quot;$@&quot;; }
+function lf ( ) { ls -F &quot;$@&quot;; }</pre>
+<p class="docText">The spaces and the semicolon (<tt>;</tt>) are important. You 
+don't need them on some shells, but writing functions this way (or in the 
+multiline format in later examples) is more portable.<span id="ENB29-2"><a class="docLink" href="#EN29-2"><sup>[2]</sup></a></span> 
+The <tt>function</tt> keyword is not needed in the original Bourne shell but is 
+required in later versions of <i>bash</i>. The <span class="docEmphBold">&quot;$@&quot;</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">Section 
+35.20</a>) is replaced by any arguments (other options, or directory and 
+filenames) you pass to the function: </p>
+<pre>$ <b>la -l somedir </b>            <i> ...runs </i>ls -a -l somedir</pre>
+<h4  id="upt3-CHP-29-SECT-11.2" class="docSection2Title">29.11.2 Functions with Loops: Internet Lookup</h4>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: mx.sh</p>
+<p class="docText">The <i>mx</i> function uses <i>dig</i> to look up the DNS MX 
+(mail exchanger) record for a host, then <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) to pull out the &quot;ANSWER SECTION&quot;, which has the hostname or hostnames:
+</p>
+<p class="docText"><tt>for</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">
+Section 35.21</a></p>
+<pre>function mx( ) {
+# Look up mail exchanger for host(s)
+for host
+do
+    echo &quot;==== $host ====&quot;
+    dig &quot;$host&quot; mx in |
+    sed -n '/^;; ANSWER SECTION:/,/^$/{
+            s/^[^;].* //p
+    }'
+done
+}</pre>
+<p class="docText"><i>mx</i> takes one or more hostname arguments; it runs <i>
+dig</i> and <i>sed</i> on each hostname. For example, the mail exchangers for
+<span class="docEmphasis">oreilly.com</span> are <span class="docEmphasis">
+smtp2.oreilly.com</span> and <span class="docEmphasis">smtp.oreilly.com</span>. 
+The mail exchanger for <span class="docEmphasis">hesketh.com</span> is
+<span class="docEmphasis">mail.hesketh.com</span>: </p>
+<pre>$ <b>mx oreilly.com hesketh.com</b>
+==== oreilly.com ====
+smtp2.oreilly.com.
+smtp.oreilly.com.
+==== hesketh.com ====
+mail.hesketh.com.</pre>
+<p class="docText">This example shows how to write a function with more than one 
+line. In that style, with the ending curly brace on its own line, you don't need 
+a semicolon after the last command. (The curly braces in the middle of the 
+function are inside quotes, so they're passed to <i>sed</i> as part of its 
+script.) </p>
+<p class="docText">The <i>mx</i> function looks like a little
+<span class="docEmphBold">shell program</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-2">Section 
+35.2</a>). Shell functions have the same syntax as a shell script, except for 
+the enclosing function name and curly braces. In fact, <span class="docEmphBold">
+a shell function can be defined and used within a shell script</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-30">Section 
+35.30</a>). But, as we've seen, it's also handy for interactive use. </p>
+<h4  id="upt3-CHP-29-SECT-11.3" class="docSection2Title">29.11.3 Setting Current Shell Environment: The work 
+Function</h4>
+<p class="docText">Like aliases, functions run in the current shell process — 
+not in a subprocess as shell scripts do. So they can change your shell's current 
+directory, reset shell and environment variables, and do basically anything you 
+could do at a shell prompt. (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a> has details.) </p>
+<p class="docText">This next function is for a group of people who are all 
+working on a project. A directory named <span class="docEmphasis">/work</span> 
+has <span class="docEmphBold">symbolic links</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>) named for each worker — <span class="docEmphasis">/work/ann</span>,
+<span class="docEmphasis">/work/joe</span>, etc. — and each link points to the 
+directory where that person is working. Each worker makes a function named
+<span class="docEmphasis">work</span> that, by default, <i>cd</i>s to her 
+directory and summarizes it. If the person gives an argument to the function — 
+like <tt>work todo</tt>, for instance — the script edits the file named <i>.todo</i> 
+in that directory. This setup also lets people quickly find out where others in 
+the group are working. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: work.sh</p>
+<p class="docText">Okay, I admit that I made this up as a demonstration for this 
+article, as a way to show a lot of features in a small amount of space. Anyway, 
+here's the function:</p>
+<p class="docText"><tt>if</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">
+Section 35.13</a>, <tt>'...'</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a>, <tt>wc</tt>
+<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-6">
+Section 16.6</a></p>
+<pre>function work ( ) {
+    local status=0
+    if [ $# -eq 1 -a &quot;$1&quot; = todo ]
+    then
+        ${VISUAL-vi} /work/$USER/.todo
+        status=$?  # return status from editor
+    elif [ $# -ne 0 ]
+    then
+        echo &quot;Usage: work [todo]&quot; 1&gt;&amp;2
+        status=1
+    else
+        cd /work/$USER
+        echo &quot;You're in your work directory `pwd`.&quot;
+        echo &quot;`ls | wc -w` files to edit.&quot;
+        status=0
+    fi
+    return $status
+}</pre>
+<p class="docText">There are three points I should make about this example. 
+First, the <i>local</i> command defines a shell variable named
+<span class="docEmphasis">status</span> that's local to the function — which 
+means its value isn't available outside the function, so it's guaranteed not to 
+conflict with variables set other places in the shell. I've also set the value 
+to 0, but this isn't required. (In the original Korn shell, use the <i>typeset</i> 
+command to set a local variable.) Second, when you run a function, the first 
+argument you pass it is stored in <span class="docEmphBold">$1</span>, the 
+second in <span class="docEmphBold">$2</span>, and so on (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">Section 
+35.20</a>). Shell and environment variables set outside of the function, and 
+nonlocal variables set within the function, are passed to and from the function. 
+Finally, the <i>return</i> command returns a <span class="docEmphBold">status</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>) to the calling shell. (Without <i>return</i>, the function returns 
+the status from the last command in the function.) For a function you use 
+interactively, like this one, you may not care about the status. But you also 
+can use <i>return</i> in the middle of a function to end execution and return to 
+the calling shell immediately.</p>
+<h4  id="upt3-CHP-29-SECT-11.4" class="docSection2Title">29.11.4 Functions Calling Functions: Factorials</h4>
+<p class="docText">Okay, students, this example is &quot;extra credit&quot; <tt>;-)</tt>...You 
+can ignore this ramble unless you want some esoterica. (I'm actually not trying 
+to waste your time. There are some useful bits of info in here about the 
+internal workings of the shells.) Functions can call each other recursively, and 
+local variables are passed to functions they call, but changes in a called 
+function are not passed back to the calling function. When I say &quot;recursion,&quot; 
+I've gotta show the classic demonstration: a factorial function.<span id="ENB29-3"><a class="docLink" href="#EN29-3"><sup>[3]</sup></a></span>
+</p>
+<p class="docText">The <i>fac</i> function calculates the factorial of the 
+number passed in <span class="docEmphasis">$1</span>. It writes the result to 
+standard output, for two reasons. First, doing so lets you type <tt>fac</tt> <tt>
+<i>n</i></tt> at the command line (why you'd need to calculate a factorial very 
+often, though, I'm not sure!). Second, if the shells' <i>return</i> command 
+works like the Unix exit statuses (and I haven't checked all versions of all 
+shells), the values are only eight bits — so it's better to return a string, 
+which lets us handle bigger integers. I could put in more error checking, but 
+since this is all theoretical anyway, here's the simple version of <i>fac</i>:
+</p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: fac.sh</p>
+<pre>function fac ( ) {
+    if [ &quot;$1&quot; -gt 0 ]
+    then echo $(($1 * `fac $(($1 - 1))`))
+    else echo 1
+    fi
+}</pre>
+<p class="docText">Then you can play:</p>
+<pre>$ <b>fac 0</b>
+1
+$ <b>fac 15</b>
+2004310016
+$ <b>fac 18</b>
+-898433024</pre>
+<p class="docText">Oops: overflow. Try <i>zsh</i> instead of <i>bash</i> or <i>
+ksh</i>; <i>zsh</i> built-in arithmetic seems to have more capacity: </p>
+<pre>zsh$ <b>fac 18</b>
+6402373705728000</pre>
+<p class="docText">You can do some simple tracing by typing
+<span class="docEmphBold">set -x</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-15">Section 
+27.15</a>) at a shell prompt. Then the shell will display the commands it 
+executes. (This works best in <i>bash</i> because it puts one <tt>+</tt> 
+character at the left edge of each line to show each level of recursion.) You 
+also can add some tracing code that uses a local variable,
+<span class="docEmphasis">level</span>, to store the depth of recursion. The 
+code <i>echo</i>es debugging messages that show the depth of recursion of each 
+call. Note that because the &quot;returned value&quot; of each function is written to its 
+standard output, these debugging messages have to be on the standard error! (To 
+see what happens otherwise, remove the <span class="docEmphBold">1&gt;&amp;2 operator</span> 
+(<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">Section 
+36.16</a>).) Here's <i>fac</i> with debugging code: </p>
+<p class="docText"><tt>${..-..}</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+Section 36.7</a></p>
+<pre>fac ( ) {
+local level=${level-0}
+echo &quot;debug: recursion level is $((level += 1)).  Doing fac of $1&quot; 1&gt;&amp;2
+if [ &quot;$1&quot; -gt 0 ]
+then echo $(($1 * `fac $(($1 - 1))`))
+else echo 1
+fi
+echo &quot;debug: leaving level $level.&quot; 1&gt;&amp;2
+}</pre>
+<p class="docText">Let's run the code with tracing. Note that changes to the 
+value of <span class="docEmphasis">level</span> at deeper levels doesn't affect 
+the value at higher levels — and that <span class="docEmphasis">level</span> 
+isn't set at all in the top-level shell: </p>
+<pre>$ <b>fac 3</b>
+debug: recursion level is 1.  Doing fac of 3
+debug: recursion level is 2.  Doing fac of 2
+debug: recursion level is 3.  Doing fac of 1
+debug: recursion level is 4.  Doing fac of 0
+debug: leaving level 4.
+debug: leaving level 3.
+debug: leaving level 2.
+6
+debug: leaving level 1.
+$ <b>echo $level</b>
+$
+
+</pre>
+<h4  id="upt3-CHP-29-SECT-11.5" class="docSection2Title">29.11.5 Conclusion</h4>
+<p class="docText">The next two articles cover specifics about functions in 
+particular shells, and
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-14">
+Section 29.14</a> shows how to simulate functions in shells that don't have 
+them. </p>
+<p class="docText">Here's another overall note. Each shell has its own commands 
+for working with functions, but in general, the <i>typeset</i> -<i>f</i> command 
+lists the functions you've defined, and <i>unset</i> -<i>f</i>
+<span class="docEmphasis">funcname</span> deletes the definition of the function 
+named <span class="docEmphasis">funcname</span>.</p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-12">29.12 Shell Function Specifics</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-11">
+Section 27.11</a> introduces shell functions for all Bourne-type shells. This 
+article covers details of functions in specific shells. </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Read-only functions</span></i> </dt>
+  <dd>
+  <p class="docList">A <i>bash</i> and <i>ksh</i> function can be made 
+  read-only. In <i>ksh</i>, that means the function can't be changed. In <i>bash</i>, 
+  it can't be changed or removed. To make a function read-only, use the <i>ksh</i> 
+  command <i>typeset</i> -<i>r</i> <span class="docEmphasis">funcname</span> or 
+  use <i>read-only</i> -<i>f</i> <span class="docEmphasis">funcname</span> in <i>
+  bash</i>, where <span class="docEmphasis">funcname</span> is the name of the 
+  function. </p>
+  <p class="docList">A system administrator might want to set read-only 
+  functions from a system-wide <span class="docEmphBold">setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+  3.3</a>) like <i>/etc/profile</i>. <i>bash</i> users can't unset read-only 
+  functions, though. So once a function <i>foo</i> has been defined, how can you 
+  define your own <i>foo</i>? As
+  <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-9">
+  Section 27.9</a> explains, you can type <tt>command foo</tt> to use a command 
+  named <i>foo</i> from your search path. Or define an alias named <i>foo</i>; 
+  aliases are used before functions. Finally, if you'd like to redefine the 
+  function, make an alias with the same name, then make the alias invoke a 
+  function with a (usually similar) name. For instance, to override a read-only 
+  function named <i>foo</i>: </p>
+  <pre>alias foo=_foo
+function _foo( ) {
+    <i>...your foo function...</i>
+}</pre>
+  </dd>
+  <dt><i><span class="docPubcolor">Changing function environment</span></i> </dt>
+  <dd>
+  <p class="docList">If a function uses an environment variable — like
+  <span class="docEmphBold">VISUAL or EDITOR</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">Section 
+  35.5</a>), your standard text editor — you can set the value temporarily while 
+  the function executes. The syntax is the same for functions, but only in <i>
+  bash</i> and <i>zsh</i>. For instance, if you usually use <i>vi</i>, but you 
+  want to use <i>emacs</i> as you run the <span class="docEmphBold">work 
+  function</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+  29.11</a>): </p>
+  <pre>$ <b>VISUAL=emacs work todo</b></pre>
+  </dd>
+  <dt><i><span class="docPubcolor">Resetting zsh options</span></i> </dt>
+  <dd>
+  <p class="docList">There are lots of <i>zsh</i> options. You may want to set 
+  some of them temporarily during a shell function without needing to reset them 
+  to their previous values when the function returns to the calling shell. To 
+  make that happen, set the LOCAL_OPTIONS option (run <i>setopt local_options</i>) 
+  in the function body. </p>
+  <p class="docList">For instance, maybe you use <i>setopt nounset</i> to make 
+  your interactive shell complain if you try to expand an unset shell variable. 
+  During your <i>func</i> function, though, you want to use the
+  <span class="docEmphasis">unset</span> option to allow unset variables. Define 
+  the function like this: </p>
+  <pre>function mullog( ) {
+    setopt unset local_options
+        <i>...do whatever...</i>
+}</pre>
+  </dd>
+</dl>
+<p class="docText"><span class="docEmphasis">— JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-13">29.13 Propagating Shell Functions</h3>
+<p class="docText">One easy way to define shell functions that you'll have every 
+time you start a new shell is by defining them in your <span class="docEmphBold">
+shell setup files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>). Here are two other ways. </p>
+<h4  id="upt3-CHP-29-SECT-13.1" class="docSection2Title">29.13.1 Exporting bash Functions</h4>
+<p class="docText">In <i>bash</i> , you can export functions to other
+<span class="docEmphBold">bash subshells</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>). (The original Korn shell, but not the public-domain version, 
+supposedly does this too, but I haven't had much luck with it.) Just use the 
+command <i>typeset</i> -<i>fx</i> <span class="docEmphasis">funcname</span>, 
+where <span class="docEmphasis">funcname</span> is the name of the function. </p>
+<p class="docText">How does this work? It stores the function in an
+<span class="docEmphBold">environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>) whose value starts with <tt>( )</tt>. You can see this with
+<span class="docEmphBold">printenv or env</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>). For example, let's define a simple function named <i>dir</i>, export 
+it, start a subshell, run the function, and look for it in the environment: </p>
+<pre>bash$ <b>function dir( ) { ls -F &quot;$@&quot;; } </b>
+bash$ <b>typeset -fx dir </b>         <i> ...export the function</i>
+bash$ <b>bash </b>                    <i> ...start subshell</i>
+bash$ <b>dir </b>                     <i> ...the function still works</i>
+,ptbk.last            ch14.sgm    ch36.ps.gz          fmt/
+,xrefs.list           ch15.ps.gz  ch36.sgm            gmatlogs/
+bash$ <b>printenv </b>
+   <i> ...lots of environment variables...</i>
+dir=( ) {  ls -F &quot;$@&quot;
+}</pre>
+<h4  id="upt3-CHP-29-SECT-13.2" class="docSection2Title">29.13.2 FPATH Search Path</h4>
+<p class="docText">Both <i>ksh</i> and <i>zsh</i> will automatically search for 
+functions in the <span class="docEmphBold">PATH variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+35.6</a>). So you can put a function in a file with the same name as the 
+function (for instance, put the function <i>foo</i> in a file named
+<span class="docEmphasis">foo</span>), and make the file executable (with
+<span class="docEmphBold">chmod +x foo</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-1">Section 
+35.1</a>)), and then the shell can find the function. </p>
+<p class="docText">I don't like to use <span class="docEmphasis">PATH</span> for 
+function-searching, though. One reason is that <span class="docEmphasis">PATH</span> 
+is passed to <span class="docEmphasis">all</span> Unix processes — but if the 
+process isn't a shell and it tries to execute a function file, it'll probably 
+fail in an ugly way.<span id="ENB29-4"><a class="docLink" href="#EN29-4"><sup>[4]</sup></a></span> 
+Also, making a file executable if you don't tell the kernel how to execute it 
+seems to me a recipe for trouble. A better way to help the shell find functions 
+is to set a function search path in the <span class="docEmphasis">FPATH</span> 
+environment variable; it has the same syntax as <span class="docEmphasis">PATH</span>. 
+(In <i>zsh</i>, you can also set the <span class="docEmphasis">fpath</span> 
+array — with the same syntax as <span class="docEmphasis">path</span>.) In
+<span class="docEmphasis">FPATH</span>, list directories that hold function 
+files. In <span class="docEmphasis">ksh</span>, those files don't even need 
+execute permission! Then <i>ksh</i> and <i>zsh</i> will search the
+<span class="docEmphasis">FPATH</span> directories if they can't find an 
+executable file in the <span class="docEmphasis">PATH</span>. </p>
+<p class="docText">Would you like the shells to search <span class="docEmphasis">
+FPATH</span> before <span class="docEmphasis">PATH</span>, so that a function 
+will be executed before a standard command with the same name? (I would. After 
+all, if I define a function from a shell prompt or shell setup file like <i>.zshrc</i>, 
+that function will be run instead of a standard executable.) Here's how to set 
+that up. Tell the shell to <span class="docEmphasis">autoload</span> the 
+function. Autoloading happens automatically <span class="docEmphasis">if</span> 
+there's no match found in <span class="docEmphasis">PATH</span> — because, as I 
+said above, the shell falls back to <span class="docEmphasis">FPATH</span> if it 
+doesn't find a match in <span class="docEmphasis">PATH</span>. But if you want 
+the shell to look for a particular name in <span class="docEmphasis">FPATH</span> 
+before it tries <span class="docEmphasis">PATH</span>, you have to autoload the 
+function. Autoloading a function doesn't actually define the function (read the 
+function body into the shell); it simply declares that the function exists — so 
+the shell will remember that when you eventually want to execute the function.
+</p>
+<p class="docText">This has a few twists, so let's look at each shell 
+separately. You might want to do this yourself and follow along: When I first 
+played with <span class="docEmphasis">FPATH</span>, I made two subdirectories of
+<i>/tmp</i> named <span class="docEmphasis">a</span> and
+<span class="docEmphasis">b</span>. Each directory had three simple function 
+files named <span class="docEmphasis">func1</span>, <span class="docEmphasis">
+func2</span>, and <i>foo</i>. The functions <span class="docEmphasis">func1</span> 
+and <span class="docEmphasis">func2</span> simply <i>echo</i> a message with 
+their name and location. <i>foo</i> invokes a shell script of the same name, but 
+first uses <span class="docEmphBold">set -xv</span> (<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-1">Section 
+37.1</a>) for debugging. <i>func1</i> was a single-line function and <i>func2</i> 
+was multiline. The files in <i>/tmp/a</i> weren't executable, and the ones in <i>
+/tmp/b</i> were executable. I set the <span class="docEmphasis">FPATH</span> 
+environment variable (set the shell variable and <i>export</i>ed it) to <tt>/tmp/a:/tmp/b</tt> 
+— so the shells should try the nonexecutable function files before falling back 
+to the executables. After setting that up, I started a <i>ksh</i> subshell and 
+played around. Then I <i>exit</i>ed the <i>ksh</i> and started a <i>zsh</i>. </p>
+<h5  id="upt3-CHP-29-SECT-13.2.1" class="docSection3Title">29.13.2.1 Korn shell</h5>
+<p class="docText">Here's what happened in <i>pdksh</i>. The standard <i>ksh</i> 
+is similar but not as verbose: </p>
+<pre>$ <b>echo $FPATH</b>
+/tmp/a:/tmp/b
+$ <b>type func1</b>
+func1 is a undefined (autoload from /tmp/a/func1) function
+$ <b>func1</b>
+This is func1 from /tmp/a, a single-line unexecutable function
+$ <b>type func1</b>
+func1 is a function
+
+$ <b>typeset -f func2</b>
+$ <b>type func2</b>
+func2 is a undefined (autoload from /tmp/a/func2) function
+$ <b>func2</b>
+This is func2 from /tmp/a, a multi-line unexecutable function
+$ <b>typeset -f func2</b>
+func2( ) {
+    echo &quot;This is func2 from /tmp/a, a multi-line unexecutable function&quot;
+}
+
+$ <b>type foo</b>
+foo is /home/jpeek/.bin/foo
+$ <b>autoload foo</b>
+$ <b>type foo</b>
+foo is a undefined (autoload from /tmp/a/foo) function
+$ <b>cat /tmp/a/foo</b>
+foo( ) { sh -xv $HOME/.bin/foo &quot;$@&quot;; }
+$ <b>foo</b>
+#!/bin/sh
+echo &quot;Welcome to the exciting $0 program...&quot;
++ echo Welcome to the exciting /home/jpeek/.bin/foo program...
+Welcome to the exciting /home/jpeek/.bin/foo program...
+$ <b>type foo</b>
+foo is a function</pre>
+<p class="docText">Here's what happened with <i>func1</i>, <i>func2</i>, and <i>
+foo</i>: </p>
+<ul>
+  <li>
+  <p class="docList">First, without autoloading, I use <span class="docEmphBold">
+  type</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-6">Section 
+  2.6</a>) to see if the shell has found <i>func1</i> anywhere. There's no <i>
+  func1</i> along the <span class="docEmphasis">PATH</span>, so the shell 
+  searches <span class="docEmphasis">FPATH</span> — and finds it. So <i>func1</i> 
+  is automatically marked for autoloading; note that I didn't have to autoload 
+  it myself because there's no <i>func1</i> in a <span class="docEmphasis">PATH</span> 
+  directory. I run <i>func1</i>, then use <i>type</i> again; now the shell 
+  confirms that it's read the function definition and <i>func</i> has been 
+  loaded into the shell. </li>
+  <li>
+  <p class="docList">Next I played with <i>func2</i>. <span class="docEmphBold">
+  typeset -f</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+  29.11</a>) shows that the shell doesn't have a definition for the function 
+  yet, but <i>type</i> shows that the function declaration has been autoloaded. 
+  (This isn't just academic. If you edit a function definition file, it's good 
+  to know whether the shell has already loaded a copy of a previous definition.) 
+  I run the function, then use <i>typeset</i> to display the function, which has 
+  been loaded (of course!) by now. </li>
+  <li>
+  <p class="docList">Because there's a program named <i>foo</i> in my
+  <span class="docEmphasis">PATH</span>, <i>type</i> shows that. But I want the 
+  shell to use my front-end <i>foo</i> function, so I run
+  <span class="docEmphasis">autoload</span> — and then <i>type</i> confirms that 
+  the shell looked down <span class="docEmphasis">FPATH</span> and found the 
+  function in <i>/tmp/a</i>. The function definition hasn't been loaded yet, so 
+  I use <span class="docEmphBold">cat</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">Section 
+  12.2</a>) to display the function file. I run the <i>foo</i> function; because 
+  it set the shell's verbose and echo flags, you can see the contents of the <i>
+  foo</i> shell script and the commands that are executed. Finally, <i>type</i> 
+  shows that the shell will now run the function when I execute <i>foo</i>. </li>
+</ul>
+<p class="docText">If you'd like to be sure that all the functions in your
+<span class="docEmphasis">FPATH</span> are autoloaded — especially if you add 
+new ones pretty often — here's a way to do it. Put code like this in your
+<span class="docEmphBold">ENV</span> <span class="docEmphBold">setup file</span> 
+(<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>): </p>
+<p class="docText"><tt>IFS</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-23">
+Section 36.23</a>, <tt>for</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">
+Section 28.9</a></p>
+<pre># Autoload all functions in FPATH directories.
+# Temporarily add a colon (:) to IFS to parse FPATH:
+old_ifs=&quot;$IFS&quot;; IFS=&quot;:$IFS&quot;
+for d in $FPATH
+do autoload `ls $d`
+done
+IFS=&quot;$oldifs&quot;; unset old_ifs</pre>
+<p class="docText">If a directory in <span class="docEmphasis">FPATH</span> is 
+empty, <i>autoload</i> gets no arguments and, in that case, shows the function 
+definitions it has already autoloaded. I only put a directory in my
+<span class="docEmphasis">FPATH</span> if it has functions to load. If you might 
+have an empty directory in yours, you can avoid seeing the <i>autoload</i> 
+output by editing that code to store the output of <i>ls</i> in a shell variable 
+and running <i>autoload</i> only if the variable isn't empty.</p>
+<h5  id="upt3-CHP-29-SECT-13.2.2" class="docSection3Title">29.13.2.2 zsh</h5>
+<p class="docText">The <i>zsh</i> system is mostly like <i>ksh</i>. The 
+difference is that <i>zsh</i> doesn't automatically search
+<span class="docEmphasis">FPATH</span>. You have to manually autoload any 
+function that you want <i>zsh</i> to search for in <span class="docEmphasis">
+FPATH</span>. </p>
+<pre>zsh$ <b>echo $FPATH</b>
+/tmp/a:/tmp/b
+zsh$ <b>type func1</b>
+func1 not found
+zsh$ <b>func1</b>
+zsh: command not found: func1
+zsh$ <b>autoload func1</b>
+zsh$ <b>type func1</b>
+func1 is a shell function
+zsh$ <b>func1</b>
+This is func1 from /tmp/a, a single-line unexecutable function
+zsh$ <b>type func1</b>
+func1 is a shell function
+
+zsh$ <b>autoload func2</b>
+zsh$ <b>typeset -f func2</b>
+undefined func2 ( ) { }
+zsh$ <b>func2</b>
+This is func2 from /tmp/a, a multi-line unexecutable function
+zsh$ <b>typeset -f func2</b>
+func2 ( ) {
+   echo &quot;This is func2 from /tmp/a, a multi-line unexecutable function&quot;
+}
+
+zsh$ <b>type foo</b>
+foo is /home/jpeek/.bin/foo
+zsh$ <b>autoload foo</b>
+zsh$ <b>foo</b>
+#!/bin/sh
+echo &quot;Welcome to the exciting $0 program...&quot;
++ echo Welcome to the exciting /home/jpeek/.bin/foo program...
+Welcome to the exciting /home/jpeek/.bin/foo program...
+zsh$ <b>type foo</b>
+foo is a shell function</pre>
+<p class="docText">I won't repeat all of the explanation from the <i>ksh</i> 
+section. Instead, let's just look at the differences: </p>
+<ul>
+  <li>
+  <p class="docList">The first examples show that <i>zsh</i> won't look down
+  <span class="docEmphasis">FPATH</span> for <i>func1</i>. Once you autoload the 
+  function, <i>type</i> doesn't give you a clue whether the function has been 
+  defined or just declared. </li>
+  <li>
+  <p class="docList">In <i>zsh</i>, you can see whether a function has been 
+  defined by using <i>typeset</i> -<i>f</i> (instead of <i>type</i>). After 
+  autoloading it, <i>func2</i> has been declared but not defined. As the example 
+  shows, running the function once loads the definition. </li>
+</ul>
+<p class="docText">If you'd like to be sure that all the functions in your
+<span class="docEmphasis">FPATH</span> are autoloaded — especially if you add 
+new ones pretty often — here's how to do it in <i>zsh</i>. Put code like this in 
+a per-shell <span class="docEmphBold">setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) — typically <span class="docEmphasis">.zshrc</span>: </p>
+<pre># Autoload all functions in fpath directories:
+for d in $fpath
+do autoload `ls $d`
+done</pre>
+<p class="docText">The code is simpler than in <i>ksh</i> because we can step 
+through the <span class="docEmphasis">fpath</span> array without parsing it at 
+colon (:) characters. As in <i>ksh</i>, though, you'll want to tweak the code if 
+a directory in <span class="docEmphasis">fpath</span> might be empty: store the 
+output of <i>ls</i> in an array and run <i>autoload</i> only if the array has 
+members. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-29-SECT-14">29.14 Simulated Bourne Shell Functions and Aliases</h3>
+<p class="docText">Until System V Release 2 (circa 1984), the Bourne shell had 
+no way for users to set up their own built-in commands. If you have a Bourne 
+shell with no <span class="docEmphBold">functions</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>) or <span class="docEmphBold">aliases</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>) and haven't yet turned the host machine into a wet bar, CD/DVD storage 
+case, or some other pragmatic but fun use for a 30-year-old computer, you can do 
+a lot of the same things with shell variables and the <span class="docEmphBold">
+eval</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-8">Section 
+27.8</a>) command. </p>
+<p class="docText">Let's look at an example. First, here's a shell function 
+named <i>cps</i> (copy safely). If the destination file exists and isn't empty, 
+the function prints an error message instead of copying: </p>
+<p class="docText"><tt>test</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">
+Section 35.26</a></p>
+<pre>cps( )
+{
+   if test ! -s &quot;$2&quot;
+   then cp &quot;$1&quot; &quot;$2&quot;
+   else echo &quot;cps: cannot copy $1: $2 exists&quot;
+   fi
+}</pre>
+<p class="docText">If you use the same <i>cps</i> twice, the first time you'll 
+make <span class="docEmphasis">bfile</span>. The second time you try, you see 
+the error: </p>
+<pre>$ <b>cps afile bfile</b>
+   ...
+$ <b>cps afile bfile</b>
+cps: cannot copy afile: bfile exists</pre>
+<p class="docText">Here's the same <i>cps</i> — stored in a shell variable 
+instead of a function: </p>
+<pre>cps='
+if test ! -s &quot;$2&quot;
+then cp &quot;$1&quot; &quot;$2&quot;
+else echo &quot;cps: cannot copy $1: $2 exists&quot;
+fi
+'</pre>
+<p class="docText">Because this fake function uses shell parameters, you have to 
+add an extra step: setting the parameters. Simpler functions are easier to use:
+</p>
+<p class="docText"><tt>set</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">
+Section 35.25</a></p>
+<pre>$ <b>set afile bfile</b>
+$ <b>eval &quot;$cps&quot;</b>
+   ...
+$ <b>eval &quot;$cps&quot;</b>
+cps: cannot copy afile: bfile exists
+</pre>
+<p class="docText"><span class="docEmphasis">— JP </span></p>
+<blockquote>
+<p class="docFootnote" id="EN29-1"><a class="docLink" href="#ENB29-1">[1]</a>&nbsp;&nbsp;[The <i>mycat</i> alias runs <i>cat</i> on all files with names later in the 
+alphabet than the argument you type. The output of <i>cat</i> is piped to the
+<span class="docEmphBold">less</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>) pager. For example, let&#39;s say your current directory has the files <i>
+afile</i>, <i>count</i>, <i>jim</i>, and <i>report</i>. Typing <tt>mycat</tt>
+<tt>count</tt> would display the files <i>jim</i> and <i>report</i>. —
+<span class="docEmphasis">JP</span>]</p><p class="docFootnote" id="EN29-2"><a class="docLink" href="#ENB29-2">[2]</a>&nbsp;&nbsp;A function is a Bourne shell 
+  list construct.</p><p class="docFootnote" id="EN29-3"><a class="docLink" href="#ENB29-3">[3]</a>&nbsp;&nbsp;Factorial is the product of 
+  all integers from some nonnegative number through one. So the factorial of 6, 
+  written <tt>6!</tt>, is 6 x 5 x 4 x 3 x 2 x 1 or 720. Also, zero factorial (<tt>0!</tt>) 
+  is defined as 1. In recursion, a function typically calls itself to get &quot;the 
+  next value,&quot; then waits for that value to be returned and returns
+  <span class="docEmphasis">its</span> answer to the function that called it. If 
+  you ask a function to calculate 6!, it will call itself and ask for 5!, then 
+  call itself and ask for 4!, and so on. This can be confusing if you haven't 
+  seen it before, but there's information about it in almost every computer 
+  science textbook on basic programming techniques. It is also worth mentioning 
+  that recursion is a pretty poor way to calculate factorials in most languages, 
+  namely, those that lack support for tail recursion.</p><p class="docFootnote" id="EN29-4"><a class="docLink" href="#ENB29-4">[4]</a>&nbsp;&nbsp;<i>zsh</i> lets you define a 
+  function in a function file without the enclosing <tt><i>funcname</i>( ) {</tt> 
+  and <tt>}</tt> syntax. Then the file could be directly executed in a subshell 
+  by some shell that doesn't understand functions. I'm not sure I'd ever use 
+  this because running a function this way — as an <span class="docEmphBold">
+  external command instead of an internal command</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+  1.9</a>) — means the function can't access or modify the environment of the 
+  shell that's running it, which is one of the reasons for writing a shell 
+  function in the first place! But, like everything in <i>zsh</i>, I'm sure 
+  someone had a good reason for making this work.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 28.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 30.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

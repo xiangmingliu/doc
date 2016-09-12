@@ -1,0 +1,543 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 49</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 48.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 50.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 49. Root, Group, and User Management</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-1">49.1 Unix User/Group Infrastructure</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-2">49.2 When Does a User Become a User</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-3">49.3 Forgetting the root Password</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-4">49.4 Setting an Exact umask</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-5">49.5 Group Permissions in a Directory with the setgid Bit</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-6">49.6 Groups and Group Ownership</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-7">49.7 Add Users to a Group to Deny Permissions</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-8">49.8 Care and Feeding of SUID and SGID Scripts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-9">49.9 Substitute Identity with su</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-10">49.10 Never Log In as root</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-11">49.11 Providing Superpowers with sudo</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-12">49.12 Enabling Root in Darwin</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-49-SECT-13">49.13 Disable logins</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-1">49.1 Unix User/Group Infrastructure</h3>
+<p class="docText">Unix users are given unique usernames and also added to one 
+or more Unix <span class="docEmphBold">groups</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-7">Section 
+49.7</a>). Both a user and a group own all content within a system. If you list 
+information about a file, you'll see both user and group ownership: </p>
+<pre>&gt; ls -l
+-rw-r--r--  1 root      weblog.burningbi  32230 May 22 13:58 access_log
+-rw-r-----  1 shelleyp  weblog.burningbi   3995 May 12 11:08 analog.cfg
+-rw-r--r--  1 root      weblog.burningbi      0 May 22 12:01 error_log</pre>
+<p class="docText">In this listing, the users are <span class="docEmphasis">root</span> 
+and <span class="docEmphasis">shelleyp</span>, and the group (truncated) is
+<span class="docEmphasis">weblog.burningbird.net</span>. </p>
+<p class="docText">You're assigned a primary group when you're added to a 
+system. In addition, you can also be assigned to one or more secondary groups. 
+Depending on the type of Unix system, you can either work with files that are 
+owned by any one of the groups you belong to or you can work with files of your 
+primary group only. </p>
+<p class="docText">BSD-based Unix systems allow you to work with files from 
+primary and secondary groups; this includes Darwin as well as the popular 
+PC-based BSD systems, FreeBSD, and OpenBSD. System V systems restrict you to 
+working with a primary group only. </p>
+<p class="docText">For the majority of Unix systems, user and group membership 
+is controlled through a couple of files, <span class="docEmphasis">passwd</span> 
+and <span class="docEmphasis">group</span>, stored in the <i>/etc</i> directory. 
+This directory has root write access only, but read and execute access by all 
+users. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-2">49.2 When Does a User Become a User</h3>
+<p class="docText">A user is added to the system when they're given an entry in 
+the <i>passwd</i> file, as in the following entry: </p>
+<pre>mike:*:1007:1007:Mike User:/usr/home/mike:/usr/local/bin/bash</pre>
+<p class="docText">The elements, delimited by colons that make up this record, 
+are:</p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Username</span></i> </dt>
+  <dd>
+  <p class="docList">Name used to login to system</dd>
+  <dt><i><span class="docPubcolor">Password entry</span></i> </dt>
+  <dd>
+  <p class="docList">Encrypted password, asterisk symbolizing bad password or 
+  use of shadow file, or exclamation point (!) to signify that the password is 
+  in <i>/etc/security/passwd</i> or in <i>/etc/master.passwd</i> in FreeBSD 
+  systems </dd>
+  <dt><i><span class="docPubcolor">UID</span></i> </dt>
+  <dd>
+  <p class="docList">Unique user identifier</dd>
+  <dt><i><span class="docPubcolor">Primary group ID</span></i> </dt>
+  <dd>
+  <p class="docList">ID of group that will be primary group for user</dd>
+  <dt><i><span class="docPubcolor">Comment</span></i> </dt>
+  <dd>
+  <p class="docList">General text holding name, address, and so on</dd>
+  <dt><i><span class="docPubcolor">User's home directory</span></i> </dt>
+  <dd>
+  <p class="docList">&nbsp;</dd>
+  <dt><i><span class="docPubcolor">User's startup shell</span></i> </dt>
+  <dd>
+  <p class="docList">&nbsp;</dd>
+</dl>
+<p class="docText">In the example, &quot;mike&quot; has a UID of 1007, belongs to group 
+1007, has a home directory in <i>/usr/home/mike</i>, and logs into a bash shell. 
+In this FreeBSD system, the password is stored in a separate shadow file. </p>
+<p class="docText">Usernames are usually no more than 8 characters, though this 
+differs based on type of system. Usernames consist of alphanumeric characters 
+and are case-sensitive. Case sensitivity also applies with passwords, which can 
+be longer and use other characters. </p>
+<p class="docText">The UID must be unique, as would be expected. When a new user 
+is added, the next available UID is usually used, but there's no restriction on 
+having gaps or using order with UIDs. However, if the Unix box is part of a 
+network, it is essential that the person's UID be unique across the network. The 
+same constraints apply to the group ID: in most cases a new group ID equal to 
+the UID is assigned the person. Addition to other groups occurs after the person 
+is added to the system. </p>
+<p class="docText">The UID of 0 (zero) is the superuser, root. The GID of 0 
+(zero) is wheel, the superuser group. </p>
+<p class="docText">The user's name, address, office location, etc. can be 
+included in the comment field, and the default home directory (created before 
+adding the user) and person's startup shell is added to the record. </p>
+<p class="docText">Adding users varies widely between systems. Apple's Darwin 
+uses a separate system called <i>NetInfo</i>, an open source application 
+(available at
+<a class="docLink" href="http://sourceforge.net/projects/netinfo4unix/" target="_blank">
+http://sourceforge.net/projects/netinfo4unix/</a>) to manage users, groups, 
+directories, and so on. A daemon uses information from NetInfo to control user 
+access; the user &quot;flat files,&quot; as <span class="docEmphasis">passwd</span> and
+<span class="docEmphasis">group</span> are known in this system, are used only 
+in single-user environments. </p>
+<p class="docText">In Linux, Solaris, and other systems, the process of adding a 
+user is simplified with a utility, <i>adduser</i> (or <i>useradd</i>). The 
+simple form of the utility is: </p>
+<pre># <b>adduser </b> <i>username </i></pre>
+<p class="docText">The utility is called with the username of the new user. 
+Based on the system, the user is then added with defaults or you're 
+interactively asked for more information. Or you can specify information on the 
+command line that's used to create the user. </p>
+<p class="docText">In Red Hat Linux, <i>adduser</i> is an alias for <i>useradd</i>. 
+Default values are used for each user, such as a home location of
+<span class="docEmphasis">/home/username</span> and a default shell (<span class="docEmphasis">bash</span>), 
+unless specified otherwise on the command line. In the following example, a new 
+user, <span class="docEmphasis">testuser</span>, is added. Command-line options 
+are used to override the default information: </p>
+<pre># <b>useradd -c &quot;Test User&quot; -d /home/local/testuser -G 501, 502 -p changepassword</b>
+<b>-s /bin/bash -e 2002-05-24</b></pre>
+<p class="docText">In this example, <tt>-c</tt> is used to add a username 
+comment (the user's full name), <tt>-G</tt> specifies what groups to add the 
+person to, <tt>-p</tt> adds a password, <tt>-s</tt> sets the person's default 
+shell, and <tt>-e</tt> specifies that the username expires on a certain date. 
+The person is added to their own group — 503 in this example. To override this I 
+would use the <tt>-g</tt> command-line parameter — the <tt>-G</tt> only adds the 
+person to additional groups, it doesn't override default behavior. </p>
+<p class="docText">Within Mac OS X, user and group management is handled through 
+Netinfo. Find out more about Netinfo at
+<a class="docLink" href="http://www.opensource.apple.com/projects/documentation/howto/html/netinfo.html" target="_blank">
+http://www.opensource.apple.com/projects/documentation/howto/html/netinfo.html</a>. 
+The command-line utility to add a user via Netinfo is niutil. An example of its 
+use is: </p>
+<pre>shelleyp% niutil-create//users/newbie</pre>
+<p class="docText">Use the system's manpages to see if <i>useradd</i> or <i>
+adduser</i> is installed and the command line parameters supported. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-3">49.3 Forgetting the root Password</h3>
+<p class="docText">If a person forgets their password, it's easy for root to 
+reset it using <i>passwd</i>, but what happens if you forget root's password?
+</p>
+<p class="docText">Depending on the security implemented for a system, you can 
+log in to single user mode and then use <i>passwd</i> to reset the root 
+password. Or you can manually edit the password file to remove the password for 
+root. Once you reboot and login to the system as root, you can then use <i>
+passwd</i> to change the password to something more restrictive. </p>
+<p class="docText">In Redhat Linux, access single-user mode by typing <tt>linux 
+single</tt> at the boot prompt. In Solaris, enter single-user mode by pressing 
+STOP-a and then typing <tt>boot-s</tt> at the prompt. FreeBSD boots in this mode 
+by booting with the <i>-s</i> option and then mounting the file system in 
+read/write mode. Check your system documentation to see how to do this for your 
+particular flavor of Unix. </p>
+<p class="docText">This approach works only if the system doesn't 
+password-protect single-user mode. However, if you have access to the physical 
+machine and the installation disks, booting with the install disk will usually 
+allow you access to the partitions. Once you have this access, edit the password 
+file and remove the root password. </p>
+<p class="docText">As an example, Debian requires a password in single-user 
+mode. To reset the root password with Debian, put the installation disk into the 
+machine and boot. Mount the <i>/root</i> partition and manually edit the shadow 
+file, setting the password to a blank password. After rebooting into the system, 
+reset the password using <i>passwd</i>. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-4">49.4 Setting an Exact umask</h3>
+<p class="docText">You can use the <i>umask</i> command to set the default mode 
+for newly created files. Its argument is a three-digit numeric mode that 
+represents the access to be <span class="docEmphasis">inhibited</span> — masked 
+out — when a file is created. Thus, the value it wants is the octal complement 
+of the numeric file mode you want. To determine this, you simply figure out the 
+numeric equivalent for the file mode you want and then subtract it from 777. For 
+example, to get the mode 751 by default, compute 777-751 = 026; this is the 
+value you give to <i>umask</i>. </p>
+<pre>% <b>umask 026</b></pre>
+<p class="docText">Once this command is executed, all future files created will 
+be given this protection automatically. System administrators can put a <i>umask</i> 
+command in the system initialization file to set a default for all users. </p>
+<p class="docText">You can set your own <i>umask</i> in your shell setup files 
+to override defaults. </p>
+<p class="docText"><span class="docEmphasis">— AF</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-5">49.5 Group Permissions in a Directory with the 
+setgid Bit</h3>
+<p class="docText">If you work on a Unix system with lots of users, you may be 
+taking advantage of Unix group permissions to let users in one group write to 
+files in a directory, but not let people in other groups write there. </p>
+<p class="docText">How does Unix determine what group should own the files you 
+create? There are (at least!) two ways: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">The effective group ID of the process determines the 
+  ownership of the files you create. (Your effective GID is your
+  <span class="docEmphasis">primary group membership</span> unless you're 
+  running a SGID program.) </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">The group that owns the directory in which you create the 
+  file owns files. </span></li>
+</ol>
+</span>
+<p class="docText">The system administrator decides which of the methods a 
+filesystem will use for group ownership. There are other wrinkles, too. A good 
+place to look for the gory details is your system's <span class="docEmphasis">
+open</span> manpage help, but it's probably easier to just create an empty new 
+file and then check the group ownership with <i>ls</i> <i>-l</i> or <i>-lg</i>.
+</p>
+<p class="docText">You may be able to use the directory's
+<span class="docEmphasis">set group ID</span> (setgid) bit to control group 
+ownership. In those cases, if the bit is set, the rule in point 2 applies. If 
+the bit is not set, the rule in point 1 applies. To set and remove the setgid 
+bit, use the commands <i>chmod g+s</i> and <i>chmod g-s</i>, respectively. </p>
+<pre>&gt; <b>chmod g+s mt.pl</b>
+&gt; <b>ls -l mt.pl</b>
+-rwxr-sr-x  1 shelleyp  shelleyp  1939 Apr 28 22:55 mt.pl</pre>
+<p class="docText">You can use the <i>chgrp</i> command to change a file's 
+group. </p>
+<pre>&gt; <b>chgrp wheel mt.pl</b>
+&gt; <b>ls -l mt.pl</b>
+-rwxr-xr-x  1 shelleyp  wheel  1939 Apr 28 22:55 mt.pl</pre>
+<p class="docText">However, you must own the file, and you must also be a member 
+of the file's new group. If you've reset directory mode bits, it's possible to 
+wind up with <i>ls</i> <i>-l</i> permissions that have an uppercase S, like <tt>
+drwxr-S</tt>. What's that? (It's often a mistake.) The directory's setgid bit is 
+set, but the execute bit isn't set. If you want the directory to be 
+group-accessible, add execute permission with <i>chmod g+x</i>. Otherwise, you 
+may want to clear the <i>setgid</i> bit with <i>chmod g-s</i>. </p>
+<p class="docText"><span class="docEmphasis">—JP, SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-6">49.6 Groups and Group Ownership</h3>
+<p class="docText">Group membership is an important part of Unix security. All 
+users are members of one or more groups, as determined by their entries in
+<span class="docEmphasis">/etc/passwd</span> and the <span class="docEmphasis">
+/etc/group</span> files. </p>
+<p class="docText">To find the GID number of your primary group, <i>grep</i> 
+your entry in <i>/etc/passwd</i>: </p>
+<pre>&gt; <b>grep shelleyp /etc/passwd</b>
+shelleyp:*:1000:1000:Shelley Powers:/usr/home/shelleyp:/bin/tcsh&lt;/screen&gt;</pre>
+<p class="docText">The fourth field (the second number) is your
+<span class="docEmphasis">primary group ID</span>. Look up this number in the <i>
+/etc/group</i> file: </p>
+<pre>&gt; <b>grep 1000 /etc/group</b>
+&gt; <b>shelleyp:*:1000:</b></pre>
+<p class="docText">On my FreeBSD system, my primary group is a group of which 
+I'm the only member, <span class="docEmphasis">shelleyp</span>. Therefore, when 
+I log in, my group ID is set to 1000. </p>
+<p class="docText">To see what other groups you belong to, use the <i>groups</i> 
+command if your Unix version has it. If not, you can get <i>groups</i> from the 
+Free Software Directory at
+<a class="docLink" href="http://www.gnu.org/directory/index.html" target="_blank">
+http://www.gnu.org/directory/index.html</a>. Otherwise, look for your name in <i>
+/etc/group</i>: </p>
+<pre>&gt; <b>grep shelleyp /etc/group</b>
+wheel:*:0:root,shelleyp
+webadmin:*:900:shelleyp,burningbird
+ftpadmin:*:901:shelleyp,burningbird
+mailadmin:*:903:shelleyp,burningbird
+sysadmin:*:905:shelleyp,burningbird
+pkgadmin:*:906:shelleyp,burningbird
+shelleyp:*:1000:</pre>
+<p class="docText">In the output, you can see that I'm a member of several 
+groups, including <span class="docEmphasis">wheel</span>,
+<span class="docEmphasis">webadmin</span>, and so on. These are my secondary 
+groups. The output also shows that the user &quot;burningbird&quot; is also a member of 
+several of the same groups as myself. </p>
+<p class="docText">On BSD-derived Unix systems (OpenBSD, FreeBSD, Darwin, and so 
+on), you're always a member of all your groups. This means that I can access 
+files that are owned by <span class="docEmphasis">webadmin</span>,
+<span class="docEmphasis">wheel</span>, and so on, without doing anything in 
+particular. Under System V Unix, you can only be &quot;in&quot; one group at a time, even 
+though you can be a member of several. </p>
+<p class="docText">Within System V and Linux, if you need to access files that 
+are owned by another group, use the <i>newgrp</i> command to change your primary 
+group: </p>
+<pre>&gt; <b>newgrp </b> <i>groupname </i></pre>
+<p class="docText">The <i>newgrp</i> command starts a subshell. When you're 
+done, type <tt>exit</tt> to leave the subshell. <i>newgrp</i> can be important 
+for another reason: your primary group may own any new files you create. So <i>
+newgrp</i> is useful on any system where you want to set your group (for 
+creating files, for example, when you aren't using a directory that sets its own 
+group). If you can't use <i>newgrp</i>, the <i>chgrp</i> command will change a 
+file's group owner. </p>
+<p class="docText">The <span class="docEmphasis">ls -l</span> command shows a 
+file's owner (and, in many versions, the <span class="docEmphasis">filefs</span> 
+group too; if yours doesn't, add the <i>-g</i> option). The GNU
+<span class="docEmphasis">ls -nl</span> option shows a file's numeric UID and 
+GID instead of the username and group name: </p>
+<pre>$ ls -l
+total 38
+-rw-r--r--  1 root      weblog.burningbi  33922 May 23 13:52 access_log
+-rw-r-----  1 shelleyp  weblog.burningbi   3995 May 12 11:08 analog.cfg
+-rw-r--r--  1 root      weblog.burningbi      0 May 23 12:01 error_log
+$ ls -ln
+total 37
+-rw-r--r--  1 0     501  32890 May 23 13:50 access_log
+-rw-r-----  1 1000  501   3995 May 12 11:08 analog.cfg
+-rw-r--r--  1 0     501      0 May 23 12:01 error_log</pre>
+<p class="docText">(System V-based Unixes even let you change to groups that you 
+don't belong to. In this case, you have to give a group password. Group 
+passwords are rarely used: usually the password field is filled with a <i>*</i>, 
+which effectively says that there are no valid passwords for this group.) </p>
+<p class="docText">On most systems, there are groups for major projects or 
+departments, groups for system administration, and maybe one or two groups for 
+visitors. BSD-based systems often have a <span class="docEmphasis">wheel</span> 
+group; to become root, you must belong to <i>wheel</i>. Many systems make 
+terminals writable only by the owner and a special group named
+<span class="docEmphasis">tty</span>; this prevents other users from sending 
+characters to your terminal without using an approved <i>setgid</i> program like
+<i>write</i>. </p>
+<p class="docText"><span class="docEmphasis">—JP, SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-7">49.7 Add Users to a Group to Deny Permissions</h3>
+<p class="docText">Usually, Unix group access allows a group of users to access 
+a directory or file that they couldn't otherwise access. You can turn this 
+around, though, with groups that <span class="docEmphasis">deny</span> 
+permission. </p>
+<p class="docText">This trick works only on Unix systems, like BSD (FreeBSD, 
+Darwin, OpenBSD, and so on), that let a user belong to more than one group at 
+the same time. </p>
+<p class="docText">For example, you might work on a computer that has some 
+proprietary files and software that &quot;guest&quot; accounts shouldn't be able to use. 
+Everyone else on the computer should have access. To do this, put the software 
+in a directory owned by a group named something like <span class="docEmphasis">
+deny</span>. Then use <i>chmod</i> to deny permission to that group: </p>
+<pre># chmod 705 /usr/local/somedir
+# ls -lgd /usr/local/somedir
+drwx---r-x  2     root   deny      512  Mar 26 12:14 /usr/local/somedir</pre>
+<p class="docText">Finally, add the guest accounts to the
+<span class="docEmphasis">deny</span> group. </p>
+<p class="docText">Unix checks permissions in the order user-group-other. The 
+first applicable permission is the one used, even if it denies permission rather 
+than grant it. In this case, none of the guest accounts are root (we hope!). </p>
+<p class="docText">They're members of the group called <span class="docEmphasis">
+deny</span>, however; that permission (<tt>---</tt>) is checked and the group 
+members are shut out. Other users who aren't members of
+<span class="docEmphasis">deny</span> are checked for &quot;other&quot; access (<tt>r-x</tt>); 
+they can get into the directory. </p>
+<p class="docText">The same setup works for individual files (like programs). 
+Just be careful about changing system programs that are SUID or SGID. </p>
+<p class="docText"><span class="docEmphasis">— JIK</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-8">49.8 Care and Feeding of SUID and SGID Scripts</h3>
+<p class="docText">Scripts may need to run within a root environment but be 
+executed by system users other than root. To allow a nonroot user or group of 
+users executable access of the script, its SUID or SGID bit can be set. </p>
+<p class="docText">The SUID bit is set using the following command:</p>
+<pre>chmod u+s <tt><i>somefile</i></tt></pre>
+<p class="docText">Running <i>ls -l</i> on the file afterwards displays the 
+following (within FreeBSD): </p>
+<pre>-rwSr--r--  1 root  somegroup  7219 Oct 29  2001 somefile</pre>
+<p class="docText">Now, any user can execute the file, and the file runs with 
+root permissions. </p>
+<p class="docText">A more restricted version of SUID is SGID, set as follows:</p>
+<pre>-rwx-r-Sr-- 1 root somegroup 7219 Oct 29 2001 somefile</pre>
+<p class="docText">Users belong to the specified group, <i>somegroup</i>, can 
+execute the file now, and it runs with root permissions. </p>
+<p class="docText">As handy as SUID and SGID scripts are, they are also 
+dangerous. For instance, SUID scripts are considered so dangerous that the Linux 
+kernel won't even honor them. This is because environmental variables are easily 
+manipulated within scripts, particularly C shell scripts, as discussed in
+<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-9">
+Section 50.9</a>. And since the scripts can be run by anybody, and run as root, 
+they represent extreme points of vulnerability. </p>
+<p class="docText">To see where you have SUID and SGID scripts, use the 
+following command (pulled from the Linux Security HOWTO document at
+<a class="docLink" href="http://www.cpmc.columbia.edu/misc/docs/linux/security-howto.html" target="_blank">
+http://www.cpmc.columbia.edu/misc/docs/linux/security-howto.html</a>): </p>
+<pre>find / -type f \( -perm -04000 -o -perm -02000 \)</pre>
+<p class="docText">To do a thorough scan, you need to have root permissions.</p>
+<p class="docText">You'll be surprised at the number of applications returned 
+from the search. Among those in my FreeBSD system were: </p>
+<pre>/usr/virtual/share/usr/sbin/pstat
+/usr/virtual/share/usr/sbin/swapinfo
+/usr/virtual/share/usr/sbin/sliplogin
+/usr/virtual/share/usr/sbin/timedc
+/usr/virtual/share/usr/sbin/traceroute</pre>
+<p class="docText">However, a quick check shows that the files — sharable across 
+different FreeBSD installations — are all SGID: not as dangerous as SUID files 
+long as the group is restricted. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-9">49.9 Substitute Identity with su</h3>
+<p class="docText">You don't have to login as a specific user — you can login as 
+yourself and then issue a <i>su</i> command to login as another person. </p>
+<p class="docText">Invoke <i>su</i> with a username and you'll be prompted for 
+that person's password. If you invoke <i>su</i> without a username, the system 
+logs you in as root and asks you for root's password. Without passing in any 
+other flags, you'll be logged in with your environment variables, except for
+<span class="docEmphasis">HOME</span>, <span class="docEmphasis">SHELL</span>, 
+and <span class="docEmphasis">USER</span>. If you want to emulate the full 
+environment of the user — for debugging purposes or whatever — use the
+<span class="docEmphasis">-l</span> flag with <i>su</i>: </p>
+<pre>bash-2.04$ <b>su -l</b>
+Password:</pre>
+<p class="docText">Using <i>su</i> to emulate another person's account is an 
+effective debugging solution if you're trying to determine why a person is 
+having problems accessing an application. In addition, it's also an effective 
+way of logging into root without logging in from a console or remotely from 
+another machine or terminal. </p>
+<p class="docText">You exit the <i>su</i> shell by typing exit or hitting 
+CTRL-d. </p>
+<p class="docText"><span class="docEmphasis">SP, JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-10">49.10 Never Log In as root</h3>
+<p class="docText">The easiest way to allow a cracker into your system is to 
+provide external root login access. In particular, if you allow root access 
+through an unprotected and open protocol such as telnet, you're almost 
+guaranteeing that your Unix box is going to be violated at some point. </p>
+<p class="docText">To prevent this, most Unix systems don't allow remote login 
+into the system as root. Instead, you log in under another username and then <i>
+su</i> to root once you're within the system. </p>
+<p class="docText">Disabling root access differs between systems. If your box 
+has an <i>/etc/securetty</i> file, this lists ttys that allow root access. 
+Removing this file or removing its contents will disable root access. </p>
+<p class="docText">In Solaris, a line within <i>/etc/default/login</i> file is 
+commented out if remote root login is allowed: </p>
+<pre>#CONSOLE=/dev/console</pre>
+<p class="docText">Uncomment the line to allow root access through the system 
+console. To completely disable console access, remove the <i>/dev/console</i> 
+from the line: </p>
+<pre>CONSOLE=</pre>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-11">49.11 Providing Superpowers with sudo</h3>
+<p class="docText">You may not want to give people access to the root password 
+just to give them access to specific superuser powers. In cases such as this, 
+you should consider using <i>sudo</i> — an application that enables specified 
+users to execute applications that normally require root privileges. </p>
+<p class="docText">The <i>sudo</i> application isn't installed by default on all 
+systems, but it is available for most. You can find out if it's installed on 
+your system by typing <tt>sudo</tt> at the command line. If it isn't installed, 
+check online for versions that run on your machine. The application's home is at
+<a class="docLink" href="http://www.courtesan.com/sudo/index.html" target="_blank">
+http://www.courtesan.com/sudo/index.html</a>. </p>
+<p class="docText">The <i>sudo</i> configuration file is called <i>sudoers</i> 
+and is installed in the <i>/etc</i> subdirectory. In Darwin, the default <i>
+sudoers</i> file has the following settings: </p>
+<pre>root  ALL=(ALL) ALL
+%admin ALL=(ALL) ALL</pre>
+<p class="docText">In the file, root has open access to all applications. In 
+addition, all members of the <span class="docEmphasis">admin</span> group 
+(equivalent to <span class="docEmphasis">wheel</span> within Darwin) can also 
+run all commands. </p>
+<p class="docText">Without getting into too much detail (an online <i>sudoers</i> 
+manual is at
+<a class="docLink" href="http://www.courtesan.com/sudo/man/sudoers.html" target="_blank">
+http://www.courtesan.com/sudo/man/sudoers.html</a>), the <i>sudoers</i> file can 
+consist of a set of aliases, used to define groups of people, commands, hosts, 
+or run as options. It then defines rules by which specific users or group of 
+users can run specific commands. There are four types of aliases: </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">User_Alias</span></i> </dt>
+  <dd>
+  <p class="docList">List of specific users</dd>
+  <dt><i><span class="docPubcolor">Runas_Alias</span></i> </dt>
+  <dd>
+  <p class="docList">List of users to emulate</dd>
+  <dt><i><span class="docPubcolor">Host_Alias</span></i> </dt>
+  <dd>
+  <p class="docList">List of servers</dd>
+  <dt><i><span class="docPubcolor">Cmnd_Alias</span></i> </dt>
+  <dd>
+  <p class="docList">Command list</dd>
+</dl>
+<p class="docText">Examples of aliases are:</p>
+<pre>User_Alias     SYSADMINS = shelleyp, mike, tomd
+Runas_Alias    OP = root
+Host_Alias     BB = burningbird
+Cmnd_Alias     SU = /usr/bin/su</pre>
+<p class="docText">Following the aliases are override rules in reference to 
+system defaults. For instance, warnings and &quot;lectures&quot; can be attached to 
+certain commands to ensure that people are aware of the repercussions of their 
+actions. However, people who are sysadmins shouldn't be subjected to these 
+rules; the lectures can be turned off for them: </p>
+<pre>Defaults:SYSADMINS       !lecture</pre>
+<p class="docText">Neither aliases nor default overriding rules are required in 
+the <i>sudoers</i> file. The only statements that are required are the command 
+rules. In the Darwin file, the rules allowed root and <i>admin</i> access of all 
+commands. Other rules that can be created are: </p>
+<pre># sysadmins can run all commands, without password
+SYSADMINS   ALL = NOPASSWD: ALL
+
+# chris can run anything on the burningbird machine as OP (root)
+chris       BB = (OP) ALL
+
+# joe can run SU on burningbird as root
+joe         BB = (root) SU</pre>
+<p class="docText">To edit the <i>sudoers</i> file, you use a specialized 
+editing tool, <i>visudo</i> (see manual at
+<a class="docLink" href="http://www.courtesan.com/sudo/man/visudo.html" target="_blank">
+http://www.courtesan.com/sudo/man/visudo.html</a>), while logged in as root. The 
+editor prevents collision between multiple authors and also verifies the 
+correctness of the edits. </p>
+<p class="docText">To work with <i>sudo</i> (manual at
+<a class="docLink" href="http://www.courtesan.com/sudo/man/sudo.html" target="_blank">
+http://www.courtesan.com/sudo/man/sudo.html</a>), type <tt>sudo</tt> and the 
+command you want to exit: </p>
+<pre>% <b>sudo vi test</b></pre>
+<p class="docText">Depending on your setup, you'll get a warning or a password 
+prompt, or the command will fail or execute. </p>
+<p class="docText">One interesting side effect of <i>sudo</i> is that if you 
+allow root access to an application that has shell escape, such as <i>vi</i>, 
+you are indirectly giving that person access to a root shell. Use <i>sudo</i> 
+with caution. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-12">49.12 Enabling Root in Darwin</h3>
+<p class="docText">The majority of Mac OS X users are never going to access the 
+built-in Unix Terminal and never directly access the Darwin core of the 
+operating system. Instead, they'll work within the GUI. However, Mac OS X 
+developers and superusers will operate directly with Darwin quite extensively, 
+and at times, they'll need to have root access. </p>
+<p class="docText">By default, root access in Darwin is disabled. Trying to use
+<i>su</i> to change to root within the Terminal will fail. You have to enable 
+root first using NetInfo. </p>
+<p class="docText">To enable root within Mac OS X, access the Go menu option of 
+Finder, and double-click on Applications. When the <span class="docEmphasis">
+Applications</span> window opens, double-click on the <span class="docEmphasis">
+Utilities</span> folder. In this folder, select and open NetInfo. </p>
+<p class="docText">When NetInfo opens, select the Domain menu item and then 
+Security. You'll need to authenticate yourself to the system first by selecting 
+the Authenticate submenu option. Once you provide a password (and the system 
+determines you have the authority to enable or disable root), accessing the 
+Security menu again will show a newly enabled option: Enable Root User. Clicking 
+on this enables root. However, you'll need to reauthenticate one more time to 
+ensure the change goes through. </p>
+<p class="docText">Once root is enabled for the system, it stays enabled until 
+you disable it again. With root enabled, you'll be able to use <i>su</i> to 
+login as root. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-49-SECT-13">49.13 Disable logins</h3>
+<p class="docText">You can temporarily disable logins by creating an entry in
+<span class="docEmphBold">/etc/nologin</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-1">Section 
+3.1</a>) and copying a message to this location. When a user attempts to log in, 
+he will get this message and the system will prevent entry. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 48.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 50.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

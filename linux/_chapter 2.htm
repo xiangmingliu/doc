@@ -1,0 +1,507 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 2</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 1.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 3.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 2. Getting Help</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-2-SECT-1">2.1 The man Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-2-SECT-2">2.2 whatis: One-Line Command Summaries</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-2-SECT-3">2.3 whereis: Finding Where a Command Is Located</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-2-SECT-4">2.4 Searching Online Manual Pages</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-2-SECT-5">2.5 How Unix Systems Remember Their Names</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-2-SECT-6">2.6 Which Version Am I Using?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-2-SECT-7">2.7 What tty Am I On?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-2-SECT-8">2.8 Who's On?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-2-SECT-9">2.9 The info Command</a></li>
+</ul>
+
+<h3 class="docSection1Title" id="upt3-CHP-2-SECT-1">2.1 The man Command</h3>
+<p class="docText">The Unix operating system was one of the first to include 
+online documentation. It's not the best in the world — most users who haven't 
+internalized the manual set curse it once a week — but it has proven 
+surprisingly resilient. What's particularly interesting about Unix's online 
+documentation is that, unlike other early help systems, it isn't an adjunct to 
+another set of printed documentation that contains the &quot;real&quot; truth. The online 
+manual is complete, authoritative, and usually more current than any printed 
+documentation. </p>
+<p class="docText">The basis for Unix's online documentation is the <i>man</i> 
+command. Most simply, you use it as follows: </p>
+<pre>% <b>man  </b><i>topic </i></pre>
+<p class="docText">where <span class="docEmphasis">topic</span> is usually the 
+name of some command; but it can also be the name of a system call, a library 
+routine, an I/O device, or an administrative file (or file type). The output 
+from <i>man</i> is usually sent to a pager like <i>more</i>, which allows you to 
+page through the results. </p>
+<p class="docText">There are several command-line options for the <i>man</i> 
+command that can differ based on system. For instance, to look at a command 
+within a specific section, on a System V machine use the <i>-s</i> &quot;section&quot; 
+option, with the following format: </p>
+<pre>% <b>man  </b><i>section topic </i>
+% <b>man -s  </b><i>section topic </i></pre>
+<p class="docText">For example, if you want to read documentation about the
+<span class="docEmphasis">/etc/passwd</span> file (rather than the <i>passwd</i> 
+command) on a System V machine, give the command: </p>
+<pre>% <b>man -s 4 passwd</b></pre>
+<p class="docText">This is an easy way to distinguish between topics with the 
+same name, but in different sections. For other Unix systems, such as FreeBSD, 
+the option to search a section could be something different, such as <i>-S</i>.
+</p>
+<p class="docText">Another useful command-line option is the <i>-k</i> option, 
+which is equivalent to the <i>apropos</i> command. This option searches database 
+files for matches of a given keyword, returning the results. This is 
+particularly helpful in finding commands that contain a specific keyword if 
+you're not quite sure what the command is. </p>
+<p class="docText">Your system may have a configuration file for <i>man</i> 
+named <i>/etc/man.config</i>. If it does, reading it will show you the 
+directories in which manpages are stored, the order in which manpages are 
+searched by default, and more. Even if you don't have an <i>/etc/man.config</i> 
+file, your <i>man</i> command may understand the <span class="docEmphBold">
+MANPATH</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-21">Section 
+3.21</a>) environment variable, a list of where <i>man</i> should search. You 
+can set your own <span class="docEmphasis">MANPATH</span>, for example, to show 
+manpages for local versions of commands before standard versions with the same 
+name. </p>
+<p class="docText">Your system may also have a different manual page system:
+<span class="docEmphBold">info</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-9">Section 
+2.9</a>). </p>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-2-SECT-2">2.2 whatis: One-Line Command Summaries</h3>
+<p class="docText"><i>whatis</i> is almost identical to <i>apropos</i> or the 
+use of <span class="docEmphBold">man -k</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+2.1</a>), but it requires a command name as an argument — rather than an 
+arbitrary string. Why is this useful? Well, let's say you forget what
+<span class="docEmphBold">cat</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">Section 
+12.2</a>) does. On my system, <span class="docEmphasis">apropos cat</span> gives 
+you several screenfuls of output. You may not want to read the entire manual 
+page. But <span class="docEmphasis">whatis cat</span> gives you a nice one-line 
+summary: </p>
+<pre>% <b>whatis cat</b>
+cat (1V)      - concatenate and display</pre>
+<p class="docText">The <i>whatis</i> command is equivalent to <i>man -f</i> on 
+most systems. </p>
+<p class="docText">Before running <i>whatis</i> the first time on your system — 
+particularly if you're running a standalone machine using FreeBSD, Linux, or 
+Darwin — you'll want to run the <i>makewhatis</i> at <span class="docEmphasis">/usr/libexec/makewhatis</span>, 
+which creates the whatis database by scanning the command names from the 
+existing manpages. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-2-SECT-3">2.3 whereis: Finding Where a Command Is Located</h3>
+<p class="docText">The <i>whereis</i> command helps you to locate the executable 
+file, source code, and manual pages for a program. I use it primarily as a 
+sanity check; if I type <tt>cat</tt> <tt>useless.txt</tt> and get the message 
+&quot;cat: command not found,&quot; I immediately try <tt>whereis cat</tt>. This gives me 
+a lot of information about what went wrong: someone may have removed
+<span class="docEmphBold">cat</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">Section 
+12.2</a>) from the system, or my <span class="docEmphBold">PATH</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+35.6</a>) environment variable may be set incorrectly, etc. </p>
+<p class="docText">Output from <i>whereis</i> typically looks like this:</p>
+<pre>% <b>whereis more</b>
+cat: /bin/cat /usr/share/man/man1/cat.1.gz</pre>
+<p class="docText">This says that the executable file is
+<span class="docEmphasis">/bin/cat</span> and the manual page is
+<span class="docEmphasis">/usr/share/man/man1/cat.1.gz</span>. </p>
+<p class="docText"><i>whereis</i> has a few options worth mentioning: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><i>-b</i></span> </dt>
+  <dd>
+  <p class="docList">Only report the executable name</dd>
+  <dt><span class="docPubcolor"><i>-m</i></span> </dt>
+  <dd>
+  <p class="docList">Only report the location of the manual page</dd>
+  <dt><span class="docPubcolor"><i>-s</i></span> </dt>
+  <dd>
+  <p class="docList">Only search for source files</dd>
+  <dt><span class="docPubcolor"><i>-u</i></span> </dt>
+  <dd>
+  <p class="docList">Only issue a report if any of the requested information 
+  (executable, manual page, source) is missing </dd>
+</dl>
+<p class="docText">There are other options for modifying the list of directories 
+through which <i>whereis</i> searches; if you need these, check your manual 
+pages. In addition, the functionality and flags for <i>whereis</i> can differ 
+between versions of Unix. For instance, much of the basic functionality of the 
+command was removed in version 4.4 of FreeBSD as well as Darwin. Again, the 
+manual pages will show you this information. </p>
+<p class="docText"><span class="docEmphasis">—ML and SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-2-SECT-4">2.4 Searching Online Manual Pages</h3>
+<p class="docText">When the other techniques in this chapter don't find the 
+information you want, you can try searching the <span class="docEmphBold">online 
+manual page</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+2.1</a>) files. You'll probably have to wade through a lot of stuff that you 
+don't want to see, but this method can work when nothing else does. As an 
+example, you remember that there's some command for chopping columns out of a 
+file. You try <i>man</i> -<i>k</i> or <i>apropos</i>, but it only mentions <i>
+colrm</i> and <i>pr</i>, and those aren't what you want. You'll usually be able 
+to narrow your search to one or two <span class="docEmphBold">manual page 
+sections</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+2.1</a>); here, you know that user commands are in section 1. So you go to the 
+manual pages and do a case-insensitive search through all the files for &quot;column&quot; 
+or &quot;chop&quot;: </p>
+<pre>% <b>cd /usr/man/man1</b>
+% <b>egrep -i 'column|chop' *</b>
+awk.1:Add up first column, print sum and average:
+colrm.1:colrm \- remove characters from specified columns within each line
+  ...
+cut.1:.IX  cut  &quot;&quot;  &quot;\fIcut\fP \(em remove columns from file&quot;
+  ...</pre>
+<p class="docText">It's <i>cut</i>! Notice that <i>awk</i> also handles columns, 
+but <i>apropos</i> doesn't say so. </p>
+<p class="docText">(I cheated on that example: there were other ways to find <i>
+cut</i> — using the synonym <span class="docEmphasis">apropos field</span> 
+instead of <span class="docEmphasis">apropos column</span>, for instance. But 
+this method does work in tougher cases.) To search the manual page files, you'll 
+need to know where they're stored. There are lots of possibilities. If your 
+system has an <i>/etc/man.config</i> file, it'll probably tell you. Otherwise, 
+the directories <span class="docEmphasis">/usr/man</span> or
+<span class="docEmphasis">/usr/share/man</span> are good places to look. If the 
+command is local, try <span class="docEmphasis">/usr/local/man</span> and maybe
+<span class="docEmphasis">/opt</span> (a big tree where
+<span class="docEmphBold">find</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-4">Section 
+9.4</a>) can help). If your system has <span class="docEmphBold">fast</span>
+<span class="docEmphBold">find</span> <span class="docEmphBold">or</span>
+<span class="docEmphBold">locate</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-18">Section 
+9.18</a>), try searching for <tt>man</tt> or <tt>*/man*</tt>. </p>
+<p class="docText">Your manpage files may be <span class="docEmphBold">
+compressed</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-6">Section 
+15.6</a>). In that case, use <span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-2">Section 
+13.2</a>) with the <i>-Z</i> option, <tt>grep -Z</tt>. </p>
+<p class="docText">You'll probably find subdirectories with names like
+<span class="docEmphasis">man1</span>, <span class="docEmphasis">man2</span>, . 
+. . and/or <span class="docEmphasis">cat1</span>, <span class="docEmphasis">cat2</span>, 
+. . . Directory names like <span class="docEmphasis">manN</span> will have 
+unformatted source files for section <span class="docEmphasis">N</span>; the
+<span class="docEmphasis">catN</span> directories have formatted source files. 
+Or you may just find files named <span class="docEmphasis">command.N</span>, 
+where <span class="docEmphasis">N</span> is <span class="docEmphasis">1</span> 
+for section 1, <span class="docEmphasis">2</span> for section 2, and so on. </p>
+<p class="docText">There are two types of manpage files: unformatted (shown in
+<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-22">
+Section 3.22</a>) and formatted. The unformatted pages are easier to search 
+because none of the words will have embedded backspace characters. The previous 
+example shows how. The unformatted pages have <i>nroff</i> commands and macros 
+in them, though, which can make searching and reading tougher. </p>
+<p class="docText">To search formatted pages, you'll want to strip the embedded 
+backspace characters. Otherwise, <i>grep</i> might miss the word you want 
+because it was boldfaced or underlined — with backspaces in it. In the following 
+example, a <span class="docEmphBold">shell loop</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">Section 
+28.9</a>) applies a series of commands to each file. First,
+<span class="docEmphasis">col -b</span> removes the overstriking. <i>grep</i> 
+does a search (case insensitive, as before). Because <i>grep</i> is reading its 
+standard input, it doesn't know the filename, so a little <i>sed</i> command 
+adds the name to the start of every line <i>grep</i> outputs. </p>
+<pre>$ <b>cd /usr/man/cat1</b></pre>
+<p class="docText"><tt>*</tt>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">
+Section 1.13</a></p>
+<pre>$ <b>for file in *</b>
+&gt; <b>do col -b &lt; $file | grep -i column | sed &quot;s/^/${file}:/&quot;</b>
+&gt; <b>done</b>
+awk.1:   Add up first column, print   sum and average:
+   ...
+cut.1:   Use cut to cut out columns from a table or fields from each
+   ...</pre>
+<p class="docText">If your manpage files are compressed, replace <tt>col -b &lt; 
+$file</tt> with: </p>
+<pre>zcat $file | col -b</pre>
+<p class="docText">In Bourne shells, you can pipe the output of the loop to a 
+pager (like <span class="docEmphBold">less</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>)) to see the output a screenful at a time and quit (with <tt>q</tt>) 
+when you're done. To do that, change the last line of the <i>for</i> loop to:
+</p>
+<pre>done | less</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-2-SECT-5">2.5 How Unix Systems Remember Their Names</h3>
+<p class="docText">Each computer on a network needs a name. On many Unix 
+versions, the <span class="docEmphasis">uname -n</span> command shows you this 
+name. On some systems, the command <i>hostname</i> or <span class="docEmphasis">
+uuname -l</span> (two <span class="docEmphasis">u</span>s, lowercase
+<span class="docEmphasis">L</span>) may be what you want. If you use more than 
+one system, the hostname is great to use in a shell prompt — or any time you 
+forget where you're logged in. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-2-SECT-6">2.6 Which Version Am I Using?</h3>
+<p class="docText">Your system may have several versions of a particular command 
+— for instance, a BSD-compatible version in one directory and a System 
+V-compatible version somewhere else (and you might have added a private version 
+in <span class="docEmphBold">your own</span> <span class="docEmphBold">bin</span>
+<span class="docEmphBold">directory</span> (<a class="docLink" href="_chapter 7.htm#upt3-CHP-7-SECT-4">Section 
+7.4</a>)). Which command you'll get depends on your <span class="docEmphBold">
+PATH</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+35.6</a>) environment variable. It's often essential to know which version 
+you're using. For example: </p>
+<pre>$ <b>type sort</b>
+sort is /bin/sort</pre>
+<p class="docText">tells me exactly which version of the <i>sort</i> program I'm 
+using. (On one system I've used, there were two <i>sort</i>s; I had also defined 
+an alias for <i>sort</i>.) If I want to see all versions, <i>bash</i> supports a
+<i>-all</i> option: </p>
+<pre>$ <b>type -all sort</b>
+sort is aliased to `TMPDIR=/var/tmp /bin/sort'
+sort is /bin/sort
+sort is /usr/5bin/sort</pre>
+<p class="docText">A similar command is <i>whence</i>. </p>
+<p class="docText">But <i>type</i> and <i>whence</i> are built into shells and 
+are also Unix-version dependent (not all Unix systems have them), so they won't 
+work everywhere. The <i>which</i> command is usually <span class="docEmphBold">
+external</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+1.9</a>), so it works everywhere — although, because it isn't built into the 
+shells, it can't always find out about aliases defined in your current shell. 
+For example: </p>
+<pre>% <b>which sort</b>
+/usr/bin/sort</pre>
+<p class="docText">You'll find that <i>which</i> comes in handy in lots of other 
+situations. I find that I'm always using <i>which</i> inside of backquotes to 
+get a precise path. (<i>whence</i> and <i>type</i> may print extra text.) For 
+example, when I was writing these articles, I started wondering whether or not
+<i>man</i>, <i>apropos</i>, and <i>whatis</i> were really the same executable. 
+It's a simple question, but one I had never bothered to think about. There's one 
+good way to find out: </p>
+<pre>% <b>ls -li `which man` `which apropos` `which whatis`</b>
+102352 -rwxr-xr-x  3 root        24576 Feb  8  2001 /usr/ucb/apropos
+102352 -rwxr-xr-x  3 root        24576 Feb  8  2001 /usr/ucb/man
+102352 -rwxr-xr-x  3 root        24576 Feb  8  2001 /usr/ucb/whatis</pre>
+<p class="docText">What does this tell us? Well, within this system the three 
+commands have the same file size, which means that they're likely to be 
+identical; furthermore, each file has three links, meaning that each file has 
+three names. The <i>-i</i> option confirms it; all three files have the same i-number. 
+So, <i>apropos</i>, <i>man</i>, and <i>whatis</i> are just one executable file 
+that has three hard links. </p>
+<p class="docText">However, running the same command in another environment, 
+such as in Darwin, results in a different output: </p>
+<pre>117804 -r-xr-xr-x  1  root    wheel    14332  sep  2  2001   /usr/bin/apropos
+117807 -r-xr-xr-x  1  root    wheel    19020  sep  2  2001   /usr/bin/man
+117808 -r-xr-xr-x  1  root    wheel    14336  sep  2  2001   /usr/bin/whatis</pre>
+<p class="docText">In Darwin, the commands are separate entities.</p>
+<p class="docText">A few System V implementations don't have a <i>which</i> 
+command. </p>
+<p class="docText"><span class="docEmphasis">—ML, JP, MAL, and SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-2-SECT-7">2.7 What tty Am I On?</h3>
+<p class="docText">Each login session has its own <span class="docEmphBold">tty</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-6">Section 
+24.6</a>) — a Unix device file that handles input and output for your terminal, 
+window, etc. Each tty has its own filename. If you're logged on more than once 
+and other users want to <span class="docEmphBold">write</span> or
+<span class="docEmphBold">talk</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) to you, they need to know which tty to use. If you have processes 
+running on several ttys, you can tell which process is where. </p>
+<p class="docText">To do that, run the <i>tty</i> command at a shell prompt in 
+the window: </p>
+<pre>% <b>tty</b>
+/dev/tty07</pre>
+<p class="docText">You can tell other users to type <tt>write</tt> <tt><i>
+your-username</i></tt> <tt>tty07</tt>. </p>
+<p class="docText">Most systems have different kinds of ttys: a few dialup 
+terminals, some network ports for <span class="docEmphBold">rlogin</span> and
+<span class="docEmphBold">telnet</span>, etc. (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>). A system file like <span class="docEmphasis">/etc/ttys</span> lists 
+which ttys are used for what. You can use this to make your login setup more 
+automatic. For example, most network terminals on our computers have names like
+<tt>/dev/ttyp<i>x</i></tt> or <tt>/dev/pts/<i>x</i></tt>, where <tt><i>x</i></tt> 
+is a single digit or letter. I have a test in my <span class="docEmphBold">
+.logout</span> <span class="docEmphBold">file</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-17">Section 
+4.17</a>) that clears the screen on all ttys except network: </p>
+<pre># Clear screen non-network ttys:</pre>
+<p class="docText"><tt>` `</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a></p>
+<pre>if (&quot;`tty`&quot; !~ /dev/ttyp?) then
+    clear
+endif</pre>
+<p class="docText">(Of course, you don't need to clear the terminal screen if 
+you're using an <i>xterm</i> window that you close when you log out.) </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-2-SECT-8">2.8 Who's On?</h3>
+<p class="docText">The <i>who</i> command lists the users logged on to the 
+system now. Here's an example of the output on my system: </p>
+<pre>% <b>who</b>
+naylor   ttyZ1   Nov  6 08:25
+hal      ttyp0   Oct 20 16:04   (zebra.ora.com:0.)
+pmui     ttyp1   Nov  4 17:21   (dud.ora.com:0.0)
+jpeek    ttyp2   Nov  5 23:08   (jpeek.com)
+hal      ttyp3   Oct 28 15:43   (zebra.ora.com:0.)
+    ...</pre>
+<p class="docText">Each line shows a different terminal or window. The columns 
+show the username logged on, the <span class="docEmphBold">tty</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+2.7</a>) number, the login time, and, if the user is coming in via a
+<span class="docEmphBold">network</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), you'll see their location (in parentheses). The user
+<span class="docEmphasis">hal</span> is logged on twice, for instance. </p>
+<p class="docText">It's handy to search the output of <i>who</i> with
+<span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-1">Section 
+13.1</a>) — especially on systems with a lot of users. For example: </p>
+<pre>% <b>who | grep &quot;^hal &quot;              </b><i> ...where is hal logged on?</i>
+% <b>who | grep &quot;Nov  6&quot;             </b><i> ...who logged on today?</i></pre>
+<p class="docText"><tt>-v</tt>
+<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-3">
+Section 13.3</a></p>
+<pre>% <b>who | grep -v &quot;Nov  6&quot;          </b><i> ...who logged on before today?</i>
+    ...</pre>
+<p class="docText">The GNU <i>who</i>, on the CD-ROM [see
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>], has more features than some other 
+versions. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-2-SECT-9">2.9 The info Command</h3>
+<p class="docText">An information system gaining popularity on the more 
+lightweight Unix-based systems is info. It's particularly relevant for finding 
+information within Linux and FreeBSD. </p>
+<p class="docText">Unlike man — which displays all information on a topic at 
+once, usually routed through some form of paging system such as cat — info is 
+based on a hypertext like linkage between topic components. You connect to each 
+of the subtopics using character-based commands and typing part or all of the 
+subtopic title — at least enough to distinguish one subtopic from another. </p>
+<p class="docText">To use info, you type the command <i>info</i> followed by the 
+Unix command about which you're trying to find information. For instance, to 
+find out more about info itself, you would use the following command line: </p>
+<pre>info info</pre>
+<p class="docText">This will return the main info introduction page and a menu 
+of subtopics such as: </p>
+<pre>Getting Started
+Advanced Info
+Creating an Info File</pre>
+<p class="docText">To access the subtopic, you type the letter <tt>m</tt> for 
+menu, and then in the prompt that opens at the bottom of the screen, type enough 
+of the letters to distinguish the subtopic menu item from any other. You don't 
+have to complete the command: you can just type enough of the letters followed 
+by a TAB to fill in the rest. Once the subtopic menu item has been filled in, 
+hitting ENTER sends you to the information. </p>
+<p class="docText">To learn more about using info, you can type the letter <tt>h</tt> 
+when you're in info and no command line buffer is showing. This brings up basic 
+information about the <i>info</i> command, including the commands you use within 
+info to use the application. These letters are summarized in
+<a class="docLink" href="#upt3-CHP-2-TABLE-1">Table 2-1</a>. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-2-TABLE-1" class="docTableTitle">Table 2-1. info commands </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Command</th>
+    <th class="docTableHeader">
+    <p class="docText">Action</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">h</td>
+    <td class="docTableCell">
+    <p class="docText">To get help on using info</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">m</td>
+    <td class="docTableCell">
+    <p class="docText">To access a subtopic menu item</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">n</td>
+    <td class="docTableCell">
+    <p class="docText">To get to next related subtopic</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">p</td>
+    <td class="docTableCell">
+    <p class="docText">To get to the previous related subtopic</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>space</i></td>
+    <td class="docTableCell">
+    <p class="docText">To move forward in the display if it exceeds page size</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>delete</i></td>
+    <td class="docTableCell">
+    <p class="docText">To move backward in the display if it exceeds page size</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>Ctrl-l</i></td>
+    <td class="docTableCell">
+    <p class="docText">To clean up the display if it gets mangled</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">b</td>
+    <td class="docTableCell">
+    <p class="docText">To get to the first page of the display</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>?</i></td>
+    <td class="docTableCell">
+    <p class="docText">To get a list of info commands</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">q</td>
+    <td class="docTableCell">
+    <p class="docText">To quit info</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">d</td>
+    <td class="docTableCell">
+    <p class="docText">To return to highest level of info topics</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">mEmacs<i>return</i></td>
+    <td class="docTableCell">
+    <p class="docText">To access the Emacs manual</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">s</td>
+    <td class="docTableCell">
+    <p class="docText">To search for string within current node</td>
+  </tr>
+</table>
+<p class="docText">Note that the letter commands are case insensitive: <i>U</i> 
+works the same as <i>u</i>. </p>
+<p class="docText">Use the <i>d</i> command to pull up the Directory node, the 
+menu of info major topics. In fact, this is a good way to become familiar with 
+info and its contained subtopics — type <i>d</i> and then use the menu commands 
+to explore each of the major subtopic areas. </p>
+<p class="docText">For instance, from the Directory Node, typing <tt>m</tt> 
+followed by typing <tt>strings</tt> into the command buffer pulls up the strings 
+info node. </p>
+<p class="docText">When using the <i>info</i> command, if the information 
+doesn't fit within a page, header and footer information will provide you some 
+details about the subtopic, such as the info file, node, and the next nodes 
+within the hierarchy. For instance, when accessing information about <i>man</i>, 
+depending on your system the header reads as follows: </p>
+<pre>File: *manpages*, Node:man, Up: (dir)</pre>
+<p class="docText">This translates to the info file manpages and the node for 
+man. Typing the <i>u</i> will move you up to the dir info page. Within Emacs, 
+use mouse button two to click on and access a subtopic. </p>
+<p class="docText">The footer provides a summary of the header information and 
+also provides the number of lines for the topic if the topic page extends past 
+the current screen. To see more information, type the <i>space</i> to page 
+through the topic, just as you do with <i>man</i>. </p>
+<p class="docText">Much of the help information within info is pulled over as is 
+from manpages and hasn't been converted to the hypertext format of info. Because 
+of this, the use of the <i>m</i> command won't pull up any subtopic. You'll need 
+to use the space key to access the additional information. </p>
+<p class="docText">To search within an info node/page, type <i>s</i> and then 
+type the search string into the command buffer. The cursor is moved to the first 
+occurance of the string. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 1.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 3.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

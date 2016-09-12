@@ -1,0 +1,1105 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 45</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 44.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 46.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 45. Printing</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-1">45.1 Introduction to Printing</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-2">45.2 Introduction to Printing on Unix</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-3">45.3 Printer Control with lpc</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-4">45.4 Using Different Printers</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-5">45.5 Using Symbolic Links for Spooling</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-6">45.6 Formatting Plain Text: pr</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-7">45.7 Formatting Plain Text: enscript</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-8">45.8 Printing Over a Network</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-9">45.9 Printing Over Samba</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-10">45.10 Introduction to Typesetting</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-11">45.11 A Bit of Unix Typesetting History</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-12">45.12 Typesetting Manpages: nroff</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-13">45.13 Formatting Markup Languages — troff, L<sup>A</sup>T<sub>E</sub>X, HTML, and So On</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-14">45.14 Printing Languages — PostScript, PCL, DVI, PDF</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-15">45.15 Converting Text Files into a Printing Language</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-16">45.16 Converting Typeset Files into a Printing Language</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-17">45.17 Converting Source Files Automagically Within the Spooler</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-18">45.18 The Common Unix Printing System (CUPS)</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-45-SECT-19">45.19 The Portable Bitmap Package</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-1">45.1 Introduction to Printing</h3>
+<p class="docText">This chapter discusses printing, which is a surprisingly 
+complicated subject. To understand why printing is so complicated, though, let's 
+think a little bit about what you might want to print. </p>
+<p class="docText">First, in the &quot;olden days,&quot; we had line printers and their 
+relatives: daisy-wheel printers, dot-matrix printers, and other pieces of 
+equipment that generated typewriter-like output. Printing a simple text file was 
+easy: you didn't need any special processing; you only needed some software to 
+shove the file into the printer. If you wanted, you might add a banner page and 
+do a little simple formatting, but that was really pretty trivial. </p>
+<p class="docText">The one area of complexity in the printing system was the 
+&quot;spooling system,&quot; which had to do several things in addition to force-feeding 
+the printer. Most printers were (and still are) shared devices. This means that 
+many people can send jobs to the printer at the same time. There may also be 
+several printers on which your file gets printed; you may care which one is 
+used, or you may not. The spooling system needs to manage all this: receiving 
+data from users, figuring out whether or not an appropriate printer is in use, 
+and sending the file to the printer (if it's free) or storing the file somewhere 
+(if the printer isn't free). </p>
+<p class="docText">Historical note: why is this called the &quot;spooling system&quot;? 
+Dave Birnbaum, a Principal Scientist at Xerox, says: </p>
+<blockquote>
+  <p class="docText">&quot;SPOOL (Simultaneous Printing Off and On Line)&quot; It was 
+  written for the early IBM mainframes (of the 3-digit, i.e., 709 kind) and 
+  extended to the early 1401 machines. Output for the printer was sent to the 
+  spool system, which either printed it directly or queued it (on tape) for 
+  later printing (hence the on/off line). There was also a 2nd generation 
+  version where the 1401 would act as the printer controller for the (by then) 
+  7094. The two were usually connected by a switchable tape drive that could be 
+  driven by either machine.&quot; [There's some controversy about exactly what the 
+  acronym means, but Dave's is as good as any I've heard. —
+  <span class="docEmphasis">JP</span>] </p>
+</blockquote>
+<p class="docText">The first few articles in this chapter,
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">
+Section 45.2</a>,
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-3">
+Section 45.3</a>,
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-4">
+Section 45.4</a>, and
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-5">
+Section 45.5</a>, discuss the basic Unix spooling system and how to work with it 
+as a user. </p>
+<p class="docText">The next few articles talk about how to format articles for 
+printing — not the kind of fancy formatting people think of nowadays, but 
+simpler things like pagination, margins, and so on, for text files that are to 
+be sent to a line printer or a printer in line-printer emulation mode.
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-6">
+Section 45.6</a> describes this kind of simple formatting, and
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-7">
+Section 45.7</a> gets a little more complicated on the same subject. </p>
+<p class="docText">Historical note number two: why is the print spooler called
+<i>lp</i> or <i>lpr</i>? It typically spooled text to a line printer, a fast 
+printer that used a wide head to print an entire line at a time. These printers 
+are still common in data processing applications, and they can really fly! </p>
+<p class="docText">In the mid-1970s, lots of Unix people got excited about 
+typesetting. Some typesetters were available that could be connected to 
+computers, most notably the C/A/T phototypesetter. Programs like <i>troff</i> 
+and T<sub>E</sub>X were developed to format texts for phototypesetters. 
+Typesetting tools are still with us, and still very valuable, though these days 
+they generally work with laser printers via languages like PostScript. They're 
+discussed in
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-10">
+Section 45.10</a> through
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-17">
+Section 45.17</a>, along with the ramifications of fancy printing on Unix. </p>
+<p class="docText">Finally,
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-19">
+Section 45.19</a> is about the <span class="docEmphasis">netpbm</span> package. 
+It's a useful tool for people who deal with graphics files.
+<span class="docEmphasis">netpbm</span> converts between different graphics 
+formats. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-2">45.2 Introduction to Printing on Unix</h3>
+<p class="docText">Unix used a print spooler to allow many users to share a 
+single printer long before Windows came along. A user can make a printing 
+request at any time, even if the printer is currently busy. Requests are queued 
+and processed in order as the printer becomes available. </p>
+<p class="docText">Unix permits multiple printers to be connected to the same 
+system. If there is more than one printer, one printer is set up as the default 
+printer, and print jobs are sent there if no printer is specified. </p>
+<h4  id="upt3-CHP-45-SECT-2.1" class="docSection2Title">45.2.1 lpr-Style Printing Commands</h4>
+<p class="docText">Many systems use the <i>lpr</i> command to queue a print job. 
+When you use <i>lpr</i>, it spools the file for printing. </p>
+<pre>$ <b>lpr notes</b></pre>
+<p class="docText">The <i>lpq</i> command tells you the status of your print 
+jobs by showing you the print queue for a given printer. </p>
+<pre>$ <b>lpq</b>
+lp is ready and printing
+Rank   Owner      Job  Files                Total Size
+active fred       876  notes                7122 bytes
+1st    alice      877  standard input       28372 bytes
+2nd    john       878  afile bfile ...      985733 bytes</pre>
+<p class="docText">The word <tt>active</tt> in the <tt>Rank</tt> column shows 
+the job that's currently printing. If your job does not appear at all on the 
+listing, it means your job has finished printing or has been completely written 
+into the printer's input buffer (or perhaps that you accidentally printed it to 
+a different queue). If a job is not <span class="docEmphasis">active</span>, 
+it's still in the queue. </p>
+<p class="docText">You can remove a job with the <i>lprm</i> command. (Run <i>
+lpq</i> first to get the job number.) </p>
+<pre>$ <b>lprm 877 </b>
+dfA877<i>host </i> dequeued
+cfA877<i>host </i> dequeued</pre>
+<p class="docText">The command <span class="docEmphBold">lpc status</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-3">Section 
+45.3</a>) can be used to determine which printers are connected to your system 
+and their names. If there is more than one printer, you can then use the <i>-P</i> 
+option with <i>lpr</i>, <i>lpq</i> and <i>lprm</i> to specify a printer 
+destination other than the default. For instance, if a laser printer is 
+configured as <span class="docEmphasis">laserp</span>, you can enter: </p>
+<pre>$ <b>lpr -Plaserp myfile</b></pre>
+<p class="docText">If you'll be using a certain printer often, put its name in 
+the <span class="docEmphBold">PRINTER environment variable</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-4">Section 
+45.4</a>). </p>
+<p class="docText">If you're using an older system that has only <i>lp</i> (see 
+below), or if you'd like a fancier <i>lpr</i> that supports all sorts of handy 
+features, take a peek at <span class="docEmphasis">LPRng</span> (available at
+<a class="docLink" href="http://www.lprng.com" target="_blank">
+http://www.lprng.com</a>). It supports everything standard <i>lpr</i> does and 
+more, including a GUI for detailed configuration. </p>
+<h4  id="upt3-CHP-45-SECT-2.2" class="docSection2Title">45.2.2 lp-Style Printing Commands</h4>
+<p class="docText">The System V-style print system, which Solaris uses by 
+default, has the <i>lp</i> command to queue a print job. (Solaris also 
+optionally includes <i>lpr</i>-style printing commands, if you install the BSD 
+compatibility package.) When you use <i>lp</i>, it spools the file for printing 
+and returns the request id of your print job. The request id can later be used 
+to cancel the print job, if you decide to do so. </p>
+<pre>$ <b>lp notes</b>
+request-id is lp-2354 (1 file)</pre>
+<p class="docText">The <i>lpstat</i> command can be used to check on the status 
+of your print jobs. Like <i>lpq</i>, it will tell whether your job is in the 
+queue or fully sent to the printer. Unlike <i>lpq</i>, it shows you only your 
+own jobs by default: </p>
+<pre>$ <b>lpstat</b>
+lp-2354          14519 fred     on lp</pre>
+<p class="docText">The message <tt>on lp</tt> indicates that the job is 
+currently printing. If your job does not appear at all on the listing, it means 
+your job has either finished printing or has been completely written into the 
+printer's input buffer (or you accidentally printed it to a different queue). If 
+the job is listed, but the <tt>on lp</tt> message does not appear, the job is 
+still in the queue. You can see the status of all jobs in the queue with the <i>
+-u</i> option. You can cancel a job with the <i>cancel</i> command. </p>
+<pre>$ <b>lpstat -u</b>
+lp-2354          14519 fred     on lp
+lp-2355          21321 alice
+lp-2356           9065 john
+$ <b>cancel lp-2356</b>
+lp-2356: cancelled</pre>
+<p class="docText">The <i>lpstat</i> command can be used to determine what 
+printers are connected to your system and their names. If there is more than one 
+printer, you can then use the <i>-d</i> option with <i>lp</i> to specify a 
+printer destination other than the default. For instance, if a laser printer is 
+configured as <span class="docEmphasis">laserp</span>, then you can enter: </p>
+<pre>$ <b>lp -dlaserp myfile</b></pre>
+<p class="docText">If you'll be using a certain printer often, put its name in 
+the <span class="docEmphBold">LPDEST environment variable</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-4">Section 
+45.4</a>). </p>
+<p class="docText">— <span class="docEmphasis">DD, TOR, and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-3">45.3 Printer Control with lpc</h3>
+<p class="docText">The <i>lpc</i>(8) command, for <i>lpr</i>-style printing 
+setups, is mostly for the superuser. (You may find it in a system directory, 
+like <i>/usr/sbin/lpc</i>.) Everyone can use a few of its commands; this article 
+covers those. </p>
+<p class="docText">You can type <i>lpc</i> commands at the <tt>lpc&gt;</tt> prompt; 
+when you're done, type <i>exit</i> (or CTRL-d): </p>
+<pre>% <b>lpc</b>
+lpc&gt; <b>help status</b>
+status          show status of daemon and queue
+lpc&gt; ...
+lpc&gt; <b>exit</b>
+%</pre>
+<p class="docText">Or you can type a single <i>lpc</i> command from the shell 
+prompt: </p>
+<pre>% <b>lpc status imagen</b>
+imagen:
+        queuing is enabled
+        printing is enabled
+        no entries
+        no daemon present
+%</pre>
+<p class="docText">The printer <span class="docEmphBold">daemon</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-10">Section 
+1.10</a>) watches the queue for jobs that people submit with
+<span class="docEmphBold">lpr</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">Section 
+45.2</a>). If queueing is disabled (usually by the system administrator), <i>lpr</i> 
+won't accept new jobs. </p>
+<p class="docText"><i>lpc</i> controls only printers on your local host. <i>lpc</i> 
+won't control printers connected to other hosts, though you can check the queue 
+of jobs (if any) waiting on your local computer for the remote printer. </p>
+<p class="docText">The commands anyone can use are: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor">restart [<span class="docEmphasis">printer</span>]</span>
+  </dt>
+  <dd>
+  <p class="docList">This tries to start a new printer daemon. Do this if 
+  something makes the daemon die while there are still jobs in the queue (<i>lpq</i> 
+  or <span class="docEmphasis">lpc status</span> will tell you this). It's worth 
+  trying when the system administrator is gone and the printer doesn't seem to 
+  be working. The printer name can be <span class="docEmphasis">all</span> to 
+  restart all printers. The printer name doesn't need an extra
+  <span class="docEmphasis">P</span>. For example, to specify the
+  <span class="docEmphasis">foobar</span> printer to <i>lpr</i>, you'd type
+  <span class="docEmphasis">lpr -Pfoobar</span>. With <i>lpc</i>, use a command 
+  like <span class="docEmphasis">restart foobar</span>. </dd>
+  <dt><span class="docPubcolor">status [<span class="docEmphasis">printer</span>]</span>
+  </dt>
+  <dd>
+  <p class="docList">Shows the status of daemons and queues on the local 
+  computer (see the preceding example). The printer name can be
+  <span class="docEmphasis">all</span> to show all printers. </dd>
+  <dt><span class="docPubcolor">help [<span class="docEmphasis">command</span>]</span>
+  </dt>
+  <dd>
+  <p class="docList">By default, gives a list of <i>lpc</i> commands, including 
+  ones for the superuser only. Give it a command name and it explains that 
+  command. </dd>
+  <dt><i><span class="docPubcolor">exit</span></i> </dt>
+  <dd>
+  <p class="docList">Quits from <i>lpc</i>.</dd>
+</dl>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-4">45.4 Using Different Printers</h3>
+<p class="docText">Each printer on your system should have a name. By default, 
+commands that send a file to a printer assume that the printer is named <i>lp</i> 
+(a historical artifact; it stands for &quot;Line Printer&quot;). If you're using a 
+single-user workstation and have a printer connected directly to your 
+workstation, you can name your printer <i>lp</i> and forget about it. </p>
+<p class="docText">In many environments, there are more options available: e.g., 
+there are several printers in different locations that you can choose from. 
+Often, only one printer will be able to print your normal documents: you may 
+need to send your print jobs to a PostScript printer, not the line printer that 
+the accounting department uses for billing. </p>
+<p class="docText">There are two ways to choose a printer:</p>
+<ul>
+  <li>
+  <p class="docList">Printing commands in the <i>lpr</i> family accept the 
+  option <tt>-P<i>printer</i></tt>. This includes <span class="docEmphBold">lpr</span> 
+  (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">Section 
+  45.2</a>), various scripts to format typeset documents, etc. For example,
+  <span class="docEmphasis">lpr -Pps file.ps</span> sends the file
+  <span class="docEmphasis">file.ps</span> to the printer named
+  <span class="docEmphasis">ps</span>. </li>
+  <li>
+  <p class="docList">Commands in the <i>lpr</i> family recognize the
+  <span class="docEmphasis">PRINTER</span> <span class="docEmphBold">environment 
+  variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+  35.3</a>); if <span class="docEmphasis">PRINTER</span> is defined, the command 
+  will read its value and choose a printer accordingly. So the command: </p>
+  <pre>% <b>setenv PRINTER ps </b>                <i>  — or</i>
+$ <b>PRINTER=ps ; export PRINTER </b></pre>
+  <p class="docList">ensures that the <i>lpr</i>-style print commands will send 
+  your documents to the printer named <span class="docEmphasis">ps</span>. The
+  <i>-P</i> option overrides this environment variable, in case you need to send 
+  a particular print job to a different printer. </li>
+  <li>
+  <p class="docList">Commands in the <span class="docEmphasis">lp</span> family 
+  use the <i>-d</i> option to select a printer. So <tt>lp -d prfile.ps</tt> 
+  sends <span class="docEmphasis">file.ps</span> to the printer named
+  <span class="docEmphasis">pr</span>; it's equivalent to the previous <i>lpr</i> 
+  example. </li>
+  <li>
+  <p class="docList">Commands in the <i>lp</i> family look for an environment 
+  variable named <span class="docEmphasis">LPDEST</span>, rather than
+  <span class="docEmphasis">PRINTER</span>. So: </p>
+  <pre>% <b>setenv LPDEST ps </b>                <i>  — or</i>
+$ <b>LPDEST=ps ; export LPDEST </b></pre>
+  <p class="docList">ensures that the <i>lp</i>-style print commands will send 
+  your documents to the printer named <span class="docEmphasis">ps</span>. The
+  <i>-d</i> option overrides this environment variable. </li>
+</ul>
+<p class="docText">Note that Solaris and others that use <i>lp</i> can include 
+both the <i>lp</i> and <i>lpr</i> print commands. This can make things 
+confusing, particularly if you're using a script to process documents, and that 
+script automatically sends your documents to the printer. Unless you know how 
+the script works, you won't know which variable to set. I'd suggest setting both
+<span class="docEmphasis">PRINTER</span> and <span class="docEmphasis">LPDEST</span> 
+for these systems. </p>
+<p class="docText">By the way, if you have only one printer, but you've given it 
+some name other than <span class="docEmphasis">lp</span>, the same solution 
+works: just set <span class="docEmphasis">PRINTER</span> or
+<span class="docEmphasis">LPDEST</span> to the appropriate name. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-5">45.5 Using Symbolic Links for Spooling</h3>
+<p class="docText">When you print a file, the file is copied to a &quot;spooling 
+directory.&quot; This can be a problem if you want to print a very large file: the 
+copy operation might take a long time, or the act of copying might fill the 
+spooling directory's filesystem. </p>
+<p class="docText">Systems with the <i>lpr</i> family of commands provide a 
+workaround for this problem. The <i>-s</i> option makes a
+<span class="docEmphBold">symbolic link</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>) to your file from the spooling directory. </p>
+<p class="docText">Here's such a command:</p>
+<pre>% <b>lpr -s directions</b></pre>
+<p class="docText">Rather than copying <span class="docEmphasis">directions</span>,
+<i>lpr</i> creates a symbolic link to <span class="docEmphasis">directions</span>. 
+The symbolic link is much faster, and you're unlikely to get a &quot;filesystem full&quot; 
+error. </p>
+<p class="docText">Using a symbolic link has one important side effect. Because 
+the file isn't hidden away in a special spooling directory, you can delete or 
+modify it after you give the <i>lpr</i> command and before the printer is 
+finished with it. This can have interesting side effects; be careful not to do 
+it. </p>
+<p class="docText">Of course, this warning applies only to the file that 
+actually goes to the printer. For example, when you <span class="docEmphBold">
+format a troff file</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-16">Section 
+45.16</a>) for a PostScript printer and then print using <i>-s</i>, you can 
+continue to modify the <i>troff</i> file, because it's the resulting PostScript 
+file that actually goes to the printer (thus the PostScript file, not the <i>
+troff</i> file, is symbolically linked). </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-6">45.6 Formatting Plain Text: pr</h3>
+<p class="docText">The <span class="docEmphBold">line printer spooler</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">Section 
+45.2</a>) prints what you send it. If you send it a continuous stream of text 
+(and the printer is set up to print text files rather than PostScript), that's 
+probably just what you'll get: no page breaks, indenting, or other formatting 
+features. </p>
+<p class="docText">That's where <i>pr</i> comes in. It's a simple formatter that 
+breaks its input into &quot;pages&quot; that will fit onto a 66-line page. (You can change 
+that length.) It adds a header that automatically includes the date and time, 
+the filename, and a page number. It also adds a footer that ensures that text 
+doesn't run off the bottom of the page. </p>
+<p class="docText">This is just what you want if you are sending program source 
+code or other streams of unbroken text to a printer. For that matter, <i>pr</i> 
+is often very handy for sending text to your screen. In addition to its default 
+behavior, it has quite a few useful options. Here are a few common options: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">-f</span></span> </dt>
+  <dd>
+  <p class="docList">Separate pages using formfeed character (^L) instead of a 
+  series of blank lines. (This is handy if your pages &quot;creep&quot; down because the 
+  printer folds some single lines onto two or three printed lines.) </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-h</span> <tt><i>str</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Replace default header with string
+  <span class="docEmphasis">str</span>. See
+  <a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-15">
+  Section 21.15</a>. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-l</span> <tt><i>n</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Set page length to <span class="docEmphasis">n</span> 
+  (default is 66).</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-m</span></span> </dt>
+  <dd>
+  <p class="docList">Merge files, printing one in each column (can't be used 
+  with <i>-num</i> and <i>-a</i>). Text is chopped to fit. See
+  <a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-15">
+  Section 21.15</a>. This is a poor man's <span class="docEmphBold">paste</span> 
+  (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-18">Section 
+  21.18</a>). </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-s</span> <tt><i>c</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Separate columns with <span class="docEmphasis">c</span> 
+  (default is a tab).</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-t</span></span> </dt>
+  <dd>
+  <p class="docList">Omit the page header and trailing blank lines.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-w</span> <tt><i>num</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Set line width for output made into columns to
+  <span class="docEmphasis">num</span> (default is 72). </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">+</span> <tt><i>num</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Begin printing at page <span class="docEmphasis">num</span> 
+  (default is 1).</dd>
+  <dt><span class="docPubcolor"><tt><i>-n</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Produce output having <span class="docEmphasis">n</span> 
+  columns (default is 1). See
+  <a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-15">
+  Section 21.15</a>. </dd>
+</dl>
+<p class="docText">Some versions of <i>pr</i> also support these options:</p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">-a</span></span> </dt>
+  <dd>
+  <p class="docList">Multicolumn format; list items in rows going across.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-d</span></span> </dt>
+  <dd>
+  <p class="docList">Double-spaced format.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-e</span> <tt><i>cn</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Set input tabs to every <span class="docEmphasis">n</span>th 
+  position (default is 8), and use <span class="docEmphasis">c</span> as field 
+  delimiter (default is a tab). </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-F</span></span> </dt>
+  <dd>
+  <p class="docList">Fold input lines (avoids truncation by <i>-a</i> or <i>-m</i>).
+  </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-i</span> <tt><i>cn</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">For output, replace whitespace with field delimiter
+  <span class="docEmphasis">c</span> (default is a tab) every
+  <span class="docEmphasis">n</span>th position (default is 8). </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-n</span> <tt><i>cn</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Number lines with numbers <span class="docEmphasis">n</span> 
+  digits in length (default is 5), followed by field separator
+  <span class="docEmphasis">c</span> (default is a tab). See also
+  <span class="docEmphBold">nl</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-13">Section 
+  12.13</a>). </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-o</span> <tt><i>n</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Offset each line <span class="docEmphasis">n</span> spaces 
+  (default is 0).</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-p</span></span> </dt>
+  <dd>
+  <p class="docList">Pause before each page. (<i>pr</i> rings the bell by 
+  writing an ALERT character to standard error and waits for a carriage-return 
+  character to be read from <span class="docEmphBold">/dev/tty</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">Section 
+  36.15</a>).) </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-r</span></span> </dt>
+  <dd>
+  <p class="docList">Suppress messages for files that can't be found.</dd>
+</dl>
+<p class="docText">Let's put this all together with a couple of examples: </p>
+<ul>
+  <li>
+  <p class="docList">Print a side-by-side list, omitting heading and extra 
+  lines:</p>
+  <pre><b>pr -m -t list.1 list.2 list.3</b></pre>
+  </li>
+  <li>
+  <p class="docList">Alphabetize a list of states; number the lines in five 
+  columns.</p>
+  <pre><b>sort states_50 | pr -n -5</b></pre>
+  <p class="docList">If you have an old <i>pr</i> that doesn't support <i>-n</i>, 
+  you can use <span class="docEmphBold">cat -n</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-13">Section 
+  12.13</a>) to supply the line numbers: </p>
+  <pre><b>sort states_50 | cat -n | pr -5</b></pre>
+  </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— TOR </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-7">45.7 Formatting Plain Text: enscript</h3>
+<p class="docText"><i>enscript</i> is a handy program that takes your text files 
+and turns them into PostScript. <i>enscript</i> comes with a wide variety of 
+formatting options. There is a GNU version available, and a few Unixes include a 
+version by default. <i>enscript</i> is particularly useful when your main 
+printer speaks primarily PostScript. </p>
+<p class="docText">Detailed information on everything <i>enscript</i> can do is 
+available in its manpage, but here are a few examples: </p>
+<pre>% <b>enscript -G stuff.txt </b>
+  <i> Fancy (&quot;Gaudy&quot;) headers</i>
+% <b>enscript -2r stuff.txt </b>
+  <i> Two-up printing -- two pages side-by-side on each page of paper</i>
+% <b>enscript -2Gr stuff.txt </b>
+  <i> Two-up with fancy headers</i>
+% <b>enscript -P otherps stuff.txt </b>
+  <i> Print to the otherps   printer instead of the default</i>
+% <b>enscript -d otherps stuff.txt </b>
+  <i> Ditto</i>
+% <b>enscript -i 4 stuff.txt </b>
+  <i> Indent every line four spaces</i>
+% <b>enscript --pretty-print=cpp Object.cc </b>
+  <i> Pretty print C++ source code</i>
+% <b>enscript -E doit.pl </b>
+  <i> Pretty print doit.pl (and automagically figure out that it's Perl from the .pl suffix)</i></pre>
+<p class="docText">One thing to watch for: <i>enscript</i>'s default page size 
+is A4, and in the United States most printers want letter-sized pages. You can 
+set the default page size to letter when installing <i>enscript</i> (many U.S. 
+pre-built binary packages do this for you), or you can use the <i>-M letter</i> 
+or <i>- -media=letter</i> option when you call <i>enscript</i>. </p>
+<p class="docText">If you want a default set of flags to be passed to enscript, 
+set the <span class="docEmphasis">ENSCRIPT</span> environment variable. Anything 
+you pass on the command line will override values in <span class="docEmphasis">
+ENSCRIPT</span>. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-8">45.8 Printing Over a Network</h3>
+<p class="docText">Sometimes you'd like to be able to print to a printer that's 
+physically attached to another Unix machine. <i>lpd</i>, the print spool daemon, 
+supports this easily. </p>
+<p class="docText"><i>lpd</i> is configured using the <i>printcap</i> printer 
+capabilities database, generally stored in <i>/etc/printcap</i>. Generally, a 
+local printer is given a line that looks something like this: </p>
+<pre>lp|local line printer:\
+       :lp=/dev/lpt0:\
+       :sd=/var/spool/output/lpd:lf=/var/log/lpd-errs:</pre>
+<p class="docText">The first line sets the printer name, in this case <tt>lp</tt>, 
+and gives it a more descriptive name (<tt>local line printer</tt>) as well. The 
+rest of the lines define various parameters for this printer using a <tt><i>
+parameter</i></tt>=<tt><i>value</i></tt> format. <tt>lp</tt> specifies the 
+printer device — in this case, <i>/dev/lpt0</i>. <tt>sd</tt> specifies the local 
+spool directory, that is, where <i>lpd</i> will store spooled files while it's 
+working with them. <tt>lf</tt> specifies the log file, where <i>lpd</i> will 
+write error messages and the like for this printer. </p>
+<p class="docText">To set up a remote printer, all you have to do is provide a 
+remote machine (<tt>rm</tt>) and a remote printer (<tt>rp</tt>) instead of a 
+printer device: </p>
+<pre>rlp|printhost|remote line printer:\
+       :rm=printhost.domain.com:rp=lp:\
+       :sd=/var/spool/output/printhost:lf=/var/log/lpd-errs:</pre>
+<p class="docText">Note that we added another name; since this is the default 
+printer for the host <span class="docEmphasis">printhost</span>, either <tt>rlp</tt> 
+or <tt>printhost</tt> will work as printer names. We also used a different spool 
+directory, to keep files spooled for <span class="docEmphasis">printhost</span> 
+separate from local files; this isn't strictly necessary, but it's handy. Don't 
+forget to create this spool directory before trying to spool anything to this 
+printer! </p>
+<p class="docText">Some network connected printers have <i>lpd</i>-compatible 
+spoolers built in. Talking to one of these printers is just as easy; just 
+provide the printer's hostname for <tt>rm</tt>. Generally you won't have to 
+provide <tt>rp</tt> unless the printer supports different printing modes by 
+using different remote printer names, since the default name <tt>lp</tt> is 
+almost always supported by these sorts of printers. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-9">45.9 Printing Over Samba</h3>
+<p class="docText">Samba provides SMB networking to Unix boxes; in English, that 
+means it allows Unix machines to share disks and printers with Windows machines 
+and vice versa.
+<a class="docLink" href="_chapter 49.htm">Chapter 
+49</a> details Samba; here we'll talk a bit about tricks for printing over 
+Samba, since it's so useful and parts of it are fairly arcane. </p>
+<h4  id="upt3-CHP-45-SECT-9.1" class="docSection2Title">45.9.1 Printing to Unix Printers from Windows</h4>
+<p class="docText">This is the easy one. Simply configure your printer normally 
+using <i>printcap</i>, then set this in your <i>smb.conf</i>: </p>
+<pre>    load printers = yes</pre>
+<p class="docText">This tells Samba to read the <i>printcap</i> file and allow 
+printing to any printer defined there. The default <tt>[printers]</tt> section 
+automatically advertises all printers found and allows anyone with a valid login 
+to print to them. You may want to make them browsable or printable by guest if 
+you're not particularly worried about security on your network. Some Windows 
+configurations will need guest access to browse, since they use a guest login to 
+browse rather than your normal one; if you can't browse your Samba printers from 
+your Windows client, try setting up guest access and see if that fixes it. </p>
+<p class="docText">If you want to get really fancy, current versions of Samba 
+can support downloading printer drivers to clients, just like Windows printer 
+servers do. Take a look at the <i>PRINTER_DRIVER2.txt</i> file in the Samba 
+distribution for more about how to do this. </p>
+<h4  id="upt3-CHP-45-SECT-9.2" class="docSection2Title">45.9.2 Printing to Windows Printers from Unix</h4>
+<p class="docText">This one's a little more tricky. <i>lpd</i> doesn't know how 
+to print to a Windows printer directly, or how to talk to Samba. However, <i>lpd</i> 
+does know how to <span class="docEmphBold">run files through a filter</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-17">Section 
+45.17</a>). So what we'll do is provide a filter that hands the file to Samba, 
+and then send the print job right to <i>/dev/null</i>: </p>
+<pre>laserjet:remote SMB laserjet via Samba\
+    :lp=/dev/null:\
+    :sd=/var/spool/lpd/laser:\
+    :if=/usr/local/samba/bin/smbprint:</pre>
+<p class="docText">Samba comes with a sample filter called <i>smbprint</i>; it's 
+often installed in an examples directory and will need to be moved to somewhere 
+useful before setting this up. <i>smbprint</i> does exactly what we want; it 
+takes the file and uses <i>smbclient</i> to send it to the right printer. </p>
+<p class="docText">How does <i>smbprint</i> know which printer to send it to? It 
+uses a file called <i>.config</i> in the given spool directory, which looks 
+something like this: </p>
+<pre>server=WINDOWS_SERVER
+service=PRINTER_SHARENAME
+password=&quot;password&quot;</pre>
+<p class="docText">The <i>smbprint</i> script is reasonably well documented in 
+its comments. Look through it and tweak it to fit your own needs. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-10">45.10 Introduction to Typesetting</h3>
+<p class="docText">Once upon a time, printers were simple. You hooked them up to 
+your machine and dumped text out to them, and they printed the text. Nothing 
+fancy, and not very pretty either. As printers got smarter, they became capable 
+of more things, printing in a different font, perhaps. Printing got a bit more 
+complex. If you wanted to use fancy features, you had to embed special 
+characters in your text, specific to the printer. </p>
+<p class="docText">Printers got even smarter, and could draw pictures, print 
+images, and use all sorts of fonts. They started <span class="docEmphBold">using 
+complex languages</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-14">Section 
+45.14</a>) to print, which made dealing with them more complex but at least 
+somewhat more consistent. People wrote <span class="docEmphBold">tools to 
+convert text</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-7">Section 
+45.7</a>) so it could be printed. </p>
+<p class="docText">Webster defines typesetting as &quot;the process of setting 
+material in type or into a form to be used in printing,&quot; literally, the setting 
+of type into a printing press. As computers have gotten more sophisticated, it 
+has come to include the formatting of text and images to send to typesetting 
+machines and then, later, smart printers. These days, your average printer is 
+pretty smart and can handle everything the typesetters of old could do and more. 
+Windows systems provide What You See Is What You Get (WYSIWYG, pronounced whiz-ee-wig) 
+editors as a matter of course, most of which do all of their typesetting without 
+any user intervention (and often badly, to boot). </p>
+<p class="docText">On Unix, typesetting generally involves describing the 
+formatting you want using a formatting language and then processing the source 
+file to generate something that a printer can understand. There are a variety of 
+tools and languages that do this, with various purposes, strengths, and 
+weaknesses. Many formatting languages are markup languages, that is, they 
+introduce formatting information by &quot;marking up&quot; the text you want formatted.
+</p>
+<p class="docText">There is an entire science (and art) of typography that we 
+won't try to get into here. My personal favorite books on the subject are Robert 
+Bringhurst's <i>The Elements of Typographic Style</i> for general typography and 
+Donald Knuth's <i>Digital Typography</i> for issues of typesetting with 
+computers. </p>
+<p class="docText">What we will try to cover are formatting languages (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-12">Section 
+45.12</a> and
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-13">
+Section 45.13</a>), printer languages (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-14">Section 
+45.14</a>), and ways to use Unix to get those formatting languages out to your 
+printer usefully (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-15">Section 
+45.15</a> through
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-17">
+Section 45.17</a>). </p>
+<p class="docText">Relatively recently, open source WYSIWYG tools have become 
+available for Unix. OpenOffice, available at
+<a class="docLink" href="http://www.openoffice.org" target="_blank">
+http://www.openoffice.org</a>, is a good example. OpenOffice does its own 
+typesetting behind the scenes and dumps out PostScript. If you don't have a 
+PostScript printer and you're interested in using something like OpenOffice,
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-18">
+Section 45.18</a> might help. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-11">45.11 A Bit of Unix Typesetting History</h3>
+<p class="docText">Unix was one of the first operating systems to provide the 
+capability to drive a typesetter. <i>troff</i> is both a markup language and a 
+tool for generating typesetter output. </p>
+<p class="docText">Originally, <i>troff</i> was designed to drive a device 
+called a C/A/T phototypesetter, and thus it generated a truly frightening 
+collection of idiosyncratic commands. For a while, there were several version of
+<i>troff</i> and <i>troff</i>-related tools, including tools to translate C/A/T 
+output into something useful, versions of <i>troff</i> that output slightly 
+saner things than C/A/T, and so forth. It was all very confusing. </p>
+<p class="docText">Most systems these days still have a version of <i>troff</i>, 
+often GNU's <i>groff</i>, which outputs PostScript and other device-independent 
+formats. Unix manpages are still written in <i>nroff</i>, a related tool that 
+takes the same input and spits out ASCII-formatted text, using the
+<span class="docEmphasis">man</span> macro package. However, most people don't 
+use <i>troff</i> and its related tools for general text formatting much any 
+more. </p>
+<p class="docText">So why do we care about <i>troff</i>? <i>The Jargon 
+Dictionary</i> (Version 4.2.2) has this to say: </p>
+<blockquote>
+  <p class="docText"><i>troff</i> <span class="docEmphasis">/T'rof/ or /trof/ n</span>.
+  </p>
+  <p class="docText">The gray eminence of Unix text processing; a formatting and 
+  phototypesetting program, written originally in PDP-11 assembler and then in 
+  barely-structured early C by the late Joseph Ossanna, modeled after the 
+  earlier ROFF which was in turn modeled after the Multics and CTSS program 
+  RUNOFF by Jerome Saltzer (that name came from the expression &quot;to run off a 
+  copy&quot;). A companion program, nroff, formats output for terminals and line 
+  printers. </p>
+  <p class="docText">In 1979, Brian Kernighan modified troff so that it could 
+  drive phototypesetters other than the Graphic Systems CAT. His paper 
+  describing that work (&quot;A Typesetter-independent troff,&quot; AT&amp;T CSTR #97) 
+  explains troff's durability. After discussing the program's &quot;obvious 
+  deficiencies — a rebarbative input syntax, mysterious and undocumented 
+  properties in some areas, and a voracious appetite for computer resources&quot; and 
+  noting the ugliness and extreme hairiness of the code and internals, Kernighan 
+  concludes: </p>
+  <p class="docText"><span class="docEmphasis">&quot;None of these remarks should be 
+  taken as denigrating Ossanna's accomplishment with TROFF. It has proven a 
+  remarkably robust tool, taking unbelievable abuse from a variety of 
+  preprocessors and being forced into uses that were never conceived of in the 
+  original design, all with considerable grace under fire.&quot; </span></p>
+  <p class="docText">The success of T<sub>E</sub>X and desktop publishing 
+  systems have reduced troff's relative importance, but this tribute perfectly 
+  captures the strengths that secured troff a place in hacker folklore; indeed, 
+  it could be taken more generally as an indication of those qualities of good 
+  programs that, in the long run, hackers most admire. </p>
+</blockquote>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-12">45.12 Typesetting Manpages: nroff</h3>
+<p class="docText">The definitive documentation system for every Unix is 
+manpages. (Much GNU software is documented fully in <i>info</i> pages instead, 
+but manpages are so foundational that even those packages generally provide some 
+sort of manpage.) What is a manpage, then? </p>
+<p class="docText">A manpage is a text file, marked up with <i>nroff</i> 
+commands, specifically using the man macro package. (Well, technically, using 
+the <i>tmac.an</i> standard macro package — <i>t/nroff</i> takes a <i>-m</i> 
+option to specify which <i>tmac.*</i> macro package to use. Thus, <i>man</i> 
+uses <span class="docEmphasis">nroff -man</span>.) A simple manpage (in this 
+case, the <i>yes</i>(1) manpage from FreeBSD) looks something like this: </p>
+<pre>.Dd June 6, 1993
+.Dt YES 1
+.Os BSD 4
+.Sh NAME
+.Nm yes
+.Nd be repetitively affirmative
+.Sh SYNOPSIS
+.Nm
+.Op Ar expletive
+.Sh DESCRIPTION
+.Nm Yes
+outputs
+.Ar expletive ,
+or, by default,
+.Dq y ,
+forever.
+.Sh HISTORY
+The
+.Nm
+command appeared in
+.At 32v .</pre>
+<p class="docText">This collection of difficult-to-read <i>nroff</i> commands, 
+when formatted by <i>nroff</i> via the <i>man</i> command on my FreeBSD machine, 
+looks something like this: </p>
+<pre>YES(1)                  FreeBSD General Commands Manual                 YES(1)
+
+NAME
+     yes - be repetitively affirmative
+
+SYNOPSIS
+     yes [expletive]
+
+DESCRIPTION
+     Yes outputs expletive, or, by default, &quot;y&quot;, forever.
+
+HISTORY
+     The yes command appeared in Version 32V AT&amp;T UNIX.
+
+4th Berkeley Distribution        June 6, 1993                                1</pre>
+<p class="docText">The various <i>nroff</i>/<i>man</i> macros allow you to 
+define things such as the name of the command, the short description of what it 
+does, the list of arguments, and so forth, and formats it all into the standard 
+look of a manpage. To write your own manpages, take a look at existing manpages 
+for examples, and read the <i>man</i>(1) and <i>man</i>(7) manpages. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-13">45.13 Formatting Markup Languages — troff, L<sup>A</sup>T<sub>E</sub>X, 
+HTML, and So On</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-12">
+Section 45.12</a> shows an example of a simple formatting markup language; the 
+one used by <i>man</i> via <i>nroff</i>. Don't laugh — it may seem arcane, but 
+it is fairly simple. Like all markup languages, it attempts to abstract out 
+certain things, to allow you to describe what you'd like the end result to look 
+like. Manpages are simple to describe, so the markup language for them is 
+relatively simple. </p>
+<p class="docText">Full <i>troff</i> is somewhat more complex, both because it 
+allows expressing far more complex ideas, and because it allows definition of 
+macros to extend the core markup language. Similarly, T<sub>E</sub>X (pronounced 
+&quot;tek&quot;) is essentially a programming language for typesetting. It provides a very 
+thorough model of typesetting and the ability to, essentially, write programs 
+that generate the output you want. </p>
+<p class="docText">Available on top of T<sub>E</sub>X is L<sup>A</sup>T<sub>E</sub>X 
+(pronounced &quot;lah-tek&quot; or &quot;lay-tek&quot;), a complex macro package focused on general 
+document writing. It allows you to describe the general structure of your 
+document and let L<sup>A</sup>T<sub>E</sub>X (and underneath, T<sub>E</sub>X) 
+sort out the &quot;proper&quot; way to typeset that structure. This sort of markup is very 
+different to deal with than working in a WYSIWYG word processor, where you have 
+to do all of the formatting yourself. As an example, a simple L<sup>A</sup>T<sub>E</sub>X 
+document looks something like this (taken from <i>The Not So Short Introduction 
+to LATEX2e</i>): </p>
+<pre>\documentclass[a4paper,11pt]{article}
+% define the title
+\author{H.~Partl}
+\title{Minimalism}
+\begin{document}
+% generates the title
+\maketitle
+% insert the table of contents
+\tableofcontents
+\section{Start}
+Well, and here begins my lovely article.
+\section{End}
+\ldots{} and here it ends.
+\end{document}</pre>
+<p class="docText">Much like the <i>nroff</i> input earlier, this describes the 
+structure of the document by inserting commands into the text at appropriate 
+places. The LyX editor (<a class="docLink" href="http://www.lyx.org" target="_blank">http://www.lyx.org</a>) 
+provides what they call What You See Is What You <span class="docEmphasis">Mean</span> 
+(WYSIWYM, or whiz-ee-whim) editing by sitting on top of L<sup>A</sup>T<sub>E</sub>X. 
+Lots of information about T<sub>E</sub>X and L<sup>A</sup>T<sub>E</sub>X is 
+available at the T<sub>E</sub>X Users' Group web site,
+<a class="docLink" href="http://www.tug.org" target="_blank">http://www.tug.org</a>. 
+T<sub>E</sub>X software is available via the Comprehensive T<sub>E</sub>X 
+Archive Network, or CTAN, at
+<a class="docLink" href="http://www.ctan.org" target="_blank">
+http://www.ctan.org</a>. I strongly recommend the teT<sub>E</sub>X distribution 
+as a simple way to get a complete installation of everything you need in one 
+swell foop. </p>
+<p class="docText">In contrast, while HTML is also a markup language, its markup 
+is focused primarily on display and hypertext references rather than internal 
+document structure. HTML is an <span class="docEmphasis">application</span> of 
+SGML; you probably know about it already because it is the primary display 
+markup language used on the web. The following is essentially the same as the 
+sample L<sup>A</sup>T<sub>E</sub>X document, but marked up using HTML 
+formatting: </p>
+<pre>&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Minimalism&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Minimalism&lt;/h1&gt;
+...table of contents...
+&lt;h2&gt;Start&lt;/h2&gt;
+&lt;p&gt;Well, and here begins my lovely article.&lt;/p&gt;
+&lt;h2&gt;End&lt;/h2&gt;
+&lt;p&gt;&amp;hellip; and here it ends.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<p class="docText">Other markup languages common on Unixes include DocBook, 
+which is also an application of SGML or XML, and in which a lot of Linux 
+documentation is written, and texinfo, the source language of info pages, in 
+which most GNU documentation is written. The manuscript for this edition of
+<span class="docEmphasis">Unix Power Tools</span> is written in a variant of 
+SGML-based DocBook, in fact. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-14">45.14 Printing Languages — PostScript, PCL, DVI, 
+PDF</h3>
+<p class="docText">Printing languages, also sometimes called page description 
+languages, are representations of exactly what needs to be on the screen or 
+printed page. They are generally a collection of drawing commands that programs 
+can generate, often with extra features to make drawing complex pictures or 
+doing fancy things with text easier. </p>
+<p class="docText">PostScript was developed by Adobe in the early 1980s to 
+provide some sort of generic page description language. It is a fairly complete 
+language; I've written complex PostScript programs by hand. This makes it much 
+easier to write software that can generate PostScript output. Modern <i>troff</i>s 
+can generate PostScript, and <i>ghostscript</i> can be used to process 
+PostScript into printer-specific output for certain non-PostScript printers, so 
+PostScript is a very useful output form. </p>
+<p class="docText">Printer Command Language, or PCL, was originally developed by 
+Hewlett-Packard, also in the early 1980s, to provide a generic printer language 
+for their entire range of printers. Early versions were very simple, but PCL 3 
+was sophisticated enough that other printer manufacturers started to emulate it, 
+and it became a de facto standard. PCL's more current incarnations are quite 
+flexible and capable. Incidentally, <i>ghostscript</i> can turn PostScript into 
+PCL, and most printers that can't speak PostScript can speak some form of PCL 
+these days. My primary printer these days speaks PCL 5E, and I use it from both 
+Windows machines and Unix machines. </p>
+<p class="docText">DVI stands for &quot;device independent&quot; and is the primary output 
+from T<sub>E</sub>X (and thus L<sup>A</sup>T<sub>E</sub>X). Like PostScript, 
+it's a generic language for describing the printed page. There are converters 
+that convert DVI into PostScript, PCL and PDF. </p>
+<p class="docText">PDF is Adobe's successor to PostScript. PDF has a special 
+place on the web, because it's been promoted as a way to distribute documents on 
+the web and have them displayed consistently in a wide variety of environments, 
+something not possible in HTML. This consistency is possible for the same 
+reasons any page description language can provide it: the focus of such a 
+language is on describing exactly what the page should look like rather than 
+being human readable or editable, like most markup languages. However, Adobe has 
+provided Acrobat Reader free for multiple platforms and promoted PDF 
+extensively, so it is the de facto standard for page description languages on 
+the web these days. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-15">45.15 Converting Text Files into a Printing 
+Language</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-7">
+Section 45.7</a> introduced one tool that can convert plain text into PostScript 
+for printing. In general, if your printer isn't an old text-only printer and you 
+want to be able to print text files, you'll need some sort of filter (or 
+filters) to convert the text into something useful. </p>
+<p class="docText">If your printer supports PostScript, tools like <i>a2ps</i> 
+and <span class="docEmphBold">enscript</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-7">Section 
+45.7</a>) can do what you need. If your printer supports PCL or another printer 
+language, you may want to add <i>ghostscript</i> to the mix. <i>ghostscript</i> 
+can read PostScript and PDF and output correct representations to a variety of 
+printers. Incidentally, <i>ghostscript</i> can also do a host of other useful 
+things, like create PDFs from PostScript and the like. </p>
+<p class="docText">Here's an example of using <i>enscript</i>, <i>ghostscript</i>, 
+and <i>lpr</i> to print the <i>background.txt</i> file to my printer (an HP 
+LaserJet 6L): </p>
+<pre>% <b>enscript -2Gr background.txt -o background.ps</b>
+% <b>gs -q -dNOPAUSE -sDEVICE=ljet4 -sOutputFile=background.lj4 background.ps -c quit</b>
+% <b>lpr background.lj4</b>
+% <b>rm background.lj4 background.ps</b></pre>
+<p class="docText"><i>-2Gr</i> tells <i>enscript</i> that I want two-up pages 
+with fancy headers, and <i>-o</i> sends the output to <i>background.ps</i> 
+(remember that <i>enscript</i> generates PostScript). <i>-q</i> tells <i>gs</i> 
+to run quietly. <i>-dNOPAUSE</i> disables <i>ghostscript</i>'s usual behaviour 
+of pausing and prompting at the end of each page. <i>-sDEVICE=ljet4</i> says to 
+create output for a <tt>ljet4</tt> device. <i>-sOutputFile=background.lj4</i> 
+redirects the output of <i>ghostscript</i> to <i>background.lj4</i>, and <i>-c 
+quit</i> says to quit once <i>background.ps</i> is done. Then we use <i>lpr</i> 
+to spool the now-ready output file, delete the temporary files, and we're all 
+done. </p>
+<p class="docText">Seems like sort of a pain, but it does show all of the steps 
+needed to get that output to go to the printer properly.
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-17">
+Section 45.17</a> shows how to arrange for most of that to be done for you by 
+the spooler automatically. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-16">45.16 Converting Typeset Files into a Printing 
+Language</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-15">
+Section 45.15</a> showed the steps necessary to convert plain text into 
+something printable. Generally the steps involved are similar for a typeset 
+source file, with perhaps an extra step or two. </p>
+<p class="docText"><i>troff</i> generates PostScript by default in most 
+installations these days, or it can be made to easily enough. GNU <i>troff</i> (<i>groff</i> 
+) can also generate PCL, DVI, and HTML by using the appropriate <i>-T</i> 
+option. </p>
+<p class="docText">T<sub>E</sub>X generates DVI; the teT<sub>E</sub>X package 
+includes <i>dvips</i> to convert DVI into PostScript, <i>dvilj4</i> to convert 
+it into PCL, <i>dvipdf</i> to convert it into PDF, and several others. </p>
+<p class="docText">HTML can be converted into PostScript using <i>html2ps</i>.
+</p>
+<p class="docText">An example of using L<sup>A</sup>T<sub>E</sub>X, <i>dvilj4</i>, 
+and <i>lpr</i> to print the <i>article.tex</i> file to my printer (an HP 
+LaserJet 6L): </p>
+<pre>% <b>latex article.tex</b>
+% <b>dvilj4 article.dvi</b>
+% <b>lpr article.lj</b>
+% <b>rm article.lj article.dvi</b></pre>
+<p class="docText">This time it's slightly simpler than the example in
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-15">
+Section 45.15</a>, because the default options all do what we want. Even so, it 
+can be made even simpler;
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-17">
+Section 45.17</a> shows how. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-17">45.17 Converting Source Files Automagically Within 
+the Spooler</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-15">
+Section 45.15</a> and
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-16">
+Section 45.16</a> showed what sorts of steps are required to get files into a 
+printable form. They seem tedious, however, and computers are really quite good 
+at tedium, so how can we make the spooler do all this for us automatically? </p>
+<p class="docText">There are a couple of options. One of the more well-known is
+<i>apsfilter</i>, which is a set of filter scripts designed to work with <i>lpd</i> 
+to automatically convert incoming source files to an appropriate output format 
+before dumping them to the printer. Extensive information is available at
+<a class="docLink" href="http://www.apsfilter.org" target="_blank">
+http://www.apsfilter.org</a>, and <i>apsfilter</i> has its own automatic setup 
+scripts, but I'll give a quick overview to give you an idea of what configuring
+<i>lpd</i>'s filters looks like. </p>
+<p class="docText">In
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-9">
+Section 45.9</a>, we used an input filter trick to print to a Samba printer by 
+putting a <tt>if</tt> entry in the <i>printcap</i> for that printer. <tt>if</tt> 
+stands for &quot;input filter,&quot; and there are several other kinds of filters 
+available in standard <i>lpd</i>, including a ditroff filter, a Fortran filter 
+(!), and an output filter. </p>
+<p class="docText"><i>apsfilter</i> installs itself as the input filter for any 
+printer it manages, and looks at the source file. It decides based on a number 
+of pieces of information what kind of source file it is, automatically processes 
+it with the right set of programs, and poof, you have correct output coming out 
+of your printer. There's a reason this kind of tool is called a &quot;magic filter&quot; 
+(and why the title of this chapter says &quot;Automagically&quot;). Having a magic filter 
+installed makes life so much easier. </p>
+<p class="docText">If you look at your printcap once <i>apsfilter</i> is 
+installed, you'll notice this entry (or something much like it): </p>
+<pre>lp|local line printer:\
+     ...
+     :if=/usr/local/sbin/apsfilter:\
+     ...</pre>
+<p class="docText">That's all it takes to hook into <i>lpd</i> and tell the 
+spooler to give <i>apsfilter</i> a shot at the text on the way through. <i>
+apsfilter</i> looks at the incoming file and its configuration for the printer 
+queue and converts the source into the appropriate printer language using 
+whatever filter or set of filters are needed. </p>
+<p class="docText">Other magic filters include LPD-O-Matic and magicfilter.
+<a class="docLink" href="http://www.linuxprinting.org" target="_blank">
+http://www.linuxprinting.org</a> has all sorts of information about this and 
+other printing subjects. Don't be fooled by the name — much of the information 
+it provides can help you with printing on any Unix system, not just Linux. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-18">45.18 The Common Unix Printing System (CUPS)</h3>
+<p class="docText">The Common Unix Printing System (CUPS) is a full 
+network-capable printing package available for a wide variety of Unix platforms. 
+From their web page: </p>
+<blockquote>
+  <p class="docText">CUPS is available at:</p>
+</blockquote>
+<dl class="docList">
+  <dd><a class="docLink" href="http://www.cups.org/" target="_blank">
+  http://www.cups.org/</a> </dd>
+</dl>
+<blockquote>
+  <p class="docText">CUPS provides a portable printing layer for UNIX-based 
+  operating systems. It has been developed by Easy Software Products to promote 
+  a standard printing solution for all UNIX vendors and users. CUPS provides the 
+  System V and Berkeley command-line interfaces. </p>
+  <p class="docText">CUPS uses the Internet Printing Protocol (&quot;IPP&quot;) as the 
+  basis for managing print jobs and queues. The Line Printer Daemon (&quot;LPD&quot;) 
+  Server Message Block (&quot;SMB&quot;), and AppSocket (a.k.a. JetDirect) protocols are 
+  also supported with reduced functionality. CUPS adds network printer browsing 
+  and PostScript Printer Description (&quot;PPD&quot;) based printing options to support 
+  real-world printing under UNIX. </p>
+</blockquote>
+<p class="docText">CUPS is headed towards becoming the Linux standard for 
+printing, and it is an easy way to configure all your printing tools at once 
+regardless of your platform. Visit their web page for extensive information. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-45-SECT-19">45.19 The Portable Bitmap Package</h3>
+<p class="docText">There are dozens of formats used for graphics files across 
+the computer industry. There are <span class="docEmphasis">tiff</span> files,
+<span class="docEmphasis">PICT</span> files, and <span class="docEmphasis">gif</span> 
+files. There are different formats for displaying on different hardware, 
+different formats for printing on different printers, and then there are the 
+internal formats used by graphics programs. This means that importing a graphics 
+file from one platform to another (or from one program to another) can be a 
+large undertaking, requiring a filter written specifically to convert from one 
+format to the next. </p>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: netpbm</p>
+<p class="docText">The <span class="docEmphasis">netpbm</span> package can be 
+used to convert between a wide variety of graphics formats.
+<span class="docEmphasis">netpbm</span> evolved from the original Portable 
+Bitmap Package, <span class="docEmphasis">pbmplus</span>, written by Jef 
+Poskanzer. A group of <span class="docEmphasis">pbmplus</span> users on the 
+Internet cooperated to upgrade <span class="docEmphasis">pbmplus</span>; the 
+result was <span class="docEmphasis">netpbm</span>. <span class="docEmphasis">
+netpbm</span> has relatively recently seen some active development again on 
+SourceForge, and its current home page is
+<a class="docLink" href="http://netpbm.sourceforge.net" target="_blank">
+http://netpbm.sourceforge.net</a>. </p>
+<p class="docText">The idea behind <span class="docEmphasis">pbm</span> is to 
+use a set of very basic graphics formats that (almost) all formats can be 
+converted into and then converted back from. This is much simpler than having 
+converters to and from each individual format. These formats are known as
+<span class="docEmphasis">pbm</span>, <span class="docEmphasis">pgm</span>, and
+<span class="docEmphasis">ppm</span>: the portable bitmap, graymap, and pixmap 
+formats. (A bitmap is a two-dimensional representation of an image; a graymap 
+has additional information encoded that gives grayscale information for each 
+bit; a pixmap encodes color information for each bit.) The name
+<span class="docEmphasis">pnm</span> is a generic name for all three portable 
+interchange formats (with the <span class="docEmphasis">n</span> standing for &quot;a<span class="docEmphasis">n</span>y&quot;), 
+and programs that work with all three are said to be &quot;anymap&quot; programs. </p>
+<p class="docText">The <span class="docEmphasis">netpbm</span> package contains 
+well over a hundred conversion programs. There are three basic kinds of 
+programs: </p>
+<ul>
+  <li>
+  <p class="docList">Programs that convert a graphics file to one of the
+  <span class="docEmphasis">pnm</span> formats. For example, if I had a
+  <span class="docEmphasis">tiff</span> file and wanted to convert it to 
+  PostScript, I might start the process by using <span class="docEmphasis">
+  tifftopnm</span>: </p>
+  <pre>% <b>tifftopnm Hobbes.tiff &gt; Hobbes.pnm</b></pre>
+  </li>
+  <li>
+  <p class="docList">Programs that convert from one of the
+  <span class="docEmphasis">pnm</span> formats to another format. For example, 
+  if I wanted to convert the <span class="docEmphasis">Hobbes.pnm</span> file 
+  directly to PostScript, I could use <i>pnmtops</i>: </p>
+  <pre>% <b>pnmtops Hobbes.pnm &gt; Hobbes.ps</b></pre>
+  </li>
+  <li>
+  <p class="docList">Programs used to manipulate the image in
+  <span class="docEmphasis">pnm</span> format. For example, if I wanted to crop 
+  the image, I could use <i>pnmcut</i> before I converted the file to PostScript 
+  and printed it: </p>
+  <pre>% <b>tifftopnm Hobbes.tiff &gt; Hobbes.pnm</b>
+% <b>pnmcut 10 10 200 200 Hobbes.pnm &gt; Hobbes.cut</b>
+% <b>pnmtops Hobbes.cut &gt; Hobbes.ps</b>
+% <b>lpr Hobbes.ps</b></pre>
+  <p class="docList">Or, on one command line (and without cluttering your disk 
+  with intermediary files): </p>
+  <pre>% <b>tifftopnm Hobbes.tiff | pnmcut 10 10 200 200 | pnmtops | lpr</b></pre>
+  </li>
+</ul>
+<p class="docText">I frequently like to create <span class="docEmphBold">X11</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-22">Section 
+1.22</a>) bitmaps out of pictures in newspapers or magazines. The way I do this 
+is first to scan the picture in on a Macintosh and save it as
+<span class="docEmphasis">tiff</span> or <span class="docEmphasis">PICT</span> 
+format. Then I <span class="docEmphBold">ftp</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) the file to our Unix system and convert it to
+<span class="docEmphasis">pnm</span> format, and then use <i>pbmtoxbm</i> to 
+convert it to X bitmap format. If the picture is too big, I use <i>pnmscale</i> 
+on the intermediary <span class="docEmphasis">pnm</span> file. If the picture 
+isn't right-side-up, I can use <i>pnmrotate</i> and sometimes <i>pnmflip</i> 
+before converting the <span class="docEmphasis">pnm</span> file to X11 bitmap 
+format. </p>
+<p class="docText">There are far too many programs provided with the
+<span class="docEmphasis">netpbm</span> package to discuss in detail, and some 
+of these formats are ones that you've probably never even heard of. However, if 
+you need to fiddle with image files (or, now, video files!),
+<span class="docEmphasis">netpbm</span> almost certainly has a converter for it. 
+Take a peek through the documentation sometime. </p>
+<p class="docText"><span class="docEmphasis">—LM and JP</span> </p>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 44.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 46.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

@@ -1,0 +1,908 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 18</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 17.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 19.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 18. Creating Custom Commands in vi</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-1">18.1 Why Type More Than You Have To?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-2">18.2 Save Time and Typing with the vi map Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-3">18.3 What You Lose When You Use map!</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-4">18.4 vi @-Functions</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-5">18.5 Keymaps for Pasting into a Window Running vi</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-6">18.6 Protecting Keys from Interpretation by ex</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-7">18.7 Maps for Repeated Edits</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-8">18.8 More Examples of Mapping Keys in vi</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-9">18.9 Repeating a vi Keymap</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-10">18.10 Typing in Uppercase Without CAPS LOCK</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-11">18.11 Text-Input Mode Cursor Motion with No Arrow Keys</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-12">18.12 Don't Lose Important Functions with vi Maps: Use noremap</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-13">18.13 vi Macro for Splitting Long Lines</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-18-SECT-14">18.14 File-Backup Macros</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-1">18.1 Why Type More Than You Have To?</h3>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 class="docSidebarTitle">Summary Box</h2>
+      <p class="docText">Keymapping — storing complex command sequences so that 
+      they can be executed with a single keystroke — is one of my favorite 
+      timesavers. There's nothing like typing one key and watching a whole 
+      string of work take place. For repetitive edits (e.g., font changes) it's 
+      a real wrist-saver, too. In this chapter we show you how to: </p>
+      <ul>
+        <li>
+        <p class="docList">Save time by mapping keys:
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">
+        Section 18.2</a>,
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-4">
+        Section 18.4</a>,
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-7">
+        Section 18.7</a>, and
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-8">
+        Section 18.8</a>. </li>
+        <li>
+        <p class="docList">Know when to map a key and when not to:
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-3">
+        Section 18.3</a>. </li>
+        <li>
+        <p class="docList">Map keys like ESC and RETURN:
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">
+        Section 18.6</a>.</li>
+        <li>
+        <p class="docList">Move around the file without leaving text-input mode:
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-11">
+        Section 18.11</a> </li>
+        <li>
+        <p class="docList">Protect the text you're pasting in from another 
+        window:
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-5">
+        Section 18.5</a>. </li>
+        <li>
+        <p class="docList">Put custom commands in your <span class="docEmphasis">
+        .exrc</span> file:
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-9">
+        Section 18.9</a> and
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-12">
+        Section 18.12</a>. </li>
+        <li>
+        <p class="docList">Break long lines of text:
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-13">
+        Section 18.13</a>.</li>
+      </ul>
+      <p class="docText"><span class="docEmphasis">— EK</span></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-2">18.2 Save Time and Typing with the vi map Commands</h3>
+<p class="docText">While you're editing, you may find that you are using a 
+command sequence frequently, or you may occasionally use a very complex command 
+sequence. To save yourself keystrokes — or the time it takes to remember the 
+sequence — assign the sequence to an unused key by using the <tt>map</tt> and
+<tt>map!</tt> commands. </p>
+<h4  id="upt3-CHP-18-SECT-2.1" class="docSection2Title">18.2.1 Command Mode Maps</h4>
+<p class="docText">The <tt>map</tt> command acts a lot like
+<span class="docEmphBold">ab</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-23">Section 
+17.23</a>) except that you define a macro for command mode instead of text-input 
+mode. The <tt>map!</tt> command works during text-input mode; see the following 
+list. </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">map</span> <tt><i>x 
+  sequence</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Define <span class="docEmphasis">x</span> as a
+  <span class="docEmphasis">sequence</span> of editing commands. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">unmap</span> <tt><i>x</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Disable the <span class="docEmphasis">x</span> definition.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">map</span></span> </dt>
+  <dd>
+  <p class="docList">List the characters that are currently mapped.</dd>
+</dl>
+<p class="docText">As with other <i>ex</i>-mode commands, these map commands can 
+be saved in your <span class="docEmphBold">.exrc file</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-30">Section 
+17.30</a>) or typed in after a colon (:). If you want a keymap to use just 
+during this editing session, you might find that <span class="docEmphBold">vi 
+@-functions</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-4">Section 
+18.4</a>) are easier to create and use. The map commands are best for keymaps 
+that you save in your <span class="docEmphasis">.exrc</span> file and use during 
+many editing sessions. </p>
+<p class="docText">Before you can start creating your own maps, you need to know 
+the keys not used in command mode that are available for user-defined commands. 
+Here's a list of the unused keys in original <i>vi</i>: </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Letters</span></i> </dt>
+  <dd>
+  <p class="docList"><tt>g K q V v</tt></dd>
+  <dt><i><span class="docPubcolor">Control keys</span></i> </dt>
+  <dd>
+  <p class="docList"><tt>^A ^K ^O ^T ^W ^X</tt></dd>
+  <dt><i><span class="docPubcolor">Symbols</span></i> </dt>
+  <dd>
+  <p class="docList"><tt>_ * \ =</tt> </dd>
+</dl>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">The = is used by <i>vi</i> if Lisp mode is set. In 
+        addition, other letters such as v may already be used in other systems.
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">With maps you can create simple or complex command sequences. 
+As a simple example, you could define a command to reverse the order of words. 
+In <i>vi</i>, with the cursor as shown: </p>
+<pre>you can the scroll page</pre>
+<p class="docText">the sequence to put <span class="docEmphasis">the</span> 
+after <span class="docEmphasis">scroll</span> would be <tt>dwwP</tt>: (delete 
+word), <tt>dw</tt>; (move to the next word), <tt>w</tt>; (put the deleted word 
+before that word), <tt>P</tt>. (You can also use <tt>W</tt> instead of <tt>w</tt>.) 
+Saving this sequence: </p>
+<pre>map v dwwP</pre>
+<p class="docText">enables you to reverse the order of two words at any time in 
+the editing session with the single keystroke <tt>v</tt>. </p>
+<p class="docText">You can also map certain multiple-character sequences. Start 
+the map with one of the symbols in the previous list. For example, to map the 
+keystrokes <tt>*s</tt> to put single quotes around a word (<tt>'<i>word</i>'</tt>) 
+and <tt>*d</tt> to use double quotes (<tt>&quot;<i>word</i>&quot;</tt>): </p>
+<p class="docText"><tt>^[</tt>
+<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">
+Section 18.6</a></p>
+<pre>map *s Ea'^[Bi'^[
+map *d Ea&quot;^[Bi&quot;^[</pre>
+<p class="docText">Now you'll be able to make hundreds of keymaps (though your 
+version of <i>vi</i> probably has a limit). </p>
+<p class="docText">You may also be able to associate map sequences with your 
+terminal's function keys if your <span class="docEmphBold">termcap or terminfo 
+entry</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-2">Section 
+5.2</a>) defines those keys. For example, to make function key F1 transpose 
+words: </p>
+<pre>map #1 dwelp</pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Map assignments are not really limited to unused 
+        keys. You can map keys that are defined as other <i>vi</i> commands, but 
+        then the key's original meaning is inaccessible. This is probably okay 
+        if the key is tied to a command that you rarely use. There's more 
+        information in
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-12">
+        Section 18.12</a> about the <span class="docEmphasis">noremap</span> 
+        option. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-18-SECT-2.2" class="docSection2Title">18.2.2 Text-Input Mode Maps</h4>
+<p class="docText">The <tt>map!</tt> command works like <tt>map</tt>, but <tt>
+map!</tt> works during text-input mode. You actually set the <tt>map!</tt> 
+during command mode, in the same way as a plain <tt>map</tt>: at a colon (:) 
+prompt. Type <tt>map!</tt> followed by a space and the key(s) that activate the 
+map; then type a space and the text for which the text-input mode map stands. 
+These text-input mode maps are a lot like <span class="docEmphBold">
+abbreviations</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-23">Section 
+17.23</a>); the difference is that <tt>map!</tt> lets your keymap switch from 
+text-input mode to command mode, execute commands, then go back to text-input 
+mode. To go to command mode during a <tt>map!</tt>, put an ESC key in the value 
+of the map by <span class="docEmphBold">typing CTRL-v and then ESC</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">Section 
+18.6</a>). After your <tt>map!</tt> does whatever it does in command mode, it 
+can re-enter text-input mode with the usual commands: <tt>a</tt>, <tt>i</tt>, 
+and so on. </p>
+<p class="docText">Let's say you normally never type the caret (<tt>^</tt>) key 
+during input mode. When you're typing along, as you realize that what you're 
+typing is important, you want to press the caret key. Then, <i>vi</i> should 
+open a line above and insert the phrase &quot;THIS IS IMPORTANT:&quot;. Finally, <i>vi</i> 
+should return you to text-input mode at the end of the line where you pressed 
+the caret key. To do that, go to command mode and enter the following <tt>map!</tt> 
+command. The first <tt>^</tt> comes from pressing the caret key. Then you'll see 
+two places with <tt>^[</tt>; that are made by pressing CTRL-v followed by the 
+ESC key. Finish the map by pressing RETURN: </p>
+<pre>:map! ^ ^[OTHIS IS IMPORTANT:^[jA</pre>
+<p class="docText">What does that do? It executes the same <i>vi</i> commands 
+you'd use to add those three words yourself, manually. During text-input mode, 
+typing a caret (<tt>^</tt>) will: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Do ESC to go to command mode.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Use <tt>O</tt> to open a new line above (in text-input 
+  mode). </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Enter the text <tt>THIS IS IMPORTANT</tt>:.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Do another ESC to go back to command mode.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Do <tt>j</tt> to go down a line (to the line where you 
+  started). </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Do <tt>A</tt> to put you at the end of the line, in 
+  text-input mode. </span></li>
+</ol>
+</span>
+<p class="docText">The trick is to use <tt>map!</tt> only to redefine keys 
+you'll never use for anything else during text-input mode. To disable a 
+text-input mode map temporarily, press CTRL-v before the key. For example, to 
+put a real caret into your file, type CTRL-v ^. To disable an input-mode map for 
+the rest of your <i>vi</i> session, type <tt>:unmap!</tt> followed by the 
+character(s) that activate the map. </p>
+<p class="docText">A more common example is mapping your keyboard's arrow or 
+function keys to do something during text-input mode. These keys send a special 
+series of characters. Normally, without a <tt>map!</tt> defined for these keys, 
+the characters they send will be put into your editor buffer — just as if you'd 
+typed the characters they make yourself, one by one. For instance, my left-arrow 
+key sends the characters <tt>ESC</tt>, then <tt>[</tt> (left bracket), then <tt>
+D</tt>. Without a text-input mode <tt>map!</tt> defined for that three-character 
+sequence, <i>vi</i> will be hopelessly confused if I press that arrow key.<span id="ENB18-1"><a class="docLink" href="#EN18-1"><sup>[1]</sup></a></span> 
+Many Unix developers have added text-input mode maps for arrow keys. You can see 
+them when you list all your text-input mode maps by typing <tt>:map!</tt> by 
+itself, with nothing after: </p>
+<pre>up      ^[[A    ^[ka
+down    ^[[B    ^[ja
+left    ^[[D    ^[hi
+right   ^[[C    ^[la
+^       ^       ^[OTHIS IS IMPORTANT:^[jA</pre>
+<p class="docText">
+<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-3">
+Section 18.3</a> lists some problems with <tt>map!</tt>. </p>
+<p class="docText"><span class="docEmphasis">—JP, DG, and LL</span></p>
+
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-3">18.3 What You Lose When You Use map!</h3>
+<p class="docText">Back in the old days, a terminal's arrow keys didn't work 
+during <i>vi</i> text-input mode. To move around in the file, you pressed ESC 
+and used command-mode commands like <span class="docEmphasis">5k</span> and
+<span class="docEmphasis">4w</span>. Since then, lots of vendors and users have 
+modified <i>vi</i> so that you can use arrow keys during text-input mode. These 
+days, most people think the new-fangled way that <i>vi</i> works is the right 
+way. Here are some reasons to leave the arrow keys alone and do it the old way 
+instead: </p>
+<ul>
+  <li>
+  <p class="docList">In most cases, the <tt>u</tt> (undo) command will be 
+  useless after text-input mode because the arrow keymap does several hidden 
+  commands — and <tt>u</tt> can only undo the single previous command. The only 
+  &quot;undo&quot; command that will do much good is <tt>U</tt> — it undoes all changes on 
+  the current line, and it probably won't work if you've moved off the line 
+  since you made the change you want to undo. </li>
+  <li>
+  <p class="docList">Beginners can get confused by this. They need to learn that
+  <i>vi</i> is a moded editor — that you enter text in text-input mode and make 
+  changes in command mode. Movement through the file is with commands. </p>
+  <p class="docList">When people start using <i>vi</i> and they find that some 
+  motion commands (the cursor keys) work in text-input mode, <i>vi</i> seems 
+  inconsistent. </li>
+  <li>
+  <p class="docList">If your <tt>map!</tt> runs commands that start with an ESC 
+  (and it almost always will), your ESC key may work more slowly. That's because 
+  every time you press the ESC key, <i>vi</i> will wait one second (or so) to be 
+  sure that the ESC is just an ESC alone and not the beginning of a <tt>map!</tt> 
+  sequence. Some versions have changed this, though. </p>
+  <p class="docList">The fast alternative is to press ESC twice. That rings the 
+  terminal bell, though. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-4">18.4 vi @-Functions</h3>
+<p class="docText">The <span class="docEmphBold">vi map command</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+18.2</a>) lets you define keymaps: short names for a series of one or more 
+commands. You can enter <tt>:map</tt> to define a keymap while you're editing a 
+file with <i>vi</i>. But if you make a mistake, you usually have to re-enter the 
+whole <tt>:map</tt> command to correct the problem. </p>
+<p class="docText"><tt>@</tt>-functions (pronounced &quot;at-functions&quot;) give you 
+another way to define complex commands. You can define 26 <tt>@</tt>-functions 
+named <tt>@a</tt> through <tt>@z</tt>. They're stored in
+<span class="docEmphBold">named buffers</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-4">Section 
+17.4</a>). So if you're also using named buffers for copying and pasting text, 
+you'll need to share them with your <tt>@</tt>-functions. </p>
+<h4  id="upt3-CHP-18-SECT-4.1" class="docSection2Title">18.4.1 Defining and Using Simple @-Functions</h4>
+<p class="docText">To define an <tt>@</tt>-function: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Enter the command(s) you want to execute onto one or more 
+  lines of the file you're editing. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Yank or delete the line(s) into a named buffer with a 
+  command like <tt>&quot;ay$</tt> or <tt>&quot;bD</tt>. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">To use the function, type a command like <tt>@a</tt> or <tt>
+  @b</tt>. You can repeat the function by typing <tt>@@</tt> or a dot (.). Use
+  <tt>u</tt> or <tt>U</tt> to undo the effects of the <tt>@</tt>-function.
+  </span></li>
+</ol>
+</span>
+<p class="docText">Here's an example. You're editing a long HTML file with lines 
+like these: </p>
+<pre>&lt;STRONG&gt;<tt><i>Some heading here</i></tt>&lt;/STRONG&gt;
+&lt;STRONG&gt;<tt><i>Another heading here</i></tt>&lt;/STRONG&gt;</pre>
+<p class="docText">When you see one of those lines, you need to change the <tt>
+STRONG</tt>s to either <tt>H3</tt> or <tt>H4</tt>. A global substitution with
+<tt>:%s</tt> won't do the job because some lines need <tt>H3</tt> and others 
+need <tt>H4</tt>; you have to decide line-by-line as you work through the file. 
+So you define the function <tt>@a</tt> to change a line to <tt>H3</tt>, and <tt>
+@b</tt> to change to <tt>H4</tt>. </p>
+<p class="docText">To design an <tt>@</tt>-function, start by thinking how you'd 
+make the changes by hand. You'd probably move to the start of the line with <tt>
+0</tt>, move to the right one character with <tt>l</tt>, type <tt>cw</tt> to 
+change the word <tt>STRONG</tt>, and type in <tt>H3</tt> (or <tt>H4</tt>). Then 
+you'd press ESC to return to command mode. After going to the end of the line 
+with <tt>$</tt>, you'd move to the character after the slash with <tt>T/</tt>, 
+then change the second <tt>STRONG</tt> the way you fixed the first one. </p>
+<p class="docText">To define the function, open a new empty line of your file 
+(first go into text-input mode). Then type the keystrokes that will make the <tt>
+H3</tt> changes; <span class="docEmphBold">type CTRL-v before each ESC or RETURN</span> 
+(<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">Section 
+18.6</a>). When you're done, press ESC again to go to command mode. Because the 
+commands for the <tt>H4</tt> change are similar, the easiest way to make them is 
+by copying and pasting the line for <tt>H3</tt> (by typing <tt>yy</tt> and <tt>p</tt>) 
+and then editing the copy. The pair of command lines should look like this 
+(where <tt>^[</tt> stands for the CTRL-v ESC keys): </p>
+<pre>0lcwH3^[$T/cwH3^[
+0lcwH4^[$T/cwH4^[</pre>
+<p class="docText">Move to the start of the first line, and delete it into the
+<span class="docEmphasis">a</span> buffer by typing <tt>&quot;aD</tt>. Go to the next 
+line, and type <tt>&quot;bD</tt>. (This will leave two empty lines; delete them with
+<tt>dd</tt> if you'd like.) Now, when you type <tt>@a</tt>, it will execute the 
+commands to change a line to <tt>H3</tt>; typing <tt>@b</tt> on a line will 
+change it to have <tt>H4</tt>. Move through your file (maybe with a search: <tt>
+/STRONG</tt> ... <tt>n</tt> ...), typing <tt>@a</tt> or <tt>@b</tt> as you go. 
+Or use <tt>@@</tt> to make the same change you made on a previous line. </p>
+<h4  id="upt3-CHP-18-SECT-4.2" class="docSection2Title">18.4.2 Combining @-Functions</h4>
+<p class="docText">An <tt>@</tt>-function can execute other <tt>@</tt>-functions. 
+For example, here are four lines ready for storing as <tt>@a</tt> through <tt>@d</tt>:
+</p>
+<pre>0l@c$T/@c   <i>...becomes @a</i>
+0l@d$T/@d   <i>...becomes @b</i>
+cwH3^[      <i>...becomes @c</i>
+cwH4^[      <i>...becomes @d</i></pre>
+<p class="docText">See that the definition of <tt>@a</tt> has <tt>@c</tt> in it 
+twice? When you execute <tt>@a</tt>, it will do <tt>0l</tt> to move to the 
+second character on the line, then do <tt>@c</tt> to change the word to <tt>H3</tt>, 
+move to the end of the line, and use <tt>@c</tt> again. Calling one <tt>@</tt>-function 
+from another can save you from retyping repetitive commands. </p>
+<p class="docText">A disadvantage is that <tt>@@</tt> won't always work as you 
+might expect. If you type <tt>@a</tt> to make a change in one place, then move 
+somewhere else and type <tt>@@</tt>, the <tt>@@</tt> will do what <tt>@c</tt> 
+does (instead of what you might have wanted, <tt>@a</tt>). That's because the
+<tt>@a</tt> function finishes by doing <tt>@c</tt>. </p>
+<h4  id="upt3-CHP-18-SECT-4.3" class="docSection2Title">18.4.3 Reusing a Definition</h4>
+<p class="docText">You don't have to delete the definition line into a buffer 
+with <tt>dd</tt>. If you think you might need to fine-tune the command, you can 
+yank (copy) it into a buffer with a command like <tt>&quot;ay$</tt>. Then, if you 
+need to revise the command, re-edit the line and type <tt>&quot;ay$</tt> to put the 
+revised version into the buffer. Or use <tt>&quot;by$</tt> to copy the revised line 
+into another buffer. </p>
+<h4  id="upt3-CHP-18-SECT-4.4" class="docSection2Title">18.4.4 Newlines in an @-Function</h4>
+<p class="docText">Stored <tt>@</tt>-functions can span multiple lines. For 
+example, if you delete the following four lines with <tt>&quot;z4dd</tt>, typing <tt>
+@z</tt> will open a newline below (<tt>o</tt>) and insert four newlines of text:
+</p>
+<pre>oThis is the newline one.
+This is the newline two.
+This is the third line.
+This is the fourth.^[</pre>
+<p class="docText">After you execute the function with <tt>@z</tt>, your cursor 
+will move to the line below the new fourth line. Why? Because you included the 
+newlines (RETURNs) in the buffer; each RETURN moves down a line — including the 
+RETURN after the last ESC. </p>
+<p class="docText">If you don't want that, there are two ways to fix it:</p>
+<ul>
+  <li>
+  <p class="docList">Delete the first three lines, including the newlines, into 
+  the buffer by typing <tt>&quot;z3dd</tt>. Delete the fourth line, without its 
+  newline, and <span class="docEmphasis">append</span> it to the buffer by 
+  typing <tt>&quot;ZD</tt>. (An uppercase letter like <tt>Z</tt> appends to a named 
+  buffer. <tt>D</tt> deletes all of a line except the newline.) </p>
+  <p class="docList">Some versions of <i>vi</i> will delete four lines, without 
+  the last newline, when you use <tt>&quot;z4D</tt>. </li>
+  <li>
+  <p class="docList">Type all of the text onto a single line; embed the newlines 
+  in that line by typing CTRL-v RETURN between each finished line. It'll look 
+  like this: </p>
+  <pre>oThis is the new line one.^MThis is the new line two.^MThis is the new...</pre>
+  </li>
+  <li>
+  <p class="docList">Delete that long line into your buffer with <tt>&quot;zD</tt>. 
+  Because <tt>D</tt> doesn't delete the final newline, your cursor will stay at 
+  the end of the fourth newline after you execute the <tt>@z</tt>. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-5">18.5 Keymaps for Pasting into a Window Running vi</h3>
+<p class="docText">I usually run <i>vi</i> inside windows on a system like X or 
+the Macintosh. The window systems can copy and paste text between windows. 
+Pasting into a <i>vi</i> window may be tricky if you use <i>vi</i> options like
+<span class="docEmphasis">wrapmargin</span> or <span class="docEmphasis">
+autoindent</span> because the text you paste can be rearranged or indented in 
+weird ways. </p>
+<p class="docText">I've fixed that with the upcoming keymaps. If I'm pasting in 
+text that should be copied exactly with no changes, I go into text-input mode 
+and type CTRL-x. That shuts off autoindent (<tt>noai</tt>) and the wrapmargin (<tt>wm=0</tt>). 
+When I'm done pasting, I type CTRL-n while I'm still in text-input mode. </p>
+<p class="docText">A different kind of &quot;pasted&quot; input is with CTRL-r. It starts 
+the <span class="docEmphBold">fmt</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-2">Section 
+21.2</a>) utility to reformat and clean up lines while I'm pasting them. To use 
+it, go to text-input mode and type CTRL-r. Then paste the text -- <i>fmt</i> 
+will read it but not display it. Press RETURN, then CTRL-d to end the standard 
+input to <i>fmt</i>. The reformatted text will be read into your <i>vi</i> 
+buffer. </p>
+<p class="docText"><tt>^[</tt>
+<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">
+Section 18.6</a></p>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: exrc</p>
+<pre>&quot; Set 'exact' input mode for pasting exactly what is entered:
+map! ^X ^[:se noai wm=0^Ma
+&quot; Set 'normal' input mode with usual autoindent and wrapmargin:
+map! ^N ^[:se ai wm=8^Ma
+&quot; Read pasted text, clean up lines with fmt. Type CTRL-d when done:
+map! ^R ^[:r!fmt^M</pre>
+<p class="docText">Note that some window systems convert TAB characters to 
+spaces when you copy and paste. If you want the TABs back, try a
+<span class="docEmphBold">filter-through</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-18">Section 
+17.18</a>) with <i>unexpand</i>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-6">18.6 Protecting Keys from Interpretation by ex</h3>
+<p class="docText">Note that when defining a map, you cannot simply type certain 
+keys — such as RETURN, ESC, BACKSPACE, and DELETE — as part of the command to be 
+mapped, because these keys already have meaning within <i>ex</i>. If you want to 
+include one of these keys as part of the command sequence, you must escape the 
+normal meaning by preceding the key with <tt>^V</tt> ( CTRL-v). After CTRL-v, a 
+carriage return appears as <tt>^M</tt>, escape as <tt>^[</tt>, backspace as <tt>
+^H</tt>, and so on. </p>
+<p class="docText">On the other hand, if you want to map a control character, in 
+most cases you can just hold down the CTRL key and press the letter key at the 
+same time. For example, to map <tt>^A</tt> (CTRL-a), simply type: </p>
+<pre>:map CTRL-a <tt><i>sequence</i></tt></pre>
+<p class="docText">There are, however, a few other control characters that must 
+be escaped with a <tt>^V</tt>. One is <tt>^T</tt>. The others are as follows:
+</p>
+<ul>
+  <li>
+  <p class="docList">The characters that your account uses for erasing parts of 
+  the input you type at a command line: <tt>^W</tt> for erasing words and <tt>^U</tt> 
+  for erasing lines. </li>
+  <li>
+  <p class="docList">The characters for <span class="docEmphBold">interrupting 
+  jobs</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-11">Section 
+  24.11</a>) and <span class="docEmphBold">stopping jobs</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-1">Section 
+  23.1</a>). </li>
+</ul>
+<p class="docText">So, if you want to map <tt>^T</tt>, you must type: </p>
+<pre>:map CTRL-v CTRL-t <tt><i>sequence</i></tt></pre>
+<p class="docText">The use of CTRL-v applies to any <i>ex</i> command, not just 
+a map command. This means that you can type a carriage return in an
+<span class="docEmphBold">abbreviation</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-23">Section 
+17.23</a>) or a substitution command. For example, the abbreviation: </p>
+<pre><b>:ab 123 one^Mtwo^Mthree</b></pre>
+<p class="docText">expands to this:</p>
+<pre>one
+two
+three</pre>
+<p class="docText">(The sequence CTRL-v RETURN is shown as it appears on your 
+screen, <tt>^M</tt>.) </p>
+<p class="docText">You can also add lines globally at certain locations. The 
+command:</p>
+<pre><b>:g/^Section/s//As you recall, in^M&amp;/</b></pre>
+<p class="docText">inserts a phrase on a separate line before any line beginning 
+with the word <span class="docEmphasis">Section</span>. The <tt>&amp;</tt> restores 
+the search pattern. </p>
+<p class="docText">The vertical bar (<tt>|</tt>) is used to separate multiple <i>
+ex</i> commands; it's especially difficult to quote. Because a map is 
+interpreted when it's stored and again when it's used, you need enough CTRL-v 
+characters to protect the vertical bar from each interpretation. You also need 
+to protect stored CTRL-v characters by adding a CTRL-v before each one! The 
+worst case is a text-input mode map (<span class="docEmphBold">map!</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+18.2</a>)) — it needs three CTRL-v characters, which means you need to type
+<span class="docEmphasis">six</span> CTRL-v characters before you type the 
+vertical bar. For example, the following map will make your
+<span class="docEmphBold">function key F1</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+18.2</a>) insert the string <tt>{x|y}</tt>: </p>
+<pre><b>map! #1 {x^V^V^V|y}</b></pre>
+<p class="docText">If you ask for a list of text-input mode maps, you should see 
+a single stored CTRL-v: </p>
+<pre><b>:map!</b>
+f1  ^[OP   {x^V|y}</pre>
+<p class="docText"><span class="docEmphasis">—LL, DG, and JP, from Learning the 
+vi Editor (O'Reilly, 1998)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-7">18.7 Maps for Repeated Edits</h3>
+<p class="docText">Another way to do this is with<span class="docEmphBold"> 
+@-functions</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-4">Section 
+18.4</a>). </p>
+<p class="docText">Not every keymap is something you want to save in your
+<span class="docEmphasis">.exrc</span> file. Some maps are handy just because 
+you have to do a repetitive series of edits. Developing a complex map to repeat 
+your edits can save more time than it takes. For example, assume that you have a 
+glossary with entries like this, separated by blank lines: </p>
+<pre>map - an ex command which allows you to associate
+a complex command sequence with a single key.</pre>
+<p class="docText">You want to convert this glossary list to HTML format, so 
+that it looks like: </p>
+<pre>&lt;DT&gt;map&lt;/DT&gt;
+&lt;DD&gt;
+An ex command which allows you to associate
+a complex command sequence with a single key.
+&lt;/DD&gt;</pre>
+<p class="docText">The best way to define a complex map is to do the edit once 
+manually, writing down each keystroke that you must type. Then recreate these 
+keystrokes as a map. </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Use <tt>I</tt> to insert the tag for an data list term (<tt>&lt;DT&gt;</tt>) 
+  at the beginning of the line. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Press ESC to terminate text-input mode. Move just before 
+  the dash (<tt>t-</tt>). Use <tt>3s</tt> to replace the dash and space after it 
+  with the closing term tag (<tt>&lt;/DT&gt;</tt>). </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Still in text-input mode, press RETURN to insert a new 
+  line. (This moves the definition to a newline underneath the <tt>&lt;DT&gt;</tt> 
+  tags.) Enter the opening data list definition (<tt>&lt;DD&gt;</tt>) tag, and press 
+  RETURN again. (The definition moves to yet another newline underneath the <tt>
+  &lt;DD&gt;</tt> tag.) </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Press ESC to terminate text-input mode. Your cursor is at 
+  the start of the definition. Capitalize the first word of the definition (<tt>~</tt>).
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Go to the blank line after the definition (<tt>}</tt>), 
+  open a newline above (<tt>O</tt>), and insert the closing data list definition 
+  (<tt>&lt;/DD&gt;</tt>) tag. Press ESC to end text-input mode. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Press RETURN to end the keymap definiton.</span></li>
+</ol>
+</span>
+<p class="docText">That's quite an editing chore if you have to repeat it more 
+than a few times. With <tt>map</tt> you can save the entire sequence so that it 
+can be re-executed with a single keystroke: </p>
+<pre>map g I&lt;DT&gt;^[t-3s&lt;/DT&gt;^M&lt;DD&gt;^M^[~}O&lt;/DD&gt;^[</pre>
+<p class="docText">(To store a map during a <i>vi</i> session, type a colon (:) 
+first.) Note that you have to &quot;quote&quot; both the ESC and RETURN characters with
+<span class="docEmphBold">CTRL-v</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">Section 
+18.6</a>). <tt>^[</tt> is the sequence that appears when you type
+<span class="docEmphBold">CTRL-v</span> followed by <span class="docEmphBold">
+ESC</span>. <tt>^M</tt> is the sequence shown when you type
+<span class="docEmphBold">CTRL-v RETURN</span>. </p>
+<p class="docText">Now, simply typing <tt>g</tt> will perform the entire series 
+of edits. At a slow data rate you can actually see the edits happening 
+individually. At a fast data rate it will seem to happen by magic. </p>
+<p class="docText">Don't be discouraged if your first attempt at keymapping 
+fails. A small error in defining the map can give very different results from 
+the ones you expect. You can probably type <tt>u</tt> to undo the edit and try 
+again. It's safer to write the file (<tt>:w</tt>) before you use the keymap — in 
+case your version of <i>vi</i> can't undo complex keymaps. </p>
+<p class="docText">If the keymap is complex, or if you're defining several maps 
+at once, you can make a temporary keymap file and edit the maps there until 
+you've worked out the bugs. For instance, write your buffer and type <tt>:e temp</tt> 
+to open a temporary file <span class="docEmphasis">temp</span>. Make the keymaps, 
+one per line — without a colon (:) first. Write this map file (<tt>:w</tt>), 
+then read it in to the editor (<tt>:so %</tt>). If there's no error, switch to 
+the original file (<tt>:e #</tt> or CTRL-^), and try the map. (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-3">Section 
+17.3</a> explains <tt>%</tt> and <tt>#</tt>.) Then, if there are problems, go 
+back to the map file (<tt>:e! #</tt>, where the <tt>!</tt> tells <i>vi</i> not 
+to write the mistakes out to the file), fix the keymap, and repeat the process 
+until you get what you wanted. </p>
+<p class="docText">In this case, for instance, maybe the next glossary 
+definition starts with an uppercase letter, but the <tt>~</tt> in the keymap is 
+changing that letter to lowercase. You need to change the <tt>~</tt> to an <i>ex</i> 
+substitution command that <span class="docEmphBold">converts a lowercase letter 
+to uppercase</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-16">Section 
+17.16</a>). If you've saved the keymap in a temporary file, just type <tt>:e#</tt> 
+and change it: </p>
+<pre>map g I&lt;DT&gt;^[t-3s&lt;/DT&gt;^M&lt;DD&gt;^M^[:s/^./\u&amp;/^M}O&lt;/DD&gt;^[</pre>
+<p class="docText">We've changed <tt>~</tt> to <tt>:s/^./\u&amp;/^M</tt>. As you can 
+see, complex keymaps can be tough to decipher after you've written them, which 
+makes the notes you've written even more useful. </p>
+<p class="docText"><span class="docEmphasis">—TOR and JP, from Learning the vi 
+Editor (O'Reilly, 1998)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-8">18.8 More Examples of Mapping Keys in vi</h3>
+<p class="docText">The examples that follow will give you an idea of the clever 
+shortcuts possible when defining keyboard maps: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Add text whenever you move to the end of a word:</p>
+  <pre>map e ea</pre>
+  <p class="docList">Most of the time, the only reason you want to move to the 
+  end of a word is to add text. This map sequence puts you in text-input mode 
+  automatically. Note that the mapped key, <tt>e</tt>, has meaning in <i>vi</i>. 
+  You're allowed to map a key that is already used by <i>vi</i>, but the key's 
+  normal function will be unavailable as long as the map is in effect. This 
+  isn't so bad in this case, since the <tt>E</tt> command is often identical to
+  <tt>e</tt>. </p>
+  <p class="docList">In the remaining examples, we assume that <tt>e</tt> has 
+  been mapped to <tt>ea</tt>. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList"><span class="docEmphBold">Save a file and edit the next one 
+  in a series</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-3">Section 
+  17.3</a>): </p>
+  <pre>map q :w^M:n^M</pre>
+  <p class="docList">Notice that you can map keys to <i>ex</i> commands, but be 
+  sure to finish each <i>ex</i> command with a RETURN. This sequence makes it 
+  easy to move from one file to the next, and it's useful when you've opened 
+  many short files with one <i>vi</i> command. Mapping the letter <tt>q</tt> 
+  helps you remember that the sequence is similar to a &quot;quit.&quot; </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Put HTML emboldening codes (<tt>&lt;STRONG&gt;</tt> and <tt>
+  &lt;/STRONG&gt;</tt>) around a word: </p>
+  <pre>map v i&lt;STRONG&gt;^[e&lt;/STRONG&gt;^[</pre>
+  <p class="docList">This sequence assumes that the cursor is at the beginning 
+  of the word. First, you enter text-input mode, then you type the code for bold 
+  font. Next, you return to command mode by typing a <span class="docEmphBold">
+  &quot;quoted&quot;</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">Section 
+  18.6</a>) ESC. Finally, you append the closing HTML tag at the end of the 
+  word, and you return to command mode. Of course, the map is not limited to 
+  HTML font tags. You can use it to enclose a word in parentheses or C comment 
+  characters, to name just a few applications. </p>
+  <p class="docList">This example shows you that map sequences are allowed to 
+  contain other map commands (the <tt>e</tt> is already mapped to <tt>ea</tt>). 
+  The ability to use nested map sequences is controlled by
+  <span class="docEmphBold">vi's remap option</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-12">Section 
+  18.12</a>), which is normally enabled. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Put HTML emboldening tags around a word, even when the 
+  cursor is not at the beginning of the word: </p>
+  <pre>map V lbi&lt;STRONG&gt;^[e&lt;/STRONG&gt;^[</pre>
+  <p class="docList">This sequence is the same as the previous one, except that 
+  it uses <tt>lb</tt> to handle the additional task of positioning the cursor at 
+  the beginning of the word. The cursor might be in the middle of the word, so 
+  you'll want to move to the beginning with the <tt>b</tt> command. </p>
+  <p class="docList">But if the cursor were already at the beginning of the 
+  word, the <tt>b</tt> command would move the cursor to the previous word 
+  instead. To guard against that case, type an <tt>l</tt> before moving back 
+  with <tt>b</tt> so that the cursor never starts on the first letter of the 
+  word. You can define variations of this sequence by replacing the <tt>b</tt> 
+  with <tt>B</tt> and the <tt>e</tt> with <tt>Ea</tt>. In all cases though, the
+  <tt>l</tt> command prevents this sequence from working if the cursor is at the 
+  end of a line. (To get around this, you could add a space to the end of the 
+  word before typing the keymap.) </span></li>
+</ol>
+</span>
+<p class="docText">—<span class="docEmphasis">DG, from Learning the vi Editor 
+(O'Reilly, 1998)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-9">18.9 Repeating a vi Keymap</h3>
+<p class="docText">The <i>vi</i> (actually, <i>ex</i>) command
+<span class="docEmphBold">map</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+18.2</a>) lets you build custom <i>vi</i> commands. For example, the following 
+keymap redefines the <tt>-key</tt> to run the <i>vi</i> commands
+<span class="docEmphasis">o</span> (open a newline below),
+<span class="docEmphasis">ESCAPE</span>, <span class="docEmphasis">72a-</span> 
+(add 72 dashes), and <span class="docEmphasis">ESCAPE</span> again: </p>
+<pre><b>:map - o^[72a-^[</b></pre>
+<p class="docText">So typing <span class="docEmphasis">-</span> draws a row of 
+dashes below the current line. The problem is that on versions of <i>vi</i> I've 
+tried, you can't add a repetition number — that is, you can't type the command
+<tt>10-</tt> to add 10 dashed lines. </p>
+<p class="docText">The workaround is to define another macro that calls the 
+first macro ten times. For example, to make the <tt>v</tt> key draw ten rows of 
+dashes: </p>
+<pre><b>:map v ----------</b></pre>
+<p class="docText">(Ugly, eh? But it works.) You might want to put the <tt>-</tt>
+<tt>map in your</tt> <span class="docEmphasis">.exrc</span> file and define &quot;multimaps&quot; 
+like <span class="docEmphasis">v</span> while you're running <i>vi</i>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-10">18.10 Typing in Uppercase Without CAPS LOCK</h3>
+<p class="docText">You may want to input text in all uppercase letters. Using 
+CAPS LOCK in <i>vi</i> can be a pain because you have to release CAPS LOCK 
+almost every time you want to type a <i>vi</i> command. Here's a nice way to 
+type lowercase letters during input and <i>ex</i> modes; they'll be mapped to 
+uppercase automatically. </p>
+<p class="docText">Try putting this in your <span class="docEmphBold">.exrc</span> 
+(<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-5">Section 
+17.5</a>) file: </p>
+<pre>map! a A
+map! b B
+map! c C
+  ...
+map! z Z</pre>
+<p class="docText">Anytime you type (during text-input mode) an <tt>a</tt>, the 
+editor will map it into <tt>A</tt>. What's that you say . . . you don't want 
+this all the time? Just put it in a file called <span class="docEmphasis">.f</span> 
+(for FORTRAN), and type: </p>
+<pre><b>:source .f</b></pre>
+<p class="docText">when you want FORTRAN mode. Of course, you can
+<span class="docEmphBold">define a function key</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+18.2</a>) to <tt>:source</tt> this. </p>
+<p class="docText">[After that, anywhere you want a lowercase letter, type 
+CTRL-v first to cancel the map temporarily. For example, to type the command <tt>
+:w</tt>, type : CTRL-v w. </p>
+<p class="docText">You can also go into the <i>ex</i> command mode by typing the
+<i>vi</i> command <tt>Q</tt>. That takes you to the <span class="docEmphasis">ex</span> 
+colon (:) prompt — where the <span class="docEmphasis">map!</span> macros won't 
+affect what you type. To return to <span class="docEmphasis">vi</span> mode from
+<span class="docEmphasis">ex</span> command mode, type <tt>:vi</tt>.
+<span class="docEmphasis">-- JP</span>] </p>
+<p class="docText"><span class="docEmphasis">—BB, in net.unix on Usenet, 9 
+October 1986</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-11">18.11 Text-Input Mode Cursor Motion with No Arrow 
+Keys</h3>
+<p class="docText">Some people don't like to press ESC first to move the cursor 
+while they're using <i>vi</i>. These keymaps change CTRL-h, CTRL-j, CTRL-k, and 
+CTRL-l to do the same things during input mode as the commands <tt>h</tt>, <tt>j</tt>,
+<tt>k</tt>, and <tt>l</tt> do in command mode. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Is your <span class="docEmphBold">erase character set 
+        to CTRL-h</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-8">Section 
+        5.8</a>) outside <i>vi</i>? If it is, mapping CTRL-h (usually labeled 
+        BACKSPACE on your keyboard) will change the way CTRL-h works during 
+        text-input mode: instead of erasing the characters you've typed since 
+        you entered text-input mode, now CTRL-h will move backwards over what 
+        you type without erasing it. One workaround is to change your Unix erase 
+        character to the DELETE or RUBOUT key by typing the command <tt>stty 
+        erase</tt> <tt>'^?'</tt> before you start <i>vi</i>. Then your DELETE 
+        key will erase what you type, and the BACKSPACE key will jump back over 
+        it without deleting. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">The lines for your <span class="docEmphBold">.exrc file</span> 
+(<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-30">Section 
+17.30</a>) are as follows: </p>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: exrc</p>
+<pre>map! ^H ^[i
+map! ^K ^[ka
+map! ^L ^[la
+map! ^V
+ ^[ja
+&quot; Note: the two lines above map ^J (LINEFEED)</pre>
+<p class="docText">That last map takes two lines; it's tricky and may not work 
+right on all versions of <i>vi</i>. No, it isn't a map for CTRL-v, though that's 
+what it looks like. It maps <tt>^J</tt>, the LINEFEED key. The <tt>^V</tt> comes 
+at the very end of its line. When you're entering that keymap, type CTRL-v and 
+then press LINEFEED or CTRL-j. The cursor will move to the start of the next 
+line; type a SPACE and the rest of the macro. It's a good idea to add the 
+reminder comment (starting with the comment character, a double quote (<tt>&quot;</tt>)), 
+on the line below the map. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">This map for CTRL-j is obviously something for which 
+        the people who wrote my version of <i>vi</i> didn't plan. For example, 
+        look at the mess it makes when I ask for a list of my text-input keymaps:
+        </p>
+        <pre>:<b>map!</b>^H      ^H      ^[i
+^K      ^K      ^[ka
+^L      ^L      ^[la
+
+        ^[ja</pre>
+        <p class="docText">Before you use this map on important files, you 
+        probably should test it carefully. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-12">18.12 Don't Lose Important Functions with vi Maps: 
+Use noremap</h3>
+<p class="docText">For years, I assumed that I could <span class="docEmphBold">
+map</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+18.2</a>) only a few keys in <i>vi</i> — the characters like
+<span class="docEmphasis">v</span> and <span class="docEmphasis">^A</span> that 
+aren't used. For instance, if I mapped <span class="docEmphasis">^F</span> to do 
+something else, I thought I'd lose that handy &quot;forward one screen&quot; command. You 
+thought the same thing? Then we're both wrong! </p>
+<p class="docText">Just use the <span class="docEmphasis">noremap</span> option. 
+Here's a simple example. You can make <span class="docEmphasis">^F</span> the 
+&quot;show file information&quot; (normally <span class="docEmphasis">^G</span> ) command. 
+Then, make <span class="docEmphasis">^A</span> take over the &quot;forward (ahead) 
+one screen&quot; function. Put these lines in your <span class="docEmphBold">.exrc 
+file</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-5">Section 
+17.5</a>): </p>
+<pre>set noremap
+map ^F ^G
+map ^A ^F</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-13">18.13 vi Macro for Splitting Long Lines</h3>
+<p class="docText">When you add text to the start of a line and make the line 
+longer than your screen's width, <i>vi</i> won't break (&quot;wrap&quot;) the line unless 
+your cursor crosses the <span class="docEmphasis">wrapmargin</span> point near 
+the righthand edge of the screen. You can get lines that are too long. </p>
+<p class="docText">Here are two macros that cut (Kut) the current line: </p>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: exrc</p>
+<pre>map K 78^V|lBhr^M
+map K 078lF r^M</pre>
+<p class="docText">The first macro doesn't seem to work on some versions of <i>
+vi</i>. It's the better one though, because it uses the <tt>|</tt> (vertical 
+bar) command to move to column 78, even if there are TABs in the line. Then it 
+moves one more character to the right (if it can), moves back to the start of 
+the word, moves back one more character onto the blank or TAB before the word, 
+and replaces that character with a RETURN. </p>
+<p class="docText">The second macro counts TABs as single characters, but it 
+works on every version of <i>vi</i> I've tried. It moves to the left edge, then 
+to the 79th character, then back to the previous space. Finally, it replaces 
+that space with a carriage return. </p>
+<p class="docText">You might try adding a <tt>J</tt> to the start of either 
+macro. That'll join the next line to the current one before cutting; it might 
+make a nicer &quot;wrap.&quot; Another way to do this is with a <span class="docEmphBold">
+filter-through</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-18">Section 
+17.18</a>) and the <span class="docEmphBold">fmt</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-28">Section 
+17.28</a>) command: </p>
+<pre><b>!!fmt</b></pre>
+<p class="docText">That will break the current line neatly, though it also might 
+change the spacing after periods (.) or replace leading TABs with spaces. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-18-SECT-14">18.14 File-Backup Macros</h3>
+<p class="docText">Emacs automatically keeps backup copies of the file you're 
+editing. If you have editing problems (or just change your mind), you can get 
+the previous file version by recovering from a backup file. I like this idea, 
+but I don't like the way that backups are done automatically. Instead, I want to 
+choose when <i>vi</i> makes a backup &quot;snapshot.&quot; This macro, CTRL-w, lets me do 
+that: it writes a copy of the current <span class="docEmphasis">filename</span> 
+as <span class="docEmphasis">filename~</span>. (The trailing tilde (<tt>~</tt>) 
+is an Emacs convention.
+<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-17">
+Section 14.17</a> shows ways to remove these backup files.) Whenever I want to 
+save a snapshot of the editing buffer, I just type CTRL-w. </p>
+<p class="docText"><tt>^M</tt>
+<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">
+Section 18.6</a></p>
+<pre>map ^W :w! %~^M</pre>
+<p class="docText">The <tt>w!</tt> writes without questions, overwriting any 
+previous backup with that name. <i>vi</i> replaces <tt>%</tt> (percent sign) 
+with the filename (or pathname) you're currently editing. </p>
+<p class="docText">If you want an Emacs-style backup to be made every time you 
+write the file (except the first time), you could try something like this: </p>
+<pre>map ^W :!cp -pf % %~^M:w^M</pre>
+<p class="docText">The first command uses <span class="docEmphBold">cp -p</span> 
+(<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-12">Section 
+10.12</a>) to make a backup of the previously written file; the <i>cp</i> -<i>f</i> 
+option forces the write. (<i>vi</i> may warn you <tt>File modified since</tt>
+<tt>last write</tt>, but the versions I've checked will run <i>cp</i> anyway.) 
+The next command writes the current editing buffer into the file. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN18-1"><a class="docLink" href="#ENB18-1">[1]</a>&nbsp;&nbsp;Actually, the <tt>ESC</tt> will switch <i>vi</i> back to command mode. The first
+<tt>[</tt> will make <i>vi</i> think you&#39;re about to type the section-motion 
+command <tt>[[</tt>, so the following <tt>D</tt> will make <i>vi</i> beep. Ugly, 
+eh?</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 17.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 19.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

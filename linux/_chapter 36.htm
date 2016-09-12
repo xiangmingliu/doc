@@ -1,0 +1,1757 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 36</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 35.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 37.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+<h2 class="docChapterTitle">Chapter 36. Shell Programming for the Initiated</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-1">36.1 Beyond the Basics</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-2">36.2 The Story of : # #!</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-3">36.3 Don't Need a Shell for Your Script? Don't Use One</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-4">36.5 The exec Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-5">36.6 The Unappreciated Bourne Shell &quot;:&quot; Operator</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-6">36.7 Parameter Substitution</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-7">36.8 Save Disk Space and Programming: Multiple Names for a Program</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-8">36.9 Finding the Last Command-Line Argument</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-9">36.10 How to Unset All Command-Line Parameters</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-10">36.11 Standard Input to a for Loop</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-11">36.12 Making a for Loop with Multiple Variables</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-12">36.13 Using basename and dirname</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-13">36.14 A while Loop with Several Loop Control Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-14">36.15 Overview: Open Files and File Descriptors</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-15">36.16 n&gt;&amp;m: Swap Standard Output and Standard Error</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-16">36.17 A Shell Can Read a Script from Its Standard Input, but...</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-17">36.18 Shell Scripts On-the-Fly from Standard Input</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-18">36.19 Quoted hereis Document Terminators: sh Versus csh</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-19">36.20 Turn Off echo for &quot;Secret&quot; Answers</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-20">36.21 Quick Reference: expr</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-21">36.22 Testing Characters in a String with expr</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-22">36.23 Grabbing Parts of a String</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-23">36.24 Nested Command Substitution</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-24">36.25 Testing Two Strings with One case Statement</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-25">36.26 Outputting Text to an X Window</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-36-SECT-26">36.27 Shell Lockfile</a></li>
+</ul>
+
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-1">36.1 Beyond the Basics</h3>
+<p class="docText">This chapter has a bunch of tricks and techniques for 
+programming with the Bourne shell. Some of them are documented but hard to find; 
+others aren't documented at all. Here is a summary of this chapter's articles:
+</p>
+<ul>
+  <li>
+  <p class="docList">The first group of articles is about making a file directly 
+  executable with #! on the first line. On many versions of Unix, an executable 
+  file can start with a first line like this: </p>
+  <pre>#!<tt><i>/path/to/interpreter</i></tt></pre>
+  <p class="docList">The kernel will start the program named in that line and 
+  give it the file to read. Chris Torek's Usenet classic,
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-2">
+  Section 36.2</a>, explains how <tt>#!</tt> started.
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-3">
+  Section 36.3</a> explains that your &quot;shell scripts&quot; may not need a shell at 
+  all. </li>
+  <li>
+  <p class="docList">The next bunch of articles are about processes and 
+  commands. The <i>exec</i> command,
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-5">
+  Section 36.5</a>, replaces the shell with another process; it can also be used 
+  to change input/output redirection (see below). The : (colon) operator 
+  evaluates its arguments and returns a zero status —
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-6">
+  Section 36.6</a> explains why you should care. </li>
+  <li>
+  <p class="docList">Next are techniques for handling variables and parameters. 
+  Parameter substitution, explained in
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+  Section 36.7</a>, is a compact way to test, set, and give default values for 
+  variables. You can use the <tt>$0</tt> parameter and Unix links to give the 
+  same script multiple names and make it do multiple things; see
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-8">
+  Section 36.8</a>.
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-9">
+  Section 36.9</a> shows the easy way to get the last command-line argument.
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-10">
+  Section 36.10</a> has an easy way to remove all the command-line arguments.
+  </li>
+  <li>
+  <p class="docList">Four articles cover <i>sh</i> loops. A <i>for</i> loop 
+  usually reads a list of single arguments into a single shell variable.
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-11">
+  Section 36.11</a> shows how to make the <i>for</i> loop read from standard 
+  input.
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-12">
+  Section 36.12</a> has techniques for making a <i>for</i> loop set more than 
+  one variable. The <i>dirname</i> and <i>basename</i> commands can be used to 
+  split pathnames with a loop; see
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-13">
+  Section 36.13</a>. A <i>while</i> loop can have more than one command line at 
+  the start; see
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-14">
+  Section 36.14</a>. </li>
+  <li>
+  <p class="docList">Next is an assortment of articles about input/output.
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">
+  Section 36.15</a> introduces open files and file descriptors — there's more to 
+  know about standard input/output/error than you might have realized!
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+  Section 36.16</a> has a look at file-descriptor handling in the Bourne shell, 
+  swapping standard output and standard error. </li>
+  <li>
+  <p class="docList">The shell can read commands directly from a shell script 
+  file. As
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-17">
+  Section 36.17</a> points out, a shell can also read commands from its standard 
+  input, but that can cause some problems.
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-18">
+  Section 36.18</a> shows one place scripts from <span class="docEmphasis">stdin</span> 
+  are useful: writing a script that creates another script as it goes. </p>
+  <p class="docList">Next are two articles about miscellaneous I/O. One gotcha 
+  with the here-document operator (for redirecting input from a script file) is 
+  that the terminators are different in the Bourne and C shells;
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-19">
+  Section 36.19</a> explains.
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-20">
+  Section 36.20</a> shows how to turn off echoing while your script reads a 
+  &quot;secret&quot; answer such as a password. </li>
+  <li>
+  <p class="docList">Two articles —
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-22">
+  Section 36.22</a> and
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-23">
+  Section 36.23</a> — show uses for the versatile <i>expr</i> 
+  expression-handling command.
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-21">
+  Section 36.21</a> is a quick reference to <i>expr</i>.
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-24">
+  Section 36.24</a> covers multiple <span class="docEmphBold">command 
+  substitution</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+  28.14</a>). </p>
+  <p class="docList">
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-25">
+  Section 36.25</a> shows a trick for making one <span class="docEmphBold">case 
+  statement</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">Section 
+  35.10</a>) test two things at once. Finally,
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-27">
+  Section 36.27</a> has a simple technique for getting exclusive access to a 
+  file or other system resource. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-2">36.2 The Story of : # #!</h3>
+<p class="docText">Once upon a time, there was the Bourne shell. Since there was 
+only &quot;the&quot; shell, there was no trouble deciding how to run a script: run it with
+<span class="docEmphasis">the</span> shell. It worked, and everyone was happy.
+</p>
+<p class="docText">Along came progress and wrote another shell. The people 
+thought this was good, for now they could choose their own shell. So some chose 
+the one, and some the other, and they wrote shell scripts and were happy. But 
+one day someone who used the &quot;other&quot; shell ran a script by someone who used the 
+&quot;other other&quot; shell, and alas! it bombed spectacularly. The people wailed and 
+called upon their Guru for help. </p>
+<p class="docText">&quot;Well,&quot; said the Guru, &quot;I see the problem. The one shell and 
+the other are not compatible. We need to make sure that the shells know which 
+other shell to use to run each script. And lo! the one shell has a `comment' 
+called :, and the other a true comment called <tt>#</tt>. I hereby decree that 
+henceforth, the one shell will run scripts that start with :, and the other 
+those that start with <tt>#</tt>.&quot; And it was so, and the people were happy. </p>
+<p class="docText">But progress was not finished. This time he noticed that only 
+shells ran scripts and thought that if the kernel too could run scripts, this 
+would be good, and the people would be happy. So he wrote more code, and now the 
+kernel could run scripts but only if they began with the magic incantation <tt>
+#!</tt>, and if they told the kernel which shell ran the script. And it was so, 
+and the people were confused. </p>
+<p class="docText">For the <tt>#!</tt> looked like a &quot;comment.&quot; Though the 
+kernel could see the <tt>#!</tt> and run a shell, it would not do so unless 
+certain magic bits were set. And if the incantation were mispronounced, that too 
+could stop the kernel, which, after all, was not omniscient. And so the people 
+wailed, but alas! the Guru did not respond. And so it was, and still it is 
+today. Anyway, you will get best results from a 4BSD machine by using </p>
+<pre>#! /bin/sh</pre>
+<p class="docText">or:</p>
+<pre>#! /bin/csh</pre>
+<p class="docText">as the first line of your script. <tt>#!</tt> <tt>/bin/csh -f</tt> 
+is also helpful on occasion, and it's usually faster because <i>csh</i> won't 
+read your <span class="docEmphBold">.cshrc file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>). </p>
+<p class="docText"><span class="docEmphasis">— CT</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-3">36.3 Don't Need a Shell for Your Script? Don't Use 
+One</h3>
+<p class="docText">If your Unix understands files that start with: </p>
+<pre>#!<tt><i>/interpreter/program</i></tt></pre>
+<p class="docText">(and nearly all of them do by now) you don't have to use 
+those lines to start a shell, such as <tt>#!/bin/sh</tt>. If your script is just 
+starting a program like <i>awk</i>, Unix can start the program directly and save 
+execution time. This is especially useful on small or overloaded computers, or 
+when your script has to be called over and over (such as in a loop). </p>
+<p class="docText">First, here are two scripts. Both scripts print the second 
+word from each line of text files. One uses a shell; the other runs <i>awk</i> 
+directly: </p>
+<pre>% <b>cat with_sh</b>
+#!/bin/sh
+awk '
+{ print $2 }
+' $*
+% <b>cat no_sh</b>
+#!/usr/bin/awk -f
+{ print $2 }
+% <b>cat afile</b>
+one two three four five</pre>
+<p class="docText">Let's run both commands and <span class="docEmphBold">time</span> 
+(<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-2">Section 
+26.2</a>) them. (This is running on a very slow machine. On faster systems, this 
+difference may be harder to measure — though the difference can still add up 
+over time.) </p>
+<pre>% <b>time with_sh afile</b>
+two
+0.1u 0.2s 0:00 26%
+% <b>time no_sh afile</b>
+two
+0.0u 0.1s 0:00 13%</pre>
+<p class="docText">One of the things that's really important to understand here 
+is that when the kernel runs the program on the interpreter line, it is given 
+the script's filename as an argument. If the intepreter program understands a 
+file directly, like <i>/bin/sh</i> does, nothing special needs to be done. But a 
+program like <i>awk</i> or <i>sed</i> requires the <i>-f</i> option to read its 
+script from a file. This leads to the seemingly odd syntax in the example above, 
+with a call to <tt>awk -f</tt> with no following filename. The script itself is 
+the input file! </p>
+<p class="docText">One implication of this usage is that the interpreter program 
+needs to understand <tt>#</tt> as a comment, or the first interpreter-selection 
+line itself will be acted upon (and probably rejected by) the interpreter. 
+(Fortunately, the shells, Perl, <i>sed</i>, and <i>awk</i>, among other 
+programs, do recognize this comment character.) </p>
+<p class="docText">[One last comment: if you have GNU <i>time</i> or some other 
+version that has a verbose mode, you can see that the major difference between 
+the two invocations is in terms of the page faults each requires. On a 
+relatively speedy Pentium III/450 running RedHat Linux, the version using a 
+shell as the interpreter required more than twice the major page faults and more 
+than three times as many minor page faults as the version calling <i>awk</i> 
+directly. On a system, no matter how fast, that is using a large amount of 
+virtual memory, these differences can be crucial. So opt for performance, and 
+skip the shell when it's not needed. — <span class="docEmphasis">SJC</span>] </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<p class="docText">As
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-3">
+Section 36.3</a> explains, you can use <tt>#!<i>/path/name</i></tt> to run a 
+script with the interpreter located at <i>/path/name</i> in the filesystem. The 
+problem comes if a new version of the interpreter is installed somewhere else or 
+if you run the script on another system that has a different location. It's 
+usually not a problem for Bourne shell programmers: <i>/bin/sh</i> exists on 
+every Unix-type system I've seen. But some newer shells — and interpreters like 
+Perl — may be lurking almost anywhere (although this is becoming more and more 
+standardized as Perl and other tools like it become part of standard Linux 
+distributions and the like). If the interpreter isn't found, you'll probably get 
+a cryptic message like <tt>scriptname:</tt> <tt>Command not found</tt>, where
+<span class="docEmphasis">scriptname</span> is the name of the script file. </p>
+<p class="docText">The <i>env</i> command will search your
+<span class="docEmphBold">PATH</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+35.6</a>) for an interpreter, then execute (<span class="docEmphBold">exec</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">Section 
+24.2</a>), replace itself) with the interpreter. If you want to try this, type
+<tt>env</tt> <tt>ls</tt>; <i>env</i> will find and run <i>ls</i> for you. This 
+is pretty useless when you have a shell around to interpret your commands — 
+because the shell can do the same thing without getting <i>env</i> involved. But 
+when the kernel interprets an executable file that starts with <tt>#!</tt>, 
+there's no shell (yet!). That's where you can use <i>env</i>. For instance, to 
+run your script with <i>zsh</i>, you could start its file with: </p>
+<pre>#!/usr/bin/env zsh
+   <i>...zsh script here...</i></pre>
+<p class="docText">The kernel <i>exec</i>s <i>/usr/bin/env</i>, then <i>env</i> 
+finds and <i>exec</i>s the <i>zsh</i> it found. Nice trick, eh? What do you 
+think the problem is? (You have ten seconds... tick, tick, tick...) The catch 
+is: if the <i>env</i> command isn't in <i>/usr/bin</i> on your system, this 
+trick won't work. So it's not as portable as it might be, but it's still handy 
+and probably still better than trying to specify the pathname of a less common 
+interpreter like <i>zsh</i>. </p>
+<p class="docText">Running an interpreter this way can also be a security 
+problem. Someone's <span class="docEmphasis">PATH</span> might be wrong; for 
+instance, it might execute some random command named <i>zsh</i> in the user's <i>
+bin</i> directory. An intruder could change the <span class="docEmphasis">PATH</span> 
+to make the script use a completely different interpreter with the same name.
+</p>
+<p class="docText">One more problem worth mentioning: you can't specify any 
+options for the interpreter on the first line. Some shell options can be set 
+later, as the script starts, with a command like <i>set</i>, <i>shopt</i>, and 
+so on — check the shell's manual page. </p>
+<p class="docText">Finally, understand that using <i>env</i> like this pretty 
+much erases any performance gains you may have achieved using the trick in the 
+previous article. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-4">36.5 The exec Command</h3>
+<p class="docText">The <i>exec</i> command executes a command in place of the 
+current shell; that is, it terminates the current shell and starts a new
+<span class="docEmphBold">process</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>) in its place. </p>
+<p class="docText">Historically, <i>exec</i> was often used to execute the last 
+command of a shell script. This would kill the shell slightly earlier; 
+otherwise, the shell would wait until the last command was finished. This 
+practice saved a process and some memory. (Aren't you glad you're using a modern 
+system? This sort of conservation usually isn't necessary any longer unless your 
+system limits the number of processes each user can have.) </p>
+<p class="docText"><i>exec</i> can be used to replace one shell with another 
+shell: </p>
+<pre>% <b>exec ksh</b>
+$</pre>
+<p class="docText">without incurring the additional overhead of having an unused 
+shell waiting for the new shell to finish. </p>
+<p class="docText"><i>exec</i> also <span class="docEmphBold">manipulates file 
+descriptors</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">Section 
+36.16</a>) in the Bourne shell. When you use <i>exec</i> to manage file 
+descriptors, it does not replace the current process. For example, the following 
+command makes the standard input of all commands come from the file
+<span class="docEmphasis">formfile</span> instead of the default place (usually, 
+your terminal): </p>
+<pre>exec &lt; formfile</pre>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-5">36.6 The Unappreciated Bourne Shell &quot;:&quot; Operator</h3>
+<p class="docText">Some people think that the Bourne shell's : is a comment 
+character. It isn't, really. It evaluates its arguments and returns a zero
+<span class="docEmphBold">exit status</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>). Here are a few places to use it: </p>
+<ul>
+  <li>
+  <p class="docList">Replace the Unix <i>true</i> command to make an endless
+  <span class="docEmphBold">while loop</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-15">Section 
+  35.15</a>). This is more efficient because the shell doesn't have to start a 
+  new process each time around the loop (as it does when you use <tt>while true</tt>):
+  </p>
+  <pre>while :
+do
+   <tt><i>commands</i></tt>
+done</pre>
+  <p class="docList">(Of course, one of the <tt><i>commands</i></tt> will 
+  probably be <i>break</i>, to end the loop eventually. This presumes that it is 
+  actually a savings to have the <i>break</i> test inside the loop body rather 
+  than at the top, but it may well be clearer under certain circumstances to do 
+  it that way.) </li>
+  <li>
+  <p class="docList">When you want to use the <span class="docEmphBold">else in 
+  an if</span> (
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">
+  Section 35.13</a>) but leave the <i>then</i> empty, the : makes a nice 
+  &quot;do-nothing&quot; place filler: </p>
+  <pre>if <tt><i>something</i></tt>
+then :
+else
+   <tt><i>commands</i></tt>
+fi</pre>
+  </li>
+  <li>
+  <p class="docList">If your Bourne shell doesn't have a true <tt>#</tt> comment 
+  character (but nearly all of them do nowadays), you can use : to &quot;fake it.&quot; 
+  It's safest to use quotes so the shell won't try to interpret characters like
+  <tt>&gt;</tt> or <tt>|</tt> in your &quot;comment&quot;: </p>
+  <pre>: 'read answer and branch if &lt; 3 or &gt; 6'</pre>
+  </li>
+  <li>
+  <p class="docList">Finally, it's useful with <span class="docEmphBold">
+  parameter substitution</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-7">Section 
+  35.7</a>) like <tt>${<i>var</i>?}</tt> or <tt>${<i>var</i>=<i>default</i>}</tt>. 
+  For instance, using this line in your script will print an error and exit if 
+  either the <span class="docEmphasis">USER</span> or <span class="docEmphasis">
+  HOME</span> variables aren't set: </p>
+  <pre>: ${USER?} ${HOME?}</pre>
+  </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-6">36.7 Parameter Substitution</h3>
+<p class="docText">The Bourne shell has a handy set of operators for testing and 
+setting shell variables. They're listed in
+<a class="docLink" href="#upt3-CHP-36-TABLE-1">Table 36-1</a>. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-36-TABLE-1" class="docTableTitle">Table 36-1. Bourne shell parameter substitution 
+  operators </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Operator</th>
+    <th class="docTableHeader">
+    <p class="docText">Explanation</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>${<i>var</i>:-<i>default</i>}</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">If <span class="docEmphasis">var</span> is not set or is 
+    empty, use <span class="docEmphasis">default</span> instead. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>${<i>var</i>:=<i>default</i>}</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">If <span class="docEmphasis">var</span> is not set or is 
+    empty, set it to <span class="docEmphasis">default</span> and use that 
+    value. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>${<i>var</i>:+<i>instead</i>}</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">If <span class="docEmphasis">var</span> is set and is not 
+    empty, use <span class="docEmphasis">instead</span>. Otherwise, use nothing 
+    (null string). </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>${<i>var</i>:?<i>message</i>}</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">If <span class="docEmphasis">var</span> is set and is not 
+    empty, use its value. Otherwise, print <span class="docEmphasis">message</span>, 
+    if any, and exit from the shell. If <span class="docEmphasis">message</span> 
+    is missing, print a default message (which depends on your shell). </td>
+  </tr>
+</table>
+<p class="docText">If you omit the colon (:) from the expressions in
+<a class="docLink" href="#upt3-CHP-36-TABLE-1">Table 36-1</a>, the shell doesn't 
+check for an empty parameter. In other words, the substitution happens whenever 
+the parameter is set. (That's how some early Bourne shells work: they don't 
+understand a colon in parameter substitution.) </p>
+<p class="docText">To see how parameter substitution works, here's another 
+version of the <span class="docEmphBold">bkedit script</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">Section 
+35.13</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-16">
+Section 35.16</a>): </p>
+<pre>+#!/bin/sh
+if cp &quot;$1&quot; &quot;$1.bak&quot;
+then
+    ${VISUAL:-/usr/ucb/vi} &quot;$1&quot;
+    exit   # Use status from editor
+else
+    echo &quot;`basename $0` quitting: can't make backup?&quot; 1&gt;&amp;2
+    exit 1
+fi</pre>
+<p class="docText">If the <span class="docEmphBold">VISUAL</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">Section 
+35.5</a>) environment variable is set and is not empty, its value (such as <i>/usr/local/bin/emacs</i>) 
+is used and the command line becomes <tt>/usr/local/bin/emacs &quot;$1&quot;</tt>. If
+<span class="docEmphasis">VISUAL</span> isn't set, the command line defaults to
+<tt>/usr/ucb/vi &quot;$1&quot;</tt>. </p>
+<p class="docText">You can use parameter substitution operators in any command 
+line. You'll see them used with the <span class="docEmphBold">colon (:) operator</span> 
+(<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-6">Section 
+36.6</a>), checking or setting default values. There's an example below. The 
+first substitution (<tt>${nothing=default}</tt>) leaves <tt>$nothing</tt> empty 
+because the variable has been set. The second substitution sets <tt>$nothing</tt> 
+to <span class="docEmphasis">default</span> because the variable has been set 
+but is empty. The third substitution leaves <tt>$something</tt> set to
+<span class="docEmphasis">stuff</span>:</p>
+<pre>+nothing=
+something=stuff
+: ${nothing=default}
+: ${nothing:=default}
+: ${something:=default}</pre>
+<p class="docText">Several Bourne-type shells have similar string editing 
+operators, such as <tt>${<i>var</i></tt>##<tt><i>pattern</i>}</tt>. They're 
+useful in shell programs, as well as on the command line and in shell setup 
+files. See your shell's manual page for more details. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-7">36.8 Save Disk Space and Programming: Multiple 
+Names for a Program</h3>
+<p class="docText">If you're writing: </p>
+<ul>
+  <li>
+  <p class="docList">several programs that do the same kinds of things,</li>
+  <li>
+  <p class="docList">programs that use a lot of the same code (as you're writing 
+  the second, third, etc., programs, you copy a lot of lines from the first 
+  program), or </li>
+  <li>
+  <p class="docList">a program with several options that make big changes in the 
+  way it works, </li>
+</ul>
+<p class="docText">you might want to write just one program and make
+<span class="docEmphBold">links</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>,
+<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-3">
+Section 10.3</a>) to it instead. The program can find the name you called it 
+with and, through <i>case</i> or <i>test</i> commands, work in different ways. 
+For instance, the Berkeley Unix commands <i>ex</i>, <i>vi</i>, <i>view</i>, <i>
+edit</i>, and others are all links to the same executable file. This takes less 
+disk space and makes maintenance easier. It's usually sensible only when most of 
+the code is the same in each program. If the program is full of name tests and 
+lots of separate code, this technique may be more trouble than it's worth.</p>
+<p class="docText">Depending on how the script program is called, this name can 
+be a simple relative pathname like <tt>prog</tt> or <tt>./prog</tt> — it can 
+also be an absolute pathname like <tt>/usr/joe/bin/prog</tt> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-2">Section 
+31.2</a> explains pathnames). There are a couple of ways to handle this in a 
+shell script. If there's just one main piece of code in the script, as in the <i>
+lf</i> script, a <i>case</i> that tests <tt>$0</tt> might be best. The asterisk 
+(<tt>*</tt>) wildcard at the start of each case (see
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-11">
+Section 35.11</a>) handles the different pathnames that might be used to call 
+the script: </p>
+<pre>case &quot;$0&quot; in
+*<tt><i>name1</i></tt>)
+    <i>...do this when called as name1...</i>
+    ;;
+*<tt><i>name2</i></tt>)
+    <i>...do this when called as name2...</i>
+    ;;
+    ...
+*)  <i>...print error and exit if $0 doesn't match...</i>
+    ;;
+esac</pre>
+<p class="docText">You might also want to use <span class="docEmphBold">basename</span> 
+(<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-13">Section 
+36.13</a>) to strip off any leading pathname and store the cleaned-up <tt>$0</tt> 
+in a variable called <span class="docEmphasis">myname</span>. You can test <tt>$myname</tt> 
+anywhere in the script and also use it for error messages: </p>
+<pre>myname=`basename $0`
+   ...
+case &quot;$myname&quot; in
+   ...
+
+echo &quot;$myname: aborting; error in xxxxxx&quot; 1&gt;&amp;2
+   ...</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-8">36.9 Finding the Last Command-Line Argument</h3>
+<p class="docText">Do you need to pick up the last parameter <tt>$1</tt>, <tt>$2</tt>
+<tt>...</tt> from the parameter list on the command line? It looks like <tt>eval 
+\$$#</tt> would do it: </p>
+<p class="docText"><tt>eval</tt>
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-8">
+Section 27.8</a></p>
+<pre>$ <b>set foo bar baz</b>
+$ <b>eval echo \$$#</b>
+baz</pre>
+<p class="docText">except for a small problem with <i>sh</i> argument syntax:</p>
+<pre>$ <b>set m n o p q r s t u v w x</b>
+$ <b>echo $11</b>
+m1</pre>
+<p class="docText"><tt>$11</tt> means <tt>${1}1</tt>, not <tt>${11}</tt>. Trying
+<tt>${11}</tt> directly gives <tt>bad substitution</tt>. (More recent shells, 
+such as <i>bash</i>, do support the <tt>${11}</tt> syntax, however, to arbitrary 
+lengths. Our copy of <i>bash</i>, for example, allowed at least 10240 command 
+line arguments to <tt>set</tt> with recall of the last via <tt>${10240}</tt>). 
+Your mileage may vary. </p>
+<p class="docText">The only reliable way to get at the last parameter in the 
+Bourne shell is to use something like this: </p>
+<pre>for i do last=&quot;$i&quot;; done</pre>
+<p class="docText">The <i>for</i> loop assigns each parameter to the shell 
+variable named <span class="docEmphasis">last</span>; after the loop ends, <tt>
+$last</tt> will have the last parameter. Also, note that you won't need this 
+trick on all <i>sh</i>-like shells. The Korn shell, <i>zsh</i>, and <i>bash</i> 
+understand <tt>${11}</tt>. </p>
+<p class="docText"><span class="docEmphasis">— CT</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-9">36.10 How to Unset All Command-Line Parameters</h3>
+<p class="docText">The <span class="docEmphBold">shift</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-22">Section 
+35.22</a>) command &quot;shifts away&quot; one command-line parameter. You can shift three 
+times if there are three command-line parameters. Many shells also can take an 
+argument, like <span class="docEmphasis">shift 3</span>, that tells how many 
+times to shift; on those shells, you can <span class="docEmphBold">shift $#</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">Section 
+35.20</a>) to unset all parameters. </p>
+<p class="docText">The portable way to unset all command-line parameters is 
+probably to <span class="docEmphBold">set</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">Section 
+35.25</a>) a single dummy parameter, then shift it away: </p>
+<pre>+set x
+shift</pre>
+<p class="docText">Setting the single parameter wipes out whatever other 
+parameters were set before. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-10">36.11 Standard Input to a for Loop</h3>
+<p class="docText">An obvious place to use a Bourne shell
+<span class="docEmphBold">for loop</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">Section 
+35.21</a>) is to step through a list of arguments — from the command line or a 
+variable. But combine the loop with <span class="docEmphBold">backquotes</span> 
+(<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) and <span class="docEmphBold">cat</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">Section 
+12.2</a>), and the loop will step through the words on standard input. </p>
+<p class="docText">Here's an example:</p>
+<pre>for x in `cat`
+do
+    <i>...handle $x</i>
+done</pre>
+<p class="docText">Because this method splits the input into separate words, no 
+matter how many words are on each input line, it can be more convenient than a
+<i>while</i> loop running the <i>read</i> command. When you use this script 
+interactively, though, the loop won't start running until you've typed all of 
+the input; using <span class="docEmphasis">while read</span> will run the loop 
+after each line of input. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-11">36.12 Making a for Loop with Multiple Variables</h3>
+<p class="docText">The normal Bourne shell <span class="docEmphBold">for loop</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">Section 
+35.21</a>) lets you take a list of items, store the items one by one in a shell 
+variable, and loop through a set of commands once for each item: </p>
+<pre>for file in prog1 prog2 prog3
+do
+   <i>...process $file</i>
+done</pre>
+<p class="docText">I wanted a <i>for</i> loop that stores several different 
+shell variables and makes one pass through the loop for each
+<span class="docEmphasis">set</span> of variables (instead of one pass for each
+<span class="docEmphasis">item</span>, as a regular <i>for</i> loop does). This 
+loop does the job: </p>
+<p class="docText"><tt>set</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">
+Section 35.25</a></p>
+<pre>for bunch in &quot;ellie file16&quot; &quot;donna file23&quot; &quot;steve file34&quot;
+do
+   # PUT FIRST WORD (USER) IN $1, SECOND (FILE) IN $2...
+   set $bunch
+   mail $1 &lt; $2
+done</pre>
+<p class="docText">If you have any command-line arguments and still need them, 
+store them in another variable before you use the <i>set</i> command. Or you can 
+make the loop this way: </p>
+<pre>for bunch in &quot;u=ellie f=file16 s='your files'&quot; \
+    &quot;u=donna f=file23 s='a memo'&quot; &quot;u=steve f=file34 s=report&quot;
+do
+   # SET $u (USER), $f (FILENAME), $s (SUBJECT):
+   eval $bunch
+   mail -s &quot;$s&quot; $u &lt; $f
+done</pre>
+<p class="docText">This script uses the shell's <span class="docEmphBold">eval</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-8">Section 
+27.8</a>) command to rescan the contents of the <span class="docEmphasis">bunch</span> 
+variable and store it in separate variables. Notice the single quotes, as in <tt>
+s='your files'</tt>; this groups the words for <i>eval</i>. The shell removes 
+the single quotes before it stores the value into the <span class="docEmphasis">
+s</span> variable. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-12">36.13 Using basename and dirname</h3>
+<p class="docText">Almost every Unix command can use <span class="docEmphBold">
+relative and absolute pathnames</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-2">Section 
+31.2</a>) to find a file or directory. There are times you'll need part of a 
+pathname — the head (everything before the last slash) or the tail (the name 
+after the last slash). The utilities <i>basename</i> and <i>dirname</i>, 
+available on most Unix systems, handle that. </p>
+<h4  id="upt3-CHP-36-SECT-13.1" class="docSection2Title">36.13.1 Introduction to basename and dirname</h4>
+<p class="docText">The <i>basename</i> command strips any &quot;path&quot; name components 
+from a filename, leaving you with a &quot;pure&quot; filename. For example: </p>
+<pre>% <b>basename /usr/bin/gigiplot</b>
+gigiplot
+% <b>basename /home/mikel/bin/bvurns.sh</b>
+bvurns.sh</pre>
+<p class="docText"><i>basename</i> can also strip a suffix from a filename. For 
+example: </p>
+<pre>% <b>basename /home/mikel/bin/bvurns.sh .sh</b>
+bvurns</pre>
+<p class="docText">The <i>dirname</i> command strips the filename itself, giving 
+you the &quot;directory&quot; part of the pathname: </p>
+<pre>% <b>dirname /usr/bin/screenblank</b>
+/usr/bin
+% <b>dirname local</b>
+.</pre>
+<p class="docText">If you give <i>dirname</i> a &quot;pure&quot; filename (i.e., a 
+filename with no path, as in the second example), it tells you that the 
+directory is . (the current directory). </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText"><i>dirname</i> and <i>basename</i> have a bug in some 
+        implementations. They don't recognize the second argument as a filename 
+        suffix to strip. Here's a good test: </p>
+        <pre>% <b>basename 0.foo .foo</b></pre>
+        <p class="docText">If the result is <tt>0</tt>, your <i>basename</i> 
+        implementation is good. If the answer is <tt>0.foo</tt>, the 
+        implementation is bad. If <i>basename</i> doesn't work, <i>dirname</i> 
+        won't, either. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-36-SECT-13.2" class="docSection2Title">36.13.2 Use with Loops</h4>
+<p class="docText">Here's an example of <i>basename</i> and <i>dirname</i>. 
+There's a directory tree with some very large files — over 100,000 characters. 
+You want to find those files, run <span class="docEmphBold">split</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-9">Section 
+21.9</a>) on them, and add <span class="docEmphasis">huge</span>. to the start 
+of the original filename. By default, <i>split</i> names the file chunks
+<span class="docEmphasis">xaa</span>, <span class="docEmphasis">xab</span>,
+<span class="docEmphasis">xac</span>, and so on; you want to use the original 
+filename and a dot (.) instead of <span class="docEmphasis">x</span>: </p>
+<p class="docText"><tt>||</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+Section 35.14</a>, <tt>exit</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-16">
+Section 35.16</a></p>
+<pre>for path in `find /home/you -type f -size +100000c -print`
+do
+    cd `dirname $path` || exit
+    filename=`basename $path`
+    split $filename $filename.
+    mv -i $filename huge.$filename
+done</pre>
+<p class="docText">The <i>find</i> command will output pathnames like these: </p>
+<pre>/home/you/somefile
+/home/you/subdir/anotherfile</pre>
+<p class="docText">(The absolute pathnames are important here. The <i>cd</i> 
+would fail on the second pass of the loop if you use relative pathnames.) In the 
+loop, the <i>cd</i> command uses <i>dirname</i> to go to the directory where the 
+file is. The <span class="docEmphasis">filename</span> variable, with the output 
+of <i>basename</i>, is used several places — twice on the <i>split</i> command 
+line. </p>
+<p class="docText">If the previous code results in the error <tt>command line 
+too long</tt>, replace the first lines with the two lines below. This makes a 
+redirected-input loop: </p>
+<pre>find /home/you -type f -size +100000c -print |
+while read path</pre>
+<p class="docText"><span class="docEmphasis">—JP and ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-13">36.14 A while Loop with Several Loop Control 
+Commands</h3>
+<p class="docText">I used to think that the Bourne shell's
+<span class="docEmphBold">while loop</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-15">Section 
+35.15</a>) looked like this, with a single command controlling the loop: </p>
+<pre>while <tt><i>command</i></tt>
+do
+     <i>...whatever</i>
+done</pre>
+<p class="docText">But <tt><i>command</i></tt> can actually be a
+<span class="docEmphasis">list</span> of commands. The exit status of the last 
+command controls the loop. This is handy for prompting users and reading 
+answers. When the user types an empty answer, the <i>read</i> command returns 
+&quot;false&quot; and the loop ends: </p>
+<pre>while echo -e &quot;Enter command or CTRL-d to quit: \c&quot;
+      read command
+do
+      <i>...process </i>$command
+done</pre>
+<p class="docText">You may need a <i>-e</i> option to make <i>echo</i> treat 
+escaped characters like <tt>\c</tt> the way you want. In this case, the 
+character rings the terminal bell, however your terminal interprets that (often 
+with a flash of the screen, for instance.) </p>
+<p class="docText">Here's a loop that runs <i>who</i> and does a quick search on 
+its output. If the <i>grep</i> returns nonzero status (because it doesn't find
+<tt>$who</tt> in <tt>$tempfile</tt>), the loop quits — otherwise, the loop does 
+lots of processing: </p>
+<pre>while
+    who &gt; $tempfile
+    grep &quot;$who&quot; $tempfile &gt;/dev/null
+do
+    <i>...process $tempfile...</i>
+done</pre>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-14">36.15 Overview: Open Files and File Descriptors</h3>
+<p class="docText">This introduction is general and simplified. If you're a 
+technical person who needs a complete and exact description, read a book on Unix 
+programming. </p>
+<p class="docText">Unix shells let you redirect the input and output of programs 
+with operators such as <tt>&gt;</tt> and <tt>|</tt>. How does that work? How can 
+you use it better? Here's an overview. </p>
+<p class="docText">When the Unix kernel starts any <span class="docEmphBold">
+process</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>) — for example, <i>grep</i>, <i>ls</i>, or a shell — it sets up several 
+places for that process to read from and write to, as shown in
+<a class="docLink" href="#upt3-CHP-36-FIG-1">Figure 36-1</a>. </p>
+<center>
+<h5 id="upt3-CHP-36-FIG-1" class="docFigureTitle">Figure 36-1. Open standard I/O files with no 
+command-line redirection</h5>
+<p>
+<img alt="figs/upt3_3601.gif" src="upt3_3601.gif" border="0" width="425" height="142"></p>
+</center>
+<p class="docText">These places are called <span class="docEmphasis">open files</span>. 
+The kernel gives each file a number called a <span class="docEmphasis">file 
+descriptor</span>. But people usually use names for these places instead of the 
+numbers: </p>
+<ul>
+  <li>
+  <p class="docList">The <span class="docEmphasis">standard input</span> or
+  <span class="docEmphasis">stdin</span> (File Descriptor (F.D.) number 0) is 
+  the place where the process can read text. This might be text from other 
+  programs (through a pipe, on the command line) or from your keyboard. </li>
+  <li>
+  <p class="docList">The <span class="docEmphasis">standard output</span> or
+  <span class="docEmphasis">stdout</span> (F.D. 1) is a place for the process to 
+  write its results. </li>
+  <li>
+  <p class="docList">The <span class="docEmphasis">standard error</span> or
+  <span class="docEmphasis">stderr</span> (F.D. 2) is where the process can send 
+  error messages. </li>
+</ul>
+<p class="docText">By default, as <a class="docLink" href="#upt3-CHP-36-FIG-1">
+Figure 36-1</a> shows, the file that's opened for <span class="docEmphasis">
+stdin</span>, <span class="docEmphasis">stdout</span>, and
+<span class="docEmphasis">stderr</span> is <i>/dev/tty</i> — a name for your 
+terminal. This makes life easier for users — and programmers, too. The user 
+doesn't have to tell a program where to read or write because the default is 
+your terminal. A programmer doesn't have to open files to read or write from (in 
+many cases); the programs can just read from <span class="docEmphasis">stdin</span>, 
+write to <span class="docEmphasis">stdout</span>, and send errors to
+<span class="docEmphasis">stderr</span>. </p>
+<p class="docText">It gets better. When the shell starts a process (when you 
+type a command at a prompt), you can tell the shell what file to &quot;connect to&quot; 
+any of those file descriptors. For example,
+<a class="docLink" href="#upt3-CHP-36-FIG-2">Figure 36-2</a> shows what happens 
+when you run <i>grep</i> and make the shell redirect <i>grep</i>'s standard 
+output away from the terminal to a file named <span class="docEmphasis">grepout</span>.
+</p>
+<center>
+<h5 id="upt3-CHP-36-FIG-2" class="docFigureTitle">Figure 36-2. Standard output redirected to a file</h5>
+<p>
+<img alt="figs/upt3_3602.gif" src="upt3_3602.gif" border="0" width="427" height="234"></p>
+</center>
+<p class="docText">Programs can read and write files besides the ones on
+<span class="docEmphasis">stdin</span>, <span class="docEmphasis">stdout</span>, 
+and <span class="docEmphasis">stderr</span>. For instance, in
+<a class="docLink" href="#upt3-CHP-36-FIG-2">Figure 36-2</a>, <i>grep</i> opened 
+the file <span class="docEmphasis">somefile</span> itself — it didn't use any of 
+the standard file descriptors for <span class="docEmphasis">somefile</span>. A 
+Unix convention is that if you don't name any files on the command line, a 
+program will read from its standard input. Programs that work that way are 
+called <span class="docEmphasis">filters</span>. </p>
+<p class="docText">All shells can do basic redirection with
+<span class="docEmphasis">stdin</span>, <span class="docEmphasis">stdout</span>, 
+and <span class="docEmphasis">stderr</span>. But as you'll see in
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+Section 36.16</a>, the Bourne shell also handles file descriptors 3 through 9 
+(and <i>bash</i> and the other newer shells can handle arbitrary numbers of file 
+descriptiors, up to whatever <tt>ulimit</tt> <tt>-n</tt> happens to be set). 
+That's useful sometimes: </p>
+<ul>
+  <li>
+  <p class="docList">Maybe you have a few data files that you want to keep 
+  reading from or writing to. Instead of giving their names, you can use the 
+  file descriptor numbers. </li>
+  <li>
+  <p class="docList">Once you open a file, the kernel remembers what place in 
+  the file you last read from or wrote to. Each time you use that file 
+  descriptor number while the file is open, you'll be at the same place in the 
+  file. That's especially nice when you want to read from or write to the same 
+  file with more than one program. For example, the <i>line</i> command on some 
+  Unix systems reads one line from a file — you can call <i>line</i> over and 
+  over, whenever you want to read the next line from a file. Once the file has 
+  been opened, you can remove its link (name) from the directory; the process 
+  can access the file through its descriptor without using the name. </li>
+  <li>
+  <p class="docList">When Unix starts a new <span class="docEmphBold">subprocess</span> 
+  (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+  24.3</a>), the open file descriptors are given to that process. A subprocess 
+  can read or write from file descriptors opened by its parent process. A 
+  redirected-I/O loop, as discussed in
+  <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-6">
+  Section 43.6</a>, takes advantage of this. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-15">36.16 n&gt;&amp;m: Swap Standard Output and Standard Error</h3>
+<p class="docText">By default, a command's standard error goes to your terminal. 
+The standard output goes to the terminal or is redirected somewhere (to a file, 
+down a pipe, into backquotes). </p>
+<p class="docText">Sometimes you want the opposite. For instance, you may need 
+to send a command's standard output to the screen and grab the error messages 
+(standard error) with backquotes. Or you might want to send a command's standard 
+output to a file and the standard error down a pipe to an error-processing 
+command. Here's how to do that in the Bourne shell. (The C shell can't do this, 
+although <i>tcsh</i> can.) </p>
+<p class="docText">File descriptors 0, 1, and 2 are, respectively, the standard 
+input, standard output, and standard error (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">Section 
+36.15</a> explains). Without redirection, they're all associated with the 
+terminal file <span class="docEmphBold">/dev/tty</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">Section 
+36.15</a>). It's easy to redirect any descriptor to any file — if you know the 
+filename. For instance, to redirect file descriptor 2 to
+<span class="docEmphasis">errfile</span>, type: </p>
+<pre>$ <i>command </i><b> 2&gt;errfile </b></pre>
+<p class="docText">You know that a pipe and backquotes also redirect the 
+standard output: </p>
+<pre>$ <i>command </i><b> | ... </b>
+$ <b>var=` </b><i>command </i><b>` </b></pre>
+<p class="docText">But there's no filename associated with the pipe or 
+backquotes, so you can't use the <tt>2&gt;</tt> redirection. You need to rearrange 
+the file descriptors without knowing the file (or whatever) that they're 
+associated with. Here's how. You may find it useful to run this short Perl 
+script, which simply prints &quot;stdout&quot; to standard output, and &quot;stderr&quot; to 
+standard error: </p>
+<pre>#!/usr/bin/perl
+
+print STDOUT &quot;stdout\n&quot;;
+print STDERR &quot;stderr\n&quot;;</pre>
+<p class="docText">Let's start slowly. We will combine both standard output and 
+standard error, sending them both as output, to be used as the input to a pipe 
+or as the output of backquotes. The Bourne shell operator <tt><i>n</i>&gt;&amp;<i>m</i></tt> 
+rearranges the files and file descriptors. It says, &quot;Make file descriptor
+<span class="docEmphasis">n</span> point to the same file as file descriptor
+<span class="docEmphasis">m</span>.&quot; Let's use that operator on the previous 
+example. We'll send standard error to the same place standard output is going:
+</p>
+<pre>$ <i>command </i> <b>2&gt;&amp;1 | ... </b>
+$ <b>var=` </b><i>command </i><b> 2&gt;&amp;1` </b></pre>
+<p class="docText">In both those examples, <tt>2&gt;&amp;1</tt> means &quot;send standard 
+error (file descriptor 2) to the same place standard output (file descriptor 1) 
+is going.&quot; Simple, eh? </p>
+<p class="docText">You can use more than one <tt><i>n</i>&gt;&amp;<i>m</i></tt> 
+operator. The shell reads them left-to-right before it executes the command. </p>
+<p class="docText">&quot;Oh!&quot; you might say. &quot;To swap standard output and standard 
+error — make <span class="docEmphasis">stderr</span> go down a pipe and
+<span class="docEmphasis">stdout</span> go to the screen — I could do this!&quot; </p>
+<pre>$ <i>command </i> <b>2&gt;&amp;1 1&gt;&amp;2 | ... </b>     <i> wrong...</i></pre>
+<p class="docText">Sorry, Charlie. When the shell sees <tt>2&gt;&amp;1 1&gt;&amp;2</tt>, the 
+shell first does <tt>2&gt;&amp;1</tt>. You've seen that before — it makes file 
+descriptor 2 (<span class="docEmphasis">stderr</span>) go the same place as file 
+descriptor 1 (<span class="docEmphasis">stdout</span>). Then the shell does <tt>
+1&gt;&amp;2</tt>. It makes <span class="docEmphasis">stdout</span> (<tt>1</tt>) go the 
+same place as <span class="docEmphasis">stderr</span> (<tt>2</tt>)... but
+<span class="docEmphasis">stderr</span> is already going the same place as
+<span class="docEmphasis">stdout</span>, down the pipe. </p>
+<p class="docText">This is one place the other file descriptors, 3 through 9 
+(and higher in <i>bash</i>), come in handy. They normally aren't used. You can 
+use one of them as a &quot;holding place,&quot; to remember where another file descriptor 
+&quot;pointed.&quot; For example, one way to read the operator <tt>3&gt;&amp;2</tt> is &quot;make <tt>
+3</tt> point the same place as <tt>2</tt>.&quot; After you use <tt>3&gt;&amp;2</tt> to grab 
+the location of <tt>2</tt>, you can make <tt>2</tt> point somewhere else. Then 
+make <tt>1</tt> point where <tt>2</tt> used to (where <tt>3</tt> points now).
+</p>
+<p class="docText">We'll take that step-by-step below. The command line you want 
+is one of these: </p>
+<pre>$ <i>command </i><b>3&gt;&amp;2 2&gt;&amp;1 1&gt;&amp;3 | ... </b>
+$ <b>var=` </b><i>command </i><b> 3&gt;&amp;2 2&gt;&amp;1 1&gt;&amp;3` </b></pre>
+<p class="docText">How does it work?
+<a class="docLink" href="#upt3-CHP-36-FIG-3">Figure 36-3</a> through
+<a class="docLink" href="#upt3-CHP-36-FIG-6">Figure 36-6</a> break the second 
+command line (with the backquotes) into the same steps the shell follows as it 
+rearranges the file descriptors. You can try these on your terminal, if you'd 
+like. Each figure adds another <tt><i>n</i>&gt;&amp;<i>m</i></tt> operator and shows 
+the location of each file descriptor after that operator. </p>
+<center>
+<h5 id="upt3-CHP-36-FIG-3" class="docFigureTitle">Figure 36-3. File descriptors before redirection</h5>
+<p>
+<img alt="figs/upt3_3603.gif" src="upt3_3603.gif" border="0" width="427" height="231"></p>
+</center><center>
+<h5 id="upt3-CHP-36-FIG-4" class="docFigureTitle">Figure 36-4. File descriptors after 3&gt;&amp;2 redirection</h5>
+<p>
+<img alt="figs/upt3_3604.gif" src="upt3_3604.gif" border="0" width="427" height="231"></p>
+</center>
+<p class="docText">The figures use a <i>grep</i> command reading two files.
+<span class="docEmphasis">afone</span> is readable, and <i>grep</i> finds one 
+matching line in it; the line is written to the standard output.
+<span class="docEmphasis">bfoen</span> is misspelled and so is not readable; <i>
+grep</i> writes an error message to the standard error. In each figure, you'll 
+see the terminal output (if any) just after the variable-setting command with 
+the backquotes. The text grabbed by the backquotes goes into the shell variable; 
+the <i>echo</i> command shows that text. </p>
+<center>
+<h5 id="upt3-CHP-36-FIG-5" class="docFigureTitle">Figure 36-5. File descriptors after 3&gt;&amp;2 2&gt;&amp;1 
+redirection</h5>
+<p>
+<img alt="figs/upt3_3605.gif" src="upt3_3605.gif" border="0" width="427" height="231"></p>
+</center>
+<p class="docText">By <a class="docLink" href="#upt3-CHP-36-FIG-6">Figure 36-6</a> 
+the redirection is correct. Standard output goes to the screen, and standard 
+error is captured by the backquotes. </p>
+<center>
+<h5 id="upt3-CHP-36-FIG-6" class="docFigureTitle">Figure 36-6. File descriptors after 3&gt;&amp;2 2&gt;&amp;1 1&gt;&amp;3 
+redirection</h5>
+<p>
+<img alt="figs/upt3_3606.gif" src="upt3_3606.gif" border="0" width="427" height="231"></p>
+</center>
+<p class="docText">Open files are automatically closed when a process exits, but 
+it's safer to close the files yourself as soon as you're done with them. That 
+way, if you forget and use the same descriptor later for something else (for 
+instance, use F.D. 3 to redirect some other command, or a subprocess uses F.D. 
+3), you won't run into conflicts. Use <tt><i>m</i>&lt;&amp;-</tt> to close input file 
+descriptor <tt><i>m</i></tt> and <tt><i>m</i>&gt;&amp;-</tt> to close output file 
+descriptor <tt><i>m</i></tt>. If you need to, you can close standard input with
+<tt>&lt;&amp;-</tt> and standard output with <tt>&gt;&amp;-</tt>. </p>
+<p class="docText"><span class="docEmphasis">— JP </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-16">36.17 A Shell Can Read a Script from Its Standard 
+Input, but...</h3>
+<p class="docText"><span class="docEmphBold">Q:</span> <span class="docEmphasis">
+What is the difference between <tt>sh &lt; file</tt> and <tt>sh file</tt>?</span>
+</p>
+<p class="docText"><span class="docEmphBold">A:</span>The first way keeps the 
+script from reading anything else from its input. Consider the <i>stdin-demo</i> 
+script: </p>
+<pre>while read word
+do
+   echo $word | sed s/foo/bar/
+done</pre>
+<p class="docText">If run as <tt>sh stdin-demo</tt>, it will read from your 
+terminal, replacing <tt>foo</tt> with <tt>bar</tt>. If run as <tt>sh &lt; stdin-demo</tt>, 
+it will exit right away, since after reading the script, there's no input left.
+</p>
+<p class="docText"><span class="docEmphasis">— CT</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-17">36.18 Shell Scripts On-the-Fly from Standard Input</h3>
+<p class="docText">
+<img alt="figs/bomb.gif" src="bomb.gif" border="0" width="24" height="30">
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-17">
+Section 36.17</a></p>
+<p class="docText">The shell can read commands from its standard input or from a 
+file. To run a series of commands that can change, you may want to use one 
+program to create the command lines automatically — and pipe that program's 
+output to a shell, which will run those &quot;automatic&quot; commands. </p>
+<p class="docText">Here's an example.<span id="ENB36-1"><a class="docLink" href="#EN36-1"><sup>[1]</sup></a></span> 
+You want to copy files from a subdirectory and all its subdirectories into a 
+single directory. The filenames in the destination directory can't conflict; no 
+two files can have the same name. An easy way to name the copies is to replace 
+each slash (<tt>/</tt>) in the file's relative pathname with a minus sign (<tt>-</tt>).<span id="ENB36-2"><a class="docLink" href="#EN36-2"><sup>[2]</sup></a></span> 
+For instance, the file named <span class="docEmphasis">lib/glob/aprog.c</span> 
+would be copied to a file named <span class="docEmphasis">lib-glob-aprog.c</span>. 
+You can use <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-2">Section 
+34.2</a>) to convert the filenames and output <i>cp</i> commands like these: </p>
+<pre>cp <tt><i>from</i></tt>/lib/glob/aprog.c <tt><i>to</i></tt>/lib-glob-aprog.c
+cp <tt><i>from</i></tt>/lib/glob/aprog.h <tt><i>to</i></tt>/lib-glob-aprog.h
+    <i>...</i></pre>
+<p class="docText">However, an even better solution can be developed using
+<span class="docEmphBold">nawk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-11">Section 
+20.11</a>). The following example uses <span class="docEmphBold">find</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-1">Section 
+9.1</a>) to make a list of pathnames, one per line, in and below the
+<span class="docEmphasis">copyfrom</span> directory. Next it runs <i>nawk</i> to 
+create the destination file pathnames (like <tt><i>to</i>/lib-glob-aprog.c</tt>) 
+and write the completed command lines to the standard output. The shell reads 
+the command lines from its standard input, through the pipe. </p>
+<p class="docText">This example is in a script file because it's a little long 
+to type at a prompt. But you can type commands like these at a prompt, too, if 
+you want to: </p>
+<pre>#!/bin/sh
+find copyfrom -type f -print |
+awk '{
+    out = $0
+    gsub(&quot;/&quot;, &quot;-&quot;, out)
+    sub(&quot;^copyfrom-&quot;, &quot;copyto/&quot;, out)
+    print &quot;cp&quot;, $0, out
+}' |
+sh</pre>
+<p class="docText">If you change the last line to <tt>sh -v</tt>, the shell's
+<span class="docEmphBold">verbose option</span> (<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-1">Section 
+37.1</a>) will show each command line before executing it. If the last line has
+<tt>sh -e</tt>, the shell will quit immediately after any command returns a 
+nonzero <span class="docEmphBold">exit status</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>) — that might happen, for instance, if the disk fills up and <i>cp</i> 
+can't make the copy. Finally, you may need to use <i>nawk</i> rather than <i>awk</i>, 
+depending on your system. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-18">36.19 Quoted hereis Document Terminators: sh Versus 
+csh</h3>
+<p class="docText">When you need to quote your <span class="docEmphBold">hereis 
+document</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-16">Section 
+27.16</a>) terminators, there's an annoying problem: <i>sh</i> and <i>csh</i> 
+demand different conventions. If you are using <i>sh</i>, you
+<span class="docEmphasis">must not</span> quote the terminator. For example, </p>
+<pre>+#! /bin/sh
+cat &lt;&lt; 'eof'
+Hi there.
+eof</pre>
+<p class="docText">If you are using <i>csh</i>, however, you
+<span class="docEmphasis">must</span> quote the terminator. The following script 
+prints three lines, not one: </p>
+<pre>+#! /bin/csh
+cat &lt;&lt; \eof
+Hi.  You might expect this to be the only line, but it's not.
+eof
+'e'of
+\eof</pre>
+<p class="docText"><span class="docEmphasis">— CT</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-19">36.20 Turn Off echo for &quot;Secret&quot; Answers</h3>
+<p class="docText">When you type your password, Unix turns off echoing so what 
+you type won't show on the screen. You can do the same thing in shell scripts 
+with <tt>stty -echo</tt>. </p>
+<p class="docText"><tt>stty</tt>
+<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-7">
+Section 5.7</a>, <tt>read</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-18">
+Section 35.18</a></p>
+<pre>+#!/bin/sh
+   ...
+trap 'stty echo; exit' 0 1 2 3 15
+# use the right echo for your Unix:
+echo &quot;Enter code name: \c&quot;
+#echo -n &quot;Enter code name: &quot;
+stty -echo
+read ans
+stty echo
+   ...</pre>
+<p class="docText">The response is stored in <tt>$ans</tt>. The
+<span class="docEmphBold">trap</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">Section 
+35.17</a>) helps to make sure that, if the user presses CTRL-c to abort the 
+script, characters will be echoed again. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-20">36.21 Quick Reference: expr</h3>
+<p class="docText"><i>expr</i> is a very handy tool in shell programming, since 
+it provides the ability to evaluate a wide range of arithmetic, logical, and 
+relational expressions. It evaluates its arguments as expressions and prints the 
+result. </p>
+<h4  id="upt3-CHP-36-SECT-21.1" class="docSection2Title">36.21.1 Syntax</h4>
+<p class="docText">Here's the syntax. The [brackets] mean &quot;optional&quot;; don't type 
+the brackets: </p>
+<blockquote>
+  <p class="docText"><tt>expr</tt> <tt><i>arg1 operator arg2</i></tt> <tt>[</tt>
+  <tt><i>operator arg3</i></tt> <tt>... ]</tt> </p>
+</blockquote>
+<p class="docText">Arguments and operators must be separated by spaces. In many 
+cases, an argument is an integer, typed literally or represented by a shell 
+variable. There are three types of operators: arithmetic, relational, and 
+logical. </p>
+<p class="docText"><span class="docEmphBold">Exit status</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>) values for <i>expr</i> are 0 if the expression evaluates nonzero and 
+non-null, 1 if the expression evaluates to 0 or null, and 2 if the expression is 
+invalid. </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docEmphasis">Arithmetic operators</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Use these to produce mathematical expressions whose results 
+  are printed:
+  <dl class="docList">
+    <dt><span class="docPubcolor"><span class="docMonofont">+</span></span> </dt>
+    <dd>
+    <p class="docList">Add <tt><i>arg2</i></tt> to <tt><i>arg1</i></tt>. </dd>
+    <dt><span class="docPubcolor"><span class="docMonofont">-</span></span> </dt>
+    <dd>
+    <p class="docList"><tt>Subtract</tt> <tt><i>arg2</i></tt> from <tt><i>arg1</i></tt>.
+    </dd>
+    <dt><span class="docPubcolor"><span class="docMonofont">*</span></span> </dt>
+    <dd>
+    <p class="docList">Multiply the arguments. </dd>
+    <dt><span class="docPubcolor"><span class="docMonofont">/</span></span> </dt>
+    <dd>
+    <p class="docList">Divide <tt><i>arg1</i></tt> by <tt><i>arg2</i></tt>. </dd>
+    <dt><span class="docPubcolor"><span class="docMonofont">%</span></span> </dt>
+    <dd>
+    <p class="docList">Take the remainder when <tt><i>arg1</i></tt> is divided 
+    by <tt><i>arg2</i></tt> (modulus). </dd>
+  </dl>
+  <p class="docList">Addition and subtraction are evaluated last, unless they 
+  are grouped inside parentheses. The symbols <tt>*</tt>, <tt>(</tt>, and <tt>)</tt> 
+  have meaning to the shell, so they must be escaped (preceded by a backslash or 
+  enclosed in quotes). </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">Relational operators</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Use these to compare two arguments. Arguments can also be 
+  words, in which case comparisons assume a <tt>&lt;</tt> z and A <tt>&lt;</tt> Z. If 
+  the comparison statement is true, <i>expr</i> writes 1 to
+  <span class="docEmphBold">standard output</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+  43.1</a>); if false, it writes 0. The symbols <tt>&gt;</tt> and <tt>&lt;</tt> must 
+  be escaped.
+  <dl class="docList">
+    <dt><span class="docPubcolor"><span class="docMonofont">=</span></span> </dt>
+    <dd>
+    <p class="docList">Are the arguments equal? </dd>
+    <dt><span class="docPubcolor"><span class="docMonofont">!=</span></span>
+    </dt>
+    <dd>
+    <p class="docList">Are the arguments different? </dd>
+    <dt><span class="docPubcolor"><span class="docMonofont">&gt;</span></span> </dt>
+    <dd>
+    <p class="docList">Is <tt><i>arg1</i></tt> greater than <tt><i>arg2</i></tt>?
+    </dd>
+    <dt><span class="docPubcolor"><span class="docMonofont">&gt;=</span></span>
+    </dt>
+    <dd>
+    <p class="docList">Is <tt><i>arg1</i></tt> greater than or equal to <tt><i>
+    arg2</i></tt>? </dd>
+    <dt><span class="docPubcolor"><span class="docMonofont">&lt;</span></span> </dt>
+    <dd>
+    <p class="docList">Is <tt><i>arg1</i></tt> less than <tt><i>arg2</i></tt>?
+    </dd>
+    <dt><span class="docPubcolor"><span class="docMonofont">&lt;=</span></span>
+    </dt>
+    <dd>
+    <p class="docList">Is <tt><i>arg1</i></tt> less than or equal to <tt><i>arg2</i></tt>?
+    </dd>
+  </dl>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">Logical operators</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Use these to compare two arguments. Depending on the 
+  values, the result written to standard output can be <tt><i>arg1</i></tt> (or 
+  some portion of it), <tt><i>arg2</i></tt>, or 0. The symbols <tt>|</tt> and
+  <tt>&amp;</tt> must be escaped.
+  <dl class="docList">
+    <dt><span class="docPubcolor"><span class="docMonofont">|</span></span> </dt>
+    <dd>
+    <p class="docList">Logical OR; if <tt><i>arg1</i></tt> has a nonzero (and 
+    non-null) value, the output is <tt><i>arg1</i></tt>; otherwise, the output 
+    is <tt><i>arg2</i></tt>. </dd>
+    <dt><span class="docPubcolor"><span class="docMonofont">&amp;</span></span> </dt>
+    <dd>
+    <p class="docList">Logical AND; if both <tt><i>arg1</i></tt> and <tt><i>arg2</i></tt> 
+    have a nonzero (and non-null) value, the output is <tt><i>arg1</i></tt>; 
+    otherwise, the output is 0. </dd>
+    <dt><i><span class="docPubcolor">:</span></i> </dt>
+    <dd>
+    <p class="docList">Sort of like <span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-1">Section 
+    13.1</a>); <tt><i>arg2</i></tt> is a <span class="docEmphBold">regular 
+    expression</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-4">Section 
+    32.4</a>) to search for in <tt><i>arg1</i></tt>. If the <tt><i>arg2</i></tt> 
+    pattern is enclosed in <tt>\( \)</tt>, the output is the portion of <tt><i>
+    arg1</i></tt> that matches; otherwise, the output is simply the number of 
+    characters that match. A pattern match always applies to the beginning of 
+    the argument (the <span class="docEmphBold">^ symbol</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-5">Section 
+    32.5</a>) is assumed by default). </dd>
+  </dl>
+  </dd>
+</dl>
+<h4  id="upt3-CHP-36-SECT-21.2" class="docSection2Title">36.21.2 Examples</h4>
+<p class="docText">Division happens first; output is 10: </p>
+<pre>$ <b>expr 5 + 10 / 2</b></pre>
+<p class="docText">Addition happens first; output is 7 (truncated from 7.5):</p>
+<pre>$ <b>expr \( 5 + 10 \) / 2</b></pre>
+<p class="docText">Add 1 to variable <span class="docEmphasis">i</span>; this is 
+how variables are incremented in Bourne shell scripts: </p>
+<pre><b>i=`expr &quot;$i&quot; + 1`</b></pre>
+<p class="docText">Output 1 (true) if variable <span class="docEmphasis">a</span> 
+is the string &quot;hello&quot;: </p>
+<pre>$ <b>expr &quot;$a&quot; = hello</b></pre>
+<p class="docText">Output 1 (true) if variable <span class="docEmphasis">b</span> 
+plus 5 equals 10 or more: </p>
+<pre>$ <b>expr &quot;$b&quot; + 5 \&gt;= 10</b></pre>
+<p class="docText">In the examples below, variable <span class="docEmphasis">p</span> 
+is the string &quot;version.100&quot;. This command returns the number of characters in
+<span class="docEmphasis">p</span>: </p>
+<pre>$ <b>expr &quot;$p&quot; : '.*' </b>           <i> Output is 11</i></pre>
+<p class="docText">Match all characters and print them:</p>
+<pre>$ <b>expr &quot;$p&quot; : '\(.*\)' </b>       <i> Output is &quot;version.100&quot;</i></pre>
+<p class="docText">Output the number of lowercase letters matched:</p>
+<pre>$ <b>expr &quot;$p&quot; : '[a-z]*' </b>       <i> Output is 7</i></pre>
+<p class="docText">Match a string of lowercase letters:</p>
+<pre>$ <b>expr &quot;$p&quot; : '\([a-z]*\)' </b>   <i> Output is &quot;version&quot;</i></pre>
+<p class="docText">Truncate <tt>$x</tt> if it contains five or more characters; 
+if not, just output <tt>$x</tt>. (Logical OR uses the second argument when the 
+first one is 0 or null, i.e., when the match fails.) </p>
+<pre>$ <b>expr &quot;$x&quot; : '\(.....\)'  &quot;$x&quot;</b></pre>
+<p class="docText"><span class="docEmphasis">— DG </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-21">36.22 Testing Characters in a String with expr</h3>
+<p class="docText">The <span class="docEmphBold">expr</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-21">Section 
+36.21</a>) command does a lot of different things with expressions. One 
+expression it handles has three arguments: first, a string; second, a colon (:); 
+third, a <span class="docEmphBold">regular expression</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-4">Section 
+32.4</a>). The string and regular expression usually need quotes. </p>
+<p class="docText"><i>expr</i> can count the number of characters that match the 
+regular expression. The regular expression is automatically anchored to the 
+start of the string you're matching, as if you'd typed a <tt>^</tt> at the start 
+of it in <i>grep</i>, <i>sed</i>, and so on. <i>expr</i> is usually run with
+<span class="docEmphBold">backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) to save its output: </p>
+<pre>$ <b>part=&quot;resistor 321-1234-00&quot; </b>
+$ <b>name=&quot;Ellen Smith&quot; </b>
+   ...
+$ <b>expr &quot;$part&quot; : '[a-z ]*[0-9]'   </b>      <i> ...character position of first number</i>
+10
+$ <b>len=`expr &quot;$name&quot; : '[a-zA-Z]*'` </b>
+$ <b>echo first name has $len characters </b>
+first name has 5 characters</pre>
+<p class="docText">When a regular expression matches some character(s), <i>expr</i> 
+returns a zero (&quot;true&quot;) <span class="docEmphBold">exit status</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>). If you want a true/false test like this, throw away the number that
+<i>expr</i> prints and test its exit status: </p>
+<p class="docText"><tt>/dev/null</tt>
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">
+Section 43.12</a></p>
+<pre>$ <b>if expr &quot;$part&quot; : '.*[0-9]' &gt; /dev/null</b>
+&gt; <b>then echo \$part has a number in it.</b>
+&gt; <b>else echo &quot;it doesn't&quot;</b>
+&gt; <b>fi</b>
+$part has a number in it.</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-22">36.23 Grabbing Parts of a String</h3>
+<p class="docText">How can you parse (split, search) a string of text to find 
+the last word, the second column, and so on? There are a lot of different ways. 
+Pick the one that works best for you — or invent another one! (Unix has lots of 
+ways to work with strings of text.) </p>
+<h4  id="upt3-CHP-36-SECT-23.1" class="docSection2Title">36.23.1 Matching with expr</h4>
+<p class="docText">The <span class="docEmphBold">expr command</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-21">Section 
+36.21</a>) can grab part of a string with a regular expression. The example 
+below is from a shell script whose last command-line argument is a filename. The 
+two commands below use <i>expr</i> to grab the last argument and all arguments 
+except the last one. The <tt>&quot;$*&quot;</tt> gives <i>expr</i> a list of all 
+command-line arguments in a single word. (Using <span class="docEmphBold">&quot;$@&quot;</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">Section 
+35.20</a>) here wouldn't work because it gives individually quoted arguments. <i>
+expr</i> needs all arguments in one word.) </p>
+<pre>last=`expr &quot;$*&quot; : '.* \(.*\)'`     # LAST ARGUMENT
+first=`expr &quot;$*&quot; : '\(.*\) .*'`    # ALL BUT LAST ARGUMENT</pre>
+<p class="docText">Let's look at the regular expression that gets the last word. 
+The leading part of the expression, <tt>.*</tt> , matches as many characters as 
+it can, followed by a space. This includes all words up to and including the 
+last space. After that, the end of the expression, <tt>\(.*\)</tt>, matches the 
+last word. </p>
+<p class="docText">The regular expression that grabs the first words is the same 
+as the previous one — but I've moved the <tt>\( \)</tt> pair. Now it grabs all 
+words up to but not including the last space. The end of the regular expression,
+<tt>.*</tt>, matches the last space and last word — and <i>expr</i> ignores 
+them. So the final <tt>.*</tt> really isn't needed here (though the space is). 
+I've included the final <tt>.*</tt> because it follows from the first example.
+</p>
+<p class="docText"><i>expr</i> is great when you want to split a string into 
+just two parts. The <tt>.*</tt> also makes <i>expr</i> good for skipping a 
+variable number of words when you don't know how many words a string will have. 
+But <i>expr</i> is poor at getting, say, the fourth word in a string. And it's 
+almost useless for handling more than one line of text at a time. </p>
+<h4  id="upt3-CHP-36-SECT-23.2" class="docSection2Title">36.23.2 Using echo with awk or cut</h4>
+<p class="docText"><i>awk</i> can split lines into words, but it has a lot of 
+overhead and can take some time to execute, especially on a busy system. The
+<span class="docEmphBold">cut</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-14">Section 
+21.14</a>) command starts more quickly than <i>awk</i> but it can't do as much.
+</p>
+<p class="docText">Both those utilities are designed to handle multiple lines of 
+text. You can tell <i>awk</i> to handle a single line with its pattern-matching 
+operators and its <span class="docEmphasis">NR</span> variable. You can also run 
+those utilities with a single line of text, fed to the standard input through a 
+pipe from <i>echo</i>. For example, to get the third field from a 
+colon-separated string: </p>
+<pre>string=&quot;this:is:just:a:dummy:string&quot;
+field3_awk=`echo &quot;$string&quot; | awk -F: '{print $3}'`
+field3_cut=`echo &quot;$string&quot; | cut -d: -f3`</pre>
+<p class="docText">Let's combine two <i>echo</i> commands. One sends text to <i>
+awk</i> or <i>cut</i> through a pipe; the utility ignores all the text from 
+columns 1-24, then prints columns 25 to the end of the variable
+<span class="docEmphasis">text</span>. The outer <i>echo</i> prints
+<span class="docEmphasis">The answer is</span> and that answer. Notice that the 
+inner double quotes are escaped with backslashes to keep the Bourne shell from 
+interpreting them before the inner <i>echo</i> runs: </p>
+<pre>echo &quot;The answer is `echo \&quot;$text\&quot; | awk '{print substr($0,25)}'`&quot;
+echo &quot;The answer is `echo \&quot;$text\&quot; | cut -c25-`&quot;</pre>
+<h4  id="upt3-CHP-36-SECT-23.3" class="docSection2Title">36.23.3 Using set and IFS</h4>
+<p class="docText">The Bourne shell <span class="docEmphBold">set</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">Section 
+35.25</a>) command can be used to parse a single-line string and store it in the
+<span class="docEmphBold">command-line parameters</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">Section 
+35.20</a>) <tt>&quot;$@&quot;</tt>, <tt>$*</tt>, <tt>$1</tt>, <tt>$2</tt>, and so on. Then 
+you can also loop through the words with a <span class="docEmphBold">for loop</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">Section 
+35.21</a>) and use everything else the shell has for dealing with command-line 
+parameters. Also, you can set the Bourne shell's <span class="docEmphasis">IFS</span> 
+variable to control how the shell splits the string. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">The formats used by <i>stty</i> and the behavior of
+        <i>IFS</i> may vary from platform to platform. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">By default, the <span class="docEmphasis">IFS</span> 
+(internal field separator) shell variable holds three characters: SPACE, TAB, 
+and NEWLINE. These are the places that the shell parses command lines. </p>
+<p class="docText">If you have a line of text — say, from a database — and you 
+want to split it into fields, you can put the field separator into
+<span class="docEmphasis">IFS</span> temporarily, use the shell's
+<span class="docEmphBold">set</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">Section 
+35.25</a>) command to store the fields in command-line parameters, then restore 
+the old <span class="docEmphasis">IFS</span>. </p>
+<p class="docText">For example, the chunk of a shell script below gets current 
+terminal settings from <span class="docEmphasis">stty -g</span>, which looks 
+like this: </p>
+<pre>2506:5:bf:8a3b:3:1c:8:15:4:0:0:0:11:13:1a:19:12:f:17:16:0:0</pre>
+<p class="docText">In the next example, the shell parses the line returned from
+<i>stty</i> by the <span class="docEmphBold">backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>). It stores <span class="docEmphasis">x</span> in <tt>$1</tt>, which 
+stops errors if <i>stty</i> fails for some reason. (Without the
+<span class="docEmphasis">x</span>, if <i>stty</i> made no standard output, the 
+shell's <i>set</i> command would print a list of all shell variables.) Then
+<span class="docEmphasis">2506</span> goes into <tt>$2</tt>,
+<span class="docEmphasis">5</span> into <tt>$3</tt>, and so on. The original 
+Bourne shell can handle only nine parameters (through <tt>$9</tt>); if your 
+input lines may have more than nine fields, this isn't a good technique. But 
+this script uses the Korn shell, which (along with most other Bourne-type 
+shells) doesn't have that limit. </p>
+<pre>#!/bin/ksh
+oldifs=&quot;$IFS&quot;
+# Change IFS to a colon:
+IFS=:
+# Put x in $1, stty -g output in $2 thru ${23}:
+set x `stty -g`
+IFS=&quot;$oldifs&quot;
+# Window size is in 16th field (not counting the first &quot;x&quot;):
+echo &quot;Your window has ${17} rows.&quot;</pre>
+<p class="docText">Because you don't need a subprocess to parse the output of <i>
+stty</i>, this can be faster than using an external command like
+<span class="docEmphBold">cut</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-14">Section 
+21.14</a>) or <span class="docEmphBold">awk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+20.10</a>). </p>
+<p class="docText">There are places where <span class="docEmphasis">IFS</span> 
+can't be used because the shell separates command lines at spaces before it 
+splits at <span class="docEmphasis">IFS</span>. It doesn't split the results of 
+variable substitution or <span class="docEmphBold">command substitution</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) at spaces, though. Here's an example — three different ways to parse 
+a line from <span class="docEmphasis">/etc/passwd</span>: </p>
+<pre>% <b>cat splitter</b>
+#!/bin/sh
+IFS=:
+line='larry:Vk9skS323kd4q:985:100:Larry Smith:/u/larry:/bin/tcsh'
+set x $line
+echo &quot;case 1: \$6 is '$6'&quot;
+set x `grep larry /etc/passwd`
+echo &quot;case 2: \$6 is '$6'&quot;
+set x larry:Vk9skS323kd4q:985:100:Larry Smith:/u/larry:/bin/tcsh
+echo &quot;case 3: \$6 is '$6'&quot;
+
+% <b>./splitter</b>
+case 1: $6 is 'Larry Smith'
+case 2: $6 is 'Larry Smith'
+case 3: $6 is 'Larry'</pre>
+<p class="docText">Case 1 used variable substitution and case 2 used command 
+substitution; the sixth field contained the space. In case 3, though, with the 
+colons on the command line, the sixth field was split: <tt>$6</tt> became
+<span class="docEmphasis">Larry</span> and <tt>$7</tt> was
+<span class="docEmphasis">Smith</span>. Another problem would have come up if 
+any of the fields had been empty (as in <tt>larry::985:100</tt>:<span class="docEmphasis">etc...</span>) 
+— the shell would &quot;eat&quot; the empty field and <tt>$6</tt> would contain
+<span class="docEmphasis">/u/larry</span>. Using <i>sed</i> with its
+<span class="docEmphBold">escaped parentheses</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-11">Section 
+34.11</a>) to do the searching and the parsing could solve the last two 
+problems. </p>
+<h4  id="upt3-CHP-36-SECT-23.4" class="docSection2Title">36.23.4 Using sed</h4>
+<p class="docText">The Unix <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) utility is good at parsing input that you may or may not otherwise be 
+able to split into words, at finding a single line of text in a group and 
+outputting it, and many other things. In this example, I want to get the 
+percentage-used of the filesystem mounted on <span class="docEmphasis">/home</span>. 
+That information is buried in the output of the <span class="docEmphBold">df</span> 
+(<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-8">Section 
+15.8</a>) command. On my system,<span id="ENB36-3"><a class="docLink" href="#EN36-3"><sup>[3]</sup></a></span><i> 
+df</i> output looks like: </p>
+<pre>+% <b>df</b>
+Filesystem            kbytes    used   avail capacity  Mounted on
+   ...
+/dev/sd3c            1294854  914230  251139    78%    /work
+/dev/sd4c             597759  534123    3861    99%    /home
+   ...</pre>
+<p class="docText">I want the number <span class="docEmphasis">99</span> from 
+the line ending with <span class="docEmphasis">/home</span>. The <i>sed</i> 
+address <tt>/ \/home$/</tt> will find that line (including a space before the
+<span class="docEmphasis">/home</span> makes sure the address doesn't match a 
+line ending with <span class="docEmphasis">/something/home</span>). The <i>-n</i> 
+option keeps <i>sed</i> from printing any lines except the line we ask it to 
+print (with its <span class="docEmphasis">p</span> command). I know that the 
+&quot;capacity&quot; is the only word on the line that ends with a percent sign (<tt>%</tt>). 
+A space after the first <tt>.*</tt> makes sure that <tt>.*</tt> doesn't &quot;eat&quot; 
+the first digit of the number that we want to match by <tt>[0-9]</tt>. The <i>
+sed</i> <span class="docEmphBold">escaped-parenthesis operators</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-11">Section 
+34.11</a>) grab that number: </p>
+<pre>usage=`df | sed -n '/ \/home$/s/.* \([0-9][0-9]*\)%.*/\1/p'`</pre>
+<p class="docText">Combining <i>sed</i> with <span class="docEmphBold">eval</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-8">Section 
+27.8</a>) lets you set several shell variables at once from parts of the same 
+line. Here's a command line that sets two shell variables from the <i>df</i> 
+output: </p>
+<pre>eval `df |
+sed -n '/ \/home$/s/^[^ ]*  *\([0-9]*\)  *\([0-9]*\).*/kb=\1 u=\2/p'`</pre>
+<p class="docText">The left-hand side of that substitution command has a regular 
+expression that uses <i>sed</i>'s escaped parenthesis operators. They grab the &quot;kbytes&quot; 
+and &quot;used&quot; columns from the <i>df</i> output. The right-hand side outputs the 
+two <i>df</i> values with Bourne shell variable-assignment commands to set the
+<span class="docEmphasis">kb</span> and <span class="docEmphasis">u</span> 
+variables. After <i>sed</i> finishes, the resulting command line looks like 
+this: </p>
+<pre>eval kb=597759 u=534123</pre>
+<p class="docText">Now <tt>$kb</tt> gives you <span class="docEmphasis">597759,</span> 
+and <tt>$u</tt> contains <span class="docEmphasis">534123</span>. </p>
+<p class="docText"><span class="docEmphasis">— JP </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-23">36.24 Nested Command Substitution</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a> introduced command substitution with a pair of backquotes (<tt>''</tt>). 
+Let's review. The shell runs a backquoted string as a command, then replaces the 
+string with its output. Sometimes — though not as often — you'll want to use the 
+results from one backquoted string as arguments to another command, itself also 
+inside backquotes. To do that, you need to nest the backquotes to tell the shell 
+which command (which set of backquotes) should be done first, with its output 
+given to the second command. This is tricky with backquotes; the Korn shell 
+introduced an easier way that you'll see below. Here's a simple example — the 
+first command line uses nested backquotes, and the next two commands show its 
+parts:<span id="ENB36-4"><a class="docLink" href="#EN36-4"><sup>[4]</sup></a></span> </p>
+<pre>$ <b>echo &quot;Next year will be 200`expr \`date +%y\` + 1`.&quot;</b>
+Next year will be 2002.
+$ <b>date +%y</b>
+01
+$ <b>expr 01 + 1</b>
+2</pre>
+<p class="docText">The command to run first has escaped backquotes (<tt>\'\'</tt>) 
+around it. In the example above, that's the <tt>date +%y</tt> command. <tt>date 
++%y</tt> outputs the year — in this case, <tt>01</tt> — and that value is passed 
+to the <i>expr</i> command. <i>expr</i> adds 01 and 1 to get 2. Then that result 
+(from the outer backquotes) is passed to <i>echo</i>, on its command line, and
+<i>echo</i> prints the message. </p>
+<p class="docText">Why does the inner command, inside the escaped backquotes (<tt>\'\'</tt>), 
+run first? It's because the backslash before the backquote
+<span class="docEmphBold">turns off the special meaning</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) of the backquote. When the shell first evaluates the command line, 
+which backquotes does it see? It sees the unescaped backquotes, the ones around 
+the <tt>expr</tt> command, and the shell runs the command: </p>
+<pre>expr `date +%y` + 1</pre>
+<p class="docText">But when the shell evaluates that command line, it sees the 
+backquotes in it (now unescaped) and runs <span class="docEmphasis">that</span> 
+command — <tt>date +%y</tt>. The <tt>date +%y</tt> command outputs <tt>01</tt>. 
+Next, the shell can finish the command <tt>expr 01 + 1</tt>. It outputs 2. Then 
+the <i>echo</i> command can print its message. </p>
+<p class="docText">Whew. Most newer Bourne-type shells have an easier way: the
+<tt>$(<i>command</i>)</tt> operators. Use <tt>$(</tt> before the command, where 
+you would use an opening backquote. Put the <tt>)</tt> after the command, in 
+place of a closing backquote. You don't have to escape these operators when you 
+nest them. </p>
+<p class="docText">Here's the previous example with <tt>$( )</tt>, then a more 
+real-life example: </p>
+<p class="docText"><tt>2&gt;&amp;1</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+Section 36.16</a></p>
+<pre>$ <b>echo &quot;Next year will be 200$(expr $(date +%y) + 1).&quot; </b>
+Next year will be 2002.
+
+$ <b>tarout=$(tar cf /dev/rst1 $(find . -type f -mtime -1 -print) 2&gt;&amp;1) </b>
+    <i> time passes...</i>
+$ <b>echo &quot;$tarout&quot; </b>
+tar: ./files/145923: Permission denied</pre>
+<p class="docText">The inner command — in this case, the
+<span class="docEmphBold">find</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-1">Section 
+9.1</a>) — is run first. Its output, a list of filenames, is put on the command 
+line of the <span class="docEmphBold">tar</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-2">Section 
+38.2</a>) command. Finally, the output of <i>tar</i> (in this case, an error 
+message) is stored in the <span class="docEmphasis">tarout</span> shell 
+variable. </p>
+<p class="docText">Beginners (and some long-time programmers too) might argue 
+that you should never nest command substitution because it's too confusing. I 
+think there are times nesting is clearer. It's more compact and doesn't need 
+temporary storage. And it's not that hard to understand once you see what's 
+happening. There's another nice example in
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-16">
+Section 24.16</a>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-24">36.25 Testing Two Strings with One case Statement</h3>
+<p class="docText">The shell's <span class="docEmphBold">case statement</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">Section 
+35.10</a>) has some advantages over the <span class="docEmphBold">test command</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">Section 
+35.26</a>) — for instance, <i>case</i> can do pattern matching. But <i>test</i> 
+has the <i>-a</i> and <i>-o</i> &quot;and&quot; and &quot;or&quot; operators; those don't seem easy 
+to do with <i>case</i>. And <i>test</i> isn't built in to some older shells, so 
+using <i>case</i> may be faster. </p>
+<p class="docText">Here's a way to test two things with one <i>case</i> 
+statement. It won't solve all your problems. If you think carefully about the 
+possible values the variables you're testing can have, though, this might do the 
+trick. Use a separator (delimiter) character between the two variables. </p>
+<p class="docText">In the example below, I've picked a slash (<tt>/</tt>). You 
+could use almost any character that isn't used in <span class="docEmphBold">case 
+pattern matching</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-11">Section 
+35.11</a>) and that won't be stored in either <tt>$#</tt> or <tt>$1</tt>. The <i>
+case</i> below tests the command-line arguments of a script: </p>
+<pre>case &quot;$#/$1&quot; in
+1/-f) redodb=yes ;;
+0/) ;;
+*)  echo &quot;Usage: $0 [-f]&quot; 1&gt;&amp;2; exit 1 ;;
+esac</pre>
+<p class="docText">If there's one argument (<tt>$#</tt> is <tt>1</tt>) and the 
+argument (<tt>$1</tt>) is exactly <tt>-f</tt>, the first pattern matches, and 
+the <span class="docEmphasis">redodb</span> variable is set. If there's no 
+argument, <tt>$#</tt> will be <tt>0</tt> and <tt>$1</tt> will be empty, so the 
+second pattern matches. Otherwise, something is wrong; the third pattern 
+matches, the script prints an error and exits. </p>
+<p class="docText">Of course, you can do a lot more this way than just testing 
+command-line arguments. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-25">36.26 Outputting Text to an X Window</h3>
+<p class="docText">Unix has a lot of ways to output text from the command line 
+into the terminal (or window) where a script is running. But there are times 
+you'd like to pop open a new window (under the <span class="docEmphBold">X 
+Window System</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-22">Section 
+1.22</a>)), give the user a message — and maybe let the user reply too. X comes 
+with a standard client named <i>xmessage</i> that does this. It pops open a 
+window like <a class="docLink" href="#upt3-CHP-36-FIG-7">Figure 36-7</a> with a 
+message, then waits for the user to click a button (possibly one of many) or 
+press RETURN. For details, you can read the <i>xmessage</i> manual page. I'll 
+show how I integrated <i>xmessage</i> into a shell script. </p>
+<center>
+<h5 id="upt3-CHP-36-FIG-7" class="docFigureTitle">Figure 36-7. An xmessage window from xwrist</h5>
+<p>
+<img alt="figs/upt3_3607.gif" src="upt3_3607.gif" border="0" width="417" height="259"></p>
+</center>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: xwrist</p>
+<p class="docText">A good way to prevent wrist injuries (from too much typing) 
+is by taking periodic breaks. The <i>xwrist</i> script uses <i>xmessage</i> to 
+remind me (every 10 minutes) to take a break — and prints a fortune for me to 
+read while I do. </p>
+<p class="docText">Let's look at two parts of the script. First, the script 
+checks to see if the <span class="docEmphBold">X Window System DISPLAY 
+environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">Section 
+35.5</a>) is set; if not, it complains (with a message like <tt>xwrist: DISPLAY: 
+unset? I only work under the X Window System</tt>) and exits: </p>
+<p class="docText"><tt>:</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-6">
+Section 36.6</a>, <tt>${..?..}</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+Section 36.7</a></p>
+<pre>: ${DISPLAY?&quot;unset? I only work under the X Window System&quot;}</pre>
+<p class="docText">After checking the command-line arguments and setting some 
+shell variables, the script does its main work with an endless loop: </p>
+<p class="docText">`<tt>...</tt>`<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a></p>
+<pre>while sleep $delay
+do
+    if xmessage -nearmouse -geometry $geometry -title &quot;$title&quot; \
+        -buttons okay:1,quit:0 -default okay \
+        &quot;`/usr/games/fortune | fmt $fmtarg`&quot;
+    then exit 0
+    fi
+done</pre>
+<p class="docText">The <span class="docEmphBold">while loop</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-15">Section 
+35.15</a>) is endless because <i>sleep</i> normally <span class="docEmphBold">
+returns 0</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>). As long as the user keeps clicking the <span class="docEmphasis">
+okay</span> button, a new <i>xmessage</i> window will pop up again <tt>$delay</tt> 
+seconds after the previous one. The <i>xmessage</i> command line is split into 
+three pieces. It's run by an <span class="docEmphBold">if statement</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">Section 
+35.13</a>). On the second line, <tt>-buttons okay:1,quit:0</tt> tells <i>
+xmessage</i> to make the two buttons. If the user clicks the
+<span class="docEmphasis">quit</span> button, <i>xmessage</i> returns 0 status 
+and the <i>if</i> runs <tt>exit 0</tt> to end the script. Otherwise, <i>xmessage</i> 
+returns 1 (because the user clicked <span class="docEmphasis">okay</span> or 
+pressed RETURN; the <tt>-default okay</tt> sets this up) and the loop repeats.
+</p>
+<p class="docText">(Here's a fun enhancement, left as an exercise for you. Add a 
+third button labeled <span class="docEmphasis">mail this</span> that uses <i>
+mail</i>(1) to send you (<span class="docEmphasis">$USER</span>) an email copy 
+of the current fortune. You'll need to change the <i>if</i> to a
+<span class="docEmphBold">case statement</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">Section 
+35.10</a>) that tests <span class="docEmphBold">$?</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>).) </p>
+<p class="docText">The last <i>xmessage</i> argument is the text to put on the 
+screen. <span class="docEmphBold">fmt</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-2">Section 
+21.2</a>) reformats the output of <i>fortune</i> roughly to fit the window. 
+(There's no fancy coding here to be sure that the text fits the window exactly; 
+I just tweak the output width, set in the <span class="docEmphasis">fmtarg</span> 
+variable, to match the window geometry, which is set in the
+<span class="docEmphasis">geometry</span> variable.) If you set the geometry to 
+make a fairly wide window, you may not need <i>fmt</i> at all. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-36-SECT-26">36.27 Shell Lockfile</h3>
+<p class="docText">Here's an efficient and portable way to create a lockfile 
+from a shell script.<span id="ENB36-5"><a class="docLink" href="#EN36-5"><sup>[5]</sup></a></span> 
+It's also an interesting demonstration of the way that Unix umasks and
+<span class="docEmphBold">file permissions</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+50.2</a>) are handled. </p>
+<p class="docText">A <span class="docEmphasis">lockfile</span> can be used when 
+a particular program might be run more than once at the same time and you need 
+to be sure that only one instance of the program can do something (modify some 
+file, access a printer, etc.). To really do this right, the program needs to 
+both test for the lockfile and create it (if it doesn't exist) in one
+<span class="docEmphasis">atomic</span> operation. If the test-and-set operation 
+isn't atomic — for instance, if a program tests for the lock file in one command 
+and then creates the lock file in the next command — there's a chance that 
+another user's program could do <span class="docEmphasis">its</span> test at the 
+precise moment between the first program's (non-atomic) test and set operations. 
+The technique in this article lets you make a lockfile atomically from a shell 
+script. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">This technique doesn't work for scripts run as the 
+        superuser (<span class="docEmphasis">root</span>). It depends on the 
+        fact that a standard user can't write a file without write permisson. 
+        But <span class="docEmphasis">root</span> can write
+        <span class="docEmphasis">any</span> file, whether it has write 
+        permission or not. If there's a chance that <span class="docEmphasis">
+        root</span> might run your script, you might want to add a test of the 
+        UID — by running the <i>id</i> command, for instance — and be sure that 
+        the UID isn't 0 (the superuser's). </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Let's say you have a script called <i>edmaster</i>; it edits 
+a master configuration file named <span class="docEmphasis">config</span>. To be 
+sure that two users can't modify the <span class="docEmphasis">config</span> 
+file at the same time, the first <i>edmaster</i> checks whether the lockfile 
+exists. If the lockfile doesn't exist, <i>edmaster</i> creates it and modifies 
+the <span class="docEmphasis">config</span> file. When it's done editing, it 
+removes the lockfile. If someone tries to run a second <i>edmaster</i> process, 
+it sees the lockfile from the first <i>edmaster</i>, waits, and checks every few 
+seconds to see if the lockfile is gone. Once the first <i>edmaster</i> removes 
+the lockfile, the second <i>edmaster</i> can create the lockfile and do its 
+editing of <span class="docEmphasis">config</span>. (Note that some editors — 
+for instance, <i>nvi-1.79</i> under Linux — automatically get a write and/or 
+read lock before you to edit a file.) </p>
+<p class="docText">Here are pieces of a script that check the lock, create it, 
+and (later) remove it: </p>
+<p class="docText"><tt>2&gt;</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+Section 36.16</a>, <tt>/dev/null</tt>
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">
+Section 43.12</a>, <tt>set</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">
+Section 35.25</a></p>
+<pre># set name of this program's lockfile:
+myname=`basename $0`
+LOCKFILE=/tmp/lock.$myname
+   ...
+# Loop until we get a lock:
+until (umask 222; echo $$ &gt;$LOCKFILE) 2&gt;/dev/null   # test &amp; set
+
+do
+   # Optional message - show lockfile owner and creation time:
+   set x `ls -l $LOCKFILE`
+   echo &quot;Waiting for user $4 (working since $7 $8 $9)...&quot;
+
+   sleep 5
+done
+
+# Do whatever we need exclusive access to do...
+   ...
+rm -f $LOCKFILE            # unlock</pre>
+<p class="docText">If another user tried to run <i>edconfig</i>, and
+<span class="docEmphasis">jpeek</span> had run <i>edconfig</i> first, she might 
+see: </p>
+<pre>% <b>edconfig </b>
+Waiting for user jpeek (working since Aug 23 14:05)...
+   <i> ...a 5-second pause</i>
+Waiting for user jpeek (working since Aug 23 14:05)...
+   <i>another 5-second pause... </i>
+   <i> ...then jpeek finishes and she can edit the file.</i></pre>
+<p class="docText">How does it work? Almost all the action is in the first line 
+of the loop. A umask of 222 creates files that are read-only (mode <tt>r--r--r--</tt>). 
+Because the <span class="docEmphasis">umask 222</span> command is run in a
+<span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>), it affects only the lockfile that's created in the subshell at the 
+top of the loop. The rest of the shell script keeps its normal umask. And if the 
+redirection fails (because the lock file exists), only the subshell will abort — 
+not the parent shell running the script. </p>
+<p class="docText">If the lockfile already exists (because another process has 
+created it), the loop executes <tt>sleep 5</tt>; five seconds later, it tries to 
+create the lock. If the lockfile exists, it will be read-only — so the command
+<tt>echo $$ &gt;$LOCKFILE</tt> will return a nonzero status. A nonzero status is 
+what keeps an <span class="docEmphBold">until loop</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-15">Section 
+35.15</a>) running. Once the other process (which has the lock) removes the 
+lockfile, the <i>echo</i> command in the subshell writes the shell's process ID 
+number into the lockfile, and the <i>until</i> loop terminates. </p>
+<p class="docText">But if the lockfile is read-only, how can it ever be created? 
+That's the other interesting part of this technique. The umask applies to the 
+file only as it's created; if the file doesn't exist, the umask doesn't apply to 
+it (yet) and the file can be created. In fact, you can create a file with mode 
+000 by typing: </p>
+<pre>$ <b>(umask 666; echo hi &gt; afile)</b>
+$ <b>ls -l afile</b>
+----------  1 jpeek   wheel   3 Aug 23 14:08 afile
+$ <b>touch afile</b>
+-rw-rw-r--  1 jpeek   wheel   3 Aug 23 14:10 afile</pre>
+<p class="docText"><span class="docEmphasis">—JP </span></p>
+<blockquote>
+<p class="docFootnote" id="EN36-1"><a class="docLink" href="#ENB36-1">[1]</a>&nbsp;&nbsp;This isn&#39;t recommended for systems with a 14-character filename limit. You may 
+also want to watch out on Darwin, which, although it has the typical UNIX 
+filename limits, only displays 31 characters on the Finder Desktop (munging the 
+last few chars or inserting...to provide a unique &lt;32-character filename).</p><p class="docFootnote" id="EN36-2"><a class="docLink" href="#ENB36-2">[2]</a>&nbsp;&nbsp;A replacement like CTRL-a 
+  would make unique filenames (legal, but also harder to type).</p><p class="docFootnote" id="EN36-3"><a class="docLink" href="#ENB36-3">[3]</a>&nbsp;&nbsp;If you are using something 
+  other than GNU <i>df</i>, you may need to use the <i>-k</i> switch</p><p class="docFootnote" id="EN36-4"><a class="docLink" href="#ENB36-4">[4]</a>&nbsp;&nbsp;True, this won't work after 
+  2008. Also true, most shells have built-in arithmetic, and some can zero-pad 
+  results. But this <span class="docEmphasis">is</span> a simple example!</p><p class="docFootnote" id="EN36-5"><a class="docLink" href="#ENB36-5">[5]</a>&nbsp;&nbsp;Greg Ubben sent this idea.</p></blockquote>
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 35.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 37.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

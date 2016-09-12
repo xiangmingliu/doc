@@ -1,0 +1,841 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 31</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 30.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 32.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 31. Moving Around in a Hurry</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-1">31.1 Getting Around the Filesystem</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-2">31.2 Using Relative and Absolute Pathnames</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-3">31.3 What Good Is a Current Directory?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-4">31.4 How Does Unix Find Your Current Directory?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-5">31.5 Saving Time When You Change Directories: cdpath</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-6">31.6 Loop Control: break and continue</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-7">31.7 The Shells' pushd and popd Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-8">31.8 Nice Aliases for pushd</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-9">31.9 Quick cds with Aliases</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-10">31.10 cd by Directory Initials</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-11">31.11 Finding (Anyone's) Home Directory, Quickly</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-12">31.12 Marking Your Place with a Shell Variable</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-31-SECT-13">31.13 Automatic Setup When You Enter/Exit a Directory</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-1">31.1 Getting Around the Filesystem</h3>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 class="docSidebarTitle">Summary Box</h2>
+      <p class="docText">How quickly can you move around the Unix filesystem? 
+      Can you locate any file or directory on your filesystem with both its 
+      absolute and relative pathnames? How can symbolic links help you and hurt 
+      you? </p>
+      <p class="docText">A lot of Unix users don't realize how much they'll be 
+      helped by completely understanding a few filesystem basics. Here are some 
+      of the most important concepts and tricks to know: </p>
+      <ul>
+        <li>
+        <p class="docList">Using relative and absolute pathnames:
+        <a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-2">
+        Section 31.2</a>. </li>
+        <li>
+        <p class="docList">What good is a current directory?
+        <a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-3">
+        Section 31.3</a>. </li>
+        <li>
+        <p class="docList">Saving time and typing when changing directories with
+        <span class="docEmphasis">cdpath</span>:
+        <a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-5">
+        Section 31.5</a>. </li>
+        <li>
+        <p class="docList">Directory stacks keep a list of directories you're 
+        using and let you get to them quickly:
+        <a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-7">
+        Section 31.7</a>,
+        <a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-8">
+        Section 31.8</a>. </li>
+        <li>
+        <p class="docList">Quick <i>cd</i> aliases:
+        <a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-9">
+        Section 31.9</a>. </li>
+        <li>
+        <p class="docList">Using variables and a tilde (<tt>~</tt>) to help you 
+        find directories and files:
+        <a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">
+        Section 31.11</a>. </li>
+        <li>
+        <p class="docList">A <i>mark</i> alias to mark directory for <i>cd</i>'ing 
+        back:
+        <a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-12">
+        Section 31.12</a>. </li>
+        <li>
+        <p class="docList">Automatic setup for entering and exiting a directory:
+        <a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-13">
+        Section 31.13</a>. </li>
+      </ul>
+      <p class="docText"><span class="docEmphasis">— JP</span></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-2">31.2 Using Relative and Absolute Pathnames</h3>
+<p class="docText">Everything in the Unix filesystem — files, directories, 
+devices, named pipes, and so on — has two pathnames: absolute and relative. If 
+you know how to find those names, you'll know the best way to locate the file 
+(or whatever) and use it. Even though pathnames are amazingly simple, they're 
+one of the biggest problems beginners have. Studying this article carefully can 
+save you a lot of time and frustration. See
+<a class="docLink" href="#upt3-CHP-31-FIG-1">Figure 31-1</a> for an illustration 
+of the Unix filesystem. </p>
+<center>
+<h5 id="upt3-CHP-31-FIG-1" class="docFigureTitle">Figure 31-1. A Unix filesystem tree</h5>
+<p>
+<img alt="figs/upt3_3101.gif" src="upt3_3101.gif" border="0" width="464" height="361"></p>
+</center>
+<p class="docText"><a class="docLink" href="#upt3-CHP-31-TABLE-1">Table 31-1</a> 
+describes the two kinds of pathnames.</p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-31-TABLE-1" class="docTableTitle">Table 31-1. Absolute and relative pathnames </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Absolute pathnames</th>
+    <th class="docTableHeader">
+    <p class="docText">Relative pathnames</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Start at the root directory.</td>
+    <td class="docTableCell">
+    <p class="docText">Start at your <span class="docEmphBold">current directory</span> 
+    (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+    1.16</a>). </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Always start with a slash (<tt>/</tt>).</td>
+    <td class="docTableCell">
+    <p class="docText">Never start with a slash.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">The absolute pathname to some object (file, etc.) is 
+    always the same.</td>
+    <td class="docTableCell">
+    <p class="docText">The relative pathname to an object depends on your 
+    current directory.</td>
+  </tr>
+</table>
+<p class="docText">To make an absolute pathname:</p>
+<ul>
+  <li>
+  <p class="docList">Start at the root directory (<tt>/</tt>) and work down.
+  </li>
+  <li>
+  <p class="docList">Put a slash (<tt>/</tt>) after every directory name — 
+  though if the path ends at a directory, the slash after the last name is 
+  optional. </li>
+</ul>
+<p class="docText">For example, to get a listing of the directory highlighted in
+<a class="docLink" href="#upt3-CHP-31-FIG-1">Figure 31-1</a>, no matter what 
+your current directory is, you'd use an absolute pathname like this: </p>
+<pre>% <b>ls /home/jane/data</b>
+Sub    a    b     c</pre>
+<p class="docText">To make a relative pathname: </p>
+<ul>
+  <li>
+  <p class="docList">Start at your current directory.</li>
+  <li>
+  <p class="docList">As you move down the tree, away from root, add subdirectory 
+  names.</li>
+  <li>
+  <p class="docList">As you move up the tree toward root, add <tt>..</tt> (two 
+  dots) for each directory. </li>
+  <li>
+  <p class="docList">Put a slash (<tt>/</tt>) after every directory name — 
+  though if the path is to a directory, the slash after the last name is 
+  optional, as it is with absolute pathnames. </li>
+</ul>
+<p class="docText">For example, if your current directory is the one shown in
+<a class="docLink" href="#upt3-CHP-31-FIG-1">Figure 31-1</a>, to get a listing 
+of the <i>Sub</i> subdirectory, use a relative pathname: </p>
+<pre>% <b>ls Sub</b>
+d     e     f</pre>
+<p class="docText">Without changing your current directory, you can use a 
+relative pathname to read the file <i>d</i> in the <i>Sub</i> subdirectory: </p>
+<pre>% <b>cat Sub/d</b></pre>
+<p class="docText">To change the current directory to Jim's home directory, you 
+could use a relative pathname to it: </p>
+<pre>% <b>cd ../../jim</b></pre>
+<p class="docText">Using the absolute pathname, <i>/home/jim</i>, might be 
+easier there. </p>
+<p class="docText">The <span class="docEmphBold">symbolic link</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>) adds a twist to pathnames. What two absolute pathnames would read the 
+file that the symlink points to? The answer: <i>/home/jane/.setup</i> or <i>
+/work/setups/generic</i>. (The second pathname points directly to the file, so 
+it's a little more efficient.) If your current directory was the one shown in
+<a class="docLink" href="#upt3-CHP-31-FIG-1">Figure 31-1</a>, what would be the 
+easiest way to read that file with the <i>more</i> pager? It's probably through 
+the symlink: </p>
+<pre>% <b>more ../.setup</b></pre>
+<p class="docText">Remember, when you need to use something in the filesystem, 
+you don't always need to use <i>cd</i> first. Think about using a relative or 
+absolute pathname with the command; that'll almost always work. If you get an 
+error message, check your pathname carefully; that's usually the problem. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-3">31.3 What Good Is a Current Directory?</h3>
+<p class="docText">People who think the <i>cd</i> command is all they need to 
+know about current directories should read this article! Understanding how Unix 
+uses the current directory can save you work. </p>
+<p class="docText">Each Unix process has its own current directory. For 
+instance, your shell has a current directory. So do <i>vi</i>, <i>ls</i>, <i>sed</i>, 
+and every other Unix process. When your shell starts a process running, that 
+child process starts with the same current directory as its parent. So how does
+<i>ls</i> know which directory to list? It uses the current directory it 
+inherited from its parent process, the shell: </p>
+<pre>% <b>ls </b>
+   <i> ...Listing of ls's current directory appears,</i>
+         which is the same current directory as the shell.</pre>
+<p class="docText">Each process can change its current directory and that won't 
+change the current directory of other processes that are already running. So:
+</p>
+<ul>
+  <li>
+  <p class="docList">Your shell script (which runs in a separate process) can <i>
+  cd</i> to another directory without affecting the shell that started it. (So, 
+  the script doesn't need to <i>cd</i> back to the directory where it started 
+  before it exits.) </li>
+  <li>
+  <p class="docList">If you have more than one window or login session to the 
+  same computer, they probably run separate processes. So, they have independent 
+  current directories. </li>
+  <li>
+  <p class="docList">When you use a <span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">Section 
+  43.7</a>,
+  <a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">
+  Section 24.4</a>) or a shell escape, you can <i>cd</i> anywhere you want. 
+  After you exit that shell, the parent shell's current directory won't have 
+  changed. For example, if you want to run a command in another directory 
+  without <i>cd</i>ing there first (and having to <i>cd</i> back), do it in a 
+  subshell: </p>
+  <pre>% <b>pwd </b>
+/foo/bar
+% <b>(cd  </b><i>baz </i>; <i>somecommand   </i>&gt; <i>somefile </i>)
+% <b>pwd </b>
+/foo/bar</pre>
+  </li>
+</ul>
+<p class="docText">When you really get down to it, what good is a current 
+directory? Here it is: relative pathnames start at the current directory. Having 
+a current directory means you can refer to a file by its relative pathname, like
+<i>afile</i>. Programs like <i>ls</i> access the current directory through its 
+relative pathname<span class="docEmphBold"> . (dot)</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>). Without a current directory and relative pathnames, you'd always have 
+to use <span class="docEmphBold">absolute pathnames</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-2">Section 
+31.2</a>) like <i>/usr/joe/projects/alpha/afile</i>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-4">31.4 How Does Unix Find Your Current Directory?</h3>
+<p class="docText">[ This article is about the standard Unix <i>pwd</i> command, 
+an <span class="docEmphBold">external</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+1.9</a>) command that isn't built into your shell. (The external <i>pwd</i> is 
+usually stored at <i>/bin/pwd</i>.) Most shells have an internal version of <i>
+pwd</i> that &quot;keeps track&quot; of you as you change your current directory; it 
+doesn't have to search the filesystem to find the current directory name. This 
+article describes how the external version finds the pathname of its current 
+directory. This isn't just academic stuff: seeing how <i>pwd</i> finds its 
+current directory should help you understand how the filesystem is put together. 
+— JP] </p>
+<p class="docText">A command like <i>pwd</i> inherits the current directory of 
+the process that started it (usually a shell). It could be started from 
+anywhere. How does <i>pwd</i> find out where it is in the filesystem? See
+<a class="docLink" href="#upt3-CHP-31-FIG-2">Figure 31-2</a> for a picture of 
+the current directory <i>/usr/joe</i> and its parent directories. The current 
+directory doesn't contain its own name, so that doesn't help <i>pwd</i>. But it 
+has an entry named . (dot), which gives the <span class="docEmphBold">i-number 
+of the directory</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-2">Section 
+10.2</a>). </p>
+<center>
+<h5 id="upt3-CHP-31-FIG-2" class="docFigureTitle">Figure 31-2. Finding the current directory name</h5>
+<p>
+<img alt="figs/upt3_3102.gif" src="upt3_3102.gif" border="0" width="430" height="317"></p>
+</center>
+<p class="docText">The current directory has i-number 234. Next, <i>pwd</i> asks 
+Unix to open the parent directory file, the directory one level up, through the 
+relative pathname (<tt>..</tt>). It's looking for the name that goes with i-number 
+234. Aha: the current directory is named <i>joe</i>, so the end of the pathname 
+must be <i>joe</i>. </p>
+<p class="docText">Next step: <i>pwd</i> looks at the <tt>.</tt> entry in the 
+directory one level up to get its i-number, 14. As always, the name of the 
+one-level-up directory is in its parent (<tt>..</tt>, i-number 12). To get its 
+name, <i>pwd</i> opens the directory two levels up and looks for i-number 14, <i>
+usr</i>. Now <i>pwd</i> has the pathname <i>usr/joe</i>. </p>
+<p class="docText">Same steps: look in the parent, i-number 12. What's its name? 
+Hmmm. The i-number of its parent, 12, is the same as its own — and there's only 
+one directory on the filesystem like this: the root directory (<tt>/</tt>). So
+<i>pwd</i> adds a slash to the start of the pathname and it's done: <i>/usr/joe</i>.
+</p>
+<p class="docText">This explanation is really missing one or two parts: 
+filesystems can be mounted on other filesystems, or they can be mounted across 
+the network from other hosts. So at each step, <i>pwd</i> also needs to check 
+the device that the current directory is mounted on. If you're curious, see the
+<span class="docEmphasis">stat</span>(2) manual page or check a Unix internals 
+book. Also see the last few paragraphs of
+<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">
+Section 10.4</a> for more about the links between directories. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-5">31.5 Saving Time When You Change Directories: 
+cdpath</h3>
+<p class="docText">Some people make a shell <span class="docEmphBold">alias</span> 
+(<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>) for directories they <i>cd</i> to often. Other people set
+<span class="docEmphBold">shell variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>) to hold the pathnames of directories they don't want to retype. But 
+both of those methods make you remember directory abbreviations — and make you 
+put new aliases or shell variables in your <span class="docEmphBold">shell 
+startup files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) each time you want to add or change one. There's another way: the C 
+shell's <span class="docEmphasis">cdpath</span> shell variable and the
+<span class="docEmphasis">CDPATH</span> variable in <i>ksh</i>, <i>bash</i>, and 
+some versions of <i>sh</i>. (<i>zsh</i> understands both
+<span class="docEmphasis">cdpath</span> and <span class="docEmphasis">CDPATH</span>.) 
+I'll use the term &quot;cdpath&quot; to talk about all shells. </p>
+<p class="docText">When you type the command <tt>cd</tt> <tt><i>foo</i></tt>, 
+the shell first tries to go to the exact pathname <tt><i>foo</i></tt>. If that 
+doesn't work, and if <tt><i>foo</i></tt> is a relative pathname, the shell tries 
+the same command from every directory listed in the <span class="docEmphasis">
+cdpath</span>. (If you use <i>ksh</i> or <i>sh</i>, see the note at the end of 
+this article.) </p>
+<p class="docText">Let's say that your home directory is <i>/home/lisa</i> and 
+your current directory is somewhere else. Let's also say that your
+<span class="docEmphasis">cdpath</span> has the directories <i>/home/lisa</i>,
+<i>/home/lisa/projects</i>, and <i>/books/troff</i>. If your <tt>cd</tt> <tt><i>
+foo</i></tt> command doesn't work in your current directory, your shell will try
+<tt>cd /home/lisa/<i>foo</i></tt>, <tt>cd /home/lisa/projects/<i>foo</i></tt>, 
+and <tt>cd /books/troff/<i>foo</i></tt>, in that order. If the shell finds one, 
+it shows the pathname: </p>
+<pre>% <b>cd foo</b>
+/home/lisa/foo
+%</pre>
+<p class="docText">If there is more than one matching directory, the shell uses 
+the first match; if this isn't what you wanted, you can change the order of the 
+directories in the <span class="docEmphasis">cdpath</span>. </p>
+<p class="docText">Some Bourne shells don't show the directory name. All shells 
+print an error, though, if they can't find any <tt><i>foo</i></tt> directory.
+</p>
+<p class="docText">So, set your <span class="docEmphasis">cdpath</span> to a 
+list of the parent directories that contain directories you might want to <i>cd</i> 
+to. Don't list the exact directories — list the <span class="docEmphBold">parent 
+directories</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>). This list goes in your <i>.tcshrc</i>, <i>.cshrc</i>, or <i>.profile</i> 
+file. For example, <span class="docEmphasis">lisa</span>'s <i>.tcshrc</i> could 
+have: </p>
+<p class="docText"><tt>~</tt>
+<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">
+Section 31.11</a></p>
+<pre>set cdpath=(~ ~/projects /books/troff)</pre>
+<p class="docText">A Bourne shell user would have this in his <i>.profile </i>
+file: </p>
+<pre>CDPATH=:$HOME:$HOME/projects:/books/troff
+export CDPATH</pre>
+<p class="docText">A <i>bash</i> user might have it in her <i>.bashrc</i> or <i>
+.bash_profile</i>. </p>
+<p class="docText">(If your system doesn't define <tt>$HOME</tt>, try <tt>$LOGDIR</tt>.)
+</p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Note that the Bourne shell <span class="docEmphasis">
+        CDPATH</span> in the above example starts with a colon (:) — which, as 
+        in the <span class="docEmphasis">PATH</span> variable, is actually
+        <span class="docEmphBold">an empty entry</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+        35.6</a>) that stands for &quot;the current directory.&quot; Both the <i>sh</i> 
+        and <i>ksh</i> I tested required that. Without an empty entry, neither
+        <i>sh</i> or <i>ksh</i> would <i>cd</i> into the current directory! (<i>bash</i> 
+        seemed to work like <i>csh</i>, though.) You could actually call this a 
+        feature. If there's no empty entry in <span class="docEmphasis">CDPATH</span>, 
+        a user has to use <tt>cd</tt> <tt><i>./subdirname</i></tt> to go to a 
+        subdirectory of the current directory. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-6">31.6 Loop Control: break and continue</h3>
+<p class="docText">Normally a <span class="docEmphBold">for loop</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">Section 
+35.21</a>) iterates until it has processed all its word arguments.
+<span class="docEmphBold">while and until loops</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-15">Section 
+35.15</a>) iterate until the loop control command returns a certain status. But 
+sometimes — for instance, if there's an error — you want a loop to immediately 
+terminate or jump to the next iteration. That's where you use <i>break</i> and
+<i>continue</i>, respectively. </p>
+<p class="docText"><i>break</i> terminates the loop and takes control to the 
+line after <i>done</i>. <i>continue</i> skips the rest of the commands in the 
+loop body and starts the next iteration. Here's an example of both. An outer 
+loop is stepping through a list of directories. If we can't <i>cd</i> to one of 
+them, we'll abort the loop with <i>break</i>. The inner loop steps through all 
+entries in the directory. If one of the entries isn't a file or isn't readable, 
+we skip it and try the next one. </p>
+<p class="docText"><tt>'...'</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a>, <tt>||</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+Section 35.14</a>, <tt>*</tt>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">
+Section 1.13</a>, <tt>test</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">
+Section 35.26</a></p>
+<pre>for dir in `find $HOME/projdir -type d -print`
+do
+    cd &quot;$dir&quot; || break
+    echo &quot;Processing $dir&quot;
+    for file in *
+    do
+        test -f &quot;$file&quot; -a -r &quot;$file&quot; || continue
+            <i>...process $dir/$file...</i>
+    done
+done</pre>
+<p class="docText">With nested loops (like the file loop above), which loop is 
+broken or continued? It's the loop being processed at that time. So, the <i>
+continue</i> here restarts the inner (file) loop. The <i>break</i> terminates 
+the outer (directory) loop — which means the inner loop is also terminated. Note 
+also that the <i>-print</i> argument to <i>find</i> is often redundant in the 
+absence of another expression, depending on your version of <i>find</i>. </p>
+<p class="docText">Here we've used <i>break</i> and <i>continue</i> within <i>
+for</i> loops, after the shell's <tt>||</tt> operator. But you can use them 
+anywhere within the body of any loop — in an <i>if</i> statement within a <i>
+while</i> loop, for instance. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-7">31.7 The Shells' pushd and popd Commands</h3>
+<p class="docText">How often do you need to move to some other directory 
+temporarily, look at some file, and then move back to the directory where you 
+started? If you're like most users, you do this all the time. Most shells have
+<i>pushd</i> and <i>popd</i> commands to make this a lot easier. (If you use the 
+original <i>ksh</i>, <i>Learning the Korn Shell, </i>by Bill Rosenblatt and 
+Arnold Robbins and also published by O'Reilly<span class="docEmphasis">,</span> 
+shows you shell functions that do the same thing.) </p>
+<p class="docText">These commands implement a &quot;directory stack.&quot; The classical 
+analogy for a stack is one of those spring-loaded plate stackers in a school (or 
+corporate) cafeteria. The last plate put (&quot;pushed&quot;) onto the stack is the first 
+plate taken (&quot;popped&quot;) from the stack. It's just the same with directories: each 
+time you use <i>pushd</i>, the shell adds your current directory to the stack 
+and moves you to the new directory. When you use <i>popd</i>, the shell takes 
+the top directory off the stack and moves you to the directory underneath.<span id="ENB31-1"><a class="docLink" href="#EN31-1"><sup>[1]</sup></a></span>
+</p>
+<p class="docText">You may as well learn about <i>pushd</i> the way I did: by 
+watching. Let's say that I'm in the directory <i>~/power</i>, working on this 
+book. I want to change to my <i>Mail</i> directory briefly, to look at some old 
+correspondence. Let's see how. (Note that if you have a
+<span class="docEmphBold">cdpath</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-5">Section 
+31.5</a>) that includes your home directory, <tt>~</tt> or <tt>$HOME</tt>, you 
+won't need to type the <tt>~/</tt> with arguments to <i>pushd</i>. In other 
+words, <i>pushd</i> looks at your <span class="docEmphasis">cdpath</span>.) </p>
+<pre>los% <b>pushd ~/Mail </b>   <i> current directory becomes ~/Mail</i>
+~/Mail ~/power</pre>
+<p class="docText"><i>pushd</i> prints the entire stack, giving me some 
+confirmation about where I am and where I can go. When I'm done reading the old 
+mail, I want to move back: </p>
+<pre>los% <b>popd </b>   <i>                 current directory becomes ~/power</i>
+~/power</pre>
+<p class="docText">We're back where we started; the <i>Mail</i> directory is no 
+longer on the stack. </p>
+<p class="docText">What if you want to move back and forth repeatedly? <i>pushd</i>, 
+with no arguments, just switches the two top directories on the stack, like 
+this: </p>
+<pre>los% <b>pwd </b>   <i>                   current directory is ~/power</i>
+/home/los/mikel/power
+los% <b>pushd ~/Mail </b>   <i> current directory becomes ~/Mail</i>
+~/Mail ~/power
+los% <b>pushd </b>   <i>               current directory becomes ~/power</i>
+~/power ~/Mail
+los% <b>pushd </b>   <i>               current directory becomes ~/Mail</i>
+~/Mail ~/power</pre>
+<p class="docText">And so on.</p>
+<p class="docText">If you like, you can let your directory stack get really 
+long. In this case, two special commands are useful. <span class="docEmphasis">
+popd +n</span> deletes the <tt><i>n</i></tt> entry in the stack. Entries are 
+counted &quot;down&quot; from the top, starting with zero; that is, your current directory 
+is 0. So <i>popd +0</i> and <span class="docEmphasis">popd</span> are the same. 
+If <tt><i>n</i></tt> is greater than 0, your current directory does not change. 
+This may seem surprising, but it isn't; after all, you haven't changed the top 
+of the stack. </p>
+<p class="docText">The command <span class="docEmphasis">pushd +n</span> 
+&quot;rotates&quot; the stack, so that the <tt><i>n</i></tt>th directory moves to the top, 
+becoming the current directory. Note that this is a &quot;rotation&quot;: the whole stack 
+moves. I don't find the <span class="docEmphasis">+n</span> commands too useful, 
+but you should know about them. </p>
+<p class="docText">The <i>dirs</i> command prints the directory stack. It's a 
+good way to find out where you are. (Some people like to
+<span class="docEmphBold">put the dirs command in their prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-14">Section 
+4.14</a>), but I personally find incredibly long prompts more annoying than 
+helpful.) If you'd like a numbered list of the directories on the stack, most 
+shells support <i>dirs -v</i>. </p>
+<p class="docText">The one drawback to <i>pushd</i> and <i>popd</i> is that you 
+can easily build up a gigantic directory stack full of useless directories. I 
+suppose this doesn't really hurt anything, but it's needless clutter. One way to 
+clear the stack is to <i>popd</i> repeatedly. More to the point, the directories 
+you're most likely to want are at the top of the stack. With seven directories 
+in the stack, you could conceivably do something like this to get rid of the 
+bottom two elements: </p>
+<pre>% <b>pushd +5 ; popd ; popd</b></pre>
+<p class="docText">The <i>pushd</i> moves the bottom two elements of a 
+seven-directory stack to the top. A bit inconvenient. </p>
+<p class="docText">The <i>zsh</i> commands <span class="docEmphasis">cd +n</span> 
+and <span class="docEmphasis">cd -n</span> move a directory to the top of the 
+stack and change to the &quot;popped&quot; directory. The <tt>+</tt> counts from the top 
+(left end) of the stack (starting with zero), and - counts from the bottom. As 
+you do this, remember that in <i>zsh</i> terminology, the current directory is
+<span class="docEmphasis">not</span> on the stack; it's separate from the stack. 
+As the previous footnote explains, this different interpretation of the stack 
+takes some getting used to. Also see the <i>zshbuiltins</i>(1) manual page. 
+Whew. </p>
+<p class="docText">If the stack gets too messy, here's an easy way to start 
+over: In <i>bash</i> Version 2 and in <i>tcsh</i>, the command
+<span class="docEmphasis">dirs -c</span> clears the stack. In <i>csh</i>, you 
+can use the built-in <i>repeat</i> command to clear the stack. For example, if 
+the stack has seven directories, type: </p>
+<pre>% <b>repeat 6 popd</b></pre>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-8">31.8 Nice Aliases for pushd</h3>
+<p class="docText">The <span class="docEmphBold">pushd command</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-7">Section 
+31.7</a>) is nice for jumping around the filesystem, but some of the commands 
+you might type a lot, like <i>pushd +4</i>, are sort of a pain to type. I saw 
+these <span class="docEmphBold">aliases</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>) in Daniel Gilly's setup file. They looked so handy that I decided to 
+steal them for this book. There are C shell versions in the first column and 
+Bourne-type in the second: </p>
+<pre>alias pd pushd                 alias pd=pushd
+alias pd2 'pushd +2'           alias pd2='pushd +2'
+alias pd3 'pushd +3'           alias pd3='pushd +3'
+alias pd4 'pushd +4'           alias pd4='pushd +4'
+      ...</pre>
+<p class="docText">So, for example, to swap the fourth directory on the stack, 
+just type <i>pd4</i>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-9">31.9 Quick cds with Aliases</h3>
+<p class="docText">If you do a lot of work in some particular directories, it 
+can be handy to make <span class="docEmphBold">aliases</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>) that take you to each directory quickly. For example, this Korn shell 
+alias lets you type <tt>pwr</tt> to change to the <i>/books/troff/pwrtools</i> 
+directory: </p>
+<pre>alias pwr='cd /books/troff/pwrtools'</pre>
+<p class="docText">(If your shell doesn't have aliases, you can use a
+<span class="docEmphBold">shell function</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>). A <span class="docEmphBold">shell script</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-8">Section 
+1.8</a>) won't work, though, because it runs in a <span class="docEmphBold">
+subshell</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>).) </p>
+<p class="docText">When you pick the alias names, it's a good idea not to 
+conflict with command names that are already on the system.
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-27">
+Section 35.27</a> shows how to pick a new name. </p>
+<p class="docText">If you have a lot of these directory-changing aliases, you 
+might want to put them in a separate file named something like <i>.cd_aliases</i>. 
+Then add these lines to your <span class="docEmphBold">shell setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>), like this C shell example for your <i>.cshrc</i>: </p>
+<p class="docText"><tt>source</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">
+Section 35.29</a>, <tt>~</tt>
+<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">
+Section 31.11</a></p>
+<pre>alias setcds source ~/.cd_aliases
+setcds</pre>
+<p class="docText">That reads your aliases into each shell. If you edit the <i>.cd_aliases</i> 
+file, you can read the new file into your shell by typing <tt>setcds</tt> from 
+any directory. </p>
+<p class="docText">Finally, if you're in a group of people who all work on the 
+same directories, you could make a central alias file that everyone reads from 
+their shell setup files as they log in. Just adapt the example above. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-10">31.10 cd by Directory Initials</h3>
+<p class="docText">Here's a handy shell function called
+<span class="docEmphasis">c</span> for people who <i>cd</i> all over the 
+filesystem. (I first saw Marc Brumlik's posting of it on Usenet years ago, as a 
+C shell alias. He and I have both made some changes to it since then.) This 
+function is great for shells that don't have <span class="docEmphBold">filename 
+completion</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-6">Section 
+28.6</a>). This function works a bit like filename completion, but it's faster 
+because the &quot;initials&quot; match only directories and you don't have to press TAB or 
+ESC after each part of the pathname. Instead, you just type the initials (first 
+letter or more) of each directory in the pathname. Start at the root directory. 
+Put a dot (.) after each part. </p>
+<p class="docText">Here are three examples. The first one shows that there's no 
+subdirectory of root whose name starts with <i>q</i>. The second one matches the 
+directory <i>/usr/include/hsfs</i> and <i>cd</i>s there: </p>
+<pre>$ <b>c q.</b>
+c: no match for /q*/.
+$ <b>c u.i.h.</b>
+/usr/include/hsfs/.
+$</pre>
+<p class="docText">In the next example, trying to change to <i>/usr/include/pascal</i> 
+the abbreviations aren't unique the first time. The function shows me all the 
+matches; the second time, I add another letter (&quot;a&quot;) to make the name unique:
+</p>
+<pre>$ <b>c u.i.p.</b>
+c: too many matches for u.i.p.:
+/usr/include/pascal/. /usr/include/pixrect/. /usr/include/protocols/.
+$ <b>c u.i.pa.</b>
+/usr/include/pascal/.
+$</pre>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: c.csh, c.sh</p>
+<p class="docText">The Bourne shell function is straightforward; it's shown 
+below.<span id="ENB31-2"><a class="docLink" href="#EN31-2"><sup>[2]</sup></a></span> The C 
+shell alias needs some trickery, and there are two versions of it: one if you 
+already have an alias for <i>cd</i> and another if you don't. (The C shell <i>if</i> 
+used in the <span class="docEmphasis">c</span> alias won't work with a <i>cd</i> 
+alias. Although the <i>csh</i> manual page admits it won't work, I'd call that 
+another C shell bug.) </p>
+<p class="docText"><tt>set</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">
+Section 35.25</a>, <tt>$#</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">
+Section 35.20</a></p>
+<pre>function c( )
+{
+   dir=&quot;$1&quot;
+
+   # Delete dots.  Surround every letter with &quot;/&quot; and &quot;*&quot;.
+   # Add a final &quot;/.&quot; to be sure this only matches a directory:
+   dirpat=&quot;`echo $dir | sed 's/\([^.]*\)\./\/\1*/g'`/.&quot;
+
+   # In case $dirpat is empty, set dummy &quot;x&quot; then shift it away:
+   set x $dirpat; shift
+
+   # Do the cd if we got one match, else print error:
+   if [ &quot;$1&quot; = &quot;$dirpat&quot; ]; then
+      # pattern didn't match (shell didn't expand it)
+      echo &quot;c: no match for $dirpat&quot; 1&gt;&amp;2
+   elif [ $# = 1 ]; then
+      echo &quot;$1&quot;
+      cd &quot;$1&quot;
+   else
+      echo &quot;c: too many matches for $dir:&quot; 1&gt;&amp;2
+      ls -d &quot;$@&quot;
+   fi
+
+   unset dir dirpat
+}</pre>
+<p class="docText">The function starts by building a wildcard pattern to match 
+the directory initials. For example, if you type <tt>c u.i.h</tt>., <i>sed</i> 
+makes the pattern <tt>/u*/i*/h*/</tt>. in <tt>$dirpat</tt>. Next, the shell 
+expands the wildcards onto its command-line parameters; the trailing dot makes 
+sure the pattern matches only a directory. If the Bourne shell can't match a 
+wildcard pattern, it leaves the pattern unchanged; the first <tt>if</tt> test 
+spots that. If there was just one match, there will be one command-line 
+parameter left, and the shell <i>cd</i>s there. Otherwise, there were too many 
+matches; the function shows them so you can make your pattern longer and more 
+specific. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-11">31.11 Finding (Anyone's) Home Directory, Quickly</h3>
+<p class="docText">Most shells have a shortcut for the pathname to your home 
+directory: a tilde (<tt>~</tt>), often called &quot;twiddle&quot; by Unix-heads. You can 
+use <tt>~</tt> in a pathname to the home directory from wherever you are. For 
+example, from any directory, you can list your home directory or edit your <i>.cshrc</i> 
+file in it by typing: </p>
+<pre>% <b>ls ~</b>
+   ...
+% <b>vi ~/.cshrc</b></pre>
+<p class="docText">If you're using a very old Bourne shell, one that does not 
+support the tilde convention, try the <tt>$HOME</tt> or <tt>$LOGDIR</tt> 
+variables instead. </p>
+<p class="docText">You could change your current directory to your home 
+directory by typing <tt>cd ~</tt> or <tt>cd $HOME</tt>, but all shells have a 
+shorter shortcut: typing plain <tt>cd</tt> with no argument also takes you home.
+</p>
+<p class="docText">If your shell understands the tilde, it should also have an 
+abbreviation for other users' home directories: a tilde with the username on the 
+end. For example, the home directory for <span class="docEmphasis">mandi</span>, 
+which might really be <i>/remote/users/m/a/mandi</i>, could be abbreviated
+<span class="docEmphasis">~mandi</span>. On your account, if Mandi told you to 
+copy the file named <i>menu.c</i> from her <i>src</i> directory, you could type:
+</p>
+<pre>% <b>cp ~mandi/src/menu.c .</b></pre>
+<p class="docText">Don't confuse this with filenames like <i>report~</i>. Some 
+programs, like the GNU <span class="docEmphBold">Emacs</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-4">Section 
+19.4</a>) editor and <i>vi</i>, may create temporary filenames that end with a
+<tt>~</tt> (tilde). </p>
+<p class="docText">Your version of the Bourne shell might also emulate the 
+special &quot;directory&quot; <span class="docEmphasis">/u</span> — if your system 
+administrator hasn't already set up <span class="docEmphasis">/u</span>, that 
+is. It's a directory full of <span class="docEmphBold">symbolic links</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>) to users' home directories. For instance, <i>/u/jane</i> could be a 
+link to <i>/home/users/jane</i>. Many systems are now using <i>/home</i> for 
+home directories, in favor of the old <i>/usr/users</i> or <i>/u</i> 
+conventions. Darwin uses <i>/Users/username</i> (note the uppercase
+<span class="docEmphasis">U</span>!), but the tilde works the same there, too.
+</p>
+<p class="docText">If all else fails, here's a trick that's probably too ugly to 
+type a lot, but it's useful in Bourne shell scripts, where you don't want to 
+&quot;hardcode&quot; users' home directory pathnames. This command calls the C shell to 
+put <span class="docEmphasis">mandi</span>'s home directory pathname into
+<span class="docEmphasis">$dir</span>: </p>
+<pre>username=mandi
+dir=`csh -fc &quot;echo ~$username&quot;`</pre>
+<p class="docText">In fact, using <span class="docEmphBold">echo</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-5">Section 
+27.5</a>) yourself is a good way to see how <tt>~</tt> works. Try <tt>echo ~</tt>,
+<tt>echo ~/xyz</tt>, <tt>echo ~xyz</tt>, and so on. Note that different shells 
+do different things when <tt>~<i>user</i></tt> doesn't match any user: some 
+print an error, others return the unmatched string. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-12">31.12 Marking Your Place with a Shell Variable</h3>
+<p class="docText">The following alias stores the current directory name in a 
+variable: </p>
+<pre>alias mark 'set \!:1=$cwd'</pre>
+<p class="docText">so as to use a feature of the C shell:</p>
+<pre>% <b>mark  </b><i>here </i>
+   ...
+% <b>cd  </b><i>here </i></pre>
+<p class="docText">One need not even type <tt>$<i>here</i></tt>. If a directory 
+does not exist, <i>csh</i> tries searching its <span class="docEmphBold">cdpath</span> 
+(<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-5">Section 
+31.5</a>), then tries to evaluate the name as a variable. </p>
+<p class="docText">(I generally use <span class="docEmphBold">pushd and popd</span> 
+(<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-7">Section 
+31.7</a>) to store directory names; <span class="docEmphasis">mark</span> is 
+more useful with commands that need to look in two different paths, and in that 
+case <tt>$<i>here</i></tt> is necessary anyway. Ah well.) </p>
+<p class="docText">[In <i>bash</i> and <i>zsh</i>, you can do this by setting
+<span class="docEmphasis">cdable_vars</span> . In your <span class="docEmphBold">
+shell setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>), use <tt>cdable_vars=1</tt> for <i>bash</i> or <tt>setopt cdable_vars</tt> 
+or <tt>setopt</tt> <tt>-T</tt> for <i>zsh</i>. — <span class="docEmphasis">JP</span>]
+</p>
+<p class="docText"><span class="docEmphasis">— CT</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-31-SECT-13">31.13 Automatic Setup When You Enter/Exit a 
+Directory</h3>
+<p class="docText">If you work in a lot of different directories, here's a way 
+to make the shell do automatic setup when you enter a directory or do cleanup as 
+you leave. We've broken it onto two lines for printing; enter it as one line. On
+<i>bash</i>, make a shell function instead. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: csh_init, sh_init</p>
+<pre>alias cd 'if (-o .exit.csh) source .exit.csh; chdir \!*;
+    if (-o .enter.csh) source .enter.csh'
+
+function cd( ) {
+   test -r .exit.sh &amp;&amp; . .exit.sh
+   builtin cd &quot;$1&quot;                  # builtin is a bash command
+   test -r .enter.sh &amp;&amp; . .enter.sh
+}</pre>
+<p class="docText">Then create <i>.enter.csh</i> and/or <i>.exit.csh</i> files 
+in the directories where you want a custom setup. Bourne-type shell users, make
+<i>.enter.sh</i> and/or <i>.exit.sh</i> files instead. When you <i>cd</i> to a 
+new directory, an <i>.exit</i> file is <span class="docEmphBold">sourced</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">Section 
+35.29</a>) into your current shell before you leave the old directory. As you 
+enter the new directory, a <i>.enter</i> file will be read if it exists. If you 
+use <span class="docEmphBold">pushd and popd</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-7">Section 
+31.7</a>), you'll probably want to make the same kind of aliases or functions 
+for them. </p>
+<p class="docText">The C shell alias tests to be sure you own the files; this 
+helps to stop other users from leaving surprises for you! But if lots of users 
+will be sharing the directory, they may all want to share the same files — in 
+that case, replace the <i>-o</i> tests with <i>-r</i> (true if the file is 
+readable). </p>
+<p class="docText">Here's a sample <i>.enter.csh</i> file:</p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: .enter.csh, .enter.sh</p>
+<pre># Save previous umask; reset in .exit.csh:
+set prevumask=`umask`
+
+# Let everyone in the group edit my files here:
+umask 002
+echo &quot;.enter.csh: setting umask to 002&quot;
+# Prompt (with blank line before) to keep me awake:
+set prompt=&quot;\
+$cwd - PROJECT DEVELOPMENT DIRECTORY.  EDIT CAREFULLY...\
+% &quot;</pre>
+<p class="docText">Here's the <i>.exit.csh</i> to go with it: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: .exit.csh, .exit.sh</p>
+<p class="docText"><tt>setprompt</tt>
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-7">
+Section 4.7</a></p>
+<pre># .enter.csh file may put old umask in shell variable:
+if ($?prevumask) then
+   umask $prevumask
+   echo &quot;.exit.csh: setting umask to $prevumask&quot;
+   unset prevumask
+endif
+# Reminder to come back here if need to:
+echo &quot;If you didn't check in the RCS files, type 'cd $cwd'.&quot;
+# Set generic prompt (setprompt alias comes from .cshrc file):
+setprompt</pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">The <span class="docEmphasis">umask</span> set in the
+        <i>.enter</i> file for some directory will also set the permissions for 
+        files you create in other directories with commands that use pathnames — 
+        like <tt>vi</tt> <tt>/<i>somedir</i>/<i>somefile</i></tt>. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Can more than one of your directories use the same <i>.enter</i> 
+or <i>.exit</i> file? If they can, you'll save disk space and redundant editing, 
+as well as the risk of the files getting out of sync, by making
+<span class="docEmphBold">hard links</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>) between the files. If the directories are on different filesystems, 
+you'll have to use a <span class="docEmphBold">symbolic link</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>) — though that probably won't save much disk space. If you link the 
+files, you should probably add a comment that reminds you of the links when you 
+make your next edit. When your <i>.enter</i> files get really long, you might be 
+able to put a command like this in them: </p>
+<p class="docText"><tt>source</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">
+Section 35.29</a></p>
+<pre>source ~/.global_enter</pre>
+<p class="docText">where the <i>.global_enter</i> file in your home directory 
+has a procedure that you want to run from a lot of your <i>.enter</i> files. 
+(Same goes for <i>.exit</i>, of course.) </p>
+<p class="docText">One last idea: if a lot of users share the same directory, 
+they can make files with names like <i>.enter.joanne</i>, <i>.exit.allan</i>, 
+and so on. Your aliases can test for a file named <i>.enter.$user</i>. </p>
+<p class="docText"><span class="docEmphasis">— JP </span></p>
+<blockquote>
+<p class="docFootnote" id="EN31-1"><a class="docLink" href="#ENB31-1">[1]</a>&nbsp;&nbsp;Some people — the <i>zsh</i> maintainers, for instance — think of this with a 
+different model. In this other model, the current directory isn&#39;t at the top of 
+the stack: it&#39;s separate from the stack. The stack is just a list of 
+&quot;remembered&quot; directories. So when you use <i>pushd</i>, that first puts the 
+current directory onto the top of the stack, then <i>cd</i>s to the directory 
+given. And, when you use <i>popd</i>, the top of the stack is popped off to 
+become the new current directory. Maybe you&#39;d like to keep both of the models in 
+mind as you read and experiment with directory stacks — and then decide which 
+seems clearer to you.</p><p class="docFootnote" id="EN31-2"><a class="docLink" href="#ENB31-2">[2]</a>&nbsp;&nbsp;You may need to remove the
+  <tt>function</tt> keyword in older Bourne shells, but it is required for <i>
+  bash</i>.</p></blockquote>
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 30.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 32.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

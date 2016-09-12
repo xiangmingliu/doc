@@ -1,0 +1,1284 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 4</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 3.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 5.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 4. Interacting with Your Environment</h2>
+
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-1">4.1 Basics of Setting the Prompt</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-2">4.2 Static Prompts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-3">4.3 Dynamic Prompts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-4">4.4 Simulating Dynamic Prompts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-5">4.5 C-Shell Prompt Causes Problems in vi, rsh, etc.</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-6">4.6 Faster Prompt Setting with Built-ins</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-7">4.7 Multiline Shell Prompts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-8">4.8 Session Info in Window Title or Status Line</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-9">4.9 A &quot;Menu Prompt&quot; for Naive Users</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-10">4.10 Highlighting and Color in Shell Prompts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-11">4.11 Right-Side Prompts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-12">4.12 Show Subshell Level with $SHLVL</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-13">4.13 What Good Is a Blank Shell Prompt?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-14">4.14 dirs in Your Prompt: Better Than $cwd</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-15">4.15 External Commands Send Signals to Set Variables</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-16">4.16 Preprompt, Pre-execution, and Periodic Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-17">4.17 Running Commands When You Log Out</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-18">4.18 Running Commands at Bourne/Korn Shell Logout</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-4-SECT-19">4.19 Stop Accidental Bourne-Shell Logouts</a></li>
+</ul>
+
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-1">4.1 Basics of Setting the Prompt</h3>
+<p class="docText">The prompt displayed by your shell is contained in a
+<span class="docEmphBold">shell variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>) called <span class="docEmphasis">prompt</span> in C-type shells and
+<span class="docEmphasis">PS1</span> in Bourne-type shells. As such, it can be 
+set like any other shell variable. </p>
+<p class="docText">There are two or three ways to set a prompt. One is a
+<span class="docEmphBold">static prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-2">Section 
+4.2</a>) that doesn't change during your login session (as you change 
+directories, as the time of day changes, etc.). Some shells let you set a
+<span class="docEmphBold">dynamic prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-3">Section 
+4.3</a>) string that is interpreted by the shell before each prompt is printed. 
+Even on shells that don't interpret prompt strings dynamically, you can
+<span class="docEmphBold">simulate a dynamic prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-4">Section 
+4.4</a>) by changing the prompt string automatically.<span id="ENB4-1"><a class="docLink" href="#EN4-1"><sup>[1]</sup></a></span>
+</p>
+<p class="docText">Depending on your shell's capabilties, you can use or combine 
+those three techniques — and those found in the rest of this chapter — to do a 
+lot. But, of course, you don't want to type that prompt-setting command every 
+time you log in. So after you've perfected your prompt on the command line, 
+store it in the correct <span class="docEmphBold">shell setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>): use the file that's read by interactive shells or add an interactive 
+shell test to your setup file. (Setting the prompt in noninteractive shells is 
+pointless — and it can even cause <span class="docEmphBold">problems</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-5">Section 
+4.5</a>).) </p>
+<p class="docText"><span class="docEmphasis">—JP, TOR, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-2">4.2 Static Prompts</h3>
+<p class="docText">As
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-1">
+Section 4.1</a> explains, the simplest prompts — which I call
+<span class="docEmphasis">static prompts</span> — are prompts whose value are 
+set once. The prompt doesn't change (until you reset the prompt variable, of 
+course). </p>
+<p class="docText">The default <i>bash</i> prompt is a good example of a static 
+prompt. It's &quot;<tt>bash$</tt> &quot; (with a space at the end, to make the command you 
+type stand out from the rest of the prompt). You could set that prompt with the 
+simple command: </p>
+<pre>PS1='bash$ '.</pre>
+<p class="docText">Notice the <span class="docEmphBold">single quotes</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-3">Section 
+11.3</a>) around the value; this is a good idea unless you want special 
+characters in the prompt value to be interpreted before it's set. You can try it 
+now: type that command on a command line, just as you would to set any other 
+shell variable. Experiment a bit. The same prompt works on <i>ksh</i> and <i>sh</i>.
+</p>
+<p class="docText">If you use <i>csh</i> or <i>tcsh</i>, try one of these, then 
+experiment: </p>
+<pre>set prompt='csh% '
+set prompt='tcsh&gt; '</pre>
+<p class="docText">(<i>zsh</i> users: you can use any of the previous styles, 
+but omit the <span class="docEmphasis">set</span> from the <tt>set prompt</tt> 
+style.) Those prompts are fairly useless, right? If you log in to more than one 
+machine, on more than one account, it's nice to have your hostname and username 
+in the prompt. So try one of the following prompts. (From here on, I won't show 
+a separate <span class="docEmphasis">tcsh</span> version with a <tt>&gt;</tt> 
+instead of a <tt>%</tt>. You can do that yourself, though, if you like.) If your 
+system doesn't have <i>uname</i>, try <i>hostname</i> instead: </p>
+<pre>PS1=&quot;$USER@`uname -n`$ &quot;
+set prompt=&quot;$user@`uname -n`% &quot;</pre>
+<p class="docText">Notice that I've used <span class="docEmphBold">double quotes</span> 
+(<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>) around the values, which lets the shell expand the values inside the 
+prompt string <span class="docEmphasis">before the prompt is stored</span>. The 
+shell interprets the variable <tt>$USER</tt> or <tt>$user</tt> — and it runs the
+<span class="docEmphBold">command substitution</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) that gives the hostname — <span class="docEmphasis">once, before</span> 
+the prompt is set. Using double quotes is more efficient if your prompt won't 
+change as you move around the system. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-3">4.3 Dynamic Prompts</h3>
+<p class="docText">Many shells can interpret the stored prompt string
+<span class="docEmphasis">as each prompt is printed</span>. As
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-1">
+Section 4.1</a> explains, I call these <span class="docEmphasis">dynamic prompts</span>.
+</p>
+<p class="docText">Special character sequences in the prompt let you include the 
+current directory, date and time, username, hostname, and much more. Your 
+shell's manual page should list these at the <span class="docEmphasis">PS1</span> 
+or <span class="docEmphasis">prompt</span> variable. (If you use the Korn shell 
+or the original C shell, you don't have these special sequences.
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-4">
+Section 4.4</a> has a technique that should work for you.) </p>
+<p class="docText">It's simplest to put single quotes around the prompt string 
+to prevent <span class="docEmphBold">interpretation</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-1">Section 
+27.1</a>) as the prompt is stored. For example, the following prompt shows the 
+date and time, separated by spaces. It also has a special sequence at the end (<tt>\$</tt> 
+in <i>bash</i>, <tt>%#</tt> in <i>tcsh</i> and <i>zsh</i>) that's printed as a 
+hash mark (<tt>#</tt>) if you're the superuser, or the usual prompt character 
+for that shell otherwise. The first command in the following code listing works 
+only in <i>bash</i>; the second only in <i>tcsh</i>: </p>
+<pre>PS1='\d \t \$ '                   <i>...bash</i>
+set prompt='%w %D %Y %P %# '      <i>...tcsh</i>
+PS1='%W %* %# '                   <i>...zsh</i></pre>
+<p class="docText">Having the history number in your prompt, as
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-14">
+Section 4.14</a> shows, makes it easy to use <span class="docEmphBold">history</span> 
+(<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+30.8</a>) to repeat or modify a previous command. You can glance up your screen 
+to the prompt where you ran the command, spot the history number (for example, 
+27), and type <tt>!27</tt> to repeat it, <tt>!27:$</tt> to grab the filename off 
+the end of the line, and much more. In <i>csh</i>, <i>tcsh</i>, and <i>bash</i> 
+prompts, use <tt>\!</tt> to get the history number. In <i>zsh</i>, use <tt>%!</tt> 
+instead. </p>
+<p class="docText"><span class="docEmphasis">—JP, TOR, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-4">4.4 Simulating Dynamic Prompts</h3>
+<p class="docText">Some shells don't have the special &quot;dynamic&quot; prompt-setting 
+sequences shown in
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-3">
+Section 4.3</a>. If you still want a dynamic prompt, you probably can simulate 
+one. Both <i>ksh</i> and <i>bash</i> will expand variables (like <tt>$PWD</tt>), 
+do command substitution (to run a command like <tt>'date'</tt>), and do 
+arithmetic as they print the prompt. So, for example, you can put single quotes 
+around the prompt string to prevent interpretation of these items as the prompt 
+is stored. When the prompt string is interpreted, the current values will be put 
+into <span class="docEmphasis">each</span> prompt. (<i>zsh</i> gives control 
+over whether this happens as a prompt is printed. If you want it to happen, put 
+the command <span class="docEmphBold">setopt prompt_subst</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) in your <span class="docEmphBold">.zshrc</span>
+<span class="docEmphBold">file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>).) </p>
+<p class="docText">The following prompt stores the <tt>$PWD</tt> parameter to 
+give the current directory, followed by a backquoted <i>date</i> command. The 
+argument to <i>date</i> is a format string; because the format string is inside 
+single quotes, I've used nested double quotes around it. Because it's in single 
+quotes, it's stored verbatim — and the shell gets the latest values from <i>date</i> 
+and <tt>$PWD</tt> each time a prompt is printed. Try this prompt, then <i>cd</i> 
+around the filesystem a bit: </p>
+<pre>PS1='`date &quot;+%D %T&quot;` $PWD $ '</pre>
+<p class="docText">That prompt prints a lot of text. If you want all of it, 
+think about a <span class="docEmphBold">multiline prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-7">Section 
+4.7</a>). Or you could write a simple <span class="docEmphBold">shell function</span> 
+(<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>) named, say, <i>do_prompt</i>: </p>
+<pre># for bash
+function do_prompt {
+   date=`date '+%D %T'`
+   dir=`echo $PWD | sed &quot;s@$HOME@~@&quot;`
+   echo &quot;$date $dir&quot;
+   unset date dir
+}
+
+# for ksh
+do_prompt( ) {
+   date=`date '+%D %T'`
+   dir=`echo $PWD | sed &quot;s@$HOME@~@&quot;`
+   echo &quot;$date $dir&quot;
+   unset date dir
+}</pre>
+<p class="docText">and use its output in your prompt:</p>
+<pre>PS1='`do_prompt` $ '    <i>...for sh-type shells</i></pre>
+<p class="docText">The original C shell does almost no interpretation inside its
+<span class="docEmphasis">prompt</span> variable. You can work around this by 
+writing a shell <span class="docEmphBold">alias</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>) named something like <span class="docEmphBold">setprompt</span>
+<span class="docEmphBold">(</span><a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-14">Section 
+4.14</a>) that resets the <span class="docEmphasis">prompt</span> variable after 
+you do something like changing your current directory. Then, every time <i>csh</i> 
+needs to print a prompt, it uses the latest value of <span class="docEmphasis">
+prompt</span>, as stored by the most recent run of <i>setprompt</i>. (Original 
+Bourne shell users, see
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-15">
+Section 4.15</a> for a similar trick.) </p>
+<p class="docText"><span class="docEmphasis">—JP, TOR, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-5">4.5 C-Shell Prompt Causes Problems in vi, rsh, etc.</h3>
+<p class="docText">Stray prompts can cause trouble for many commands that start 
+a noninteractive shell. This problem may have (and probably has) been fixed in 
+your C shell, but some of the following tricks will speed up your <i>.cshrc</i>, 
+so keep reading. </p>
+<p class="docText">If you <span class="docEmphasis">set prompt</span> in your <i>
+.cshrc</i> file without carefully checking first whether
+<span class="docEmphasis">prompt</span> was already set (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-1">Section 
+4.1</a>), many older versions of the C shell will cheerfully print prompts into 
+the pipe <i>vi</i> uses to expand glob characters, such as
+<span class="docEmphBold">filename wildcards</span> (<tt>*</tt>, <tt>?</tt>, <tt>
+[ ]</tt>) (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+1.13</a>) and the <span class="docEmphBold">tilde</span> (<tt>~</tt>) (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">Section 
+31.11</a>). </p>
+<p class="docText">When you type <tt>:r abc*</tt>, <i>vi</i> opens a pipe to the 
+C shell, writes the command <tt>echo abc*</tt> down the pipe, then reads the 
+response. If the response contains spaces or newlines, <i>vi</i> gets confused. 
+If you set your prompt to <tt>(<i>n</i>)</tt> in your <i>.cshrc</i> [i.e., if 
+you show the history number in parentheses as the prompt
+<span class="docEmphasis">— TOR</span>], <i>vi</i> tends to get: </p>
+<pre>(1) abc.file (2)</pre>
+<p class="docText">back from the C shell, instead of just <tt>abc.file</tt>.</p>
+<p class="docText">The solution is to kludge your <i>.cshrc</i> like this:</p>
+<pre>if ($?prompt) then
+    # things to do for an interactive shell, like:
+    set prompt='(\!) '
+endif</pre>
+<p class="docText">This works because a noninteractive shell has no initial 
+prompt, while an interactive shell has it set to <tt>%</tt> . </p>
+<p class="docText">If you have a large <span class="docEmphasis">.cshrc</span>, 
+this can speed things up quite a bit when programs run other programs with <tt>
+csh -c '<i>command</i>'</tt>, if you put all of it inside that test. </p>
+<p class="docText"><span class="docEmphasis">— CT</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-6">4.6 Faster Prompt Setting with Built-ins</h3>
+<p class="docText">To set your prompt, you execute a command (on most shells, 
+that command sets a shell variable). Before setting the prompt, you may run 
+other commands to get information for it: the current directory name, for 
+example. A shell can run two kinds of commands: <span class="docEmphBold">
+built-in and external</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+1.9</a>). Built-in commands usually run faster than external commands. On a slow 
+computer, the difference may be important — waiting a few seconds for your 
+prompt to reset can get irritating (though the computer would have to be quite 
+slow nowadays for it to matter that much). Creative use of your shell's built-in 
+commands might pay off there, and they are still quite useful for those trying 
+to squeeze the most performance out of their system. Let's look at some 
+examples: </p>
+<ul>
+  <li>
+  <p class="docList">
+  <a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-3">
+  Section 4.3</a> has examples of some shells' special characters, such as <tt>
+  %D</tt> to give the current date. Check your shell's manual page; if it has 
+  these features, using them won't slow you down the way an external command in
+  <span class="docEmphBold">backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+  28.14</a>), like <tt>'date'</tt>, might. </li>
+  <li>
+  <p class="docList">If you're putting your current directory in your prompt, 
+  you may only want the tail of the pathname (the name past the last slash). How 
+  can you edit a pathname? You might think of using <span class="docEmphBold">
+  basename</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-13">Section 
+  36.13</a>) or <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+  34.1</a>) with the current directory from <tt>$cwd</tt> — as in the first 
+  command in the following code listing, and probably in an alias like
+  <span class="docEmphBold">setprompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-7">Section 
+  4.7</a>) to make sure the prompt is updated whenever you change directories. 
+  The faster way is with the second command, using the C shell's built-in &quot;tail&quot; 
+  operator, <tt>:t</tt>: </p>
+  <pre>set prompt=&quot;`basename $cwd`% &quot;</pre>
+  <p class="docList"><tt>{}</tt>
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+  Section 35.9</a></p>
+  <pre>set prompt=&quot;${cwd:t}% &quot;</pre>
+  <p class="docList">If your current directory is <span class="docEmphasis">/usr/users/hanna/projects</span>, 
+  either of those prompts would look like &quot;<tt>projects%</tt> &quot; (with a space 
+  after the percent sign). </p>
+  <p class="docList">The C shell has several of these built-in
+  <span class="docEmphBold">string operators</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-5">Section 
+  28.5</a>) like <tt>:t</tt>; the Korn Shell, <i>zsh</i>, and <i>bash</i> have 
+  more-powerful <span class="docEmphBold">string operators</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-5">Section 
+  28.5</a>). </li>
+  <li>
+  <p class="docList">If your prompt gets complex, you can use a
+  <span class="docEmphBold">shell function</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+  29.11</a>) to access other built-in commands and edit the prompt. This can be 
+  faster than using an external shell or Perl script because functions run 
+  within the shell instead of in an external process. Here's an example from my
+  <i>.zshrc</i> file: </p>
+  <p class="docList"><tt>${+}</tt>
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+  Section 36.7</a>, <tt>$(...)</tt>
+  <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+  Section 28.14</a></p>
+  <pre># Change &quot;script&quot; prompt automatically so I remember I'm in one.
+alias script='SCRIPT=yes /usr/bin/script'
+
+#
+# Functions:
+#
+setprompt( ) {
+    case &quot;${TTY##*/}&quot; in
+    tty[1-9]) xpi=':tty%l' ;;  # Virtual console
+    *) xpi= ;;
+    esac
+
+    PS1=&quot;
+$USER@%m$xpi $(dirs)
+%* \$(folder -list)
+${SCRIPT+SCRIPT-}%!%# &quot;
+}</pre>
+  <p class="docList">Before the function, I set an alias that temporarily sets 
+  an environment variable named <span class="docEmphasis">SCRIPT</span> while 
+  the <span class="docEmphBold">script</span> (<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-7">Section 
+  37.7</a>) program is running. The <i>setprompt</i> function, running in the 
+  child shell under <i>script</i>, sees that this environment variable has been 
+  set and adds the string <tt>SCRIPT-</tt> before the prompt. This reminds me 
+  that I'm logging to a script file. (If this is hard to visualize,
+  <a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">
+  Section 24.3</a> and
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">
+  Section 35.3</a> have some background.) </p>
+  <p class="docList">The <i>setprompt</i> function itself has two parts. The 
+  first is a <span class="docEmphBold">case</span> <span class="docEmphBold">
+  statement</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-11">Section 
+  35.11</a>) that tests <span class="docEmphasis">$TTY</span>, the name of the
+  <span class="docEmphBold">tty</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+  2.7</a>) I'm currently using. If the name ends in <span class="docEmphasis">
+  tty1</span>, <span class="docEmphasis">tty2</span>, etc., it's one of my
+  <span class="docEmphBold">Linux virtual consoles</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-12">Section 
+  23.12</a>). In that case, I want to add the console name (<span class="docEmphasis">tty1</span>, 
+  etc.) to my prompt — so I store the name in the <span class="docEmphasis">xpi</span> 
+  (e<span class="docEmphasis">x</span>tra <span class="docEmphasis">p</span>rompt
+  <span class="docEmphasis">i</span>nfo) shell variable. This variable's value — 
+  if it's been set — is expanded when the prompt is printed. The second part 
+  sets the prompt variable <span class="docEmphasis">PS1</span>. The whole 
+  prompt looks like this: </p>
+  <pre>jpeek@kludge:tty1 ~/pt/art
+15:38:30 inbox pt
+501%</pre>
+  <p class="docList">The first line shows my username, hostname, the virtual 
+  console name (if any), and the current directory (in this example, there was 
+  nothing else on the <span class="docEmphBold">directory stack</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-7">Section 
+  31.7</a>)). The second line has the time — and my email folder stack, from the 
+  MH <span class="docEmphasis">folder -list</span> command, which is the only 
+  nonbuilt-in command used in the prompt. And here's a subtle point that's worth 
+  perusing. The whole prompt string is inside <span class="docEmphBold">double 
+  quotes</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+  27.12</a>) so that variable and command substitution will happen whenever <i>
+  setprompt</i> is run. But, the way my prompt is set, the MH folder stack may 
+  change between the times that <i>setprompt</i> resets the prompt. So I escape 
+  the <tt>$</tt> in <tt>\$(folder -list)</tt>. This stores the command 
+  substitution without executing <i>folder</i>! So, when
+  <span class="docEmphasis">every</span> prompt is about to be printed, the 
+  shell will evaulate the prompt string and expand the <tt>$(...)</tt> operators 
+  into the current folder stack. The third line sets the end of the prompt 
+  string: the <i>zsh</i> prompt substitution at <tt>%m</tt>, <tt>%*</tt>, <tt>%!</tt> 
+  and <tt>%#</tt>. </p>
+  <p class="docList">On a slow machine, I'd try hard to find a way to eliminate 
+  the external <span class="docEmphasis">folder -list</span> command. But my 
+  Linux box is fast enough so that I don't notice any delay before a prompt. To 
+  make this work, I needed a good understanding of what's evaluated when. It's 
+  this sort of subtlety that makes prompt setting a challenge — and a pleasure, 
+  too, when you get it working just right. </li>
+</ul>
+<p class="docText">As another example,
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-14">
+Section 4.14</a> shows more about using <i>dirs</i> in a shell prompt. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-7">4.7 Multiline Shell Prompts</h3>
+<p class="docText">Lots of people like lots of information in their prompts: 
+hostname, directory name, history number, and maybe username. Lots of people 
+have spent lots of time trying to make their prompts short enough to fit across 
+the screen and still leave room for typing a command longer than <i>ls</i>: </p>
+<pre>&lt;elaineq@applefarm&gt; [/usr/elaineq/projects/april/week4] 23 % <b>ls</b></pre>
+<p class="docText">Even with fairly short prompts, if you look back at a screen 
+after running a few commands, telling the data from the prompts can be a little 
+tough (real terminals don't show user input in boldface, so I won't do it here 
+either): </p>
+<pre>+&lt;elaineq@applefarm&gt; [~] 56% cd beta
+&lt;elaineq@applefarm&gt; [~/beta] 57% which prog
+/usr/tst/applefarm/bin/beta/prog
+&lt;elaineq@applefarm&gt; [~/beta] 58% prog
+61,102 units inventoried; 3142 to do
+&lt;elaineq@applefarm&gt; [~/beta] 59%</pre>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: 
+mlprompt.cshmlprompt.sh</p>
+<p class="docText">One nice answer is to make a prompt that has more than one 
+line. Here's part of a <i>.cshrc</i> file that sets a three-line prompt: one 
+blank line, one line with the hostname and current directory, and a third line 
+with the history number and a percent sign. (If this were a <i>tcsh</i>, I could 
+have gotten the hostname with <tt>%m</tt>.) The <span class="docEmphBold">C 
+shell quoting</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">Section 
+27.13</a>) is ugly — doubly ugly because the prompt is set inside an alias — but 
+otherwise it's straightforward: </p>
+<p class="docText"><tt>uname -n</tt>
+<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-5">
+Section 2.5</a>, <tt>{..}</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+Section 35.9</a></p>
+<pre>set hostname=`uname -n`
+alias setprompt 'set prompt=&quot;\\
+${hostname}:${cwd}\\
+\! % &quot;'
+alias cd 'chdir \!* &amp;&amp; setprompt'
+alias pushd 'pushd \!* &amp;&amp; setprompt'
+alias popd 'popd \!* &amp;&amp; setprompt'
+setprompt           # to set the initial prompt</pre>
+<p class="docText">(There's a version on the Web for Bourne-type shells.) The 
+prompts look like this: </p>
+<pre>applefarm:/usr/elaineq/projects/april/week4
+23 % prog | tee /dev/tty | mail -s &quot;prog results&quot; bigboss@corpoffice
+61,102 units inventoried; 3142 to do
+
+applefarm:/usr/elaineq/projects/april/week4
+24 % cd ~/beta
+
+applefarm:/usr/elaineq/beta
+25 % prog | mail joanne</pre>
+<p class="docText">The blank lines separate each command — though you may want 
+to save space by omitting them. For example, Mike Sierra of O'Reilly &amp; 
+Associates has used a row of asterisks: </p>
+<pre>***** 23 *** &lt;mike@mymac&gt; *** ~/calendar *****
+% cd Sep*
+***** 24 *** &lt;mike@mymac&gt; *** ~/calendar/September *****
+%</pre>
+<p class="docText">Other shells have different syntax, but the idea is the same: 
+embed newlines to get multiline prompts. In Bourne-type shells you'll need zero 
+or one backslash before each newline;
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">
+Section 27.12</a> explains. In <i>bash</i>, put a <tt>\n</tt> (which stands for 
+a newline character) anywhere you want the prompt to break to a new line. </p>
+<p class="docText">What I like best about multiline prompts is that you get a 
+lot of information but have the whole screen width for typing. Of course, you 
+can put different information in the prompt than I've shown here. The important 
+idea is that if you want more information and need room to type, try a multiline 
+prompt. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-8">4.8 Session Info in Window Title or Status Line</h3>
+<p class="docText">Some people don't like to put the current directory, 
+hostname, etc. into their prompts because it makes the screen look cluttered to 
+them. Here's another idea. If your terminal or window system has a status line 
+or titlebar, you might be able to put the information there. That's nice because 
+you can see the information while you run programs. The down side is that the 
+information can get out of date if you use a command that takes you to another 
+host or directory without updating the status line. The latest <i>bash</i> and
+<i>zsh</i> shells do this by default when you're using an <i>xterm</i> window. 
+For the rest of you, here's how to do it yourself. Because neither <i>csh</i> or
+<i>tcsh</i> do this by default, I'll show C-shell-type syntax. But you can do 
+the same thing in Bourne-type shells with a shell function and
+<span class="docEmphBold">case</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">Section 
+35.10</a>) statement; there's a ready-to-use version on the web site. </p>
+<p class="docText">When you use <i>cd</i>, <i>pushd</i>, or <i>popd</i>, an 
+alias uses the <i>echo</i> command to write special escape sequences to the 
+terminal or window. </p>
+<p class="docText">Here are <i>cd</i> aliases and other commands for your <i>.cshrc</i> 
+or <i>.tcshrc</i> file. If I were logged in to <span class="docEmphasis">
+www.jpeek.com</span> in the directory <i>/home/jpeek</i>, this alias would put:
+</p>
+<pre>www:/home/jpeek</pre>
+<p class="docText">in the status area or window title, depending on which 
+terminal type I'm using. Of course, you can change the format of the status 
+line. Change the following command string, <tt>${host:h}:${cwd}</tt>, to do what 
+you need; see your shell's manual page for a list of variables, or create your 
+own custom information. </p>
+<p class="docText"><tt>:h</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-5">
+Section 28.5</a>, <tt>&amp;&amp;</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+Section 35.14</a></p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: 
+stattitle.cshstattitle.sh</p>
+<pre>set e=`echo x | tr x '\033'`   # Make an ESCape character
+
+set g=`echo x | tr x '\07'`    # And a Ctrl-g
+set host=`uname -n`
+# Puts $host and $cwd in VT102 status line. Escape sequences are:
+# ${e}7 = save cursor position, ${e}[25;1f = go to start of status
+# line (line 25), ${e}[0K = erase line, ${e}8 = restore cursor
+alias setstatline 'echo -n &quot;${e}7${e}[25;1f${e}[0K    ${host:h}:${cwd}${e}8&quot;'
+alias settitle 'echo -n &quot;${e}]2;${host:h}:${cwd}${g}&quot;'
+switch ($TERM)
+case vt10?:
+  alias cd 'cd \!* &amp;&amp; setstatline'
+  alias pushd 'pushd \!* &amp;&amp; setstatline'
+  alias popd 'popd \!* &amp;&amp; setstatline'
+  breaksw
+case xterm*:
+  alias cd 'cd \!* &amp;&amp; settitle'
+  alias pushd 'pushd \!* &amp;&amp; settitle'
+  alias popd 'popd \!* &amp;&amp; settitle'
+  breaksw
+endsw</pre>
+<p class="docText">(<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-15">Section 
+5.15</a> has more about how this works in <i>xterm</i>s.) </p>
+<p class="docText">The ESC and CTRL-g characters are stored with a trick that 
+should work on all Unix shells. Most modern <i>echo</i>s will let you make a 
+nonprintable character directly, like this: <tt>g='echo '\07''</tt>. </p>
+<p class="docText">If you always use a VT102-type terminal (and many people do), 
+the <i>setstatline</i> alias will work fine. If you use a different terminal, 
+try it anyway! Otherwise, read the terminal manual or its
+<span class="docEmphasis">termcap</span>/<span class="docEmphasis">terminfo</span> 
+entry and find the escape sequences that work for it; then add a new case to the
+<i>switch</i> statement. </p>
+<p class="docText">Note that you might have some trouble here: if this code is 
+in your <i>.cshrc</i> file but your terminal type is set in your <i>.login</i> 
+file, the terminal type may not be set until after the alias has been read. 
+There are <span class="docEmphBold">workarounds</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-8">Section 
+3.8</a>). </p>
+<p class="docText">The status line or titlebar can also get out of sync with 
+reality if you use <span class="docEmphBold">remote logins</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), <span class="docEmphBold">subshells</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>), etc. These might make a new status line or titlebar but not reset the 
+original one when needed. To fix this, just type <i>setstatline</i> or <i>
+settitle</i> at a shell prompt. Or, if you don't want to bother to think of the 
+name of the alias, use the following command to change to the current directory 
+(.), which will use the correct alias and reset the status or title: </p>
+<pre>% <b>cd .</b></pre>
+<p class="docText">If you're using <i>tcsh</i>, its special alias <i>cwdcmd</i> 
+will be run every time you change the shell's current directory. So, in <i>tcsh</i>, 
+you can replace the three aliases for <i>cd</i>, <i>pushd</i>, and <i>popd</i> 
+with something like this: </p>
+<pre>alias cwdcmd settitle</pre>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-9">4.9 A &quot;Menu Prompt&quot; for Naive Users</h3>
+<p class="docText">Some people don't want to be faced with a Unix <tt>%</tt> or
+<tt>$</tt> shell prompt. If you (or, if you're a sys admin on a multiuser 
+system, your users) usually run only a few particular Unix commands, you can put 
+those command names in the shell prompt. Here's a simple one-line Bourne-shell 
+prompt for a <i>.profile</i>: </p>
+<pre>PS1='Type &quot;rn&quot;, &quot;mailx&quot;, &quot;wp&quot;, or &quot;logout&quot;: '</pre>
+<p class="docText">Next, a <span class="docEmphBold">multiline prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-7">Section 
+4.7</a>) for the C shell <i>.cshrc</i> or <i>.tcshrc</i> file: </p>
+<pre>if ($?prompt) then
+set prompt='\\
+Type &quot;pine&quot; to read the news,\\
+type &quot;mutt&quot; to read and send mail,\\
+type &quot;wp&quot; for word processing, or\\
+type &quot;logout&quot; to log out.\\
+YES, MASTER? '
+endif</pre>
+<p class="docText">You get the idea.</p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-10">4.10 Highlighting and Color in Shell Prompts</h3>
+<p class="docText">If your prompt has some information that you want to stand 
+out — or if you want your whole prompt to stand out from the rest of the text on 
+the screen — you might be able to make it in enhanced characters or colors. If 
+your terminal has special escape sequences for enhancing the characters (and 
+most do), you can use them to make part or all of your prompt stand out. Newer 
+versions of <i>xterm</i> also have color capability, as does the Mac OS X 
+Terminal program, though Terminal may not properly support the escape sequences 
+we discuss later. (The GNU <span class="docEmphBold">dircolors</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-6">Section 
+8.6</a>) command sets up a color-capable terminal.) </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: 
+blinkprompt.cshblinkprompt.sh</p>
+<p class="docText">Let's say that you want to make sure people notice that 
+they're logged in as root (the superuser) by making part of the root prompt 
+flash. Here are lines for the root <i>.cshrc</i>: </p>
+<pre># Put ESCape character in $e.  Use to start blinking mode (${e}[5m)
+# and go back to normal mode (${e}[0m) on VT100-series terminals:
+set e=&quot;`echo x | tr x '\033'`&quot;</pre>
+<p class="docText"><tt>uname -n</tt>
+<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-5">
+Section 2.5</a></p>
+<pre>set prompt=&quot;${e}[5mroot${e}[0m@`uname -n`# &quot;</pre>
+<p class="docText">That prompt might look like this, with the word <tt>root</tt> 
+flashing: </p>
+<pre>root@www.jpeek.com#</pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Shells with command-line editing need to calculate 
+        the width of your prompt string. When you put nonprinting escape 
+        sequences in a prompt (as we're doing here), in <i>zsh</i> and <i>tcsh</i> 
+        you have to delimit them with <tt>%{</tt> and <tt>%}</tt>. In <i>bash</i> 
+        , bracket nonprinting characters with <tt>\[</tt> and <tt>\]</tt>. In 
+        the Korn shell, prefix your prompt with a nonprinting character (such as 
+        CTRL-a) followed by a RETURN, and delimit the escape codes with this 
+        same nonprinting character. As the <i>pdksh</i> manual page says, &quot;Don't 
+        blame me for this hack; it's in the original <i>ksh</i>.&quot; </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">The prompt is set inside double quotes (<tt>&quot;</tt>), so the
+<tt>uname' -n</tt> command is run once, when the <span class="docEmphasis">PS1</span> 
+string is first stored. In some shells, like <i>bash</i> and <i>pdksh</i>, you 
+can put single quotes (<tt>'</tt>) around the <span class="docEmphasis">PS1</span> 
+string; this stores the backquotes (<tt>`</tt>) in the string, and the shell 
+will interpret them before it prints each prompt. (In this case, that's useless 
+because the output of <tt>uname -n</tt> will always be the same in a particular 
+invocation of a shell. But if you want constantly updated information in your 
+prompt, it's very handy.)
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-6">
+Section 4.6</a> and
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">
+Section 27.12</a> have more info. </p>
+<p class="docText">Because the same escape sequences won't work on all 
+terminals, it's probably a good idea to add an <i>if</i> test that only sets the 
+prompt if the terminal type <span class="docEmphasis">$TERM</span> is in the 
+Digital Equipment Corporation VT100 series (or one that emulates it).
+<a class="docLink" href="#upt3-CHP-4-TABLE-1">Table 4-1</a> shows a few escape 
+sequences for VT100 and compatible terminals. (The <tt>ESC</tt> in each sequence 
+stands for an ESCape character. ) </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-4-TABLE-1" class="docTableTitle">Table 4-1. VT100 escape sequences for highlighting
+  </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Sequence</th>
+    <th class="docTableHeader">
+    <p class="docText">What it does</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">ESC[1m</td>
+    <td class="docTableCell">
+    <p class="docText">Bold, intensify foreground</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">ESC[4m</td>
+    <td class="docTableCell">
+    <p class="docText">Underscore</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">ESC[5m</td>
+    <td class="docTableCell">
+    <p class="docText">Blink</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">ESC[7m</td>
+    <td class="docTableCell">
+    <p class="docText">Reverse video</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">ESC[0m</td>
+    <td class="docTableCell">
+    <p class="docText">All attributes off</td>
+  </tr>
+</table>
+<p class="docText">Of course, you can use different escape sequences if your 
+terminal needs them. Better, read your terminal's <span class="docEmphasis">
+terminfo</span> or <span class="docEmphasis">termcap</span> database with a 
+program like <i>tput</i> or <i>tcap</i> to get the correct escape sequences for 
+your terminal. Store the escape sequences in <span class="docEmphBold">shell 
+variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>). </p>
+<p class="docText"><i>bash</i> interprets octal character codes (like <tt>\033</tt>) 
+in the prompt. It also has special-backslashed special-prompt characters — for 
+instance, <i>bash</i> Version 2 has <tt>\e</tt>, which outputs an ESCape 
+character, and <tt>\H</tt>, which gives the complete hostname. The string <tt>\$</tt> 
+is replaced by a dollar sign (<tt>$</tt>) on non-<span class="docEmphasis">root</span> 
+shells and a hash mark (<tt>#</tt>) if you're currently
+<span class="docEmphasis">root</span>. So, on <i>bash</i>, you can make the 
+previous <i>csh</i> prompt this way: </p>
+<pre>PS1='\[\e[5m\]root\[\e[0m\]@\H\$ '</pre>
+<p class="docText">(The delimiters for nonprinting characters, <tt>\[</tt> and
+<tt>\]</tt>, might make it look complicated. Try spotting them first, as you 
+look at the prompt string, so you can see what's left.) </p>
+<p class="docText">Eight-bit-clean versions of <i>tcsh</i> can put standout, 
+boldface, and underline — and any other terminal escape sequence, too — into 
+your shell prompt. For instance, <tt>%S</tt> starts standout mode and <tt>%s</tt> 
+ends it; the <i>tcsh</i> manpage has details for your version. The next example 
+shows how to make the same prompt as earlier with the word <tt>root</tt> in 
+standout mode. (<i>tcsh</i> puts the hostname into <tt>%m</tt>.) Because <i>tcsh</i> 
+&quot;knows&quot; the width of its special <tt>%S</tt> and <tt>%s</tt> formatting 
+sequences, they don't need to be delimited with <tt>%{</tt> or <tt>%}</tt>: </p>
+<pre>set prompt = '%Sroot%s@%m# '</pre>
+<p class="docText">You also can add color to your prompt! For instance, make the 
+previous prompt for <i>bash</i> using bright red (1;31) on a blue background 
+(44): </p>
+<pre>PS1='\[\e[1;31;44m\]root\[\e[0m\]@\H# '</pre>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-11">4.11 Right-Side Prompts</h3>
+<p class="docText">Both <i>zsh</i> and <i>tcsh</i> have an optional prompt at 
+the right side of the screen. Unlike the normal left-side prompt, the cursor 
+doesn't sit next to the right-side prompt (though the right prompt disappears if 
+you type a long command line and the cursor passes over it). It's stored in the
+<i>zsh</i> <span class="docEmphasis">RPROMPT</span> variable and in <i>tcsh</i>
+<span class="docEmphasis">rprompt</span>. </p>
+<p class="docText">What can you do with a right-hand prompt? Anything you want 
+to! (You'll probably want to keep it fairly short, though.) Put the time of day 
+on the right-hand side, for instance; on <i>tcsh</i>, it's this easy: </p>
+<pre>[jpeek@ruby ~]% <b>set rprompt='%t'</b>
+[jpeek@ruby ~]% <b>users</b>                                         3:44pm
+jpeek ollie
+[jpeek@ruby ~]%                                               3:45pm</pre>
+<p class="docText">As another idea, you could use <i>sched</i> to remind you of 
+an important meeting by setting the right-hand prompt. Here's a shell function 
+for <i>zsh</i> that sets the right prompt to &quot;LEAVE NOW&quot; at a particular time. 
+You can give it one argument to set the time to remind you. Or, with no 
+argument, it removes the right-hand prompt: </p>
+<pre>leave( ) {
+    case &quot;$#&quot; in
+    0) unset RPROMPT ;;
+    1) sched &quot;$1&quot; &quot;RPROMPT='LEAVE NOW'&quot; ;;
+    *) echo &quot;Usage: leave [time]&quot; 1&gt;&amp;2 ;;
+    esac
+}</pre>
+<p class="docText">Here's an example:</p>
+<pre>jpeek$ <b>date </b>
+Fri May 12 15:48:49 MST 2000
+jpeek$ <b>leave 15:55 </b>
+   <i> ...do some work...</i>
+jpeek$ <b>pwd </b>
+/u/jpeek/pt
+jpeek$ <b>date </b>                                        LEAVE NOW
+Fri May 12 15:55:22 MST 2000
+jpeek$ <b>lpr report </b>                                  LEAVE NOW
+jpeek$ <b>leave </b>                                       LEAVE NOW
+jpeek$</pre>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-12">4.12 Show Subshell Level with $SHLVL</h3>
+<p class="docText">If you're like me, when you start a <span class="docEmphBold">
+shell escape</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-21">Section 
+17.21</a>) or any <span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>), you can forget that you aren't in your login shell. Your shell
+<span class="docEmphBold">history</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-1">Section 
+30.1</a>) might get confused, <span class="docEmphBold">shell variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>) may not be set, and other problems may come up. <i>zsh</i> and <i>bash</i> 
+have a built-in <span class="docEmphasis">SHLVL</span> <span class="docEmphBold">
+environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>) that lets you track how many subshells deep your current shell is. <i>
+tcsh</i> has a <span class="docEmphasis">shlvl</span> shell variable that's 
+automatically set from (and sets) <span class="docEmphasis">SHLVL</span>. So, 
+all three shells cooperate with each other to set the right value, even if you 
+start one shell from another. (For other shells that don't have SHLVL — <i>ksh</i> 
+and <i>csh</i> — you can set up something similar with a bit of arithmetic in 
+the <span class="docEmphBold">ENV</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">Section 
+35.5</a>) file or the <i>.cshrc</i> file, respectively.) </p>
+<p class="docText">In your top-level shell, the value of <tt>$shlvl</tt> is 1 
+(one). In the first subshell, it's 2; in a sub-subshell, it's 3; and so on. You 
+can use this to control your shell startup files — for example, have some 
+commands in your <i>.cshrc</i> that run when you first log in (and <tt>$shlvl</tt> 
+is 1), but don't run in subshells. You can also put <tt>$shlvl</tt> in your 
+prompt (but only during subshells, if you'd like — as a reminder that you aren't 
+in your top-level shell). You can set your prompt to <tt>mike%</tt> in top-level 
+shells, <tt>(1)</tt> <tt>mike%</tt> in a first-level subshell, <tt>(2)</tt> <tt>
+mike%</tt> in a second-level subshell, and so on. Here's some sample 
+prompt-setting code for your <i>.tcshrc</i>: </p>
+<pre># If this is a subshell, put shell level in prompt:
+if ($shlvl == 1) then
+    set prompt=&quot;${USER}% &quot;
+else
+    set prompt=&quot;($SHLVL) ${USER}% &quot;
+endif</pre>
+<p class="docText"><i>bash</i> doesn't need an <i>if</i> because login shells 
+read your <i>.bash_profile</i> (or <i>.profile</i>) and subshells read your <i>.bashrc</i>. 
+Here are commands to set the prompts I mentioned earlier: </p>
+<pre>PS1='\u\$ '             <i>...for the .bash_profile</i>
+PS1='($SHLVL) \u\$ '    <i>...for the .bashrc</i></pre>
+<p class="docText">Does your account run a windowing system that's started from 
+your top-level shell startup file (like <i>.login</i>)? If it does, lines like 
+the following examples (these are for <i>.login</i>) will reset
+<span class="docEmphasis">SHLVL</span> so that the shell in the window will 
+start at a <span class="docEmphasis">SHLVL</span> of 1 — and act like a 
+top-level shell. This code assumes that your first login shell starts on a
+<span class="docEmphasis">tty</span> named <span class="docEmphasis">/dev/tty1</span> 
+through <span class="docEmphasis">/dev/tty6</span> (which are the Linux
+<span class="docEmphBold">virtual consoles</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-12">Section 
+23.12</a>)) and that the windows that open won't have a tty with the same name 
+(which is true on Linux). (If you aren't sure, check <span class="docEmphBold">
+who</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-8">Section 
+2.8</a>).) You may need to adapt this. The trick is to make
+<span class="docEmphasis">SHLVL</span> 0 (zero) before you start the windowing 
+system. When the windows' shells start, they'll raise <span class="docEmphasis">
+SHLVL</span> to 1: </p>
+<pre># If on a virtual console, bury this shell and start X right away:
+if (&quot;`tty`&quot; =~ /dev/tty[1-6]) then
+   setenv SHLVL 0
+   startx
+endif</pre>
+<p class="docText">Getting this to work right in every situation (<span class="docEmphBold">rsh</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), <span class="docEmphBold">ssh</span>, <span class="docEmphBold">su</span>,
+<span class="docEmphBold">shell escapes</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-21">Section 
+17.21</a>) — both <span class="docEmphBold">interactive and noninteractive</span> 
+(<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">Section 
+3.4</a>) — subshells, window systems, <span class="docEmphBold">at</span>
+<span class="docEmphBold">jobs</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-5">Section 
+25.5</a>), and so on) <span class="docEmphBold">can be a challenge</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-8">Section 
+3.8</a>)! It takes a little planning. Sit down and think about all the ways you 
+start subshells — which subshells are interactive and which aren't — and whether 
+they'll get <span class="docEmphasis">SHLVL</span> passed from their parent 
+process. (If you aren't sure, test that with an <span class="docEmphBold">env</span>
+<span class="docEmphBold">or</span> <span class="docEmphBold">printenv</span>
+<span class="docEmphBold">command</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>).) Then plan which kind of shell needs which <span class="docEmphasis">
+SHLVL</span> settings. If it gets too complicated, make it work in most cases! 
+If you use many subshells, this system can be too handy to ignore. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-13">4.13 What Good Is a Blank Shell Prompt?</h3>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">This tip is also great if you use a mouse to copy and 
+        paste command lines in your window. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Some terminals I've used (like old Hewlett-Packard and 
+Tektronix terminals) had local editing. You could move your cursor up the screen 
+to a previous command line, maybe make some edits to it, then press a SEND LINE 
+key to resend that line to the host. This didn't have anything to do with
+<span class="docEmphBold">sophisticated command-line editing</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-14">Section 
+30.14</a>) that modern Unix shells have, though. Maybe your terminal can do 
+that, too. Depending on how your <i>emacs</i> editor is configured,
+<span class="docEmphasis">shell-mode</span> may work that way, as well. </p>
+<p class="docText">The problem was that unless I erased the shell prompt (<tt>%</tt>) 
+on my screen, it would be sent back to the shell and give the error &quot;<tt>%</tt>: 
+Command not found.&quot; So I set my shell prompt to this: </p>
+<pre>set prompt='     '</pre>
+<p class="docText">That's right: four spaces. Most Unix commands start their 
+output at column 1, so my command lines were easy to find because they were 
+indented. The shell didn't care if I sent four spaces before the command line. 
+So everything was fine until I got my new terminal without a SEND LINE key . . .
+</p>
+<p class="docText">If you want some information in your prompt, too, make a
+<span class="docEmphBold">multiline prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-7">Section 
+4.7</a>) with four spaces in the last line. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-14">4.14 dirs in Your Prompt: Better Than $cwd</h3>
+<p class="docText">Many people use the current directory in their prompts. If 
+you use the <span class="docEmphBold">pushd</span> <span class="docEmphBold">and</span>
+<span class="docEmphBold">popd</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-7">Section 
+30.7</a>) commands, you may not always remember exactly what's in your directory 
+stack (I don't, at least). Here's how: run the <i>dirs</i> command, and use its 
+output in your prompt. A simple <i>csh</i> and <i>tcsh</i> alias looks like 
+this: </p>
+<pre>alias cd 'chdir \!* &amp;&amp; set prompt=&quot;`dirs`% &quot;'</pre>
+<p class="docText">and the prompts look like:</p>
+<pre>/work/project % <b>cd</b>
+~ % <b>cd bin</b>
+~/bin %</pre>
+<p class="docText">Here's what to put in <i>.cshrc</i> or <i>.tcshrc</i> to make 
+a <span class="docEmphBold">multiline prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-7">Section 
+4.7</a>) that shows the directory stack: </p>
+<p class="docText"><tt>uname -n</tt>
+<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-5">
+Section 2.5</a>, <tt>expr</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-21">
+Section 36.21</a></p>
+<pre># PUT hostname.domain.name IN $hostname AND hostname IN $HOST:
+set hostname=`uname -n`
+setenv HOST `expr $hostname : '\([^.]*\).*'`
+alias setprompt 'set prompt=&quot;\\</pre>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: 
+dirs-prompt.cshdirs-prompt.sh</p>
+<pre>${USER}@${HOST} `dirs`\\
+\! % &quot;'
+alias cd  'chdir \!* &amp;&amp; setprompt'
+alias pushd  'pushd \!* &amp;&amp; setprompt'
+alias popd  'popd  \!* &amp;&amp; setprompt'
+setprompt   # SET THE INITIAL PROMPT</pre>
+<p class="docText">Because <i>bash</i> can run a command each time it sets its 
+prompt, and because it has <span class="docEmphBold">built-in prompt operators</span> 
+(<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-3">Section 
+4.3</a>) like <tt>\u</tt>, the <i>bash</i> version of all the previous stuff 
+fits on one line: </p>
+<p class="docText"><tt>$(...)</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a></p>
+<pre>PS1='\n\u@\h $(dirs)\n\! \$ '</pre>
+<p class="docText">That makes a blank line before each prompt; if you don't want 
+that, join the first and second lines of the <span class="docEmphasis">setprompt</span> 
+alias or remove the first <tt>\n</tt>. Let's push a couple of directories and 
+watch the prompt: </p>
+<pre>jerry@ora ~
+1 % <b>pushd /work/src/perl</b>
+/work/src/perl ~
+
+jerry@ora /work/src/perl ~
+2 % <b>cd ../cnews</b>
+
+jerry@ora /work/src/cnews ~
+3 % <b>pushd ~/bin</b>
+~/bin /work/src/cnews ~
+
+jerry@ora ~/bin /work/src/cnews ~
+4 %</pre>
+<p class="docText">Of course, the prompt looks a little redundant here because 
+each <i>pushd</i> command also shows the <i>dirs</i> output. A few commands 
+later, though, having your directory stack in the prompt will be handy. If your 
+directory stack has a lot of entries, the first line of the prompt can get wider 
+than the screen. In that case, store the <i>dirs</i> output in a shell array, 
+and edit it with a command like <i>sed</i> or with the <span class="docEmphBold">
+built-in</span> <span class="docEmphBold">csh</span> <span class="docEmphBold">
+string editing</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-5">Section 
+28.5</a>). </p>
+<p class="docText">For example, to show just the tail of each path in the <i>
+dirs</i> output, use the following alias; the C shell operator <tt>:gt</tt> 
+globally edits all words, to the tail of each pathname: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: 
+dirstail-prompt.csh</p>
+<pre>alias setprompt 'set dirs=(`dirs`); set prompt=&quot;\\
+${USER}@${HOST} $dirs:gt\\
+\! % &quot;'</pre>
+<p class="docText">Watch the prompt. If you forget what the names in the prompt 
+mean, just type <tt>dirs</tt>: </p>
+<pre>jerry@ora bin cnews jerry
+5 % <b>pushd ~/tmp/test</b>
+~/tmp/test ~/bin /work/src/cnews ~
+   ...
+jerry@ora test bin cnews jerry
+12 % <b>dirs</b>
+~/tmp/test ~/bin /work/src/cnews ~</pre>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-15">4.15 External Commands Send Signals to Set 
+Variables</h3>
+<p class="docText">The <span class="docEmphBold">Bourne shell's</span>
+<span class="docEmphBold">trap</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">Section 
+35.17</a>) will run one or more commands when the shell gets a
+<span class="docEmphBold">signal</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-10">Section 
+24.10</a>) (usually, from the <i>kill</i> command). The shell will run any 
+command, including commands that set shell variables. For instance, the shell 
+could reread a configuration file;
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-13">
+Section 24.13</a> shows that. Or it could set a new <span class="docEmphasis">
+PS1</span> prompt variable that's updated any time an external command (like 
+another shell script or a <span class="docEmphBold">cron</span>
+<span class="docEmphBold">job</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-2">Section 
+25.2</a>)) sends the shell a signal. There are lots of possibilities. </p>
+<p class="docText">This trick takes over signal 5 (SIGTRAP), which usually isn't 
+used. When the shell gets signal 5, a <i>trap</i> runs a command to get the date 
+and time, then resets the prompt. A <span class="docEmphBold">background</span> 
+(<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-2">Section 
+23.2</a>) job springs this trap once a minute. So, every minute, after you type 
+any command, your prompt will change. </p>
+<p class="docText">You can use any command's output in your prompt (possibly 
+with some editing, probably with <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) or <span class="docEmphBold">expr</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-21">Section 
+36.21</a>)): count the number of users, show the <span class="docEmphBold">load 
+average</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-4">Section 
+26.4</a>), whatever. Newer shells, like <i>bash</i>, can run a command
+<span class="docEmphBold">in backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) each time the prompt is displayed —
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-10">
+Section 4.10</a> has an example. But, to have an external command update a shell 
+variable at any random time, this <i>trap</i> trick is still the best. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: date- prompt.sh</p>
+<p class="docText">Now on to the specific example of putting date and time in 
+the old Bourne shell's prompt. If your system's <i>date</i> command doesn't 
+understand date formats (like <tt>+%a</tt>), get one that does. Put these lines 
+in your <i>.profile</i> file (or just type them in at a Bourne shell prompt):
+</p>
+<pre># Put date and time in prompt; update every 60 seconds:
+trap 'PS1=`date &quot;+%a %D %H:%M%n&quot;`\
+$\ ' 5
+while :</pre>
+<p class="docText"><tt>:</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-6">
+Section 36.6</a></p>
+<pre>do
+    sleep 60
+    kill -5 $$
+done &amp;
+promptpid=$!</pre>
+<p class="docText">Now, every minute after you type a command, your prompt will 
+change:</p>
+<pre>Thu 06/20/02 02:33
+$ <b>cc bigprog.c</b>
+undefined symbol                first referenced in file
+xputc                               bigprog.o
+ld fatal: Symbol referencing errors.
+Thu 06/20/02 02:34
+$ <b>ls</b>
+bigprog.c
+bigprog.o
+Thu 06/20/02 02:35
+$</pre>
+<p class="docText">The prompt format is up to you. This example makes a
+<span class="docEmphBold">two-line prompt</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-7">Section 
+3.7</a>) with backslashes (<tt>\</tt>) to protect the newline and space from the
+<i>trap</i>; a single-line prompt might be easier to design. The manual page for
+<i>date</i> lists what you can put in the prompt. </p>
+<p class="docText">This setup starts a <span class="docEmphBold">while</span>
+<span class="docEmphBold">loop</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-15">Section 
+35.15</a>) in the background. The <span class="docEmphasis">promptpid</span> 
+variable holds the <span class="docEmphBold">process ID number</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>) of the background shell. Before you log out, you should
+<span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+24.12</a>) the loop. You can type the command: </p>
+<pre>kill $promptpid</pre>
+<p class="docText">at a prompt or put it in a file that's
+<span class="docEmphBold">executed when you log out</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-18">Section 
+4.18</a>). </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-16">4.16 Preprompt, Pre-execution, and Periodic 
+Commands</h3>
+<p class="docText"><i>bash</i>, <i>tcsh</i>, and <i>zsh</i> can run a Unix 
+command, or multiple commands, before printing each prompt. <i>tcsh</i> and <i>
+zsh</i> also can do something you specify before executing the command you've 
+typed at a prompt. Finally, <i>tcsh</i> and <i>zsh</i> can do something 
+periodically (every <span class="docEmphasis">n</span> seconds) before whatever 
+prompt comes next. (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-15">Section 
+4.15</a> shows how to execute commands periodically in the original Bourne 
+shell.) These commands don't have anything to do with setting the prompt itself, 
+though they can. The command could do some system checking, reset shell 
+variables, or almost anything that you could type at a shell prompt. If the 
+commands run slowly, they'll delay whatever else you're doing, so keep that in 
+mind. </p>
+<p class="docText">Let's start with <i>precmd</i>, the <i>tcsh</i> alias that's 
+run after your command line is read and before the command is executed. In <i>
+zsh</i>, the same thing is done by the shell function named
+<span class="docEmphasis">preexec</span>. Shell history is available, so you can 
+use <span class="docEmphBold">history substitution</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+30.8</a>) inside the alias or function. Here's a nice example adapted from the
+<i>tcsh</i> manual page: showing the command line you're running in your <i>
+xterm</i> window titlebar. It's ugly because it has ESC and CTRL-g characters 
+embedded directly in the alias; I'd rather store the escape sequences in shell 
+variables, as shown in the <span class="docEmphBold">xterm</span>
+<span class="docEmphBold">titlebar article</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-8">Section 
+4.8</a>). The <i>if</i> sets the alias only if you're using an
+<span class="docEmphasis">xterm</span> terminal: </p>
+<pre># Show each command line in xterm title bar:
+if ($TERM == xterm) alias postcmd 'echo -n &quot;^[ ]2;\!#^G&quot;'</pre>
+<p class="docText">Next, let's look at running a command periodically. You'd 
+like to watch the load average by running <span class="docEmphBold">uptime</span> 
+(<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-4">Section 
+26.4</a>) every minute, before a prompt. Here's how to do it in <i>zsh</i>: put 
+code like this in your <span class="docEmphBold">.zshrc</span>
+<span class="docEmphBold">file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) (or just type it at a prompt to try it). The <span class="docEmphasis">
+PERIOD</span> shell variable is the interval, in seconds, between runs of the
+<span class="docEmphasis">periodic</span> function as shown in the following 
+code: </p>
+<pre># Run &quot;uptime&quot; every 60 seconds; put blank line before:
+periodic( ) {echo &quot;\n==&gt; $(uptime) &lt;==&quot;;}
+PERIOD=60</pre>
+<p class="docText">Here's how it looks:</p>
+<pre>jpeek@ruby$ <b>pwd</b>
+/u/jpeek/pt
+
+==&gt;   5:16pm  up  4:07,  6 users,  load average: 0.22, 0.15, 0.08 &lt;==
+jpeek@ruby$ <b>lpr xrefs</b>
+jpeek@ruby$ <b>mail -s &quot;xrefs list&quot; jan &lt; xrefs</b>
+
+==&gt;   5:17pm  up  4:08,  7 users,  load average: 1.29, 0.55, 0.23 &lt;==
+jpeek@ruby$</pre>
+<p class="docText">Finally, here's how to set preprompt commands. These are run 
+before each shell prompt is printed. In <i>tcsh</i>, define a <i>precmd</i> 
+alias. In <i>zsh</i>, define a <i>precmd</i> function. In <i>bash</i>, store the 
+command(s) in the <span class="docEmphasis">PROMPT_COMMAND</span> shell 
+variable. Let's look at <i>bash</i> this time. Here's a silly example that I 
+used to have in my <span class="docEmphBold">bash</span>
+<span class="docEmphBold">setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>): </p>
+<p class="docText"><tt>IFS</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-23">
+Section 36.23</a>, <tt>set</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">
+Section 35.25</a>, <tt>shift $#</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-10">
+Section 36.10</a></p>
+<pre>PROMPT_COMMAND='
+# Save old $IFS; set IFS to tab:
+OIFS=&quot;$IFS&quot;; IFS=&quot;   &quot;
+# Put x in $1, face in $2, explanation[s] in $3[, $4, ...]:
+set x `smiley`
+# Put face into $face and explanation(s) into $explan:
+face=&quot;$2&quot;; shift 2; explan=&quot;$*&quot;
+# Restore shell environment:
+shift $#; IFS=&quot;$OIFS&quot;'
+
+# Prompt I use (includes the latest $face):
+PS1='\u@\h $face '</pre>
+<p class="docText">The first part is a series of shell commands that are stored 
+in the <span class="docEmphasis">PROMPT_COMMAND</span> variable; they're 
+surrounded by a pair of single quotes (<tt>'' '</tt>), one on the first line 
+(after the <tt>=</tt>) and the other after <tt>IFS</tt> is reset. That series of 
+commands is executed before every prompt. It sets two shell variables, <tt>$face</tt> 
+and <tt>$explan</tt>, with new values before each prompt is set. The prompt is 
+set on the last line; it includes the value of <tt>$face</tt>. </p>
+<p class="docText">Here's what my screen looked like with this ridiculous setup. 
+Notice that the prompt keeps changing as the <span class="docEmphasis">
+PROMPT_COMMAND</span> resets <tt>$face</tt> and <tt>$explan</tt>. If I wanted 
+the explanation of a face I saw as I went along, I could type <tt>echo &lt;&quot;&gt;$explan&lt;&quot;&gt;</tt>:
+</p>
+<pre>jerry@ruby :-{) <b>echo &quot;$explan&quot;</b>
+normal smiling face with a moustache
+jerry@ruby +&lt;||-) <b>vi proj.cc</b>
+   ...
+jerry@ruby :-O <b>echo &quot;$explan&quot;</b>
+Mr. Bill
+        Wow!
+        ohh, big mouth, Mick Jagger
+        uh oh
+jerry@ruby :-)   &lt; <b>g++ -Wall proj.cc</b>
+   ...</pre>
+<p class="docText">(It was even more useless than <span class="docEmphBold">
+psychoanalyze-pinhead</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-13">Section 
+19.13</a>), but it was fun while it lasted.) Seriously now, I'll say again: 
+preprompt commands do <span class="docEmphasis">not</span> have to be used to 
+set a prompt. You can use them to do anything. If the commands in
+<span class="docEmphasis">PROMPT_COMMAND</span> — or any of the other functions 
+or aliases we've covered — write to standard output or standard error, you'll 
+see that text on your screen, before or after the prompt, at the point where the 
+commands are executed. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-17">4.17 Running Commands When You Log Out</h3>
+<p class="docText">Is there something you want to do every time you log out: run 
+a program that deletes temporary files, asks you a question, or prints a fortune 
+to your screen? If you use the C shell, make a file named
+<span class="docEmphBold">.logout</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) in your home directory and put the commands there. Before a login C 
+shell exits, it will read that file. A login <i>bash</i> reads <i>.bash_logout</i>, 
+and <i>zsh</i> reads <i>.zlogout</i>. But not all shells are login shells; you 
+might want these shells to read your logout-type file, too.
+<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-18">
+Section 3.18</a> shows a fix for the Bourne and Korn shells;
+<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-8">
+Section 3.8</a> and
+<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">
+Section 3.4</a> have background information. </p>
+<p class="docText">Some ideas for your logout file are:</p>
+<ul>
+  <li>
+  <p class="docList">A command like <i>fortune</i> to give you something fun to 
+  think about when you log out. </li>
+  <li>
+  <p class="docList">A command to list a &quot;reminder&quot; file — for example, work to 
+  take home. </li>
+  <li>
+  <p class="docList">A script that prompts you for the hours you've worked on 
+  projects so you can make a timesheet later. </li>
+  <li>
+  <p class="docList">The command <i>clear</i> to erase your screen. This keeps 
+  the next user from reading what you did.<span id="ENB4-2"><a class="docLink" href="#EN4-2"><sup>[2]</sup></a></span> 
+  In the Mac OS X Terminal application, command-k will delete the scrollback 
+  buffer. It also helps to stop &quot;burn-in&quot; damage to old, monochrome monitors 
+  caused by characters left over from your login session (though this is hardly 
+  a concern nowadays; most of us have moved on to color screens that are not 
+  subject to burn-in). (Some Unixes clear the screen before printing the <tt>
+  login</tt>: prompt. Of course, this won't help users who connect with a data 
+  switch or port manager because the connection will be broken before the next 
+  login prompt.) </p>
+  </li>
+</ul>
+<p class="docText">If you connect to this host over a network, with a slow modem 
+or on a data switch — and you don't see all the logout commands run before your 
+connection closes — try putting the command <span class="docEmphBold">sleep 2</span> 
+(<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-9">Section 
+25.9</a>) at the end of the file. That makes the shell wait two seconds before 
+it exits, which gives output more time to get to your screen. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-18">4.18 Running Commands at Bourne/Korn Shell Logout</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-17">
+Section 4.17</a> describes logout files. Commands in those files are run when 
+you log out. The Bourne and Korn shells don't have a logout file, though. Here's 
+how to make one: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">In your <i>.profile</i> file, add the line:</p>
+  <p class="docList"><tt>trap</tt>
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">
+  Section 35.17</a>, <tt>.</tt>
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">
+  Section 35.29</a></p>
+  <pre>trap '. $HOME/.sh_logout; exit' 0</pre>
+  <p class="docList">(Some systems may need <tt>$LOGDIR</tt> instead of <tt>
+  $HOME</tt>.) </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Make a file in your home directory named
+  <span class="docEmphasis">.sh_logout</span>. Put in the commands you want to 
+  be run when you log out. For example: </p>
+  <p class="docList"><tt>if</tt><a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">Section 
+  35.13</a>, <tt>[</tt> <tt>-f</tt>
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">
+  Section 35.26</a></p>
+  <pre>clear
+if [ -f $HOME/todo.tomorrow ]
+then
+    echo &quot;=========== STUFF TO DO TOMORROW: ============&quot;
+    cat $HOME/todo.tomorrow
+fi</pre>
+  </span></li>
+</ol>
+</span>
+<p class="docText">The <i>trap</i> will read the <i>.sh_logout</i> file when the 
+shell exits. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-4-SECT-19">4.19 Stop Accidental Bourne-Shell Logouts</h3>
+<p class="docText">It's pretty easy to type one too many CTRL-d characters and 
+log out of a Bourne shell without meaning to. The C shell has an
+<span class="docEmphasis">ignoreeof</span> shell variable that won't let you log 
+out with CTRL-d. So do the Korn shell and <i>bash</i>; use <tt>set -o</tt> <tt>
+ignoreeof</tt>. </p>
+<p class="docText">Here's a different sort of solution for the Bourne shell. 
+When you end the shell, it asks if you're sure. If you don't answer yes, a new 
+shell is started to replace your old one. </p>
+<p class="docText">First, make <span class="docEmphBold">a file like the C 
+shell's .logout</span> that will be read when your Bourne shell exits (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-18">Section 
+4.18</a>). Save your <span class="docEmphBold">tty</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+2.7</a>) name in an <span class="docEmphBold">environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>), too — you'll need it later: </p>
+<p class="docText"><tt>trap</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">
+Section 35.17</a></p>
+<pre>TTY=`tty`; export TTY
+trap '. $HOME/.sh_logout; exit' 0</pre>
+<p class="docText">(Your system may need <tt>$LOGDIR</tt> instead of <tt>$HOME</tt>.) 
+Put the following lines in your new <i>.sh_logout</i> file: </p>
+<p class="docText"><tt>exec &lt;</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">
+Section 36.15</a>, <tt>case</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-11">
+Section 35.11</a>, <tt>exec</tt>
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">
+Section 24.2</a>, <tt>-sh</tt>
+<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-19">
+Section 3.19</a></p>
+<pre>exec &lt; $TTY
+echo &quot;Do you really want to log out? \c&quot;
+read ans
+case &quot;$ans&quot; in
+[Yy]*) ;;
+*)  exec $HOME/bin/-sh ;;
+esac</pre>
+<p class="docText">The last line uses some trickery to start a new
+<span class="docEmphBold">login shell</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-19">Section 
+3.19</a>). The shell <span class="docEmphBold">closes your tty</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">Section 
+36.15</a>) before reading your <i>.sh_logout</i> file; the <tt>exec &lt; $TTY</tt> 
+reconnects the shell's standard input to your terminal. </p>
+<p class="docText">Note that if your system is <span class="docEmphasis">very</span> 
+slow, you may not get the reminder message for a couple of seconds — 
+consequently, you might forget that it's coming and walk away. That hasn't been 
+a problem where I've tested this. If it is for you, though, replace the <tt>read</tt>
+<tt>ans</tt> with a program like <i>grabchars</i> that times out and gives a 
+default answer after a while. There may be some Bourne shells that need other 
+tricks — and others that don't need these tricks — but this should give you an 
+idea of what to do. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN4-1"><a class="docLink" href="#ENB4-1">[1]</a>&nbsp;&nbsp;I haven&#39;t seen prompts described this way before. I invented the terms
+<span class="docEmphasis">static prompt</span> and <span class="docEmphasis">
+dynamic prompt</span> to make them easier to talk about.</p><p class="docFootnote" id="EN4-2"><a class="docLink" href="#ENB4-2">[2]</a>&nbsp;&nbsp;Some terminals and windows 
+    have &quot;scroll back&quot; memory of previous screens. <i>clear</i> usually doesn't 
+    erase all of that. To set scrollback in <i>xterm</i>, use the <i>-sb</i> and
+    <i>-sl</i> options. Most other terminal emulators have similar mechanisms to 
+    set the number of lines to keep in the scrollback buffer.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 3.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 5.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

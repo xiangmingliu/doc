@@ -1,0 +1,898 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 8</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 7.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 9.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 8. Directories and Files</h2>
+
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-1">8.1 Everything but the find Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-2">8.2 The Three Unix File Times</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-3">8.3 Finding Oldest or Newest Files with ls -t and ls -u</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-4">8.4 List All Subdirectories with ls -R</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-5">8.5 The ls -d Option</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-6">8.6 Color ls</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-7">8.7 Some GNU ls Features</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-8">8.8 A csh Alias to List Recently Changed Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-9">8.9 Showing Hidden Files with ls -A and -a</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-10">8.10 Useful ls Aliases</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-11">8.11 Can't Access a File? Look for Spaces in the Name</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-12">8.12 Showing Nonprintable Characters in Filenames</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-13">8.13 Counting Files by Types</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-14">8.14 Listing Files by Age and Size</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-15">8.15 newer: Print the Name of the Newest File</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-16">8.16 oldlinks: Find Unconnected Symbolic Links</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-8-SECT-17">8.17 Picking a Unique Filename Automatically</a></li>
+</ul>
+
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-1">8.1 Everything but the find Command</h3>
+<p class="docText">A computer isn't that much different from a house or an 
+office; unless you're incredibly orderly, you spend a lot of time looking for 
+things that you've misplaced. Even if you are incredibly orderly, you still 
+spend some time looking for things you need — you just have a better idea of 
+where to find them. After all, librarians don't memorize the location of every 
+book in the stacks, but they do know how to find any book, quickly and 
+efficiently, using whatever tools are available. A key to becoming a proficient 
+user of any system, then, is knowing how to find things. </p>
+<p class="docText">This chapter is about how to find things. We're excluding the
+<span class="docEmphBold">find</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-1">Section 
+9.1</a>) utility itself because it's complicated and deserves a chapter of its 
+own. We'll concentrate on simpler ways to find files, beginning with some 
+different ways to use <i>ls</i>. </p>
+<p class="docText">Well, okay, towards the end of the chapter we'll touch on a 
+few simple uses of <i>find</i>, but to really get into <i>find</i>, take a peek 
+at <a class="docLink" href="_chapter 9.htm">Chapter 
+9</a>. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-2">8.2 The Three Unix File Times</h3>
+<p class="docText">When you're talking to experienced Unix users, you often hear 
+the terms &quot; change time&quot; and &quot;modification time&quot; thrown around casually. To most 
+people (and most dictionaries), &quot;change&quot; and &quot;modification&quot; are the same thing. 
+What's the difference here? </p>
+<p class="docText">The difference between a change and a modification is the 
+difference between altering the label on a package and altering its contents. If 
+someone says <span class="docEmphasis">chmod a-w myfile</span>, that is a 
+change; if someone says <span class="docEmphasis">echo foo &gt;&gt; myfile</span>, 
+that is a modification. A change modifies the file's inode; a modification 
+modifies the contents of the file itself. A file's modification time is also 
+called the <span class="docEmphasis">timestamp</span>. </p>
+<p class="docText">As long as we're talking about change times and modification 
+times, we might as well mention &quot;access times,&quot; too. The access time is the last 
+time the file was read or written. So reading a file updates its access time, 
+but not its change time (information about the file wasn't changed) or its 
+modification time (the file itself wasn't changed). </p>
+<p class="docText">Incidentally, the change time or &quot;ctime&quot; is incorrectly 
+documented as the &quot;creation time&quot; in many places, including some Unix manuals. 
+Do not believe them. </p>
+<p class="docText"><span class="docEmphasis">— CT</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-3">8.3 Finding Oldest or Newest Files with ls -t and 
+ls -u</h3>
+<p class="docText">Your directory might have 50, 100, or more files. Which files 
+haven't been used for a while? You might save space by removing them. You read 
+or edited a file yesterday, but you can't remember its name? These commands will 
+help you find it. (If you want a quick review of Unix file times, see
+<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-2">
+Section 8.2</a>.) </p>
+<p class="docText">In this example, I'll show you my <span class="docEmphBold">
+bin</span> (<a class="docLink" href="_chapter 7.htm#upt3-CHP-7-SECT-4">Section 
+7.4</a>) directory full of shell scripts and other programs — I want to see 
+which programs I don't use very often. You can use the same technique for 
+directories with text or other files. </p>
+<p class="docText">The <i>ls</i> command has options to change the way it orders 
+files. By default, <i>ls</i> lists files alphabetically. For finding old files, 
+use the <i>-t</i> option. This sorts files by their <span class="docEmphasis">
+modification time</span>, or the last time the file was changed. The newest 
+files are listed first. Here's what happens: </p>
+<pre>jerry@ora ~/.bin
+60 % <b>ls -t</b>
+weather       unshar        scandrafts    rn2mh         recomp
+crontab       zloop         tofrom        rmmer         mhprofile
+rhyes         showpr        incc          mhadd         append
+rhno          rfl           drmm          fixsubj       README
+pickthis      maillog       reheader      distprompter  rtfm
+cgrep         c-w           zrefile       xmhprint      saveart
+dirtop        cw            zscan         replf         echoerr
+which         cx            zfolders      fols
+tcx           showmult      alifile       incs</pre>
+<p class="docText">I just added a shell script named <span class="docEmphasis">
+weather</span> yesterday; you can see it as the first file in the first column. 
+I also made a change to my script named <span class="docEmphasis">crontab</span> 
+last week; it's shown next. The oldest program in here is <i>echoerr</i>; it's 
+listed last.<span id="ENB8-1"><a class="docLink" href="#EN8-1"><sup>[1]</sup></a></span>
+</p>
+<p class="docText"><span class="docEmphasis">ls -t</span> is also great for 
+file-time comparisons <span class="docEmphBold">in a script</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-15">Section 
+8.15</a>). <span class="docEmphasis">ls -t</span> is quite useful when I've 
+forgotten whether I've edited a file recently. If I've changed a file, it will 
+be at or near the top of the <span class="docEmphasis">ls -t</span> listing. For 
+example, I might ask, &quot;Have I made the changes to that letter I was going to 
+send?&quot; If I haven't made the changes (but only think I have), my letter will 
+most likely appear somewhere in the middle of the listing. </p>
+<p class="docText">The <i>-u</i> option shows the files' last-access time 
+instead of the last-modification time. The <i>-u</i> option doesn't do anything 
+with plain <i>ls</i> — you have to use it with another option like <i>-t</i> or
+<i>-l</i>. The next listing shows that I've recently used the <i>rtfm</i> and <i>
+rmmer</i> files. I haven't read <span class="docEmphasis">README</span> in a 
+long time, though — oops: </p>
+<pre>jerry@ora ~/.bin
+62 % <b>ls -tu</b>
+rtfm          cx            drmm          saveart       fixsubj
+rmmer         c-w           zscan         scandrafts    echoerr
+rfl           cw            zrefile       rhno          dirtop
+mhprofile     distprompter  xmhprint      rhyes         cgrep
+showmult      recomp        zloop         replf         append
+tcx           crontab       zfolders      reheader      alifile
+tofrom        mhadd         which         incs          README
+rn2mh         pickthis      unshar        maillog
+weather       incc          showpr        fols</pre>
+<p class="docText">(Some Unixes don't update the last-access time of executable 
+files when you run them. Shell scripts are always read, so their last-access 
+times will always be updated.) </p>
+<p class="docText">The <i>-c</i>option shows when the file's inode information 
+was last changed. The inode time tells when the file was created, when you used
+<i>chmod</i> to change the permissions, and so on. </p>
+<pre>jerry@ora ~/.bin
+64 % <b>ls -tc</b>
+weather      maillog       reheader      recomp        incs
+crontab      tcx           rn2mh         fols          cx
+cgrep        zscan         tofrom        rmmer         cw
+zloop        zrefile       mhadd         fixsubj       c-w
+dirtop       rfl           drmm          mhprofile     echoerr
+pickthis     showmult      alifile       append        which
+rhno         rtfm          showpr        saveart       README
+unshar       incc          scandrafts    distprompter
+rhyes        zfolders      xmhprint      replf</pre>
+<p class="docText">If you're wondering just how long ago a file was modified (or 
+accessed), add the <i>-l</i> option for a long listing. As before, adding <i>-u</i> 
+shows the last-access time; <i>-c</i> shows inode change time. If I look at the 
+access times of a few specific files, I find that I haven't read
+<span class="docEmphasis">README</span> since 2001. </p>
+<pre>jerry@ora ~/.bin
+65 % <b>ls -ltu README alifile maillog</b>
+-rwxr-xr-x   1 jerry    ora           59 Feb  2  2002 maillog
+-rwxr-xr-x   1 jerry    ora          213 Nov 29  2001 alifile
+-rw-r--r--   1 jerry    ora         3654 Nov 27  2001 README</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-4">8.4 List All Subdirectories with ls -R</h3>
+<p class="docText">By default, <i>ls</i> lists just one directory. If you name 
+one or more directories on the command line, <i>ls</i> will list each one. The
+<i>-R</i> (uppercase R) option lists all subdirectories, recursively. That shows 
+you the whole directory tree starting at the current directory (or the 
+directories you name on the command line). </p>
+<p class="docText">This list can get pretty long; you might want to pipe the 
+output to a pager program such as <span class="docEmphBold">less</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>). The <span class="docEmphasis">ls -C</span> option is a good idea, 
+too, to list the output in columns. (When the <i>ls</i> output goes to a pipe, 
+many versions of <i>ls</i> won't make output in columns automatically.) </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-5">8.5 The ls -d Option</h3>
+<p class="docText">If you give <i>ls</i> the pathname of a directory, <i>ls</i> 
+lists the entries in the directory: </p>
+<pre>% <b>ls -l /home/joanne</b>
+total 554
+-rw-r--r--  1 joanne      15329 Oct  5 14:33 catalog
+-rw-------  1 joanne      58381 Oct 10 09:08 mail
+   ...</pre>
+<p class="docText">With the <i>-d</i> option, <i>ls</i> lists the directory 
+itself: </p>
+<pre>% <b>ls -ld /home/joanne</b>
+drwxr-x--x  7 joanne       4608 Oct 10 10:13 /home/joanne</pre>
+<p class="docText">The <i>-d</i> option is especially handy when you're trying 
+to list the names of some directories that match a wildcard. Compare the listing 
+with and without the <i>-d</i> option: </p>
+<pre>% <b>ls -Fd [a-c]*</b>
+arc/                    bm/                     ctrl/
+atcat.c                 cdecl/
+atl.c.Z                 cleanscript.c
+% <b>ls -F [a-c]*</b>
+atcat.c                 atl.c.Z                 cleanscript.c
+
+arc:
+BugsEtc.Z       arcadd.c        arcext.c.Z      arcmisc.c.Z
+   ...
+bm:
+Execute.c.Z     MakeDesc.c.Z    MkDescVec.c.Z   Search.c.Z
+   ...</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-6">8.6 Color ls</h3>
+<p class="docText">The GNU <i>ls</i> command — which is on a lot of systems, 
+including Linux — can display names in colors. For instance, when I enable color 
+listings on my system, directory names are in dark blue, symbolic links are in 
+sky blue, executable files (scripts, programs, etc.) are in green, and so on.
+</p>
+<p class="docText"><i>tcsh</i> 's built-in <i>ls -F</i> command can display in 
+colors, too. Just <span class="docEmphasis">set color</span> in your <i>.cshrc</i> 
+to enable it, and configure it using <tt>LS_COLORS</tt> as described later in 
+this section. You may also want to look at
+<a class="docLink" href="#upt3-CHP-8-SECT-6.4">Section 8.6.4</a> for another way 
+to configure colors if <i>- - color</i> doesn't seem to work. </p>
+<h4  id="upt3-CHP-8-SECT-6.1" class="docSection2Title">8.6.1 Trying It</h4>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: GNU ls</p>
+<p class="docText">Has your system been set up for this? Simply try this 
+command:</p>
+<pre>$ <b>ls --color / /bin</b></pre>
+<p class="docText">If you don't get an error (<span class="docEmphasis">ls: no 
+such option — color</span>, or something similar), you should see colors. If you 
+don't get an error, but you also don't get colors, try one of these commands, 
+and see what you get: </p>
+<pre>$ <b>ls --color=always / /bin | cat -v </b>
+^[[00m/:
+^[[01;34mbin^[[00m
+^[[01;34mboot^[[00m
+   <i> ...</i>
+^[[01;34mvar^[[00m
+
+/bin:
+^[[01;32march^[[00m
+^[[01;36mawk^[[00m
+^[[01;32mbasename^[[00m
+   <i> ...</i>
+
+$ <b>ls --color=yes / /bin | cat -v </b>
+   <i> ...same kind of output...</i></pre>
+<p class="docText">Those extra characters surrounding the filenames, such as <tt>
+^[[01;34m</tt> and <tt>^[[00m</tt>, are the escape sequences that (you hope) 
+make the colors. (The <span class="docEmphBold">cat -v</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-4">Section 
+12.4</a>) command makes the sequences visible, if there are any to see.) The <tt>
+^[</tt> is an ESC character; the next <tt>[</tt> starts a formatting code; the
+<tt>01</tt> code means &quot;boldface&quot;; the semicolon (<tt>;</tt>) is a code 
+separator; the <tt>34</tt> means &quot;blue&quot;; and the <tt>m</tt> ends the escape 
+sequence. <tt>^[[00m</tt> is an escape sequence that resets the attributes to 
+normal. If you see the escape sequences when you use <tt>cat -v</tt>, but you 
+haven't gotten any highlighting effects when you don't use it, there's probably 
+some kind of mismatch between your <span class="docEmphBold">termcap or terminfo 
+entry</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-2">Section 
+5.2</a>) (which should define the sequences) and the color database (see later 
+in this section). If you don't see the escape sequences at all, take a look at
+<a class="docLink" href="#upt3-CHP-8-SECT-6.4">Section 8.6.4</a> for another way 
+to configure color <i>ls</i>. </p>
+<h4  id="upt3-CHP-8-SECT-6.2" class="docSection2Title">8.6.2 Configuring It</h4>
+<p class="docText">How are the colors set? Both GNU <i>ls</i> and <i>tcsh</i>'s
+<i>ls -F</i> use the <span class="docEmphasis">LS_COLORS</span> environment 
+variable to decide how to format filenames. Here's a sample (truncated and split 
+onto three lines for printing): </p>
+<pre>$ <b>echo $LS_COLORS</b>
+LS_COLORS=no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:
+bd=40;33;01:cd=40;33;01:or=01;05;37;41:mi=01;05;37;41:ex=01;32:
+*.cmd=01;32:*.exe=01;32:*.com=01;32:*.btm=01;32:*.bat=01;32:
+    ...</pre>
+<p class="docText">The <span class="docEmphasis">LS_COLORS</span> value is a 
+series of <tt><i>item</i></tt>=<tt><i>attribute</i></tt> values with a colon (:) 
+between each pair. For instance, <tt>fi=00</tt> means that files have the 
+attribute (color) <span class="docEmphasis">00</span>; <tt>di=01;34</tt> means 
+that directories have the attributes <span class="docEmphasis">01</span> (bold) 
+and <span class="docEmphasis">34</span> (blue); and <tt>*.exe=01;32</tt> means 
+that filenames ending with <span class="docEmphasis">.exe</span> have the 
+attributes <span class="docEmphasis">01</span> (bold) and
+<span class="docEmphasis">32</span> (green). There can be up to three numbers. 
+The first is an attribute code (bold, underscore, etc.); the second is a 
+foreground color; the third is a background color. So, <tt>01;37;41</tt> 
+indicates boldfaced white foreground (<span class="docEmphasis">37</span>) text 
+on a red background (<span class="docEmphasis">41</span>). </p>
+<p class="docText">The format is fairly obtuse, so you won't want to set
+<span class="docEmphasis">LS_COLORS</span> directly if you don't have to. The 
+easy way to set it is with the <i>dircolors</i> command — typically in a
+<span class="docEmphBold">shell setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>): </p>
+<p class="docText"><tt>eval</tt>
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-8">
+Section 27.8</a><tt>'...'</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a> </p>
+<pre>eval `dircolors`</pre>
+<p class="docText">There, <i>dircolors</i> is reading the default database and 
+outputting a command to set <span class="docEmphasis">LS_COLORS</span>. What if 
+you don't want the default database settings? You can make your own. An easy 
+place to start is with <i>dircolors</i> -<i>p</i>, which outputs a copy of the 
+database. You can redirect the output to a file; a good option is to use a <i>.dircolorsrc</i> 
+file in your home directory. Then take a look at it: </p>
+<pre>$ <b>dircolors -p &gt; $HOME/.dircolorsrc </b>
+$ <b>cat $HOME/.dircolorsrc </b>
+    <i> ...</i>
+# Below should be one TERM entry for each colorizable termtype
+TERM linux
+    <i> ...</i>
+TERM vt100
+
+# Below are the color init strings for the basic file types. A color
+# init string consists of one or more of the following numeric codes:
+# Attribute codes:
+# 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
+# Text color codes:
+# 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
+# Background color codes:
+# 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
+NORMAL 00     # global default, although everything should be something.
+FILE 00       # normal file
+DIR 01;34     # directory
+LINK 01;36    # symbolic link
+    ...
+
+# List any file extensions like '.gz' or '.tar' that you would like ls
+# to colorize below. Put the extension, a space, and the color init string.
+# (and any comments you want to add after a '#')
+.tar 01;31 # archives or compressed (bright red)
+.tgz 01;31
+    ...</pre>
+<p class="docText">The file starts with a listing of <span class="docEmphBold">
+terminal type</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-3">Section 
+5.3</a>) names that understand the color escape sequences listed in this file. 
+Fortunately, the escape sequences are almost universal; there are some old 
+terminals (like my old Tektronix 4106, I think . . . R.I.P.) that don't 
+understand these, but not many. (If you have a different terminal or an odd 
+terminal emulator, you can <span class="docEmphBold">select a setup file 
+automatically as you log in</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-10">Section 
+3.10</a>).) The second section has a commented-out list of the attributes that 
+these terminals recognize. You can use that list in the third section — which 
+has standard attributes for files, directories, and so on. The fourth section 
+lets you choose attributes for files by their filename &quot;extensions&quot; — that is, 
+the part of the filename after the final dot (like <span class="docEmphasis">
+.tar</span>). </p>
+<p class="docText">If you make your own database, you'll need to use it (again, 
+typically in a shell setup file) to set <span class="docEmphasis">LS_COLORS</span>:
+</p>
+<pre>eval `dircolors $HOME/.dircolorsrc`</pre>
+<h4  id="upt3-CHP-8-SECT-6.3" class="docSection2Title">8.6.3 The -- color Option</h4>
+<p class="docText">For better or for worse, the way to activate color <i>ls</i> 
+is by using the <tt>--color</tt> option on the command line. Because almost no 
+one will want to type those characters every time they run <i>ls</i>, most users 
+need to make an <span class="docEmphBold">alias</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>,
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-4">
+Section 29.4</a>) for <i>ls</i> that runs <tt>ls --color</tt>. For example, here 
+are the three aliases defined for <i>bash</i> on my Linux system: </p>
+<pre>alias l.='ls .[a-zA-Z]* --color=auto'
+alias ll='ls -l --color=auto'
+alias ls='ls --color=auto'</pre>
+<p class="docText">If you're using <i>tcsh</i>, setting the <tt>color</tt> 
+variable to enable <i>ls -F</i>'s color also arranges to send <i>-- color=auto</i> 
+to regular <i>ls</i>. </p>
+<p class="docText">The <i>-- color</i> option gives you three choices of when 
+the <i>ls</i> output should be colored: <i>-- color=never</i> to never output 
+color, <i>-- color=always</i> to always output color, and <i>-- color=auto</i> 
+to only output color escape sequences if the standard output of <i>ls</i> is a 
+terminal. I suggest using <i>-- color=auto</i>, because <i>-- color=always</i> 
+means that when you pipe the output of <i>ls</i> to a printer or redirect it to 
+a file, it will still have the ugly escape sequences you saw earlier in this 
+article. </p>
+<h4  id="upt3-CHP-8-SECT-6.4" class="docSection2Title">8.6.4 Another color ls</h4>
+<p class="docText">Some systems have another way to configure and use color <i>
+ls</i>. My FreeBSD systems use this scheme; if none of the configuration 
+techniques described earlier work, use <span class="docEmphasis">ls -G</span> or 
+set the <tt>CLICOLOR</tt> environment variable. If this works, you'll want to 
+use the <tt>LSCOLORS</tt> environment variable to configure color information 
+instead of <tt>LS_COLORS</tt> as described earlier. Spend a little time perusing 
+your <i>ls(1)</i> manpage for further details if your <i>ls</i> seems to work 
+this way, as configuring it is likely to be completely different from what we 
+described previously. </p>
+<p class="docText"><span class="docEmphasis">—JP and DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-7">8.7 Some GNU ls Features</h3>
+<p class="docText">A lot of the GNU utilities came from Unix utilities — but 
+with extra features. The GNU <i>ls</i> command is no exception: as its
+<span class="docEmphBold">info page</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-9">Section 
+2.9</a>) says, &quot;Because <i>ls</i> is such a fundamental program, it has 
+accumulated many options over the years.&quot; Amen. Let's look at three of the 
+options that aren't covered by other articles on <i>ls</i>. </p>
+<p class="docText">An <span class="docEmphBold">Emacs editor backup file</span> 
+(<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-4">Section 
+19.4</a>) has a name ending in <tt>~</tt> (tilde). If you use Emacs a lot, these 
+files can really clutter your directories. The <i>ls</i> -<i>B</i> option 
+ignores Emacs backup files: </p>
+<pre>$ <b>ls</b>
+bar.c  bar.c~  baz.c  baz.c~  foo.c  foo.c~
+$ <b>ls -B</b>
+bar.c  baz.c  foo.c</pre>
+<p class="docText">The option -<i>I</i> (uppercase letter
+<span class="docEmphasis">I</span>) takes <i>-B</i> one step further: you can 
+give a wildcard expression (shell wildcard pattern, not <i>grep</i>-like 
+expressions) for entries <span class="docEmphasis">not</span> to list. (Remember 
+that — because you want to pass the wildcard pattern to <i>ls</i>, and
+<span class="docEmphasis">not</span> let the shell expand it first — you need to
+<span class="docEmphBold">quote</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) the pattern.) For instance, to skip all filenames ending in
+<span class="docEmphasis">.a</span> and <span class="docEmphasis">.o</span>, use 
+the wildcard pattern <tt>*.[ao]</tt>, like this: </p>
+<pre>$ <b>ls</b>
+bar.a  bar.c  bar.o  baz.a  baz.c  baz.o  foo.a  foo.c  foo.o
+$ <b>ls -I &quot;*.[ao]&quot;</b>
+bar.c  baz.c  foo.c</pre>
+<p class="docText">The &quot;minimalist&quot; side of me might argue that both <i>-B</i> 
+and <i>-I</i> are feeping creatures because you can get basically the same 
+effect by combining plain old <i>ls</i> with one of the &quot;not this file&quot; shell 
+wildcard operators. This next option is in the same category. Instead of using
+<i>-S</i> to sort the files by size, you could pipe the output of plain <i>ls</i>
+<i>-l</i> to <span class="docEmphBold">sort -n</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-5">Section 
+22.5</a>) and sort on the size field, then strip off the information you didn't 
+want and . . . ahem. (Grumble, grumble.) Okay, <i>-S</i> really is pretty 
+useful. <tt>;-)</tt> I use it a lot when I'm cleaning out directories and want 
+to find the most effective files to remove: </p>
+<pre>$ <b>ls -lS </b>
+total 1724
+-rw-rw-r--    1 jerry    ora   395927 Sep  9 06:21 SunTran_map.pdf
+-rw-------    1 jerry    ora   389120 Oct 31 09:55 core
+-rw-r--r--    1 jerry    ora   178844 May  8 16:36 how
+-rw-------    1 jerry    ora    77122 Oct 29 08:46 dead.letter
+   <i> ...</i></pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-8">8.8 A csh Alias to List Recently Changed Files</h3>
+<p class="docText">Looking for a recently changed file? Not sure of the name? 
+Trying to do this in a directory with lots of files? Try the <i>lr</i> alias:
+</p>
+<pre>alias lr &quot;ls -lagFqt \!* | head&quot;</pre>
+<p class="docText">This alias takes advantage of the <span class="docEmphBold">
+-t option</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-3">Section 
+8.3</a>) to <i>ls</i>, so that recent files can float to the top of the listing.
+<tt>!*</tt> is the <i>csh</i> syntax for &quot;put all of the arguments to the alias 
+here.&quot; (We have to escape the exclamation point to keep it from being 
+interpreted when we set the alias.) <span class="docEmphBold">head</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-12">Section 
+12.12</a>) shows just the first ten lines. </p>
+<p class="docText">A simple <i>lr</i> in my home directory gives me:</p>
+<pre>bermuda:home/dansmith :-) <b>lr</b>
+total 1616
+-rw-------  1 dansmith staff      445092 Oct  7 20:11 .mush256
+-rw-r--r--  1 dansmith staff        1762 Oct  7 20:11 .history
+drwxr-xr-x 30 dansmith staff        1024 Oct  7 12:59 text/
+-rw-------  1 dansmith staff      201389 Oct  7 12:42 .record
+drwxr-xr-x 31 dansmith staff        1024 Oct  4 09:41 src/
+-rw-r--r--  1 dansmith staff        4284 Oct  4 09:02 .mushrc
+   ...</pre>
+<p class="docText">You can also give a wildcarded pattern to narrow the search. 
+For example, here's the command to show me the dot files that have changed 
+lately: </p>
+<pre>bermuda:home/dansmith :-) <b>lr .??*</b>
+-rw-------  1 dansmith staff      445092 Oct  7 20:11 .mush256
+-rw-r--r--  1 dansmith staff        1762 Oct  7 20:11 .history
+-rw-------  1 dansmith staff      201389 Oct  7 12:42 .record
+-rw-r--r--  1 dansmith staff        4284 Oct  4 09:02 .mushrc
+   ...</pre>
+<p class="docText"><span class="docEmphasis">— DS</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-9">8.9 Showing Hidden Files with ls -A and -a</h3>
+<p class="docText">The <i>ls</i> command normally ignores any files whose names 
+begin with a dot (.). This is often very convenient: Unix has lots of small 
+configuration files, scratch files, etc. that you really don't care about and 
+don't want to be bothered about most of the time. However, there are some times 
+when you care very much about these files. If you want to see &quot;hidden&quot; files, 
+use the command <span class="docEmphasis">ls -a</span>. For example: </p>
+<pre>% <b>cd </b>
+% <b>ls                                   </b><i> Don't show hidden files</i>
+Mail       mail.txt      performance   powertools
+% <b>ls -a                                </b><i> This time, show me EVERYTHING</i>
+.        .emacs        Mail          powertools
+..       .login        mail.txt
+.cshrc   .mailrc       performance</pre>
+<p class="docText">With the <i>-a</i> option, we see four additional files: two 
+C-shell initialization files, the customization files for the GNU Emacs editor, 
+and <i>mail</i>. We also see two &quot;special&quot; entries, <tt>.</tt> and <tt>..</tt>, 
+which represent the current directory and the parent of the current directory. 
+All Unix directories contain <span class="docEmphBold">these two entries</span> 
+(<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-2">Section 
+10.2</a>). </p>
+<p class="docText">If you don't want to be bothered with <tt>.</tt> and <tt>..</tt>, 
+many versions of <i>ls</i> also have a <i>-A</i> option: </p>
+<pre>% <b>ls -A    </b><i> Show me everything but . and ..</i>
+.cshrc   .login        Mail          performance
+.emacs   .mailrc       mail.txt      powertools</pre>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-10">8.10 Useful ls Aliases</h3>
+<p class="docText">Because <i>ls</i> is one of the most commonly used Unix 
+commands and provides numerous options, it's a good idea to create aliases for 
+the display formats that best suit your needs. For example, many users
+<span class="docEmphasis">always</span> want to know about their &quot;hidden&quot; files. 
+That's reasonable — they're just as important as any other files you have. In 
+some cases, they can grow to take up lots of room (for example, some editors 
+hide backup files), so it's worth being aware of them. </p>
+<p class="docText">Rather than typing <i>ls -a</i> every time, you can create a 
+convenient alias that supplies the <span class="docEmphBold">-a or -A option</span> 
+(<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-9">Section 
+8.9</a>) automatically: </p>
+<pre>$ <b>alias la=&quot;ls -aF&quot;</b>
+% <b>alias la ls -aF</b></pre>
+<p class="docText">or:</p>
+<pre>$ <b>alias la=&quot;ls -AF&quot;</b>
+% <b>alias la ls -AF</b></pre>
+<p class="docText">Two things to note here. First, I recommend using <i>la</i> 
+as the name of the alias, rather than just renaming <i>ls</i>. I personally 
+think it's dangerous to hide the pure, unadulterated command underneath an 
+alias; it's better to pick a new name and get used to using that name. If you 
+ever need the original <i>ls</i> for some reason, you'll be able to get at it 
+without problems. </p>
+<p class="docText">Second, what's with the <i>-F</i> option? I just threw it in 
+to see if you were paying attention. It's actually quite useful; many users add 
+it to their <i>ls</i> aliases. The <i>-F</i> option shows you the
+<span class="docEmphasis">type</span> of file in each directory by printing an 
+extra character after each filename.
+<a class="docLink" href="#upt3-CHP-8-TABLE-1">Table 8-1</a> lists what the extra 
+character can be. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-8-TABLE-1" class="docTableTitle">Table 8-1. Filename types listed by ls -F </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Character</th>
+    <th class="docTableHeader">
+    <p class="docText">Definition</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">(nothing)</td>
+    <td class="docTableCell">
+    <p class="docText">The file is a regular file.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">* </td>
+    <td class="docTableCell">
+    <p class="docText">The file is an executable.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">/ </td>
+    <td class="docTableCell">
+    <p class="docText">The file is a directory.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">@ </td>
+    <td class="docTableCell">
+    <p class="docText">The file is a <span class="docEmphBold">symbolic link</span><a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+    10.4</a>). </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">| </td>
+    <td class="docTableCell">
+    <p class="docText">The file is a <span class="docEmphBold">FIFO (named pipe)</span>
+    <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-11">
+    Section 43.11</a>). </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">= </td>
+    <td class="docTableCell">
+    <p class="docText">The file is a socket.</td>
+  </tr>
+</table>
+<p class="docText">For example:</p>
+<pre>% <b>la         </b><i> Alias includes -F functionality</i>
+.cshrc   .login        Mail/         performance/
+.emacs   .mailrc       mail.txt      powertools@</pre>
+<p class="docText">This says that <span class="docEmphasis">Mail</span> and
+<span class="docEmphasis">performance</span> are directories.
+<span class="docEmphasis">powertools</span> is a symbolic link (<span class="docEmphasis">ls 
+-l</span> will show you what it's linked to). There are no executables, FIFOs, 
+or sockets in this directory. </p>
+<p class="docText">[If you use <i>tcsh</i>, it has a built-in <i>ls</i> called
+<i>ls -F</i>, which not only prints this extra information, but also supports
+<span class="docEmphBold">color</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-6">Section 
+8.6</a>) and caching of filesystem information for speed. I generally put
+<span class="docEmphasis">alias ls ls -F</span> in my <i>.cshrc</i>. — DH] </p>
+<p class="docText">You may want this version instead:</p>
+<pre>$ <b>alias la=&quot;ls -aFC&quot;</b>
+% <b>alias la ls -aFC</b></pre>
+<p class="docText">The <i>-C</i> option lists the files in multiple columns. 
+This option isn't needed with <i>ls</i> versions where multicolumn output is the 
+normal behavior. Note, however, that when piped to another command, <i>ls</i> 
+output is single-column unless <i>-C</i> is used. For example, use <tt>ls -C | 
+less</tt> to preserve multiple columns with a paged listing. </p>
+<p class="docText">Finally, if you often need the full listing, use the alias:
+</p>
+<pre>$ <b>alias ll=&quot;ls -l&quot;</b>
+% <b>alias ll ls -l</b></pre>
+<p class="docText">This alias may not seem like much of a shortcut until after 
+you've typed it a dozen times. In addition, it's easy to remember as &quot;long 
+listing.&quot; Some Unix systems even include <i>ll</i> as a regular command. </p>
+<p class="docText"><span class="docEmphasis">—DG and ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-11">8.11 Can't Access a File? Look for Spaces in the 
+Name</h3>
+<p class="docText">What's wrong here? </p>
+<pre>% <b>ls</b>
+afile    exefiles   j       toobig
+% <b>lpr afile</b>
+lpr: afile: No such file or directory</pre>
+<p class="docText">Huh? <i>ls</i> shows that the file is there, doesn't it? Try 
+using: </p>
+<p class="docText"><tt>-v</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">
+Section 12.4</a>, <tt>-t</tt> <tt>-e</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-5">
+Section 1125</a> </p>
+<pre>% <b>ls -l | cat -v -t -e</b>
+total 89$
+-rw-rw-rw-  1 jerry          28 Mar  7 19:46 afile $
+-rw-r--r--  1 root        25179 Mar  4 20:34 exefiles$
+-rw-rw-rw-  1 jerry         794 Mar  7 14:23 j$
+-rw-r--r--  1 root          100 Mar  5 18:24 toobig$</pre>
+<p class="docText">The <span class="docEmphasis">cat -e</span> option marks the 
+ends of lines with a <tt>$</tt>. Notice that <tt>afile</tt> has a <tt>$</tt> out 
+past the end of the column. Aha . . . the filename ends with a space. Whitespace 
+characters like TABs have the same problem, though the default
+<span class="docEmphBold">ls -q</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-12">Section 
+8.12</a>) option (on many Unix versions) shows them as <tt>?</tt> if you're 
+using a terminal. </p>
+<p class="docText">If you have the GNU version of <i>ls</i>, try its <i>-Q</i> 
+option to put double quotes around each name: </p>
+<pre>$ <b>ls -Q</b>
+&quot;afile &quot;  &quot;exefiles&quot;  &quot;j&quot;  &quot;toobig&quot;</pre>
+<p class="docText">To rename <span class="docEmphasis">afile</span>, giving it a 
+name without the space, type: </p>
+<pre>% <b>mv &quot;afile &quot; afile</b></pre>
+<p class="docText">The <span class="docEmphBold">quotes</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) tell the shell to include the space as part of the first argument it 
+passes to <i>mv</i>. The same quoting works for other Unix commands as well, 
+such as <i>rm</i>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-12">8.12 Showing Nonprintable Characters in Filenames</h3>
+<p class="docText">From time to time, you may get filenames with nonprinting 
+characters, spaces, and other garbage in them. This is usually the result of 
+some mistake — but it's a pain nevertheless. </p>
+<p class="docText">If you're using a version of <i>ls</i> that uses <i>-q</i> by 
+default (and most do these days), the <i>ls</i> command gives you some help; it 
+converts all nonprinting characters to a question mark (<tt>?</tt>), giving you 
+some idea that something funny is there.<span id="ENB8-2"><a class="docLink" href="#EN8-2"><sup>[2]</sup></a></span> 
+For example: </p>
+<pre>% <b>ls</b>
+ab??cd</pre>
+<p class="docText">This shows that there are two nonprinting characters between
+<tt>ab</tt> and <tt>cd</tt>. To delete (or rename) this file, you can use a 
+wildcard pattern like <span class="docEmphasis">ab??cd</span>. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60"><img height="50" src="screw.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Be careful: when I was new to Unix, I once 
+        accidentally generated a lot of weird filenames. <i>ls</i> told me that 
+        they all began with <span class="docEmphasis">????</span>, so I naively 
+        typed <tt>rm ????*</tt>. That's when my troubles began. See
+        <a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-3">
+        Section 14.3</a> for the rest of the gruesome story. (I spent the next 
+        day and night trying to undo the damage.) The moral is: it's always a 
+        good idea to use <i>echo</i> to test filenames with wildcards in them.
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">If you're using an <i>ls</i> that came from System V Unix, 
+you have a different set of problems. System V's <i>ls</i> doesn't convert the 
+nonprinting characters to question marks. In fact, it doesn't do anything at all 
+— it just spits these weird characters at your terminal, which can respond in 
+any number of strange and hostile ways. Most of the nonprinting characters have 
+special meanings — ranging from &quot;don't take any more input&quot; to &quot;clear the 
+screen.&quot; [If you don't have a System V <i>ls</i>, but you want this behavior for 
+some reason, try GNU <i>ls</i> with its <i>-N</i> option. —
+<span class="docEmphasis">JP</span>] </p>
+<p class="docText">To prevent this, or to see what's actually there instead of 
+just the question marks, use the <i>-b</i> option.<span id="ENB8-3"><a class="docLink" href="#EN8-3"><sup>[3]</sup></a></span> 
+This tells <i>ls</i> to print the octal value of any nonprinting characters, 
+preceeded by a backslash. For example: </p>
+<pre>% <b>ls -b</b>
+ab\013\014cd</pre>
+<p class="docText">This shows that the nonprinting characters have octal values 
+13 and 14, respectively. If you look up these values in an ASCII table, you will 
+see that they correspond to CTRL-k and CTRL-l. If you think about what's 
+happening — you'll realize that CTRL-l is a formfeed character, which tells many 
+terminals to clear the screen. That's why the regular <i>ls</i> command behaved 
+so strangely. </p>
+<p class="docText">Once you know what you're dealing with, you can use a 
+wildcard pattern to delete or rename the file. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-13">8.13 Counting Files by Types</h3>
+<p class="docText">I use <span class="docEmphBold">awk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+20.10</a>) a lot. One of my favorite features of <i>awk</i> is its associative 
+arrays. This means <i>awk</i> can use anything as an index into an array. In the 
+next example, I use the output of the <span class="docEmphBold">file</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-6">Section 
+12.6</a>) command as the index into an array to count how many files there are 
+of each type: </p>
+<p class="docText"><tt>xargs</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-17">
+Section 28.17</a></p>
+<pre>#!/bin/sh
+# usage: count_types [directory ...]
+# Counts how many files there are of each type
+# Original by Bruce Barnett
+# Updated version by yu@math.duke.edu (Yunliang Yu)
+find ${*-.} -type f -print | xargs file |
+awk '{
+        $1=NULL;
+        t[$0]++;
+}
+END {
+        for (i in t) printf(&quot;%d\t%s\n&quot;, t[i], i);
+}' | sort -nr   # Sort the result numerically, in reverse</pre>
+<p class="docText">The output of this might look like:</p>
+<pre>38  ascii text
+32  English text
+20  c program text
+17  sparc executable not stripped
+12  compressed data block compressed 16 bits
+8   executable shell script
+1   sparc demand paged dynamically linked executable
+1   executable /bin/make script</pre>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-14">8.14 Listing Files by Age and Size</h3>
+<p class="docText">If you find a large directory and most of the files are new, 
+that directory may not be suitable for removal, as it is still being used. Here 
+is a script that lists a summary of file sizes, broken down into the time of 
+last modification. You may remember that <span class="docEmphasis">ls -l</span> 
+will list the month, day, hour, and minute if the file is less than six months 
+old and show the month, day, and year if the file is more than six months old. 
+Using this, the script creates a summary for each of the last six months, as 
+well as a summary for each year for files older than that: </p>
+<p class="docText"><tt>xargs</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-17">
+Section 28.17</a></p>
+<pre>#!/bin/sh
+# usage: age_files [directory ...]
+# lists size of files by age
+#
+# pick which version of ls you use
+#   System V
+#LS=&quot;ls -ls&quot;
+#   Berkeley
+LS=&quot;ls -lsg&quot;
+#
+find ${*:-.} -type f -print | xargs $LS | awk  '
+# argument 7 is the month; argument 9 is either hh:mm or yyyy
+# test if argument is hh:mm or yyyy format
+{
+   if ($9 !~ /:/) {
+      sz[$9]+=$1;
+   } else {
+      sz[$7]+=$1;
+   }
+}
+END {
+   for (i in sz) printf(&quot;%d\t%s\n&quot;, sz[i], i);
+}' | sort -nr</pre>
+<p class="docText">The program might generate results like this:</p>
+<pre>5715   1991
+3434   1992
+2929   1989
+1738   Dec
+1495   1990
+1227   Jan
+1119   Nov
+953   Oct
+61   Aug
+40   Sep</pre>
+<p class="docText">[For the book's third edition, I thought about replacing this 
+venerable ten-year-old script with one written in Perl. Perl, after all, lets 
+you get at a file's inode information directly from the script, without the <i>
+ls</i> -<i>awk</i> kludge. But I changed my mind because this technique — 
+groveling through the output of <i>ls</i> -<i>l</i> with a &quot;summarizing&quot; filter 
+script — is really handy sometimes. — <span class="docEmphasis">JP</span>] </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-15">8.15 newer: Print the Name of the Newest File</h3>
+<p class="docText">Here's a quick alias that figures out which file in a group 
+is the newest: </p>
+<p class="docText"><tt>-d</tt>
+<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-5">
+Section 8.5</a></p>
+<pre>alias newer &quot;ls -dt \!* | head -1&quot;</pre>
+<p class="docText">If your system doesn't have a <span class="docEmphBold">head</span> 
+(
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-12">
+Section 12.12</a>) command, use <span class="docEmphasis">sed 1q</span> instead.
+</p>
+<p class="docText">For example, let's say that you have two files named
+<span class="docEmphasis">plan.v1</span> and <span class="docEmphasis">plan.v2</span>. 
+If you're like me, you (often) edit the wrong version by mistake — and then, a 
+few hours later, can't remember what you did. You can use this alias to figure 
+out which file you changed most recently: </p>
+<pre>% <b>newer plan.v*</b>
+plan.v1</pre>
+<p class="docText">I could also have used <span class="docEmphBold">command 
+substitution</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) to handle this in one step: </p>
+<pre>% <b>emacs `newer plan.*`</b></pre>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-16">8.16 oldlinks: Find Unconnected Symbolic Links</h3>
+<p class="docText">One problem with symbolic links is that they're relatively
+<span class="docEmphBold">&quot;fragile&quot;</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-6">Section 
+10.6</a>). The link and the file itself are different kinds of entities; the 
+link only stores the name of the &quot;real&quot; file. Therefore, if you delete or rename 
+the real file, you can be left with a &quot;dead&quot; or &quot;old&quot; link: a link that points 
+to a file that doesn't exist. </p>
+<p class="docText">This causes no end of confusion, particularly for new users. 
+For example, you'll see things like this: </p>
+<pre>% <b>ls -l nolink</b>
+lrwxrwxrwx   1 mikel     users    12 Nov  2 13:57 nolink -&gt; /u/joe/afile
+% <b>cat nolink</b>
+cat: nolink: No such file or directory</pre>
+<p class="docText">The file's obviously there, but <i>cat</i> tells you that it 
+doesn't exist. </p>
+<p class="docText">There's no real solution to this problem, except to be 
+careful. Try writing a script that checks links to see whether they exist. 
+Here's one such script from Tom Christiansen; it uses <i>find</i> to track down 
+all links and then uses <i>perl</i> to print the names of links that point to 
+nonexistent files. (If you're a Perl hacker and you'll be using this script 
+often, you could replace the Unix <i>find</i> utility with the Perl <tt>
+File::Find</tt> module.) </p>
+<pre>#!/bin/sh
+find . -type l -print | perl -nle '-e || print'</pre>
+<p class="docText">The script only lists &quot;dead&quot; links; it doesn't try to delete 
+them or do anything drastic. If you want to take some other action (such as 
+deleting these links automatically), you can use the output of the script in
+<span class="docEmphBold">backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>). For example: </p>
+<pre>% <b>rm `oldlinks`</b></pre>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-8-SECT-17">8.17 Picking a Unique Filename Automatically</h3>
+<p class="docText">Shell scripts, aliases, and other programs often need 
+temporary files to hold data to be used later. If the program will be run more 
+than once, or if the temp file needs to stay around after the program is done, 
+you need some way to make a unique filename. Generally these files are stored in
+<i>/tmp</i> or <i>/usr/tmp</i>. </p>
+<p class="docText">One way is with the shell's <span class="docEmphBold">process 
+ID number</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>), available in the <span class="docEmphasis">$$</span> parameter. You 
+might name a file <i>/tmp/</i><tt><i>myprog</i></tt>$$; the shell will turn that 
+into something like <i>/tmp/</i><tt><i>myprog</i></tt>1234 or <i>/tmp/</i><tt><i>myprog</i></tt>28471. 
+If your program needs more than one temporary file, add an informative suffix to 
+the names: </p>
+<pre>% <b>errs=/tmp/ </b><i>myprog </i>-errs$$
+% <b>output=/tmp/ </b><i>myprog </i>-output$$</pre>
+<p class="docText">You can also use <i>date</i>'s <i>+</i> option to get a 
+representation of the date suitable for temporary filenames. For example, to 
+output the <span class="docEmphasis">Y</span>ear, <span class="docEmphasis">m</span>onth,
+<span class="docEmphasis">d</span>ay, <span class="docEmphasis">H</span>our,
+<span class="docEmphasis">M</span>inute, and <span class="docEmphasis">S</span>econd:
+</p>
+<pre>% <b>date</b>
+Wed Mar  6 17:04:39 MST 2002
+% <b>date +'%Y%m%d%H%M%S'</b>
+20020306170515</pre>
+<p class="docText">Use a <tt>+</tt> parameter and <span class="docEmphBold">
+backquotes</span> (<tt>``</tt>) (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) to get a temp file named for the current date and/or time. For 
+instance, on May 31 the following command would store <span class="docEmphasis">
+foo.0531</span> in the Bourne shell variable <span class="docEmphasis">temp</span>. 
+On December 7, it would store <span class="docEmphasis">foo.1207</span>: </p>
+<pre>% <b>temp=foo.`date +'%m%d'`</b></pre>
+<p class="docText">If you'll be generating a lot of temporary files in close 
+proximity, you can use both the process ID and the date/time: </p>
+<pre>% <b>output=/tmp/ </b><i>myprog </i>$$.`date +'%Y%m%d%H%M%S'`
+% <b>echo $output </b>
+/tmp/<i>myprog </i>25297.20020306170222
+</pre>
+<p class="docText"><span class="docEmphasis">—JP and DJPH</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN8-1"><a class="docLink" href="#ENB8-1">[1]</a>&nbsp;&nbsp;On some systems, <span class="docEmphasis">ls -t</span> will list the files in 
+one column, with the newest file first. Although that&#39;s usually a pain, I 
+actually find that more convenient when I&#39;m interested in the most recent files. 
+If your system does that and you don&#39;t like the single-column display, you can 
+use <span class="docEmphasis">ls -Ct</span>. On other systems, if a 
+single-column display would be handy, use <span class="docEmphasis">ls -1t</span>; 
+the &quot;<tt>1</tt>&quot; option means &quot;one column.&quot; You can also use
+<span class="docEmphasis">ls -lt</span>, since long listings also list one file 
+per line. Throughout this article, we&#39;ll assume you&#39;re using an <i>ls</i> 
+version that makes multicolumn output.</p><p class="docFootnote" id="EN8-2"><a class="docLink" href="#ENB8-2">[2]</a>&nbsp;&nbsp;Even in <i>ls</i>es that use it, the <i>-q</i> option is the default only when
+<i>ls</i>&#39;s standard output is a terminal. If you pipe the output or redirect it 
+to a file, remember to add <i>-q</i>.</p><p class="docFootnote" id="EN8-3"><a class="docLink" href="#ENB8-3">[3]</a>&nbsp;&nbsp;On systems that don't 
+  support <i>ls -b</i>, pipe the <i>ls -q</i> output through <i>cat -v</i> or
+  <span class="docEmphBold">od -c</span> <span class="docEmphBold">(</span><a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">Section 
+  12.4</a>) to see what the nonprinting characters are.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 7.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 9.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

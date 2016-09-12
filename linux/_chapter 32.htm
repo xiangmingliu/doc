@@ -1,0 +1,2157 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 32</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 31.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 33.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 32. Regular Expressions (Pattern Matching)</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-1">32.1 That's an Expression</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-2">32.2 Don't Confuse Regular Expressions with Wildcards</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-3">32.3 Understanding Expressions</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-4">32.4 Using Metacharacters in Regular Expressions</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-5">32.5 Regular Expressions: The Anchor Characters ^ and $</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-6">32.6 Regular Expressions: Matching a Character with a Character Set</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-7">32.7 Regular Expressions: Match Any Character with . (Dot)</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-8">32.8 Regular Expressions: Specifying a Range of Characters with [...]</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-9">32.9 Regular Expressions: Exceptions in a Character Set</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-10">32.10 Regular Expressions: Repeating Character Sets with *</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-11">32.11 Regular Expressions: Matching a Specific Number of Sets with \ { and \ }</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-12">32.12 Regular Expressions: Matching Words with \ &lt; and \ &gt;</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-13">32.13 Regular Expressions: Remembering Patterns with \ (, \ ), and \1</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-14">32.14 Regular Expressions: Potential Problems</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-15">32.15 Extended Regular Expressions</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-16">32.16 Getting Regular Expressions Right</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-17">32.17 Just What Does a Regular Expression Match?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-18">32.18 Limiting the Extent of a Match</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-19">32.19 I Never Meta Character I Didn't Like</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-20">32.20 Valid Metacharacters for Different Unix Programs</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-32-SECT-21">32.21 Pattern Matching Quick Reference with Examples</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-1">32.1 That's an Expression</h3>
+<p class="docText">When my young daughter is struggling to understand the 
+meaning of an idiomatic expression, such as, &quot;Someone let the cat out of the 
+bag,&quot; before I tell her what it means, I have to tell her that it's an
+<span class="docEmphasis">expression</span>, that she's not to interpret it 
+literally. (As a consequence, she also uses &quot;That's just an expression&quot; to 
+qualify her own remarks, especially when she is unsure about what she has just 
+said.) </p>
+<p class="docText">An expression, even in computer terminology, is not something 
+to be interpreted literally. It is something that needs to be evaluated. </p>
+<p class="docText">Many Unix programs use a special &quot;regular expression syntax&quot; 
+for specifying what you could think of as &quot;wildcard searches&quot; through files. 
+Regular expressions describe patterns, or sequences of characters, without 
+necessarily specifying the characters literally. You'll also hear this process 
+referred to as &quot; pattern matching.&quot; </p>
+<p class="docText">In this chapter, we depart a bit from the usual &quot;tips and 
+tricks&quot; style of the book to provide an extended tutorial about regular 
+expressions that starts in
+<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-4">
+Section 32.4</a>. We did this because regular expressions are so important to 
+many of the tips and tricks elsewhere in the book, and we wanted to make sure 
+that they are covered thoroughly. </p>
+<p class="docText">This tutorial article is accompanied by a few snippets of 
+advice (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-16">Section 
+32.16</a> and
+<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-18">
+Section 32.18</a>) and a few tools that help you see what your expressions are 
+matching (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-17">Section 
+32.17</a>). There's also a quick reference (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-21">Section 
+32.21</a>) for those of you who just need a refresher. </p>
+<p class="docText">For tips, tricks, and tools that rely on an understanding of 
+regular expression syntax, you have only to look at: </p>
+<ul>
+  <li>
+  <p class="docList">
+  <a class="docLink" href="_chapter 13.htm">Chapter 
+  13</a></li>
+  <li>
+  <p class="docList">
+  <a class="docLink" href="_chapter 17.htm">Chapter 
+  17</a></li>
+  <li>
+  <p class="docList">
+  <a class="docLink" href="_chapter 20.htm">Chapter 
+  20</a></li>
+  <li>
+  <p class="docList">
+  <a class="docLink" href="_chapter 34.htm">Chapter 
+  34</a></li>
+  <li>
+  <p class="docList">
+  <a class="docLink" href="_chapter 41.htm">Chapter 
+  41</a></li>
+</ul>
+<p class="docText">O'Reilly's <i>Mastering Regular Expressions</i>, by Jeffrey 
+Friedl, is a gold mine of examples and specifics. </p>
+<p class="docText">—<span class="docEmphasis">DD and TOR</span></p>
+
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-2">32.2 Don't Confuse Regular Expressions with 
+Wildcards</h3>
+<p class="docText">Before we even start talking about regular expressions, a 
+word of caution for beginners: regular expressions can be confusing because they 
+look a lot like the file-matching patterns (&quot;wildcards&quot;) the shell uses. Both 
+the shell and programs that use regular expressions have special meanings for 
+the asterisk (<tt>*</tt>), question mark (<tt>?</tt>), parentheses (<tt>( )</tt>), 
+square brackets (<tt>[ ]</tt>), and vertical bar (<tt>|</tt>, the &quot;pipe&quot;). </p>
+<p class="docText">Some of these characters even act the same way — almost.</p>
+<p class="docText">Just remember, the shells, <i>find</i>, and some others 
+generally use filename-matching patterns and not regular expressions.<span id="ENB32-1"><a class="docLink" href="#EN32-1"><sup>[1]</sup></a></span>
+</p>
+<p class="docText">You also have to remember that shell wildcards are expanded 
+before the shell passes the arguments to the program. To prevent this expansion, 
+the special characters in a regular expression must be <span class="docEmphBold">
+quoted</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) when passed as an argument from the shell. </p>
+<p class="docText">The command:</p>
+<pre>$ <b>grep [A-Z]*.c chap[12]</b></pre>
+<p class="docText">could, for example, be interpreted by the shell as:</p>
+<pre>grep Array.c Bug.c Comp.c chap1 chap2</pre>
+<p class="docText">and so <i>grep</i> would then try to find the pattern &quot;Array.c&quot; 
+in files <i>Bug.c</i>, <i>Comp.c</i>, <i>chap1</i>, and <i>chap2</i>. </p>
+<p class="docText">The simplest solution in most cases is to surround the 
+regular expression with single quotes (<tt>'</tt>). Another is to use the <i>
+echo</i> command to echo your command line to see how the shell will interpret 
+the special characters. </p>
+<p class="docText">—<span class="docEmphasis">BB and DG, TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-3">32.3 Understanding Expressions</h3>
+<p class="docText">You are probably familiar with the kinds of expressions that 
+a calculator interprets. Look at the following arithmetic expression: </p>
+<pre>2 + 4</pre>
+<p class="docText">&quot;Two plus four&quot; consists of several constants or literal 
+values and an operator. A calculator program must recognize, for instance, that 
+2 is a numeric constant and that the plus sign represents an operator, not to be 
+interpreted as the <tt>+</tt> character. </p>
+<p class="docText">An expression tells the computer how to produce a result. 
+Although it is the sum of &quot;two plus four&quot; that we really want, we don't simply 
+tell the computer to return a six. We instruct the computer to evaluate the 
+expression and return a value. </p>
+<p class="docText">An expression can be more complicated than 2+4; in fact, it 
+might consist of multiple simple expressions, such as the following: </p>
+<pre>2 + 3 * 4</pre>
+<p class="docText">A calculator normally evaluates an expression from left to 
+right. However, certain operators have precedence over others: that is, they 
+will be performed first. Thus, the above expression evaluates to 14 and not 20 
+because multiplication takes precedence over addition. Precedence can be 
+overridden by placing the simple expression in parentheses. Thus, (2+3)*4 or 
+&quot;the sum of two plus three times four&quot; evaluates to 20. The parentheses are 
+symbols that instruct the calculator to change the order in which the expression 
+is evaluated. </p>
+<p class="docText">A regular expression, by contrast, is descriptive of a 
+pattern or sequence of characters. Concatenation is the basic operation implied 
+in every regular expression. That is, a pattern matches adjacent characters. 
+Look at the following example of a regular expression: </p>
+<pre>ABE</pre>
+<p class="docText">Each literal character is a regular expression that matches 
+only that single character. This expression describes &quot;an <tt>A</tt> followed by 
+a <tt>B</tt> followed by an <tt>E</tt>&quot; or simply the string <tt>ABE</tt>. The 
+term &quot;string&quot; means each character concatenated to the one preceding it. That a 
+regular expression describes a <span class="docEmphasis">sequence</span> of 
+characters can't be emphasized enough. (Novice users are inclined to think in 
+higher-level units such as words, and not individual characters.) Regular 
+expressions are case-sensitive; <tt>A</tt> does not match <tt>a</tt>. </p>
+<p class="docText">Programs such as <span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-2">Section 
+13.2</a>) that accept regular expressions must first evaluate the syntax of the 
+regular expression to produce a pattern. They then read the input, line by line, 
+trying to match the pattern. An input line is a string, and to see if a string 
+matches the pattern, a program compares the first character in the string to the 
+first character of the pattern. If there is a match, it compares the second 
+character in the string to the second character of the pattern. Whenever it 
+fails to make a match, it compares the next character in the string to the first 
+character of the pattern. <a class="docLink" href="#upt3-CHP-32-FIG-1">Figure 
+32-1</a> illustrates this process, trying to match the pattern <tt>abe</tt> on 
+an input line. </p>
+<center>
+<h5 id="upt3-CHP-32-FIG-1" class="docFigureTitle">Figure 32-1. Interpreting a regular expression</h5>
+<p>
+<img alt="figs/upt3_3201.gif" src="upt3_3201.gif" border="0" width="435" height="349"></p>
+</center>
+<p class="docText">A regular expression is not limited to literal characters. 
+There is, for instance, a metacharacter — the dot (.) — that can be used as a 
+&quot;wildcard&quot; to match any single character. You can think of this wildcard as 
+analogous to a blank tile in Scrabble<img alt="figs/U2122.gif" src="U2122.gif" align="absMiddle" border="0" width="18" height="11"> 
+where it means any letter. Thus, we can specify the regular expression <tt>A.E</tt>, 
+and it will match <tt>ACE</tt>, <tt>ABE</tt>, and <tt>ALE</tt>. It matches any 
+character in the position following <tt>A</tt>. </p>
+<p class="docText">The metacharacter <tt>*</tt> (the asterisk) is used to match 
+zero or more occurrences of the <span class="docEmphasis">preceding</span> 
+regular expression, which typically is a single character. You may be familiar 
+with <tt>*</tt> as a <span class="docEmphasis">shell</span> metacharacter, where 
+it also means &quot;zero or more characters.&quot; But that meaning is very different from
+<tt>*</tt> in a regular expression. By itself, the metacharacter <tt>*</tt> does 
+not match anything in a regular expression; it modifies what goes before it. The 
+regular expression <tt>.*</tt> matches any number of characters. The regular 
+expression <tt>A.*E</tt> matches any string that matches <tt>A.E</tt> but it 
+also matches any number of characters between <tt>A</tt> and <tt>E</tt>: <tt>
+AIRPLANE</tt>, <tt>A</tt>, <tt>FINE</tt>, <tt>AE</tt>, <tt>A</tt> <tt>34-cent</tt>
+<tt>S.A.S.E</tt>, or <tt>A</tt> <tt>LONG</tt> <tt>WAY</tt> <tt>HOME</tt>, for 
+example. </p>
+<p class="docText">If you understand the difference between . and <tt>*</tt> in 
+regular expressions, you already know about the two basic types of 
+metacharacters: those that can be evaluated to a single character, and those 
+that modify how characters that precede it are evaluated. </p>
+<p class="docText">It should also be apparent that by use of metacharacters you 
+can expand or limit the possible matches. You have more control over what is 
+matched and what is not. In
+<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-4">
+Section 32.4</a> and after, Bruce Barnett explains in detail how to use regular 
+expression metacharacters. </p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-4">32.4 Using Metacharacters in Regular Expressions</h3>
+<div align="center">
+  <center>
+<table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+  <tr>
+    <td>
+    <h2 class="docSidebarTitle">Summary Box</h2>
+    <p class="docText">There are three important parts to a regular expression:
+    </p>
+    <dl class="docList">
+      <dt><span class="docPubcolor"><span class="docEmphasis">Anchors</span></span>
+      </dt>
+      <dd>
+      <p class="docList">Specify the position of the pattern in relation to a 
+      line of text. </dd>
+      <dt><span class="docPubcolor"><span class="docEmphasis">Character sets</span></span>
+      </dt>
+      <dd>
+      <p class="docList">Match one or more characters in a single position. </dd>
+      <dt><span class="docPubcolor"><span class="docEmphasis">Modifiers</span></span>
+      </dt>
+      <dd>
+      <p class="docList">Specify how many times the previous character set is 
+      repeated. </dd>
+    </dl>
+    <p class="docText">The following regular expression demonstrates all three 
+    parts:</p>
+    <pre>^#*</pre>
+    <p class="docText">The caret (<tt>^</tt>) is an anchor that indicates the 
+    beginning of the line. The hash mark is a simple character set that matches 
+    the single character <tt>#</tt>. The asterisk (<tt>*</tt>) is a modifier. In 
+    a regular expression, it specifies that the previous character set can 
+    appear any number of times, including zero. As you will see shortly, this is 
+    a useless regular expression (except for demonstrating the syntax!). </p>
+    <p class="docText">There are two main types of regular expressions:
+    <span class="docEmphasis">simple</span> (also known as
+    <span class="docEmphasis">basic</span>) regular expressions and
+    <span class="docEmphasis">extended</span> regular expressions. (As we'll see 
+    in the next dozen articles, the boundaries between the two types have become 
+    blurred as regular expressions have evolved.) A few utilities like <i>awk</i> 
+    and <i>egrep</i> use the extended regular expression. Most use the simple 
+    regular expression. From now on, if I talk about a &quot;regular expression&quot; 
+    (without specifying simple or extended), I am describing a feature common to 
+    both types. For the most part, though, when using modern tools, you'll find 
+    that extended regular expressions are the rule rather than the exception; it 
+    all depends on who wrote the version of the tool you're using and when, and 
+    whether it made sense to worry about supporting extended regular 
+    expressions. </p>
+    <p class="docText">[The situation is complicated by the fact that simple 
+    regular expressions have evolved over time, so there are versions of &quot;simple 
+    regular expressions&quot; that support extensions missing from extended regular 
+    expressions! Bruce explains the incompatibility at the end of
+    <a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-15">
+    Section 32.15</a>. — <span class="docEmphasis">TOR</span>] </p>
+    <p class="docText">The next eleven articles cover metacharacters and regular 
+    expressions:</p>
+    <ul>
+      <li>
+      <p class="docList">The anchor characters <tt>^</tt> and <tt>$</tt> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-5">Section 
+      32.5</a>) </li>
+      <li>
+      <p class="docList">Matching a character with a character set (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-6">Section 
+      32.6</a>) </li>
+      <li>
+      <p class="docList">Match any character with . (dot) (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-7">Section 
+      32.7</a>) </li>
+      <li>
+      <p class="docList">Specifying a range of characters with <tt>[...]</tt> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-8">Section 
+      32.8</a>) </li>
+      <li>
+      <p class="docList">Exceptions in a character set (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-9">Section 
+      32.9</a>)</li>
+      <li>
+      <p class="docList">Repeating character sets with <tt>*</tt> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-10">Section 
+      32.10</a>) </li>
+      <li>
+      <p class="docList">Matching a specific number of sets with <tt>\{</tt> and
+      <tt>\}</tt> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-11">Section 
+      32.11</a>) </li>
+      <li>
+      <p class="docList">Matching words with <tt>\&lt;</tt> and <tt>\&gt;</tt> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-12">Section 
+      32.12</a>) </li>
+      <li>
+      <p class="docList">Remembering patterns with <tt>\(</tt>, <tt>\)</tt>, and
+      <tt>\1</tt> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-13">Section 
+      32.13</a>) </li>
+      <li>
+      <p class="docList">Potential problems (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-14">Section 
+      32.14</a>)</li>
+      <li>
+      <p class="docList">Extended regular expressions (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-15">Section 
+      32.15</a>)</li>
+    </ul>
+    <p class="docText"><span class="docEmphasis">— BB</span></td>
+  </tr>
+</table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-5">32.5 Regular Expressions: The Anchor Characters ^ 
+and $</h3>
+<p class="docText">Most Unix text facilities are line-oriented. Searching for 
+patterns that span several lines is not easy to do. [But
+<span class="docEmphBold">it is possible</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-9">Section 
+13.9</a>,
+<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-10">
+Section 11.10</a>). — <span class="docEmphasis">JP</span>] You see, the 
+end-of-line character is not included in the block of text that is searched. It 
+is a separator, and regular expressions examine the text between the separators. 
+If you want to search for a pattern that is at one end or the other, you use
+<span class="docEmphasis">anchors</span>. The caret (<tt>^</tt>) is the starting 
+anchor, and the dollar sign (<tt>$</tt>) is the end anchor. The regular 
+expression <tt>^A</tt> will match all lines that start with an uppercase A. The 
+expression <tt>A$</tt> will match all lines that end with uppercase A. If the 
+anchor characters are not used at the proper end of the pattern, they no longer 
+act as anchors. That is, the <tt>^</tt> is an anchor only if it is the first 
+character in a regular expression. The <tt>$</tt> is an anchor only if it is the 
+last character. The expression <tt>$1</tt> does not have an anchor. Neither does
+<tt>1^</tt>. If you need to match a <tt>^</tt> at the beginning of the line or a
+<tt>$</tt> at the end of a line, you must <span class="docEmphasis">escape</span> 
+the special character by typing a backslash (<tt>\</tt>) before it.
+<a class="docLink" href="#upt3-CHP-32-TABLE-1">Table 32-1</a> has a summary. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-32-TABLE-1" class="docTableTitle">Table 32-1. Regular expression anchor character 
+  examples </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Pattern</th>
+    <th class="docTableHeader">
+    <p class="docText">Matches</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^A</tt></td>
+    <td class="docTableCell">
+    <p class="docText">An <tt>A</tt> at the beginning of a line</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>A$</tt></td>
+    <td class="docTableCell">
+    <p class="docText">An <tt>A</tt> at the end of a line</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>A</tt></td>
+    <td class="docTableCell">
+    <p class="docText">An <tt>A</tt> anywhere on a line</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>$A</tt></td>
+    <td class="docTableCell">
+    <p class="docText">A <tt>$A</tt> anywhere on a line</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^\^</tt></td>
+    <td class="docTableCell">
+    <p class="docText">A <tt>^</tt> at the beginning of a line</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^^</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Same as <tt>^\^</tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\$$</tt></td>
+    <td class="docTableCell">
+    <p class="docText">A <tt>$</tt> at the end of a line</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>$$</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Same as <tt>\$$</tt><span id="ENB32-2"><a class="docLink" href="#EN32-2"><sup>[2]</sup></a></span>
+    </td>
+  </tr>
+</table>
+<p class="docText">The use of <tt>^</tt> and <tt>$</tt> as indicators of the 
+beginning or end of a line is a convention other utilities use. The <i>vi</i> 
+editor uses these two characters as commands to go to the beginning or end of a 
+line. The C shell uses <tt>!^</tt> to specify the first argument of the previous 
+line, and <tt>!$</tt> is the last argument on the previous line (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+30.8</a> explains). </p>
+<p class="docText">It is one of those choices that other utilities go along with 
+to maintain consistency. For instance, <tt>$</tt> can refer to the last line of 
+a file when using <i>ed</i> and <i>sed</i>. <span class="docEmphBold">cat -v -e</span> 
+(<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-5">Section 
+12.5</a>,
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">
+Section 12.4</a>) marks ends of lines with a <tt>$</tt>. You might also see it 
+in other programs. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-6">32.6 Regular Expressions: Matching a Character with 
+a Character Set</h3>
+<p class="docText">The simplest character set is a single character. The regular 
+expression <tt>the</tt> contains three character sets: <tt>t</tt>, <tt>h</tt>, 
+and <tt>e</tt>. It will match any line that contains the string <tt>the</tt>, 
+including the word <tt>other</tt>. To prevent this, put spaces (<tt>·</tt>) 
+before and after the pattern: <tt>·the·</tt>. </p>
+<p class="docText">You can combine the string with an anchor. The pattern <tt>
+^From</tt>:<tt>·</tt> will match the lines of a <span class="docEmphBold">mail 
+message</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) that identify the sender. Use this pattern with <i>grep</i> to print 
+every address in your incoming mailbox. [If your system doesn't define the 
+environment variable <tt>MAIL</tt>, try <i>/var/spool/mail/$USER</i> or possibly
+<i>/usr/spool/mail/$USER. </i>— <span class="docEmphasis">SJC</span>] </p>
+<p class="docText"><tt>$USER</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">
+Section 35.5</a></p>
+<pre>% <b>grep '^From: ' $MAIL</b></pre>
+<p class="docText">Some characters have a special meaning in regular 
+expressions. If you want to search for such a character as itself, escape it 
+with a backslash (<tt>\</tt>). </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-7">32.7 Regular Expressions: Match Any Character with 
+. (Dot)</h3>
+<p class="docText">The dot (.) is one of those special metacharacters. By itself 
+it will match any character except the end-of-line character. The pattern that 
+will match a line with any single character is <tt>^.$</tt>. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-8">32.8 Regular Expressions: Specifying a Range of 
+Characters with [...]</h3>
+<p class="docText">If you want to match specific characters, you can use square 
+brackets, <tt>[ ]</tt>, to identify the exact characters you are searching for. 
+The pattern that will match any line of text that contains exactly one digit is
+<tt>^[0123456789]$</tt>. This is longer than it has to be. You can use the 
+hyphen between two characters to specify a range: <tt>^[0-9]$</tt>. You can 
+intermix explicit characters with character ranges. This pattern will match a 
+single character that is a letter, digit, or underscore: <tt>[A-Za-z0-9_]</tt>. 
+Character sets can be combined by placing them next to one another. If you 
+wanted to search for a word that: </p>
+<ul>
+  <li>
+  <p class="docList">started with an uppercase T,</li>
+  <li>
+  <p class="docList">was the first word on a line,</li>
+  <li>
+  <p class="docList">had a lowercase letter as its second letter,</li>
+  <li>
+  <p class="docList">was three letters long (followed by a space character (<tt>·</tt>)), 
+  and </li>
+  <li>
+  <p class="docList">had a lowercase vowel as its third letter,</li>
+</ul>
+<p class="docText">the regular expression would be:</p>
+<pre>^T[a-z][aeiou]·</pre>
+<p class="docText">To be specific: a range is a contiguous series of characters, 
+from low to high, in the ASCII character set.<span id="ENB32-3"><a class="docLink" href="#EN32-3"><sup>[3]</sup></a></span>
+For example, <tt>[z-a]</tt> is <span class="docEmphasis">not</span> a range 
+because it's backwards. The range <tt>[A-z]</tt> matches both uppercase and 
+lowercase letters, but it also matches the six characters that fall between 
+uppercase and lowercase letters in the ASCII chart: <tt>[</tt>, <tt>\</tt>, <tt>
+]</tt>, <tt>^</tt>, <tt>_</tt>, and <tt>'</tt>. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-9">32.9 Regular Expressions: Exceptions in a Character 
+Set</h3>
+<p class="docText">You can easily search for all characters except those in 
+square brackets by putting a caret (<tt>^</tt>) as the first character after the 
+left square bracket (<tt>[</tt>). To match all characters except lowercase 
+vowels, use <tt>[^aeiou]</tt>. </p>
+<p class="docText">Like the anchors in places that can't be considered an 
+anchor, the right square bracket (<tt>]</tt>) and dash (<tt>-</tt>) do not have 
+a special meaning if they directly follow a <tt>[</tt>.
+<a class="docLink" href="#upt3-CHP-32-TABLE-2">Table 32-2</a> has some examples.
+</p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-32-TABLE-2" class="docTableTitle">Table 32-2. Regular expression character set 
+  examples </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Regular expression</th>
+    <th class="docTableHeader">
+    <p class="docText">Matches</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[0-9]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any digit</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[^0-9]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any character other than a digit</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[-0-9]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any digit or a <tt>-</tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[0-9-]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any digit or a <tt>-</tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[^-0-9]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any character except a digit or a <tt>-</tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[ ]0-9]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any digit or a <tt>]</tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[0-9]]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any digit followed by a <tt>]</tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[0-99-z]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any digit or any character between 9 and z</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[ ]0-9-]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any digit, a <tt>-</tt>, or a <tt>]</tt></td>
+  </tr>
+</table>
+<p class="docText">Many languages have adopted the Perl regular expression 
+syntax for ranges; for example, <tt>\w</tt> is equivalent to &quot;any word 
+character&quot; or <tt>[A-Za-z0-9_]</tt>, while <tt>\W</tt> matches anything
+<span class="docEmphasis">but</span> a word character. See the
+<span class="docEmphasis">perlre</span>(1) manual page for more details. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-10">32.10 Regular Expressions: Repeating Character Sets 
+with *</h3>
+<p class="docText">The third part of a regular expression is the modifier. It is 
+used to specify how many times you expect to see the previous character set. The 
+special character <tt>*</tt> (asterisk) matches <span class="docEmphasis">zero 
+or more</span> copies. That is, the regular expression <tt>0*</tt> matches zero 
+or more zeros, while the expression <tt>[0-9]*</tt> matches zero or more digits.
+</p>
+<p class="docText">This explains why <span class="docEmphBold">the pattern ^#* 
+is useless</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-4">Section 
+32.4</a>), as it matches any number of <tt>#</tt>s at the beginning of the line, 
+including zero. Therefore, this will match every line, because every line starts 
+with zero or more <tt>#</tt>s. </p>
+<p class="docText">At first glance, it might seem that starting the count at 
+zero is stupid. Not so. Looking for an unknown number of characters is very 
+important. Suppose you wanted to look for a digit at the beginning of a line, 
+and there may or may not be spaces before the digit. Just use <tt>^·*</tt> to 
+match zero or more spaces at the beginning of the line. If you need to match one 
+or more, just repeat the character set. That is, <tt>[0-9]*</tt> matches zero or 
+more digits and <tt>[0-9][0-9]*</tt> matches one or more digits. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-11">32.11 Regular Expressions: Matching a Specific 
+Number of Sets with \ { and \ }</h3>
+<p class="docText">You cannot specify a maximum number of sets with the <tt>*</tt> 
+modifier. However, <span class="docEmphBold">some programs</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-20">Section 
+32.20</a>) recognize a special pattern you can use to specify the minimum and 
+maximum number of repeats. This is done by putting those two numbers between <tt>
+\{</tt> and <tt>\}</tt>. </p>
+<p class="docText">Having convinced you that <tt>\{</tt> isn't a plot to confuse 
+you, an example is in order. The regular expression to match four, five, six, 
+seven, or eight lowercase letters is: </p>
+<pre>[a-z]\{4,8\}</pre>
+<p class="docText">Any numbers between 0 and 255 can be used. The second number 
+may be omitted, which removes the upper limit. If the comma and the second 
+number are omitted, the pattern must be duplicated the exact number of times 
+specified by the first number. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="50" src="screw.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">The backslashes deserve a special discussion. 
+        Normally a backslash <span class="docEmphasis">turns off</span> the 
+        special meaning for a character. For example, a literal period is 
+        matched by <tt>\</tt>. and a literal asterisk is matched by <tt>\*</tt>. 
+        However, if a backslash is placed before a <tt>&lt;</tt>, <tt>&gt;</tt>, <tt>{</tt>,
+        <tt>}</tt>, <tt>(</tt>, or <tt>)</tt> or before a digit, the backslash
+        <span class="docEmphasis">turns on</span> a special meaning. This was 
+        done because these special functions were added late in the life of 
+        regular expressions. Changing the meaning of <tt>{</tt>, <tt>}</tt>, <tt>
+        (</tt>, <tt>)</tt>, <tt>&lt;</tt>, and <tt>&gt;</tt> would have broken old 
+        expressions. (This is a horrible crime punishable by a year of hard 
+        labor writing COBOL programs.) Instead, adding a backslash added 
+        functionality without breaking old programs. Rather than complain about 
+        the change, view it as evolution. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">You must remember that modifiers like <tt>*</tt> and <tt>
+\{1,5\}</tt> act as modifiers only if they follow a character set. If they were 
+at the beginning of a pattern, they would not be modifiers.
+<a class="docLink" href="#upt3-CHP-32-TABLE-3">Table 32-3</a> is a list of 
+examples and the exceptions. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-32-TABLE-3" class="docTableTitle">Table 32-3. Regular expression pattern repetition 
+  examples </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Regular expression</th>
+    <th class="docTableHeader">
+    <p class="docText">Matches</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>*</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line with a <tt>*</tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\*</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line with a <tt>*</tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\\</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line with a <tt>\</tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^*</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line starting with a <tt>*</tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^A*</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^A\*</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line starting with an A<tt>*</tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^AA*</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line starting with one A</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^AA*B</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line starting with one or more A's followed by a B
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^A\{4,8\}B</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line starting with four, five, six, seven, or eight 
+    A's followed by a B </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^A\{4,\}B</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line starting with four or more A's followed by a B
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^A\{4\}B</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line starting with an AAAAB</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\{4,8\}</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line with a {4,8}</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>A{4,8}</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line with an A{4,8}</td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-12">32.12 Regular Expressions: Matching Words with \ &lt; 
+and \ &gt;</h3>
+<p class="docText">Searching for a word isn't quite as simple as it at first 
+appears. The string <tt>the</tt> will match the word <tt>other</tt>. You can put 
+spaces before and after the letters and use this regular expression: <tt>·the·</tt>. 
+However, this does not match words at the beginning or the end of the line. And 
+it does not match the case where there is a punctuation mark after the word. </p>
+<p class="docText">There is an easy solution — at least in many versions of <i>
+ed</i>, <i>ex</i>, <i>vi</i>, and <i>grep</i>. The characters <tt>\&lt;</tt> and
+<tt>\&gt;</tt> are similar to the <tt>^</tt> and <tt>$</tt> anchors, as they don't 
+occupy a position of a character. They <span class="docEmphasis">anchor</span> 
+the expression between to match only if it is on a word boundary. The pattern to 
+search for the words <tt>the</tt> and <tt>The</tt> would be: <tt>\&lt;[tT]he\&gt;</tt>.
+</p>
+<p class="docText">Let's define a &quot;word boundary.&quot; The character before the <tt>
+t</tt> or <tt>T</tt> must be either a newline character or anything except a 
+letter, digit, or underscore ( <tt>_</tt> ). The character after the <tt>e</tt> 
+must also be a character other than a digit, letter, or underscore, or it could 
+be the end-of-line character. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-13">32.13 Regular Expressions: Remembering Patterns 
+with \ (, \ ), and \1</h3>
+<p class="docText">Another pattern that requires a special mechanism is 
+searching for repeated words. The expression <tt>[a-z][a-z]</tt> will match any 
+two lowercase letters. If you wanted to search for lines that had two adjoining 
+identical letters, the above pattern wouldn't help. You need a way to remember 
+what you found and see if the same pattern occurs again. In some programs, you 
+can mark part of a pattern using <tt>\(</tt> and <tt>\)</tt>. You can recall the 
+remembered pattern with <tt>\</tt> followed by a single digit.<span id="ENB32-4"><a class="docLink" href="#EN32-4"><sup>[4]</sup></a></span>
+Therefore, to search for two identical letters, use <tt>\([a-z]\)\1</tt>. You 
+can have nine different remembered patterns. Each occurrence of <tt>\(</tt> 
+starts a new pattern. The regular expression to match a five-letter palindrome 
+(e.g., &quot;radar&quot;) is: <tt>\([a-z]\)\([a-z]\)[a-z]\2\1</tt>. [Some versions of some 
+programs can't handle <tt>\( \)</tt> in the same regular expression as <tt>\1</tt>, 
+etc. In all versions of <i>sed</i>, you're safe if you use <tt>\( \)</tt> on the 
+pattern side of an <span class="docEmphasis">s</span> command — and <tt>\1</tt>, 
+etc., on the replacement side (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-11">Section 
+34.11</a>). <span class="docEmphasis">— JP</span>] </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-14">32.14 Regular Expressions: Potential Problems</h3>
+<p class="docText">Before I discuss the extensions that
+<span class="docEmphBold">extended expressions</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-15">Section 
+32.15</a>) offer, I want to mention two potential problem areas. </p>
+<p class="docText">The <tt>\&lt;</tt> and <tt>\&gt;</tt> characters were introduced in 
+the <i>vi</i> editor. The other programs didn't have this ability at that time. 
+Also, the <tt>\{<i>min</i></tt>,<tt><i>max</i>\}</tt> modifier is new, and 
+earlier utilities didn't have this ability. This makes it difficult for the 
+novice user of regular expressions, because it seems as if each utility has a 
+different convention. Sun has retrofitted the newest regular expression library 
+to all of their programs, so they all have the same ability. If you try to use 
+these newer features on other vendors' machines, you might find they don't work 
+the same way. </p>
+<p class="docText">The other potential point of confusion is the
+<span class="docEmphBold">extent of the pattern matches</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-17">Section 
+32.17</a>). Regular expressions match the longest possible pattern. That is, the 
+regular expression <tt>A.*B</tt> matches <tt>AAB</tt> as well as <tt>
+AAAABBBBABCCCCBBBAAAB</tt>. This doesn't cause many problems using <i>grep</i>, 
+because an oversight in a regular expression will just match more lines than 
+desired. If you use <i>sed</i>, and your patterns get carried away, you may end 
+up deleting or changing more than you want to. Perl answers this problem by 
+defining a variety of &quot;greedy&quot; and &quot;non-greedy&quot; regular expressions, which allow 
+you to specify which behavior you want. See the <span class="docEmphasis">perlre</span>(1) 
+manual page for details. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-15">32.15 Extended Regular Expressions</h3>
+<p class="docText">At least two programs use extended regular expressions: <i>
+egrep</i> and <i>awk</i>. [<i>perl</i> uses expressions that are even more 
+extended. <span class="docEmphasis">— JP</span>] With these extensions, special 
+characters preceded by a backslash no longer have special meaning: <tt>\{</tt>,
+<tt>\}</tt>, <tt>\&lt;</tt>, <tt>\&gt;</tt>, <tt>\(</tt>, <tt>\)</tt>, as well as <tt>
+\<i>digit</i></tt>. There is a very good reason for this, which I will delay 
+explaining to build up suspense. </p>
+<p class="docText">The question mark (<tt>?</tt>) matches zero or one instance 
+of the character set before it, and the plus sign (<tt>+</tt>) matches one or 
+more copies of the character set. You can't use <tt>\{</tt> and <tt>\}</tt> in 
+extended regular expressions, but if you could, you might consider <tt>?</tt> to 
+be the same as <tt>\{0,1\}</tt> and <tt>+</tt> to be the same as <tt>\{1,\}</tt>.
+</p>
+<p class="docText">By now, you are wondering why the extended regular 
+expressions are even worth using. Except for two abbreviations, there seem to be 
+no advantages and a lot of disadvantages. Therefore, examples would be useful.
+</p>
+<p class="docText">The three important characters in the expanded regular 
+expressions are <tt>(</tt>, <tt>|</tt>, and <tt>)</tt>. Parentheses are used to 
+group expressions; the vertical bar acts an an OR operator. Together, they let 
+you match a <span class="docEmphasis">choice</span> of patterns. As an example, 
+you can use <i>egrep</i> to print all <tt>From</tt>: and <tt>Subject</tt>: lines 
+from your incoming mail [which may also be in <i>/var/spool/mail/$USER</i>.<i>
+</i>— <span class="docEmphasis">JP</span>]: </p>
+<pre>% <b>egrep '^(From|Subject): ' /usr/spool/mail/$USER</b></pre>
+<p class="docText">All lines starting with <tt>From</tt>: or <tt>Subject</tt>: 
+will be printed. There is no easy way to do this with simple regular 
+expressions. You could try something like <tt>^[FS][ru][ob][mj]e*c*t*</tt>: and 
+hope you don't have any lines that start with <tt>Sromeet</tt>:. Extended 
+expressions don't have the <tt>\&lt;</tt> and <tt>\&gt;</tt> characters. You can 
+compensate by using the alternation mechanism. Matching the word &quot;the&quot; in the 
+beginning, middle, or end of a sentence or at the end of a line can be done with 
+the extended regular expression <tt>(^| )the([^a-z]|$)</tt>. There are two 
+choices before the word: a space or the beginning of a line. Following the word, 
+there must be something besides a lowercase letter or else the end of the line. 
+One extra bonus with extended regular expressions is the ability to use the <tt>
+*</tt>, <tt>+</tt>, and <tt>?</tt> modifiers after a <tt>(...)</tt> grouping.
+</p>
+<p class="docText">[If you're on a Darwin system and use Apple Mail or one of 
+the many other clients, you can grep through your mail files locally. For Mail, 
+look in your home directory's <i>Library/Mail/</i> directory. There should be a 
+subdirectory there, perhaps named something like <tt>iTools:example@mail.example.com</tt>, 
+with an IMAP directory tree beneath it. IMAP stores messages individually, not 
+in standard Unix mbox format, so there is no way to look for all matches in a 
+single mailbox by grepping a single file, but fortunately, you can use regular 
+expressions to construct a file list to search. <tt>:-)</tt> —
+<span class="docEmphasis">SJC</span>] </p>
+<p class="docText">Here are two ways to match &quot;a simple problem&quot;, &quot;an easy 
+problem&quot;, as well as &quot;a problem&quot;; the second expression is more exact: </p>
+<pre>% <b>egrep &quot;a[n]? (simple|easy)? ?problem&quot; data</b>
+% <b>egrep &quot;a[n]? ((simple|easy) )?problem&quot; data</b></pre>
+<p class="docText">I promised to explain why the backslash characters don't work 
+in extended regular expressions. Well, perhaps the <tt>\{...\}</tt> and <tt>
+\&lt;...\&gt;</tt> could be added to the extended expressions, but it might confuse 
+people if those characters are added and the <tt>\(...\)</tt> are not. And there 
+is no way to add that functionality to the extended expressions without changing 
+the current usage. Do you see why? It's quite simple. If <tt>(</tt> has a 
+special meaning, then <tt>\(</tt> must be the ordinary character. This is the 
+opposite of the simple regular expressions, where <tt>(</tt> is ordinary and <tt>
+\(</tt> is special. The usage of the parentheses is incompatible, and any change 
+could break old programs. </p>
+<p class="docText">If the extended expression used <tt>(...|...)</tt> as regular 
+characters, and <tt>\(...\|...\)</tt> for specifying alternate patterns, then it 
+is possible to have one set of regular expressions that has full functionality. 
+This is exactly what <span class="docEmphBold">GNU Emacs</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-1">Section 
+19.1</a>) does, by the way — it combines all of the features of regular and 
+extended expressions with one syntax. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-16">32.16 Getting Regular Expressions Right</h3>
+<p class="docText">Writing regular expressions involves more than learning the 
+mechanics. You not only have to learn how to describe patterns, but you also 
+have to recognize the context in which they appear. You have to be able to think 
+through the level of detail that is necessary in a regular expression, based on 
+the context in which the pattern will be applied. </p>
+<p class="docText">The same thing that makes writing regular expressions 
+difficult is what makes writing them interesting: the variety of occurrences or 
+contexts in which a pattern appears. This complexity is inherent in language 
+itself, just as you can't always understand an <span class="docEmphBold">
+expression</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-1">Section 
+32.1</a>) by looking up each word in the dictionary. </p>
+<p class="docText">The process of writing a regular expression involves three 
+steps:</p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Knowing what you want to match and how it might appear in 
+  the text.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Writing a pattern to describe what you want to match.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Testing the pattern to see what it matches.</span></li>
+</ol>
+</span>
+<p class="docText">This process is virtually the same kind of process that a 
+programmer follows to develop a program. Step 1 might be considered the 
+specification, which should reflect an understanding of the problem to be solved 
+as well as how to solve it. Step 2 is analogous to the actual coding of the 
+program, and step 3 involves running the program and testing it against the 
+specification. Steps 2 and 3 form a loop that is repeated until the program 
+works satisfactorily. </p>
+<p class="docText">Testing your description of what you want to match ensures 
+that the description works as expected. It usually uncovers a few surprises. 
+Carefully examining the results of a test, comparing the output against the 
+input, will greatly improve your understanding of regular expressions. You might 
+consider evaluating the results of a pattern-matching operation as follows: </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Hits</span></i> </dt>
+  <dd>
+  <p class="docList">The lines that I wanted to match.</dd>
+  <dt><i><span class="docPubcolor">Misses</span></i> </dt>
+  <dd>
+  <p class="docList">The lines that I didn't want to match.</dd>
+  <dt><i><span class="docPubcolor">Misses that should be hits</span></i> </dt>
+  <dd>
+  <p class="docList">The lines that I didn't match but wanted to match.</dd>
+  <dt><i><span class="docPubcolor">Hits that should be misses</span></i> </dt>
+  <dd>
+  <p class="docList">The lines that I matched but didn't want to match.</dd>
+</dl>
+<p class="docText">Trying to perfect your description of a pattern is something 
+that you work at from opposite ends: you try to eliminate the &quot;hits that should 
+be misses&quot; by limiting the possible matches, and you try to capture the &quot;misses 
+that should be hits&quot; by expanding the possible matches. </p>
+<p class="docText">The difficulty is especially apparent when you must describe 
+patterns using fixed strings. Each character you remove from the fixed-string 
+pattern increases the number of possible matches. For instance, while searching 
+for the string <tt>what</tt>, you determine that you'd like to match <tt>What</tt> 
+as well. The only fixed-string pattern that will match <tt>What</tt> and <tt>
+what</tt> is <tt>hat</tt>, the longest string common to both. It is obvious, 
+though, that searching for <tt>hat</tt> will produce unwanted matches. Each 
+character you add to a fixed-string pattern decreases the number of possible 
+matches. The string <tt>them</tt> is going to produce fewer matches than the 
+string <tt>the</tt>. </p>
+<p class="docText">Using metacharacters in patterns provides greater flexibility 
+in extending or narrowing the range of matches. Metacharacters, used in 
+combination with literals or other metacharacters, can be used to expand the 
+range of matches while still eliminating the matches that you do not want. </p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-17">32.17 Just What Does a Regular Expression Match?</h3>
+<p class="docText">One of the toughest things to learn about regular expressions 
+is just what they do match. The problem is that a regular expression tends to 
+find the longest possible match — which can be more than you want. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: showmatch</p>
+<p class="docText">Here's a simple script called <i>showmatch</i> that is useful 
+for testing regular expressions, when writing <i>sed</i> scripts, etc. Given a 
+regular expression and a filename, it finds lines in the file matching that 
+expression, just like <i>grep</i>, but it uses a row of carets (<tt>^^^^</tt>) 
+to highlight the portion of the line that was actually matched. Depending on 
+your system, you may need to call <i>nawk</i> instead of <i>awk</i>; most modern 
+systems have an <i>awk</i> that supports the syntax introduced by <i>nawk</i>, 
+however. </p>
+<pre>#! /bin/sh
+# showmatch - mark string that matches pattern
+pattern=$1; shift
+awk 'match($0,pattern) &gt; 0 {
+    s = substr($0,1,RSTART-1)
+    m = substr($0,1,RLENGTH)
+    gsub (/[^\b- ]/, &quot; &quot;, s)
+    gsub (/./,       &quot;^&quot;, m)
+    printf &quot;%s\n%s%s\n&quot;, $0, s, m
+}' pattern=&quot;$pattern&quot; $*</pre>
+<p class="docText">For example:</p>
+<pre>% <b>showmatch 'CD-...' mbox</b>
+and CD-ROM publishing. We have recognized
+    ^^^^^^
+that documentation will be shipped on CD-ROM; however,
+                                      ^^^^^^</pre>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: xgrep</p>
+<p class="docText"><i>xgrep</i> is a related script that simply retrieves only 
+the matched text. This allows you to extract patterned data from a file. For 
+example, you could extract only the numbers from a table containing both text 
+and numbers. It's also great for counting the number of occurrences of some 
+pattern in your file, as shown below. Just be sure that your expression matches 
+only what you want. If you aren't sure, leave off the <i>wc</i> command and 
+glance at the output. For example, the regular expression <tt>[0-9]*</tt> will 
+match numbers like <tt>3.2</tt> <span class="docEmphasis">twice</span>: once for 
+the <tt>3</tt> and again for the <tt>2</tt>! You want to include a dot (.) 
+and/or comma (,), depending on how your numbers are written. For example: <tt>
+[0-9][.0-9]*</tt> matches a leading digit, possibly followed by more dots and 
+digits. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Remember that an expression like <tt>[0-9]*</tt> will 
+        match zero numbers (because <tt>*</tt> means &quot;zero or more of the 
+        preceding character&quot;). That expression can make <i>xgrep</i> run for a 
+        very long time! The following expression, which matches one or more 
+        digits, is probably what you want instead: </p>
+        <pre><b>xgrep &quot;[0-9][0-9]*&quot;  </b><i>files </i><b> | wc -l </b></pre>
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">The <i>xgrep</i> shell script runs the <i>sed</i> commands 
+below, replacing <tt>$re</tt> with the regular expression from the command line 
+and <tt>$x</tt> with a CTRL-b character (which is used as a delimiter). We've 
+shown the <i>sed</i> commands numbered, like <tt><i>5&gt;</i></tt>; these are only 
+for reference and aren't part of the script: </p>
+<pre><tt><i>1&gt;</i></tt> \$x$re$x!d
+<tt><i>2&gt;</i></tt> s//$x&amp;$x/g
+<tt><i>3&gt;</i></tt> s/[^$x]*$x//
+<tt><i>4&gt;</i></tt> s/$x[^$x]*$x/\
+<tt><i>  </i></tt> /g
+<tt><i>5&gt;</i></tt> s/$x.*//</pre>
+<p class="docText">Command 1 deletes all input lines that don't contain a match. 
+On the remaining lines (which do match), command 2 surrounds the matching text 
+with CTRL-b delimiter characters. Command 3 removes all characters (including 
+the first delimiter) before the first match on a line. When there's more than 
+one match on a line, command 4 breaks the multiple matches onto separate lines. 
+Command 5 removes the last delimiter, and any text after it, from every output 
+line. </p>
+<p class="docText">Greg Ubben revised <i>showmatch</i> and wrote <i>xgrep</i>.
+</p>
+<p class="docText"><span class="docEmphasis">—JP, DD, andTOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-18">32.18 Limiting the Extent of a Match</h3>
+<p class="docText">A regular expression tries to match the longest string 
+possible, which can cause unexpected problems. For instance, look at the 
+following regular expression, which matches any number of characters inside 
+quotation marks: </p>
+<pre>&quot;.*&quot;</pre>
+<p class="docText">Let's imagine an HTML table with lots of entries, each of 
+which has two quoted strings, as shown below: </p>
+<pre>&lt;td&gt;&lt;a href=&quot;#arts&quot;&gt;&lt;img src=&quot;d_arrow.gif&quot; border=0&gt;&lt;/a&gt;</pre>
+<p class="docText">All the text in each line of the table is the same, except 
+the text inside the quotes. To match the line through the first quoted string, a 
+novice might describe the pattern with the following regular expression: </p>
+<pre>&lt;td&gt;&lt;a href=&quot;.*&quot;&gt;</pre>
+<p class="docText">However, the pattern ends up matching almost all of the entry 
+because the second quotation mark in the pattern matches the
+<span class="docEmphasis">last</span> quotation mark on the line! If you know 
+how many quoted strings there are, you can specify each of them: </p>
+<pre>&lt;td&gt;&lt;a href=&quot;.*&quot;&gt;&lt;img src=&quot;.*&quot; border=0&gt;&lt;/a&gt;</pre>
+<p class="docText">Although this works as you'd expect, some line in the file 
+might not have the same number of quoted strings, causing misses that should be 
+hits — you simply want the first argument. Here's a different regular expression 
+that matches the shortest possible extent between two quotation marks: </p>
+<pre>&quot;[^&quot;]*&quot;</pre>
+<p class="docText">It matches &quot;a quote, followed by any number of characters 
+that do not match a quote, followed by a quote.&quot; Note, however, that it will be 
+fooled by escaped quotes, in strings such as the following: </p>
+<pre>$strExample = &quot;This sentence contains an escaped \&quot; character.&quot;;</pre>
+<p class="docText">The use of what we might call &quot;negated character classes&quot; 
+like this is one of the things that distinguishes the journeyman regular 
+expression user from the novice. </p>
+<p class="docText">—<span class="docEmphasis">DD and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-19">32.19 I Never Meta Character I Didn't Like</h3>
+<p class="docText">Once you know regular expression syntax, you can match almost 
+anything. But sometimes, it's a pain to think through how to get what you want.
+<a class="docLink" href="#upt3-CHP-32-TABLE-4">Table 32-4</a> lists some useful 
+regular expressions that match various kinds of data you might have to deal with 
+in the Unix environment. Some of these examples work in any program that uses 
+regular expressions; others only work with a specific program such as <i>egrep</i>. 
+(<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-20">Section 
+32.20</a> lists the metacharacters that each program accepts.) The <tt>·</tt> 
+means to use a space as part of the regular expression. Bear in mind that you 
+may also be able to use <tt>\&lt;</tt> and <tt>\&gt;</tt> to match on word boundaries.
+</p>
+<p class="docText">Note that these regular expressions are only examples. They 
+aren't meant to match (for instance) every occurrence of a city and state in any 
+arbitrary text. But if you can picture what the expression does and why, that 
+should help you write an expression that fits your text. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-32-TABLE-4" class="docTableTitle">Table 32-4. Some useful regular expressions </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Item</th>
+    <th class="docTableHeader">
+    <p class="docText">Example</th>
+    <th class="docTableHeader">
+    <p class="docText">Regular expression</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">U.S. state abbreviation</td>
+    <td class="docTableCell">
+    <p class="docText">(NM)</td>
+    <td class="docTableCell">
+    <pre>·[A-Z][A-Z]·</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">U.S. city, state</td>
+    <td class="docTableCell">
+    <p class="docText">(Portland, OR) </td>
+    <td class="docTableCell">
+    <pre>^.*,·[A-Z][A-Z]</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Month day, year</td>
+    <td class="docTableCell">
+    <p class="docText">(JAN 05, 1993); (January 5, 1993)</td>
+    <td class="docTableCell">
+    <pre>[A-Z][A-Za-z]\{2,8\}·[0-9]\{1,2\},·[0-9]\{4\}</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">U.S. Social Security number</td>
+    <td class="docTableCell">
+    <p class="docText">(123-45-6789)</td>
+    <td class="docTableCell">
+    <pre>[0-9]\{3\}-[0-9]\{2\}-[0-9]\{4\}=</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">U.S. telephone number</td>
+    <td class="docTableCell">
+    <p class="docText">(547-5800)</td>
+    <td class="docTableCell">
+    <pre>[0-9]\{3\}-[0-9]\{4\}</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Unformatted dollar amounts</td>
+    <td class="docTableCell">
+    <p class="docText">($1); ($ 1000000.00)</td>
+    <td class="docTableCell">
+    <pre>\$·*[0-9]+(\.[0-9][0-9])?</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">HTML/SGML/XML tags</td>
+    <td class="docTableCell">
+    <p class="docText">(&lt;h2&gt;); (&lt;UL COMPACT&gt;)</td>
+    <td class="docTableCell">
+    <pre>&lt;[^&gt;]*&gt;</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>troff</i> macro with first argument</td>
+    <td class="docTableCell">
+    <p class="docText">(.SH &quot;SEE ALSO&quot;)</td>
+    <td class="docTableCell">
+    <pre>^\.[A-Z12].·&quot;[^&quot;]*&quot;</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>troff</i> macro with all arguments</td>
+    <td class="docTableCell">
+    <p class="docText">(.Ah &quot;Tips for&quot; &quot;ex &amp; vi&quot;) </td>
+    <td class="docTableCell">
+    <pre>^\.[A-Z12].·&quot;.*&quot;</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Blank lines</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <pre>^$</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Entire line</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <pre>^.*$</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">One or more spaces</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <pre>··*</pre>
+    </td>
+  </tr>
+</table>
+<p class="docText">—<span class="docEmphasis">DD and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-20">32.20 Valid Metacharacters for Different Unix 
+Programs</h3>
+<p class="docText">Some regular expression metacharacters are valid for one 
+program but not for another. Those that are available to a particular Unix 
+program are marked by a check (<img src="U2713.GIF" border="0" width="14" height="15">) in
+<a class="docLink" href="#upt3-CHP-32-TABLE-5">Table 32-5</a>. Quick reference 
+descriptions of each of the characters can be found in
+<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-21">
+Section 32.21</a>. </p>
+<p class="docText">[Unfortunately, even this table doesn't give the whole story. 
+For example, Sun has taken some of the extensions originally developed for <i>ed</i>,
+<i>ex</i>, and <i>vi</i> (such as the <tt>\&lt; \&gt;</tt> and <tt>\{<i>min, max</i>\}</tt> 
+modifiers) and added them to other programs that use regular expressions. So 
+don't be bashful — try things out, but don't be surprised if every possible 
+regular expression feature isn't supported by every program. In addition, there 
+are many programs that recognize regular expressions, such as <i>perl</i>, <i>
+emacs</i>, <i>more</i>, <i>dbx</i>, <i>expr</i>, <i>lex</i>, <i>pg</i>, and <i>
+less</i>, that aren't covered in Daniel's table. — <span class="docEmphasis">TOR</span>]
+</p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-32-TABLE-5" class="docTableTitle">Table 32-5. Valid metacharacters for different 
+  programs </h5>
+  </caption>
+  <colgroup span="9">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Symbol</th>
+    <th class="docTableHeader">
+    <p class="docText">ed</th>
+    <th class="docTableHeader">
+    <p class="docText">ex</th>
+    <th class="docTableHeader">
+    <p class="docText">vi</th>
+    <th class="docTableHeader">
+    <p class="docText">sed</th>
+    <th class="docTableHeader">
+    <p class="docText">awk</th>
+    <th class="docTableHeader">
+    <p class="docText">grep</th>
+    <th class="docTableHeader">
+    <p class="docText">egrep</th>
+    <th class="docTableHeader">
+    <p class="docText">Action</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">. </td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText">Match any character.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>*</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText">Match zero or more preceding.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText">Match beginning of line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>$</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText">Match end of line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText">Escape character following.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[ ]</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText">Match one from a set.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\(\)</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">Store pattern for later replay.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\{\}</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">Match a range of instances.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\&lt;\&gt;</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">Match word's beginning or end.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>+</tt> </td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText">Match one or more preceding.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>?</tt> </td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText">Match zero or one preceding.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>|</tt> </td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText">Separate choices to match.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>( )</tt> </td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText">Group expressions to match.</td>
+  </tr>
+</table>
+<p class="docText">In <i>ed</i> , <i>ex</i>, and <i>sed</i>, note that you 
+specify both a search pattern (on the left) and a replacement pattern (on the 
+right). The metacharacters in <a class="docLink" href="#upt3-CHP-32-TABLE-5">
+Table 32-5</a> are meaningful only in a search pattern. <i>ed</i>, <i>ex</i>, 
+and <i>sed</i> support the additional metacharacters in
+<a class="docLink" href="#upt3-CHP-32-TABLE-6">Table 32-6</a> that are valid 
+only in a replacement pattern. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-32-TABLE-6" class="docTableTitle">Table 32-6. Valid metacharacters for replacement 
+  patterns </h5>
+  </caption>
+  <colgroup span="5">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Symbol</th>
+    <th class="docTableHeader">
+    <p class="docText">ex</th>
+    <th class="docTableHeader">
+    <p class="docText">sed</th>
+    <th class="docTableHeader">
+    <p class="docText">ed</th>
+    <th class="docTableHeader">
+    <p class="docText">Action</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText">Escape character following.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\<i>n</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText">Reuse pattern stored by <tt>\( \)</tt> pair number \<tt><i>n</i></tt>.
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&amp;</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">Reuse previous search pattern.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>~</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">Reuse previous replacement pattern.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\u \U</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">Change character(s) to uppercase.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\l \L</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">Change character(s) to lowercase.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\E</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">Turn off previous <tt>\U</tt> or <tt>\L</tt>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\e</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><img src="U2713.GIF" border="0" width="14" height="15"></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">Turn off previous <tt>\u</tt> or <tt>\l</tt>.</td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— DG</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-32-SECT-21">32.21 Pattern Matching Quick Reference with 
+Examples</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-4">
+Section 32.4</a> gives an introduction to regular expressions. This article is 
+intended for those of you who need just a quick listing of regular expression 
+syntax as a refresher from time to time. It also includes some simple examples. 
+The characters in <a class="docLink" href="#upt3-CHP-32-TABLE-7">Table 32-7</a> 
+have special meaning only in search patterns. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-32-TABLE-7" class="docTableTitle">Table 32-7. Special characters in search patterns
+  </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Pattern</th>
+    <th class="docTableHeader">
+    <p class="docText">What does it match?</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.</td>
+    <td class="docTableCell">
+    <p class="docText">Match any <span class="docEmphasis">single</span> 
+    character except newline.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>*</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Match any number (including none) of the single 
+    characters that immediately precede it. The preceding character can also be 
+    a regular expression. For example, since . (dot) means any character, <tt>.*</tt> 
+    means &quot;match any number of any character.&quot; </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Match the following regular expression at the beginning 
+    of the line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>$</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Match the preceding regular expression at the end of the 
+    line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[ ]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Match any <span class="docEmphasis">one</span> of the 
+    enclosed characters.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">A hyphen (<tt>-</tt>) indicates a range of consecutive 
+    characters. A caret (<tt>^</tt>) as the first character in the brackets 
+    reverses the sense: it matches any one character <span class="docEmphasis">
+    not</span> in the list. A hyphen or a right square bracket (<tt>]</tt>) as 
+    the first character is treated as a member of the list. All other 
+    metacharacters are treated as members of the list. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\</tt>{<tt><i>n,m</i>\}</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Match a range of occurrences of the single character that 
+    immediately precedes it. The preceding character can also be a regular 
+    expression. \{<tt><i>n</i></tt>\} will match exactly <tt><i>n</i></tt> 
+    occurrences, \{<tt><i>n</i></tt>,\} will match at least <tt><i>n</i></tt> 
+    occurrences, and \{<tt><i>n</i></tt>,<tt><i>m</i></tt>\} will match any 
+    number of occurrences between <tt><i>n</i></tt> and <tt><i>m</i></tt>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Turn off the special meaning of the character that 
+    follows (except for \{ and \(, etc., where it turns on the special meaning 
+    of the character that follows). </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\( \)</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Save the pattern enclosed between \( and \) into a 
+    special holding space. Up to nine patterns can be saved on a single line. 
+    They can be &quot;replayed&quot; in substitutions by the escape sequences \1 to \9.
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\&lt; \&gt;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Match characters at beginning (<tt>\&lt;</tt>) or end (<tt>\&gt;</tt>) 
+    of a word. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>+</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Match one or more instances of preceding regular 
+    expression.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>?</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Match zero or one instances of preceding regular 
+    expression.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>|</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Match the regular expression specified before or after.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>(' )</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Apply a match to the enclosed group of regular 
+    expressions.</td>
+  </tr>
+</table>
+<p class="docText">The characters in
+<a class="docLink" href="#upt3-CHP-32-TABLE-8">Table 32-8</a> have special 
+meaning only in replacement patterns. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-32-TABLE-8" class="docTableTitle">Table 32-8. Special characters in replacement 
+  patterns </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Pattern</th>
+    <th class="docTableHeader">
+    <p class="docText">What does it do?</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Turn off the special meaning of the character that 
+    follows.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\<i>n</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText">Restore the <tt><i>n</i></tt>th pattern previously saved 
+    by <tt>\(</tt> and <tt>\)</tt>. <tt><i>n</i></tt> is a number from 1 to 9, 
+    with 1 starting on the left. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&amp;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Reuse the string that matched the search pattern as part 
+    of the replacement pattern. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\u</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Convert first character of replacement pattern to 
+    uppercase.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\U</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Convert replacement pattern to uppercase.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\l</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Convert first character of replacement pattern to 
+    lowercase.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\L</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Convert replacement pattern to lowercase.</td>
+  </tr>
+</table>
+<p class="docText">Note that many programs, especially <i>perl</i> , <i>awk</i>, 
+and <i>sed</i>, implement their own programming languages and often have much 
+more extensive support for regular expressions. As such, their manual pages are 
+the best place to look when you wish to confirm which expressions are supported 
+or whether the program supports more than simple regular expressions. On many 
+systems, notably those with a large complement of GNU tools, the regular 
+expression support is astonishing, and many generations of tools may be 
+implemented by one program (as with <i>grep</i>, which also emulates the later
+<i>egrep</i> in the same program, with widely varying support for expression 
+formats based on how the program is invoked). Don't make the mistake of thinking 
+that all of these patterns will work everywhere in every program with regex 
+support, or of thinking that this is all there is. </p>
+<h4  id="upt3-CHP-32-SECT-21.1" class="docSection2Title">32.21.1 Examples of Searching</h4>
+<p class="docText">When used with <i>grep</i> or <i>egrep</i>, regular 
+expressions are surrounded by quotes. (If the pattern contains a <tt>$</tt>, you 
+must use single quotes from the shell; e.g., <tt>'<i>pattern</i>'</tt>.) When 
+used with <i>ed</i>, <i>ex</i>, <i>sed</i>, and <i>awk</i>, regular expressions 
+are usually surrounded by <tt>/</tt> (although any delimiter works).
+<a class="docLink" href="#upt3-CHP-32-TABLE-9">Table 32-9</a> has some example 
+patterns. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-32-TABLE-9" class="docTableTitle">Table 32-9. Search pattern examples </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Pattern</th>
+    <th class="docTableHeader">
+    <p class="docText">What does it match?</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>bag</tt></td>
+    <td class="docTableCell">
+    <p class="docText">The string <tt>bag</tt>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^bag</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>bag</tt> at beginning of line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>bag$</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>bag</tt> at end of line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^bag$</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>bag</tt> as the only word on line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[Bb]ag</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>Bag</tt> or <tt>bag</tt>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>b[aeiou]g</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Second letter is a vowel.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>b[^aeiou]g</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Second letter is a consonant (or uppercase or symbol).</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>b.g</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Second letter is any character.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^...$</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line containing exactly three characters.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^\</tt>.</td>
+    <td class="docTableCell">
+    <p class="docText">Any line that begins with a . (dot).</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^\.[a-z][a-z]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Same, followed by two lowercase letters (e.g., <i>troff</i> 
+    requests). </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^\.[a-z]\{2\}</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Same as previous, <i>grep</i> or <i>sed</i> only. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^[^.]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any line that doesn't begin with a . (dot).</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>bugs*</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>bug</tt>, <tt>bugs</tt>, <tt>bugss</tt>, etc. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&quot;word&quot;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">A word in quotes.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&quot;*word&quot;*</tt></td>
+    <td class="docTableCell">
+    <p class="docText">A word, with or without quotes.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[A-Z][A-Z]*</tt></td>
+    <td class="docTableCell">
+    <p class="docText">One or more uppercase letters.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[A-Z]+</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Same, extended regular expression format.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[A-Z].*</tt></td>
+    <td class="docTableCell">
+    <p class="docText">An uppercase letter, followed by zero or more characters.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[A-Z]*</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Zero or more uppercase letters.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[a-zA-Z]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any letter.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[^0-9A-Za-z]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Any symbol (not a letter or a number).</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[567]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">One of the numbers <tt>5</tt>, <tt>6</tt>, or <tt>7</tt>.
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Extended regular expression 
+    patterns:</span></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>five|six|seven</tt></td>
+    <td class="docTableCell">
+    <p class="docText">One of the words <tt>five</tt>, <tt>six</tt>, or <tt>
+    seven</tt>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>80[23]?86</tt></td>
+    <td class="docTableCell">
+    <p class="docText">One of the numbers <tt>8086</tt>, <tt>80286</tt>, or <tt>
+    80386</tt>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>compan(y|ies)</tt></td>
+    <td class="docTableCell">
+    <p class="docText">One of the words <tt>company</tt> or <tt>companies</tt>.
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\&lt;the</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Words like <tt>theater</tt> or <tt>the</tt>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>the\&gt;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Words like <tt>breathe</tt> or <tt>the</tt>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\&lt;the\&gt;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">The word <tt>the</tt>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>0\{5,\}</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Five or more zeros in a row.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[0-9]\{3\}-[0-9]\{2\}-[0-9]\{4\}</tt></td>
+    <td class="docTableCell">
+    <p class="docText">U.S. Social Security number (<tt><i>nnn</i>-<i>nn</i>-<i>nnnn</i></tt>).
+    </td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-32-SECT-21.2" class="docSection2Title">32.21.2 Examples of Searching and Replacing</h4>
+<p class="docText"><a class="docLink" href="#upt3-CHP-32-TABLE-10">Table 32-10</a> 
+shows the metacharacters available to <i>sed</i> or <i>ex</i>. (<i>ex</i> 
+commands begin with a colon.) A space is marked by <tt>·</tt>; a TAB is marked 
+by <tt><i>tab</i></tt>. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-32-TABLE-10" class="docTableTitle">Table 32-10. Search and replace commands </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Command</th>
+    <th class="docTableHeader">
+    <p class="docText">Result</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>s/.*/( &amp; )/</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Redo the entire line, but add parentheses.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>s/.*/mv &amp; &amp;.old/</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Change a word list into <i>mv</i> commands.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>/^$/d</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Delete blank lines.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:g/^$/d</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><i>ex</i> version of previous.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>/^[·<i>tab</i>]*$/d</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Delete blank lines, plus lines containing only spaces or 
+    TABs.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:g/^[·<i>tab</i>]*$/d</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><i>ex</i> version of previous.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>s/··</tt>*/<tt>·</tt>/g </td>
+    <td class="docTableCell">
+    <p class="docText">Turn one or more spaces into one space.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:%s/·</tt>*/<tt>·</tt>/g</td>
+    <td class="docTableCell">
+    <p class="docText"><i>ex</i> version of previous.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:s/[0-9]/Item &amp;:/</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Turn a number into an item label (on the current line).</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:s</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Repeat the substitution on the first occurrence.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:&amp;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Same.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:sg</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Same, but for all occurrences on the line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:&amp;g</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Same.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:%&amp;g</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Repeat the substitution globally.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:.,$s/Fortran/\U&amp;/g</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Change word to uppercase, on current line to last line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:%s/.*/\L&amp;/</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Lowercase entire file.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:s/\&lt;./\u&amp;/g</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Uppercase first letter of each word on current line 
+    (useful for titles). </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:%s/yes/No/g</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Globally change a word to <tt>No</tt>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:%s/Yes/~/g</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Globally change a different word to <tt>No</tt> (previous 
+    replacement). </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>s/die or do/do or die/</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Transpose words.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>s/\([Dd]ie\) or \([Dd]o\)/\2 or</tt> <tt>\1/</tt>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Transpose, using hold buffers to preserve case.</td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— DG</span> </p>
+<blockquote>
+<p class="docFootnote" id="EN32-1"><a class="docLink" href="#ENB32-1">[1]</a>&nbsp;&nbsp;Recent versions of many programs, including <i>find</i>, now support regex via 
+special command-line options. For example, <i>find</i> on my Linux server 
+supports the <i>-regex</i> and <i>-iregex</i> options, for specifying filenames 
+via a regular expression, case-sensitive and -insensitive, respectively. But the
+<i>find</i> command on my OS X laptop does not. — SJC</p><p class="docFootnote" id="EN32-2"><a class="docLink" href="#ENB32-2">[2]</a>&nbsp;&nbsp;Beware! If your regular 
+  expression isn't properly quoted, this means &quot;process ID of current process.&quot; 
+  Always quote your expressions properly.</p><p class="docFootnote" id="EN32-3"><a class="docLink" href="#ENB32-3">[3]</a>&nbsp;&nbsp;Some languages, notably Java 
+  and Perl, do support Unicode regular expressions, but as Unicode generally 
+  subsumes the ASCII 7-bit character set, regular expressions written for ASCII 
+  will work as well.</p><p class="docFootnote" id="EN32-4"><a class="docLink" href="#ENB32-4">[4]</a>&nbsp;&nbsp;In Perl, you can also use
+  <tt>$1</tt> through <tt>$9</tt> and even beyond, with the right switches, in 
+  addition to the backslash mechanism.</p></blockquote>
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 31.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 33.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

@@ -1,0 +1,559 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 26</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 25.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 27.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 26. System Performance and Profiling</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-26-SECT-1">26.1 Timing Is Everything</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-26-SECT-2">26.2 Timing Programs</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-26-SECT-3">26.3 What Commands Are Running and How Long Do They Take?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-26-SECT-4">26.4 Checking System Load: uptime</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-26-SECT-5">26.5 Know When to Be &quot;nice&quot; to Other Users...and When Not To</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-26-SECT-6">26.6 A nice Gotcha</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-26-SECT-7">26.7 Changing a Running Job's Niceness</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-26-SECT-1">26.1 Timing Is Everything</h3>
+<p class="docText">Whether you are a system administrator or user, the 
+responsiveness of your Unix system is going to be the primary criterion of 
+evaluating your machine. Of course, &quot;responsiveness&quot; is a loaded word. What 
+about your system is responsive? Responsive to whom? How fast does the system 
+need to be to be responsive? There is no one silver bullet that will slay all 
+system latencies, but there are tools that isolate performance bottlenecks — the 
+most important of which you carry on your shoulders. </p>
+<p class="docText">This chapter deals with issues that affect system performance 
+generally and how you go about finding and attenuating system bottlenecks. Of 
+course, this chapter cannot be a comprehensive guide to how to maximize
+<span class="docEmphasis">your</span> system for <span class="docEmphasis">your</span> 
+needs, since that is far too dependent on the flavors of Unix and the machines 
+on which they run. However, there are principles and programs that are widely 
+available that will help you assess how much more performance you can expect 
+from your hardware. </p>
+<p class="docText">One of the fundamental illusions in a multiuser, 
+multiprocessing operating system like Unix is that every user and every process 
+is made to think that they are alone on the machine. This is by design. At the 
+kernel level, a program called the scheduler attempts to juggle the needs of 
+each user, providing overall decent performance of: </p>
+<ul>
+  <li>
+  <p class="docList">Keeping interactive sessions responsive</li>
+  <li>
+  <p class="docList">Processing batch jobs promptly</li>
+  <li>
+  <p class="docList">Maximizing CPU utilization<span id="ENB26-1"><a class="docLink" href="#EN26-1"><sup>[1]</sup></a></span>
+  </li>
+  <li>
+  <p class="docList">Cranking through as many processes per hour as possible</li>
+  <li>
+  <p class="docList">Preventing any particular process for dominating CPU time</li>
+</ul>
+<p class="docText">System performance degrades when one of these goals 
+overwhelms the others. These problems are very intuitive: if there are five 
+times the normal number of users logged into your system, chances are that your 
+session will be less responsive than at less busy times. </p>
+<p class="docText">Performance tuning is a multifaceted problem. At its most 
+basic, performance issues can be looked at as being either
+<span class="docEmphasis">global</span> or <span class="docEmphasis">local</span> 
+problems. Global problems affect the system as a whole and can generally be 
+fixed only by the system administrator. These problems include insufficient RAM 
+or hard drive space, inadequately powerful CPUs, and scanty network bandwidth. 
+The global problems are really the result of a host of local issues, which all 
+involve how each process on the system consumes resources. Often, it is up to 
+the users to fix the bottlenecks in their own processes. </p>
+<p class="docText">Global problems are diagnosed with tools that report 
+system-wide statistics. For instance, when a system appears sluggish, most 
+administrators run <span class="docEmphBold">uptime</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-4">Section 
+26.4</a>) to see how many processes were recently trying to run. If these 
+numbers are significantly higher than normal usage, something is amiss (perhaps 
+your web server has been slashdotted). </p>
+<p class="docText">If <i>uptime</i> suggests increased activity, the next tool 
+to use is either <i>ps</i> or <i>top</i> to see if you can find the set of 
+processes causing the trouble. Because it shows you &quot;live&quot; numbers, <i>top</i> 
+can be particularly useful in this situation. I also recommend checking the 
+amount of available free disk space with <i>df</i>, since a full filesystem is 
+often an unhappy one, and its misery spreads quickly. </p>
+<p class="docText">Once particular processes have been isolated as being 
+problematic, it's time to think locally. Process performance suffers when either 
+there isn't more CPU time available to finish a task (this is known as a
+<span class="docEmphasis">CPU-bound</span> process) or the process is waiting 
+for some I/O resource (i.e., <span class="docEmphasis">I/O-bound</span> ), such 
+as the hard drive or network. One strategy for dealing with CPU-bound processes, 
+if you have the source code for them, is to use a profiler like GNU's <i>gprof</i>. 
+Profilers give an accounting for how much CPU time is spent in each subroutine 
+of a given program. For instance, if I want to profile one of my programs, I'd 
+first compile it with <i>gcc</i> and use the <span class="docEmphasis">-pg</span> 
+compilation flag. Then I'd run the program. This creates the <i>gmon.out</i> 
+data file that <i>gprof</i> can read. Now I can use <i>gprof</i> to give me a 
+report with the following invocation: </p>
+<pre>$ <b>gprof -b <tt><i>executable</i></tt> gmon.out</b></pre>
+<p class="docText">Here's an abbreviated version of the output:</p>
+<pre>Flat profile:
+
+Each sample counts as 0.01 seconds.
+ no time accumulated
+
+  %   cumulative   self              self     total
+ time   seconds   seconds    calls  Ts/call  Ts/call  name
+  0.00      0.00     0.00        2     0.00     0.00  die_if_fault_occurred
+  0.00      0.00     0.00        1     0.00     0.00  get_double
+  0.00      0.00     0.00        1     0.00     0.00  print_values</pre>
+<p class="docText">Here, we see that three subroutines defined in this program (<tt>die_if_fault_occurred</tt>,
+<tt>get_double</tt>, and <tt>print_values</tt>) were called. In fact, the first 
+subroutine was called twice. Because this program is neither processor- nor 
+I/O-intensive, no significant time is shown to indicate how long each subroutine 
+took to run. If one subroutine took a significantly longer time to run than the 
+others, or one subroutine is called significantly more often than the others, 
+you might want to see how you can make that problem subroutine faster. This is 
+just the tip of the profiling iceberg. Consult your language's profiler 
+documentation for more details. </p>
+<p class="docText">One less detailed way to look at processes is to get an 
+accounting of how much time a program took to run in user space, in kernel 
+space, and in real time. For this, the <span class="docEmphBold">time</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-2">Section 
+26.2</a>) command exists as part of both C and <i>bash</i> shells. As an 
+external program, <i>/bin/time</i> gives a slightly less detailed report. No 
+special compilation is necessary to use this program, so it's a good tool to use 
+to get a first approximation of the bottlenecks in a particular process. </p>
+<p class="docText">Resolving I/O-bound issues is difficult for users. Only 
+adminstrators can both tweak the low-level system settings that control system 
+I/O buffering and install new hardware, if needed. CPU-bound processes might be 
+improved by dividing the program into smaller programs that feed data to each 
+other. Ideally, these smaller programs can be spread across several machines. 
+This is the basis of distributed computing. </p>
+<p class="docText">Sometimes, you want a particular process to hog all the 
+system resources. This is the definition of a dedicated server, like one that 
+hosts the Apache web server or an Oracle database. Often, server software will 
+have configuration switches that help the administrator allocate system 
+resources based on typical usage. This, of course, is far beyond the scope of 
+this book, but do check out <span class="docEmphasis">Web Performance Tuning</span> 
+and <span class="docEmphasis">Oracle Performance Tuning</span> from O'Reilly for 
+more details. For more system-wide tips, pick up <span class="docEmphasis">
+System Performance Tuning</span>, also from O'Reilly. </p>
+<p class="docText">As with so many things in life, you can improve performance 
+only so much. In fact, by improving performance in one area, you're likely to 
+see performance degrade in other tasks. Unless you've got a machine that's 
+dedicated to a very specific task, beware the temptation to over-optimize. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-26-SECT-2">26.2 Timing Programs</h3>
+<p class="docText">Two commands, <i>time</i> and <i>/bin/time</i>, provide 
+simple timings. Their information is highly accurate, because no profiling 
+overhead distorts the program's performance. Neither program provides any 
+analysis on the routine or trace level. They report the total execution time, 
+some other global statistics, and nothing more. You can use them on any program.
+</p>
+<p class="docText"><i>time</i> and <i>/bin/time</i> differ primarily in that <i>
+time</i> is built into many shells, including <i>bash</i>. Therefore, it cannot 
+be used in safely portable Bourne shell scripts or in makefiles. It also cannot 
+be used if you prefer the Bourne shell (<i>sh</i>). <i>/bin/time</i> is an 
+independent executable file and therefore can be used in any situation. To get a 
+simple program timing, enter either <i>time</i> or <i>/bin/time</i>, followed by 
+the command you would normally use to execute the program. For example, to time 
+a program named <i>analyze</i> (that takes two command-line arguments, an input 
+file and an output file), enter the following command: </p>
+<pre>% <b>time analyze inputdata outputfile</b>
+9.0u 6.7s 0:30 18% 23+24k 285+148io 625pf+0w</pre>
+<p class="docText">This result (in the default C shell format) indicates that 
+the program spent 9.0 seconds on behalf of the user (user time), 6.7 seconds on 
+behalf of the system (system time, or time spent executing Unix kernel routines 
+on the user's behalf), and a total of 30 seconds elapsed time. Elapsed time is 
+the wall clock time from the moment you enter the command until it terminates, 
+including time spent waiting for other users, I/O time, etc. </p>
+<p class="docText">By definition, the elapsed time is greater than your total 
+CPU time and can even be several times larger. You can set programs to be timed 
+automatically (without typing <i>time</i> first) or change the output format by 
+setting shell variables. </p>
+<p class="docText">The example above shows the CPU time as a percentage of the 
+elapsed time (18 percent). The remaining data reports virtual memory management 
+and I/O statistics. The meaning varies, depending on your shell; check your 
+online <i>csh</i> manual page or article. </p>
+<p class="docText">In this example, under SunOS 4.1.1, the other fields show the 
+amount of shared memory used, the amount of nonshared memory used (<tt>k</tt>), 
+the number of block input and output operations (<tt>io</tt>), and the number of 
+page faults plus the number of swaps (<tt>pf</tt> and <tt>w</tt>). The memory 
+management figures are unreliable in many implementations, so take them with a 
+grain of salt. </p>
+<p class="docText"><i>/bin/time</i> reports only the real time (elapsed time), 
+user time, and system time. For example: </p>
+<pre>% <b>/bin/time analyze inputdata outputfile</b>
+       60.8 real        11.4 user         4.6 sys</pre>
+<p class="docText">[If you use a shell without a built-in <i>time</i> command, 
+you can just type <tt>time</tt>. — <span class="docEmphasis">JP</span>] This 
+reports that the program ran for 60.8 seconds before terminating, using 11.4 
+seconds of user time and 4.6 seconds of system time, for a total of 16 seconds 
+of CPU time. On Linux and some other systems, that external <i>time</i> command 
+is in <i>/usr/bin/time</i> and may make a more detailed report. </p>
+<p class="docText">There's a third timer on some systems: <i>timex</i>. It can 
+give much more detail if your system has process accounting enabled. Check the
+<i>timex</i>(1) manpage. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-26-SECT-3">26.3 What Commands Are Running and How Long Do They 
+Take?</h3>
+<p class="docText">When your system is sluggish, you will want to see what users 
+are on the system along with the processes they're running. To get a brief 
+snapshot of this information, the tersely named <i>w</i> can show you who is 
+logged in, from where, how long they've been idle, and what programs they're 
+running. For instance, when I run <i>w</i> on my Red Hat box at home, I get this 
+result: </p>
+<pre>  3:58pm  up 38 days,  4:37,  6 users,  load average: 0.00, 0.07, 0.07
+USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU  WHAT
+jjohn    tty2     -                13Feb02  7:03m  1.32s  0.02s  /bin/sh /usr/X
+jjohn    pts/1    :0                8:55am  7:02m  0.06s  0.06s  bash
+jjohn    pts/3    :0                8:55am  0.00s 51.01s  0.05s  w
+jjohn    pts/0    :0                8:55am  7:02m  0.06s  0.06s  bash
+jjohn    pts/4    :0                8:55am  2:25m  2:01   0.12s  bash
+jjohn    pts/2    mp3.daisypark.ne Tue 4pm  3:41m  0.23s  0.23s  -bash</pre>
+<p class="docText">Originally, I logged in at the console and started X. Most of 
+the sessions are xterminals except for the last, which is an <i>ssh</i> session. 
+The <tt>JCPU</tt> field accounts for the CPU time used by all the processes at 
+that TTY. The <tt>PCPU</tt> simply accounts for the process named in the <tt>
+WHAT</tt> field. This is a quick and simple command to show you the state of 
+your system, and it relies on no special process accounting from the kernel. </p>
+<p class="docText">When you're debugging a problem with a program, trying to 
+figure out why your CPU usage bill is so high [in the days when CPU cycles were 
+rented <span class="docEmphasis">— JJ</span>], or curious what commands someone 
+(including yourself) is running, the <i>lastcomm</i> command on Berkeley-like 
+Unixes can help (if your computer has its process accounting system running, 
+that is). Here's an example that lists the user <span class="docEmphasis">
+lesleys</span>: </p>
+<pre>% <b>date</b>
+Mon Sep  4 16:38:13 EDT 2001
+% <b>lastcomm lesleys</b>
+emacs          lesleys  ttyp1      1.41 secs Wed Sep  4 16:28
+cat          X lesleys  ttyp1      0.06 secs Wed Sep  4 16:37
+stty           lesleys  ttypa      0.02 secs Wed Sep  4 16:36
+tset           lesleys  ttypa      0.12 secs Wed Sep  4 16:36
+sed            lesleys  ttypa      0.02 secs Wed Sep  4 16:36
+hostname       lesleys  ttypa      0.00 secs Wed Sep  4 16:36
+quota          lesleys  ttypa      0.16 secs Wed Sep  4 16:35
+   ...</pre>
+<p class="docText">The processes are listed in the order completed, most recent 
+first. The <tt>emacs</tt> process on the <span class="docEmphBold">tty</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+2.7</a>) ttyp1 started 10 minutes ago and took 1.41 seconds of CPU time. 
+Sometime while <i>emacs</i> was on ttyp1, <span class="docEmphasis">lesleys</span> 
+ran <i>cat</i> and killed it (the <tt>X</tt> shows that). Because <i>emacs</i> 
+ran on the same terminal as <i>cat</i> but finished later, Lesley might have <i>
+emacs</i> (with CTRL-z)<span class="docEmphBold"> stopped</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+23.3</a>) to run <i>cat</i>. The processes on <tt>ttypa</tt> are the ones run 
+from her <span class="docEmphasis">.cshrc</span> and <span class="docEmphasis">
+.login</span> files (though you can't tell that from <i>lastcomm</i>). You don't 
+see the login shell for <tt>ttypa</tt> (<i>csh</i>) here because it hasn't 
+terminated yet; it will be listed after Lesley logs out of ttypa. </p>
+<p class="docText"><i>lastcomm</i> can do more. See its manual page.</p>
+<p class="docText">Here's a hint: on a busy system with lots of users and 
+commands being logged, <i>lastcomm</i> is pretty slow. If you pipe the output or 
+redirect it into a file, like this: </p>
+<p class="docText"><tt>tee</tt>
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-8">
+Section 43.8</a></p>
+<pre>% <b>lastcomm lesleys &gt; lesley.cmds &amp; </b>
+% <b>cat lesley.cmds </b>
+   <i> ...nothing...</i>
+% <b>lastcomm lesleys | tee lesley.cmds </b>
+   <i> ...nothing...</i></pre>
+<p class="docText">the <i>lastcomm</i> output may be written to the file or pipe 
+in big chunks instead of line-by-line. That can make it look as if nothing's 
+happening. If you can tie up a terminal while <i>lastcomm</i> runs, there are 
+two workarounds. If you're using a window system or terminal emulator with a 
+&quot;log to file&quot; command, use it while <i>lastcomm</i> runs. Otherwise, to copy the 
+output to a file, start <span class="docEmphBold">script</span> (<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-7">Section 
+37.7</a>) and then run <i>lastcomm</i>: </p>
+<pre>% <b>script lesley.cmds</b>
+Script started, file is lesley.cmds
+% <b>lastcomm lesleys</b>
+emacs          lesleys  ttyp1      1.41 secs Wed Sep  4 16:28
+cat          X lesleys  ttyp1      0.06 secs Wed Sep  4 16:37
+   ...
+
+% <b>exit</b>
+Script done, file is lesley.cmds
+%</pre>
+<p class="docText">A final word: <i>lastcomm</i> can't give information on 
+commands that are <span class="docEmphBold">built into the shell</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+1.9</a>). Those commands are counted as part of the shell's execution time; 
+they'll be in an entry for <i>csh</i>, <i>sh</i>, etc. after the shell 
+terminates. </p>
+<p class="docText"><span class="docEmphasis">—JP and JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-26-SECT-4">26.4 Checking System Load: uptime</h3>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: uptime</p>
+<p class="docText">The BSD command <i>uptime</i>, also available under System V 
+Release 4, AIX, and some System V Release 3 implementations, will give you a 
+rough estimate of the system load: </p>
+<pre>% <b>uptime</b>
+3:24pm up 2 days, 2:41, 16 users, load average: 1.90, 1.43, 1.33</pre>
+<p class="docText"><i>uptime</i> reports the current time, the amount of time 
+the system has been up, and three load average figures. The load average is a 
+rough measure of CPU use. These three figures report the average number of 
+processes active during the last minute, the last 5 minutes, and the last 15 
+minutes. High load averages usually mean that the system is being used heavily 
+and the response time is correspondingly slow. Note that the system's load 
+average does not take into account the priorities and <span class="docEmphBold">
+niceness</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-5">Section 
+26.5</a>) of the processes that are running. </p>
+<p class="docText">What's high? As usual, that depends on your system. Ideally, 
+you'd like a load average under, say, 3, but that's not always possible given 
+what some systems are required to do. Higher load averages are usually more 
+tolerable on machines with more than one processor. Ultimately, &quot;high&quot; means 
+high enough that you don't need <i>uptime</i> to tell you that the system is 
+overloaded — you can tell from its response time. </p>
+<p class="docText">Furthermore, different systems behave differently under the 
+same load average. For example, on some workstations, running a single CPU-bound 
+background job at the same time as the <span class="docEmphBold">X Window System</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-22">Section 
+1.22</a>) will bring response to a crawl even though the load average remains 
+quite &quot;low.&quot; In the end, load averages are significant only when they differ 
+from whatever is &quot;normal&quot; on your system. </p>
+<p class="docText"><span class="docEmphasis">— AF</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-26-SECT-5">26.5 Know When to Be &quot;nice&quot; to Other Users...and 
+When Not To</h3>
+<p class="docText">The BSD-System V split isn't so obvious in modern Unixes, but 
+the different priority systems still live in various flavors. This article 
+should help you understand the system in whatever version you have. </p>
+<p class="docText">If you are going to run a <span class="docEmphBold">CPU-bound</span> 
+(<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-1">Section 
+26.1</a>) process that will monopolize the CPU from other processes, you may 
+reduce the urgency of that more intensive process in the eyes of the process 
+scheduler by using <i>nice</i> before you run the program. For example: </p>
+<pre>$ <b>nice <tt><i>executable_filename</i></tt></b></pre>
+<p class="docText">On most systems, no user can directly change a process's 
+priority (only the scheduler does that), and only the administrator can use <i>
+nice</i> to make a process more urgent. In practice, <i>nice</i> is rarely used 
+on multiuser systems — the tragedy of the commons — but you may be able to get 
+more processes running simultaneously by judicious use of this program. </p>
+<p class="docText">If you're not familiar with Unix, you will find its 
+definition of priority confusing — it's the opposite of what you would expect. A 
+process with a high <span class="docEmphasis">nice</span> number runs at low 
+priority, getting relatively little of the processor's attention; similarly, 
+jobs with a low <span class="docEmphasis">nice</span> number run at high 
+priority. This is why the <span class="docEmphasis">nice</span> number is 
+usually called <span class="docEmphasis">niceness</span>: a job with a lot of 
+niceness is very kind to the other users of your system (i.e., it runs at low 
+priority), while a job with little niceness hogs the CPU. The term &quot;niceness&quot; is 
+awkward, like the priority system itself. Unfortunately, it's the only term that 
+is both accurate (<span class="docEmphasis">nice</span> numbers are used to 
+compute priorities but are not the priorities themselves) and avoids horrible 
+circumlocutions (&quot;increasing the priority means lowering the priority...&quot;). </p>
+<p class="docText">Many supposedly experienced users claim that <i>nice</i> has 
+virtually no effect. Don't listen to them. As a general rule, reducing the 
+priority of an I/O-bound job (a job that's waiting for I/O a lot of the time) 
+won't change things very much. The system rewards jobs that spend most of their 
+time waiting for I/O by increasing their priority. But reducing the priority of 
+a CPU-bound process can have a significant effect. Compilations, batch 
+typesetting programs (<i>troff</i>, T<sub>E</sub>X, etc.), applications that do 
+a lot of math, and similar programs are good candidates for <i>nice</i>. On a 
+moderately loaded system, I have found that <i>nice</i> typically makes a 
+CPU-intensive job roughly 30 percent slower and consequently frees that much 
+time for higher priority jobs. You can often significantly improve keyboard 
+response by running CPU-intensive jobs at low priority. </p>
+<p class="docText">Note that System V Release 4 has a much more complex priority 
+system, including real-time priorities. Priorities are managed with the <i>
+priocntl</i> command. The older <i>nice</i> command is available for 
+compatibility. Other Unix implementations (including HP and Concurrent) support 
+real-time scheduling. These implementations have their own tools for managing 
+the scheduler. </p>
+<p class="docText">The <i>nice</i> command sets a job's niceness, which is used 
+to compute its priority. It may be one of the most nonuniform commands in the 
+universe. There are four versions, each slightly different from the others. BSD 
+Unix has one <i>nice</i> that is built into the C shell, and another standalone 
+version can be used by other shells. System V also has one <i>nice</i> that is 
+built into the C shell and a separate standalone version. </p>
+<p class="docText">Under BSD Unix, you must also know about
+<span class="docEmphBold">the renice(8) command</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-7">Section 
+26.7</a>); this lets you change the niceness of a job after it is running. Under 
+System V, you can't modify a job's niceness once it has started, so there is no 
+equivalent. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Think carefully before you <i>nice</i> an interactive 
+        job like a text editor. See
+        <a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-6">
+        Section 26.6</a>. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">We'll tackle the different variations of <i>nice</i> in 
+order. </p>
+<h4  id="upt3-CHP-26-SECT-5.1" class="docSection2Title">26.5.1 BSD C Shell nice</h4>
+<p class="docText">Under BSD Unix, <span class="docEmphasis">nice</span> numbers 
+run from -20 to 20. The -20 designation corresponds to the highest priority; 20 
+corresponds to the lowest. By default, Unix assigns the
+<span class="docEmphasis">nice</span> number 0 to user-executed jobs. The lowest
+<span class="docEmphasis">nice</span> numbers (-20 to -17) are unofficially 
+reserved for system processes. Assigning a user's job to these
+<span class="docEmphasis">nice</span> numbers can cause problems. Users can 
+always request a higher <span class="docEmphasis">nice</span> number (i.e., a 
+lower priority) for their jobs. Only the <span class="docEmphBold">superuser</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-18">Section 
+1.18</a>) can raise a job's priority. </p>
+<p class="docText">To submit a job at a greater niceness, precede it with the 
+modifier <i>nice</i>. For example, the following command runs an <i>awk</i> 
+command at low priority: </p>
+<pre>% <b>nice awk -f proc.awk datafile &gt; awk.out</b></pre>
+<p class="docText">By default, the <i>csh</i> version of <i>nice</i> will submit 
+this job with a <span class="docEmphasis">nice</span> level of 4. To submit a 
+job with an arbitrary <span class="docEmphasis">nice</span> number, use <i>nice</i> 
+one of these ways, where <span class="docEmphasis">n</span> is an integer 
+between 0 and 20: </p>
+<pre>% <b>nice + <tt><i>n command</i></tt></b>
+% <b>nice - <tt><i>n command</i></tt></b></pre>
+<p class="docText">The <span class="docEmphasis">+n</span> designation requests 
+a positive <span class="docEmphasis">nice</span> number (low priority);
+<span class="docEmphasis">-n</span> requests a negative
+<span class="docEmphasis">nice</span> number. Only a superuser may request a 
+negative <span class="docEmphasis">nice</span> number. </p>
+<h4  id="upt3-CHP-26-SECT-5.2" class="docSection2Title">26.5.2 BSD Standalone nice</h4>
+<p class="docText">The standalone version of <i>nice</i> differs from C shell <i>
+nice</i> in that it is a separate program, not a command built in to the C 
+shell. You can therefore use the standalone version in any situation: within
+<span class="docEmphBold">makefiles</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-10">Section 
+11.10</a>), when you are running the Bourne shell, etc. The principles are the 
+same. <span class="docEmphasis">nice</span> numbers run from -20 to 20, with the 
+default being 0. Only the syntax has been changed to confuse you. For the 
+standalone version, <tt>-</tt><span class="docEmphasis">n</span> requests a 
+positive <span class="docEmphasis">nice</span> number (lower priority) and <tt>
+--</tt><span class="docEmphasis">n</span> requests a negative
+<span class="docEmphasis">nice</span> number (higher priority — superuser only). 
+Consider these commands: </p>
+<pre>$ <b>nice -6 awk -f proc.awk datafile &gt; awk.out</b>
+# <b>nice --6 awk -f proc.awk datafile &gt; awk.out</b></pre>
+<p class="docText">The first command runs <i>awk</i> with a high
+<span class="docEmphasis">nice</span> number (i.e., 6). The second command, 
+which can be issued only by a superuser, runs <i>awk</i> with a low
+<span class="docEmphasis">nice</span> number (i.e., -6). If no level is 
+specified, the default argument is -10. </p>
+<h4  id="upt3-CHP-26-SECT-5.3" class="docSection2Title">26.5.3 System V C Shell nice</h4>
+<p class="docText">System V takes a slightly different view of
+<span class="docEmphasis">nice</span> numbers. <span class="docEmphasis">nice</span> 
+levels run from 0 to 39; the default is 20. The numbers are different but their 
+meanings are the same: 39 corresponds to the lowest possible priority, and 0 is 
+the highest. A few System V implementations support real-time submission via <i>
+nice</i>. Jobs submitted by root with extremely low <span class="docEmphasis">
+nice</span> numbers (-20 or below) allegedly get all of the CPU's time. Systems 
+on which this works properly are very rare and usually advertise support for 
+real-time processing. In any case, running jobs this way will destroy multiuser 
+performance. This feature is completely different from real-time priorities in 
+System V Release 4. </p>
+<p class="docText">With these exceptions, the C shell version of <i>nice</i> is 
+the same as its BSD cousin. To submit a job at a low priority, use the command:
+</p>
+<pre>% <b>nice <tt><i>command</i></tt></b></pre>
+<p class="docText">This increases the command's niceness by the default amount 
+(4, the same as BSD Unix); <span class="docEmphasis">command</span> will run at
+<span class="docEmphasis">nice</span> level 24. To run a job at an arbitrary 
+priority, use one of the following commands, where <span class="docEmphasis">n</span> 
+is an integer between 0 and 19: </p>
+<pre>% <b>nice + <tt><i>n command</i></tt></b>
+% <b>nice - <tt><i>n command</i></tt></b></pre>
+<p class="docText">The <span class="docEmphasis">+n</span> entry requests a 
+higher <span class="docEmphasis">nice</span> level (a decreased priority), while
+<span class="docEmphasis">-n</span> requests a lower <span class="docEmphasis">
+nice</span> level (a higher priority). Again, this is similar to BSD Unix, with 
+one important difference: <span class="docEmphasis">n</span> is now relative to 
+the default <span class="docEmphasis">nice</span> level. That is, the following 
+command runs <i>awk</i> at <span class="docEmphasis">nice</span> level 26: </p>
+<pre>% <b>nice +6 awk -f proc.awk datafile &gt; awk.out</b></pre>
+<h4  id="upt3-CHP-26-SECT-5.4" class="docSection2Title">26.5.4 System V Standalone nice</h4>
+<p class="docText">Once again, the standalone version of <i>nice</i> is useful 
+if you are writing makefiles or shell scripts or if you use the Bourne shell as 
+your interactive shell. It is similar to the C shell version, with these 
+differences: </p>
+<ul>
+  <li>
+  <p class="docList">With no arguments, standalone <i>nice</i> increases the
+  <span class="docEmphasis">nice</span> number by 10 instead of by 4; this is a 
+  significantly greater reduction in the program's priority. </li>
+  <li>
+  <p class="docList">With the argument <span class="docEmphasis">-n</span>, <i>
+  nice</i> increases the <span class="docEmphasis">nice</span> number by
+  <span class="docEmphasis">n</span> (reducing priority). </li>
+  <li>
+  <p class="docList">With the argument <span class="docEmphasis">- -n</span>, <i>
+  nice</i> decreases the <span class="docEmphasis">nice</span> number by
+  <span class="docEmphasis">n</span> (increasing priority; superuser only). </li>
+</ul>
+<p class="docText">Consider these commands:</p>
+<pre>$ <b>nice -6 awk -f proc.awk datafile &gt; awk.out</b>
+# <b>nice --6 awk -f proc.awk datafile &gt; awk.out</b></pre>
+<p class="docText">The first command runs <i>awk</i> at a higher
+<span class="docEmphasis">nice</span> level (i.e., 26, which corresponds to a 
+lower priority). The second command, which can be given only by the superuser, 
+runs <i>awk</i> at a lower <span class="docEmphasis">nice</span> level (i.e., 
+14). </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-26-SECT-6">26.6 A nice Gotcha</h3>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">It's <span class="docEmphasis">not</span> a good idea 
+        to <i>nice</i> a <span class="docEmphBold">foreground job</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+        23.3</a>). If the system gets busy, your terminal could &quot;freeze&quot; waiting 
+        to get enough CPU time to do something. You may not even be able to
+        <span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-11">Section 
+        24.11</a>) a <i>nice</i>'d job on a very busy system because the CPU may 
+        never give the process enough CPU time to recognize the signal waiting 
+        for it! And, of course, don't <i>nice</i> an interactive program like a 
+        text editor unless you like to wait... <tt>:-)</tt> </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— JP </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-26-SECT-7">26.7 Changing a Running Job's Niceness</h3>
+<p class="docText">On Unix systems with BSD-style priority schemes, once a job 
+is running, you can use the <i>renice</i>(8) command to change the job's 
+priority: </p>
+<pre>% <b>/etc/renice <tt><i>priority</i></tt>-p <tt><i>pid</i></tt></b>
+% <b>/etc/renice <tt><i>priority</i></tt> -g <tt><i>pgrp</i></tt></b>
+% <b>/etc/renice <tt><i>priority</i></tt> -u <tt><i>uname</i></tt></b></pre>
+<p class="docText">where <span class="docEmphasis">priority</span> is the
+<span class="docEmphBold">new nice level</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-5">Section 
+26.5</a>) for the job. It must be a signed integer between -20 and 20.
+<span class="docEmphasis">pid</span> is the <span class="docEmphBold">ID number</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>) (as shown by <span class="docEmphBold">ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>)) of the process you want to change. <span class="docEmphasis">pgrp</span> 
+is the number of a <span class="docEmphBold">process group</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>), as shown by <span class="docEmphasis">ps -l</span>; this version of 
+the command modifies the priority of all commands in a process group.
+<span class="docEmphasis">uname</span> may be a user's name, as shown in
+<span class="docEmphasis">/etc/passwd</span>; this form of the command modifies 
+the priority of all jobs submitted by the user. </p>
+<p class="docText">A nice level of 19 is the &quot;nicest&quot;: the process will run only 
+when nothing else on the system wants to. Negative values make a process get a 
+greater percentage of the CPU's time than the default niceness (which is 0). 
+Again, only the superuser can lower the <span class="docEmphasis">nice</span> 
+number (raise a process' priority). Users can only raise the
+<span class="docEmphasis">nice</span> number (lower the priority), and they can 
+modify the priorities of only the jobs they started. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<blockquote>
+<p class="docFootnote" id="EN26-1"><a class="docLink" href="#ENB26-1">[1]</a>&nbsp;&nbsp;This list is modified from Tanenbaum and Woodhull&#39;s <span class="docEmphasis">
+Operating Systems: Design and Implementation</span>, Second Edition (Upper 
+Saddle River: Prentice-Hall, Inc. 1997], 83).</p>
+</blockquote>
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 25.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 27.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

@@ -1,0 +1,1554 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 28</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 27.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 29.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 28. Saving Time on the Command Line</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-1">28.1 What's Special About the Unix Command Line</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-2">28.2 Reprinting Your Command Line with CTRL-r</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-3">28.3 Use Wildcards to Create Files?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-4">28.4 Build Strings with { }</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-5">28.5 String Editing (Colon) Operators</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-6">28.6 Automatic Completion</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-7">28.7 Don't Match Useless Files in Filename Completion</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-8">28.8 Repeating Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-9">28.9 Repeating and Varying Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-10">28.10 Repeating a Command with Copy-and-Paste</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-11">28.11 Repeating a Time-Varying Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-12">28.12 Multiline Commands, Secondary Prompts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-13">28.13 Here Document Example #1: Unformatted Form Letters</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-14">28.14 Command Substitution</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-15">28.15 Handling Lots of Text with Temporary Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-16">28.16 Separating Commands with Semicolons</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-17">28.17 Dealing with Too Many Arguments</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-28-SECT-18">28.18 Expect</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-1">28.1 What's Special About the Unix Command Line</h3>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 class="docSidebarTitle">Summary Box</h2>
+      <p class="docText">One of Unix's best features is the shell's command 
+      line. Why? Nearly every modern operating system has a command line; we 
+      don't use card readers with obscure job setup cards any more. What makes 
+      Unix's special? </p>
+      <p class="docText">The Unix shell command line allows lots of shortcuts. 
+      Some of these you'll find in other operating systems; some you won't. In 
+      this chapter, we'll introduce a lot of these shortcuts. Among other 
+      things, we'll discuss: </p>
+      <ul>
+        <li>
+        <p class="docList">How to <span class="docEmphBold">run commands more 
+        than once</span><a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-8">Section 
+        28.8</a>). </li>
+        <li>
+        <p class="docList"><span class="docEmphBold">Filename completion</span> 
+        (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-6">Section 
+        28.6</a>,
+        <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-7">
+        Section 28.7</a>), which allows you to type the beginning of a filename 
+        and let the shell fill in the rest. (This is finally possible on certain 
+        Redmond-born OSes as well, but it usually involves a registry hack or 
+        two.) </li>
+        <li>
+        <p class="docList"><span class="docEmphBold">Command substitution</span> 
+        (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+        28.14</a>), which lets you use the output from one command as arguments 
+        to another. (Note that this is <span class="docEmphasis">different</span> 
+        from pipelining.) </li>
+        <li>
+        <p class="docList">Process substitution in <i>bash</i>, and a script 
+        named <i>!</i> for other shells, lets you put the output of a command 
+        into a temporary file and give that filename to a process. </li>
+        <li>
+        <p class="docList">The ability to <span class="docEmphBold">repeat 
+        commands with various methods</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-10">Section 
+        28.10</a>,
+        <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-11">
+        Section 28.11</a>). </li>
+        <li>
+        <p class="docList">Handling of <span class="docEmphBold">command lines 
+        that become too long</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-17">Section 
+        28.17</a>). </li>
+      </ul>
+      <p class="docText">Some fundamental command-line features that we aren't 
+      discussing in this chapter, but which are discussed elsewhere, are: </p>
+      <ul>
+        <li>
+        <p class="docList"><span class="docEmphBold">Job control</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+        23.3</a>), which lets you run several commands at the same time. </li>
+        <li>
+        <p class="docList"><span class="docEmphBold">Aliases</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+        29.2</a>), or abbreviations, for commands. <span class="docEmphBold">
+        Shell functions</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+        29.11</a>) are similar. </li>
+        <li>
+        <p class="docList"><span class="docEmphBold">Command-line editing</span> 
+        (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-14">Section 
+        30.14</a>) and <span class="docEmphBold">history substitution</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+        30.8</a>). These are two different ways (both useful) to &quot;recall&quot; 
+        previous commands. </li>
+        <li>
+        <p class="docList"><span class="docEmphBold">Quoting</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+        27.12</a>,
+        <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">
+        Section 27.13</a>), the way you &quot;protect&quot; special characters from the 
+        Unix shell. </li>
+        <li>
+        <p class="docList"><span class="docEmphBold">Wildcards</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">Section 
+        33.2</a>). </li>
+      </ul>
+      <p class="docText">You don't need to be a command-line virtuoso to use 
+      Unix effectively. But you'd be surprised at how much you can do with a few 
+      tricks. If all you can do at the command line is type <tt>ls</tt> or start 
+      Mozilla or the Gimp, you're missing out on a lot. </p>
+      <p class="docText"><span class="docEmphasis">— ML</span></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-2">28.2 Reprinting Your Command Line with CTRL-r</h3>
+<p class="docText">You're logged in from home, running a program and answering a 
+prompt. As you're almost done, modem noise prints <tt>xDxD@!</tt> on your 
+screen. Where were you? Or you're typing a long command line and a friend 
+interrupts you with <span class="docEmphBold">write</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) to say it's time for lunch. Do you have to press CTRL-u and start 
+typing all over again? </p>
+<p class="docText">If your system understands the <span class="docEmphasis">
+rprnt</span> character (usually set to CTRL-r), you can ask for the command line 
+to be reprinted as it was. In fact, you can use CTRL-r any time you want to know 
+what the system thinks you've typed on the current line — not just when you're 
+interrupted. But this only works in the normal <span class="docEmphasis">cooked</span> 
+input mode; programs like <i>vi</i> that do their own input processing may treat 
+CTRL-r differently. Here's an example: </p>
+<pre>% <b>egrep '(10394|29433|49401)' /work/symtower/</b>
+
+Message from alison@ruby on ttyp2 at 12:02 ...
+how about lunch?
+EOF
+CTRL-r
+<b>egrep '(10394|29433|49401)' /work/symtower/logs/*</b></pre>
+<p class="docText">After the interruption, I just pressed CTRL-r. It reprinted 
+the stuff I'd started typing. I finished typing and pressed RETURN to run it.
+</p>
+<p class="docText">If you use a shell like the Korn shell that has interactive 
+command editing, you can probably use it to reprint the command line, too. In <i>
+bash</i> and other commands that use the readline file, though, from <i>vi</i> 
+editing mode, CTRL-r still seems to start an Emacs-style reverse search. So I 
+added this fix to my <i>~/.inputrc</i> file: </p>
+<pre>set editing-mode vi
+
+# By default, in vi text-input mode, ^R does Emacs &quot;reverse-i-search&quot;.
+# In command mode, you can use the vi command ^L to redraw the line.
+# Fix it in text-input mode:
+&quot;\C-r&quot;: redraw-current-line</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-3">28.3 Use Wildcards to Create Files?</h3>
+<p class="docText">The shells' <tt>[ ]</tt> (square bracket) wildcards will 
+match a range of files. For instance, if you have files named <i>afile</i>, <i>
+bfile</i>, <i>cfile</i>, and <i>dfile</i>, you can print the first three by 
+typing: </p>
+<pre>% <b>lpr [a-c]file</b></pre>
+<p class="docText">Now, let's say that you want to <span class="docEmphasis">
+create</span> some more files called <i>efile</i>, <i>ffile</i>, <i>gfile</i>, 
+and <i>hfile</i>. What's wrong with typing the command line below? Try it. 
+Instead of <i>vi</i>, you can use your favorite editor or the
+<span class="docEmphBold">touch</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-8">Section 
+14.8</a>) command: </p>
+<pre>% <b>vi [e-h]file </b>   <i> Doesn't make those four files</i>
+% <b>ls </b>
+afile   bfile   cfile   dfile</pre>
+<p class="docText">Stumped? Take a look at
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">
+Section 1.13</a> about wildcard matching. </p>
+<p class="docText">The answer: wildcards can't match names that don't exist yet. 
+That's especially true with a command like <span class="docEmphBold">touch ?file</span> 
+(<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-8">Section 
+14.8</a>) or <tt>touch *file</tt> — think how many filenames those wildcards 
+could possibly create! </p>
+<p class="docText">
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">
+Section 28.4</a> explains shell <tt>{ }</tt> operators that solve this problem. 
+And, by the way, if you just created one new file named <i>[e-h]file</i>, simply
+<span class="docEmphBold">quote</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) its name to remove it: </p>
+<pre>rm &quot;[e-h]file&quot;</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-4">28.4 Build Strings with { }</h3>
+<p class="docText">I've been finding more and more uses for the <tt>{}</tt> 
+pattern-expansion characters in <i>csh</i> , <i>tcsh</i>, <i>zsh</i>, and <i>
+bash</i>. They're similar to <span class="docEmphBold">*, ?, and [ ]</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">Section 
+33.2</a>), but they don't match filenames the way that <tt>*</tt>, <tt>?</tt>, 
+and <tt>[ ]</tt> do. You can give them arbitrary text (not just filenames) to 
+expand — that &quot;expand-anything&quot; ability is what makes them so useful. </p>
+<p class="docText">Here are some examples to get you thinking:</p>
+<ul>
+  <li>
+  <p class="docList">To fix a typo in a filename (change <i>fixbold5.c</i> <i>
+  fixbold6.c</i>):</p>
+  <pre>% <b>mv fixbold{5,6}.c</b></pre>
+  <p class="docList">To see what the shell will do with <tt>{}</tt>, add
+  <span class="docEmphBold">echo</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-5">Section 
+  27.5</a>) before the <i>mv</i>: </p>
+  <pre>% <b>echo mv fixbold{5,6}.c</b>
+mv fixbold5.c fixbold6.c</pre>
+  </li>
+  <li>
+  <p class="docList">To copy <i>filename</i> to <i>filename.bak</i> without 
+  retyping <i>filename</i>: </p>
+  <pre>% <b>cp filename{,.bak}</b></pre>
+  </li>
+  <li>
+  <p class="docList">To print files from other directory(s) without retyping the 
+  whole pathname: </p>
+  <pre>% <b>lpr /usr3/hannah/training/{ed,vi,mail}/lab.{ms,out}</b></pre>
+  <p class="docList">That would give <span class="docEmphBold">lpr</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">Section 
+  45.2</a>) all of these files: </p>
+  <pre>/usr3/hannah/training/ed/lab.ms
+/usr3/hannah/training/ed/lab.out
+/usr3/hannah/training/vi/lab.ms
+/usr3/hannah/training/vi/lab.out
+/usr3/hannah/training/mail/lab.ms
+/usr3/hannah/training/mail/lab.out</pre>
+  <p class="docList">...in one fell swoop!</li>
+  <li>
+  <p class="docList">To edit ten new files that don't exist yet:</p>
+  <pre>% <b>vi /usr/foo/file{a,b,c,d,e,f,g,h,i,j}</b></pre>
+  <p class="docList">That would make <i>/usr/foo/filea</i>, <i>/usr/foo/fileb</i>, 
+  ... <i>/usr/foo/filej</i>. Because the files don't exist before the command 
+  starts, the wildcard <tt>vi</tt> <tt>/usr/foo/file[a-j]</tt>
+  <span class="docEmphBold">would not work</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-3">Section 
+  28.3</a>). </li>
+  <li>
+  <p class="docList">An easy way to step through three-digit numbers 000, 001, 
+  ..., 009, 010, 011, ..., 099, 100, 101, ... 299 in the C shell is: </p>
+  <p class="docList"><tt>foreach</tt>
+  <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">
+  Section 28.9</a></p>
+  <pre>foreach n ({0,1,2}{0,1,2,3,4,5,6,7,8,9}{0,1,2,3,4,5,6,7,8,9})
+   ...<i>Do whatever with the number $n</i>...
+end</pre>
+  <p class="docList">Yes, <i>csh</i> also has built-in arithmetic, but its <tt>@</tt> 
+  operator can't make numbers with leading zeros. This nice trick shows that the
+  <tt>{}</tt> operators are good for more than just filenames. </li>
+  <li>
+  <p class="docList">In <i>zsh</i>, <tt>{}</tt> also understands <tt>..</tt> as 
+  an integer-range operator. So you could generate the 300 numbers in the 
+  previous example with <tt>{000..299}</tt>. The leading <tt>00</tt> tells <i>
+  zsh</i> to pad all output numbers to three digits with leading zeros. </p>
+  <p class="docList">If you give the range in reverse order, like <tt>{299..0}</tt>,
+  <i>zsh</i> will output the integers in descending order: 299, 298, and so on, 
+  down to 1 and 0. </li>
+  <li>
+  <p class="docList">To send a <span class="docEmphBold">mail</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+  1.21</a>) message to multiple recipients where a part of each email address is 
+  repeated: </p>
+  <pre>% <b>mail -s &quot;Link to me&quot; webmaster@{foo,bar,baz}.com &lt; msgfile</b></pre>
+  </li>
+  <li>
+  <p class="docList">If you're using a graphical email program (not the 
+  command-line <i>mail</i> program shown above), and you're sending an email 
+  message to lots of people at the same host, it can be a pain to type the same 
+  hostname over and over in the &quot;To:&quot; line. Let the shell's <tt>{}</tt> 
+  operators do the dirty work! Use <i>echo</i> to output the addresses. (Note 
+  the comma (,) after each address.) Then copy all of them — except the final 
+  comma — with your mouse, and paste them into the GUI mail program: </p>
+  <pre>% <b>echo {jane,joe,jill,john,jean}@foo.org,</b>
+jane@foo.org, joe@foo.org, jill@foo.org, john@foo.org, jean@foo.org,</pre>
+  </li>
+  <li>
+  <p class="docList">To create sets of subdirectories: </p>
+  <pre>% <b>mkdir man</b>
+% <b>mkdir man/{man,cat}{1,2,3,4,5,6,7,8}</b>
+% <b>ls -F man</b>
+cat1/   cat3/   cat5/   cat7/   man1/   man3/   man5/   man7/
+cat2/   cat4/   cat6/   cat8/   man2/   man4/   man6/   man8/</pre>
+  </li>
+  <li>
+  <p class="docList">Here's how to copy the remote files <i>file1.c</i>, <i>
+  file12.c</i>, <i>file45.c</i>, and <i>file77.c</i> from the subdirectory <i>
+  foo</i> on the remote host <span class="docEmphasis">remulac</span> to the 
+  local system. Your local shell expands the strings (into <tt>remulac:foo/file1.c</tt>,
+  <tt>remulac:foo/file12.c</tt>, etc.) and passes them to
+  <span class="docEmphBold">scp</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-14">Section 
+  29.14</a>): </p>
+  <p class="docList"><tt>.</tt>
+  <a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">
+  Section 1.16</a></p>
+  <pre>% <b>scp remulac:foo/file{1,12,45,77}.c .</b></pre>
+  </li>
+  <li>
+  <p class="docList">Here are two ways to print 10 copies of the file <i>
+  project_report</i> if your <span class="docEmphBold">lpr</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">Section 
+  45.2</a>) command doesn't have a <i>-#10</i> option. We showed the first way 
+  in the first two editions of this book. Dimi Shahbaz sent us the second one: 9 
+  commas give 10 filenames. (Thanks, Dimi!) Both of them work on all the shells 
+  I tried: </p>
+  <pre>% <b>lpr project_repor{t,t,t,t,t,t,t,t,t,t}</b>
+% <b>lpr project_report{,,,,,,,,,}</b></pre>
+  <p class="docList">Of course, this doesn't just work for <i>lpr</i> or 
+  filenames. Remember that the shell expands the list of strings, so you can use 
+  these tricks anywhere you use <tt>{}</tt>. </li>
+</ul>
+<p class="docText">In <i>bash</i>, the <i>complete-into-braces</i> editor 
+command (which is bound to the <tt>M-{</tt> key sequence by default in Emacs 
+mode) expands a string into a list of matching filenames in braces. For example:
+</p>
+<pre>$ <b>ls pr*</b>
+prog1.c   prog2.c   program1.c   program2.c
+$ <b>cc pr </b>META{
+$ cc pr{og1.c,og2.c,ogram1.c,orgram2.c}</pre>
+<p class="docText">Then you can edit the brace expression.</p>
+<p class="docText"><span class="docEmphasis">— JP </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-5">28.5 String Editing (Colon) Operators</h3>
+<p class="docText">When the C shells, <i>zsh</i>, and <i>bash</i> do
+<span class="docEmphBold">history substitutions</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+30.8</a>) they can also edit the substitution. The C shells and <i>zsh</i> — but 
+not <i>bash</i> — can also edit <span class="docEmphBold">variable substitutions</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>). (<i>bash</i> has a different syntax, which <i>zsh</i> understands, 
+too.) For instance, in the first example below, when <tt>!$</tt> contains <tt>
+/a/b/c</tt>, adding the &quot;head&quot; operator <tt>:h</tt> will give just the head of 
+the pathname, <tt>/a/b</tt>. </p>
+<p class="docText">For a complete but very terse list of these operators, see 
+the <i>csh</i> manual page. We hope the examples below will help you understand 
+these useful operators. </p>
+<ul>
+  <li>
+  <p class="docList"><tt>:h</tt> gives the head of a <span class="docEmphBold">
+  pathname</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-2">Section 
+  31.2</a>), as follows: </p>
+  <pre>% <b>echo /a/b/c</b>
+/a/b/c
+% <b>echo !$:h</b>
+echo /a/b
+/a/b</pre>
+  <p class="docList">That took off the filename and left the header. This also 
+  could be used with C shell <span class="docEmphBold">variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+  35.9</a>) as: </p>
+  <pre>% <b>set x = /a/b/c</b>
+% <b>echo $x</b>
+/a/b/c
+% <b>echo $x:h</b>
+/a/b</pre>
+  </li>
+  <li>
+  <p class="docList"><tt>:r</tt> returns the root of a filename: </p>
+  <pre>% <b>echo xyz.c abc.c</b>
+xyz.c abc.c
+% <b>echo !$:r</b>
+echo abc
+abc</pre>
+  <p class="docList">The <tt>:r</tt> removed the <tt>.c</tt> from the last 
+  argument, leaving the root name. This could also be used in C shell variable 
+  names: </p>
+  <pre>% <b>set x = abc.c</b>
+% <b>echo $x:r</b>
+</pre>
+  </li>
+  <li>
+  <p class="docList"><tt>:g</tt> makes the operation global if you have more 
+  than one name. For example: </p>
+  <pre>% <b>set x = (a.a b.b c.c)</b>
+% <b>echo $x:gr</b>
+a b c</pre>
+  <p class="docList">The <tt>:gr</tt> operator stripped off all dot (.) 
+  suffixes. By the way, this use of <tt>g</tt> does not work with the history 
+  commands. </p>
+  <p class="docList">This is the C shell's answer to the
+  <span class="docEmphBold">basename</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-13">Section 
+  36.13</a>) command. </li>
+  <li>
+  <p class="docList"><tt>:e</tt> returns the extension (the part of the name 
+  after a dot). Using <i>csh</i> variables: </p>
+  <pre>% <b>set x=(abc.c)</b>
+% <b>echo $x:e</b>
+c</pre>
+  <p class="docList">No luck using that within history, either.</li>
+  <li>
+  <p class="docList"><tt>:t</tt> gives the tail of a pathname — the actual 
+  filename without the path: </p>
+  <pre>% <b>echo /a/b/c</b>
+/a/b/c
+% <b>echo !$:t</b>
+c</pre>
+  <p class="docList">With <i>csh</i> variables:</p>
+  <pre>% <b>set x=(/a/b/c)</b>
+% <b>echo $x:t</b>
+c</pre>
+  <p class="docList">And with multiple pathnames, you can do it globally with:</p>
+  <pre>% <b>set x=(/a/b/c /d/e/f /g/h/i)</b>
+% <b>echo $x:gt</b>
+c f i</pre>
+  <p class="docList">The corresponding heads would be:</p>
+  <pre>% <b>set x=(/a/b/c /d/e/f /g/h/i)</b>
+% <b>echo $x:gh</b>
+</pre>
+  </li>
+  <li>
+  <p class="docList"><tt>:p</tt> <span class="docEmphBold">prints the command 
+  but does not execute it</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-11">Section 
+  30.11</a>): </p>
+  <pre>% <b>echo *</b>
+fn1 fn2 fn3
+% <b>!:p</b>
+echo fn1 fn2 fn3</pre>
+  </li>
+  <li>
+  <p class="docList"><tt>:q</tt> prevents further filename expansion or prints 
+  the command as is: </p>
+  <pre>% <b>echo *</b>
+fn1 fn2 fn3
+% <b>!:q</b>
+echo *
+*</pre>
+  <p class="docList">The first command echoed the files in the directory, and 
+  when the <tt>:q</tt> was applied, it echoed only the special character. </li>
+  <li>
+  <p class="docList"><tt>:x</tt> is like <tt>:q</tt>, but it breaks the line 
+  into words. That is, when using <tt>:q</tt>, it is all one word, while <tt>:x</tt> 
+  will break it up into multiple words. <tt>:q</tt> and <tt>:x</tt> are more 
+  often used with C shell arrays. </li>
+</ul>
+<p class="docText">[Wait, Dan, what about <tt>&amp;</tt> on the right-hand side to 
+repeat the previous substitution? And there's more since Dan wrote this article 
+(in 1983!). <i>tcsh</i> also has <tt>:u</tt> to convert the first lowercase 
+letter to uppercase and <tt>:l</tt> to convert the first uppercase letter to 
+lowercase. In <i>zsh</i>, <tt>:u</tt> converts all letters to uppercase and <tt>
+:l</tt> converts all letter to lowercase. <i>zsh</i> also has <tt>f</tt> and <tt>
+F</tt> to repeat a substitution until it fails — and even more. Check your 
+shell's manual page. — <span class="docEmphasis">JP</span>] </p>
+<p class="docText"><span class="docEmphasis">— DR</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-6">28.6 Automatic Completion</h3>
+<p class="docText">If you hate typing long filenames, hostnames, command names — 
+or almost anything on a command line — you should know about the shells' 
+&quot;completion&quot; feature. </p>
+<p class="docText">The basics are pretty simple: just press (in most shells) the 
+TAB key, and the shell should &quot;do the right thing.&quot; But how the shell decides 
+what's &quot;right&quot; can be complicated — especially in newer shells, and
+<span class="docEmphasis">especially</span> in the latest <i>zsh</i>, which has 
+incredibly customizable completion. As an example, when you press TAB in <i>bash</i>, 
+the shell tries to complete a shell variable if the word begins with <tt>$</tt>, 
+a username if the word begins with <tt>~</tt>, a hostname if the word begins 
+with <tt>@</tt>, or a command (including aliases and functions). If none of 
+these works, <i>bash</i> finally tries filename completion. As another example, 
+the original Korn shell does only simple filename completion, but the public 
+domain Korn shell has more features. </p>
+<p class="docText">On more-sophisticated shells, completion is actually a 
+function of the shell's built-in customizable command editor. For instance, in
+<i>tcsh</i>, the TAB key is bound to (in other words, it runs) the editor's <i>
+complete-word</i> command. This key binding can be changed. And <i>tcsh</i>, 
+like other recent shells, has plenty of other completion-related editor 
+commands. </p>
+<p class="docText"><i>bash</i> allows for the customization of the different 
+types of completions, as well; you can define a file containing the hostnames to 
+check (in <i>/etc/hosts</i> format) when the shell is asked to complete a 
+hostname. Just set the environment variable <span class="docEmphasis">HOSTFILE</span> 
+to the name of the file you want. There are extensive built-in functions in <i>
+bash</i>, each associated with a key, to allow for extremely flexible management 
+of completions. </p>
+<p class="docText">As you can see, completion varies shell to shell, so we'll 
+give an overview here. For more details, see your shell's manpage. </p>
+<h4  id="upt3-CHP-28-SECT-6.1" class="docSection2Title">28.6.1 General Example: Filename Completion</h4>
+<p class="docText">Let's look at an example of one type of completion, filename 
+completion. Other types of completion work in generally the same way. </p>
+<p class="docText"><span class="docEmphasis">Filename completion</span> is one 
+of the most common types. You can type the initial part of a filename and then 
+press the TAB key. (In the C shell, first enable completion by setting the 
+variable <span class="docEmphBold">filec</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-9">Section 
+30.9</a>) or <span class="docEmphasis">complete</span>, then press ESC.) If the 
+shell can figure out the complete filename from the part that you've typed, it 
+will fill in the rest of the name. If not, it will fill in as much of the name 
+as is unambiguous and then let you type some more. For example: </p>
+<pre>$ <b>ls </b>
+alpha.c    alpha.o   beta.c
+$ <b>cc b  </b>TAB
+$ cc beta.c        <i> Shell fills in the filename automatically</i></pre>
+<p class="docText">(With <i>tcsh</i> and <i>csh</i>, your terminal will beep if 
+more than one file matches the name you've typed. If all this beeping drives you 
+crazy, you can set the <span class="docEmphasis">nobeep</span> shell variable to 
+turn it off.) In this case, only one filename begins with
+<span class="docEmphasis">b</span>, so the shell can fill in the entire name. 
+This works with <span class="docEmphBold">pathnames</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>) too: each time you press TAB, the shell completes the name up to the 
+next slash (<tt>/</tt>) if it can. </p>
+<p class="docText">If you type part of a filename and then type CTRL-d (in <i>
+bash</i>, type TAB twice), the shell lists all the files that match whatever 
+you've typed. It then redisplays your command line and lets you continue typing. 
+For example: </p>
+<pre>% <b>cc a </b>CTRL-d
+alpha.c    alpha.o
+% cc alpha.</pre>
+<p class="docText">Two files begin with the letter &quot;a&quot;; the shell lists them. It 
+then redisplays the <i>cc</i> command, letting you finish the filename. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Also, be forewarned that filename completion doesn't 
+        always work correctly. For example, you can't use filename completion 
+        within some older shell applications. You can't mix filename completion 
+        with wildcards in any shell except <i>zsh</i>. We won't go into detail 
+        about these rough edges, but if you're aware that they exist, you won't 
+        have trouble. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">That last example shows a problem with filename completion: 
+it's matching the <span class="docEmphBold">&quot;.o file,&quot;</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-12">Section 
+1.12</a>) named <i>alpha.o</i>. It's a type of file that most users wouldn't 
+want to manipulate from the command line; they'd rather the shell ignore all
+<span class="docEmphasis">.o</span> files.
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-7">
+Section 28.7</a> explains the <span class="docEmphasis">fignore</span> list; it 
+solves this problem in most cases.
+<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-10">
+Section 31.10</a> shows an interesting shortcut to filename completion: <i>cd</i>ing 
+to a directory by typing its &quot;initials.&quot; </p>
+<h4  id="upt3-CHP-28-SECT-6.2" class="docSection2Title">28.6.2 Menu Completion</h4>
+<p class="docText">The filename completion section showed how completion works 
+by default: press TAB, and the shell completes as much as it can and then waits 
+for you either to press TAB again (to see all possible completions) or to type 
+enough of the word to make it unambigious. </p>
+<p class="docText">Menu completion, supported by <i>zsh</i> with the <i>-Y</i> 
+option, works differently. The name might be confusing at first: it doesn't 
+&quot;complete a menu,&quot; and it also doesn't pop up a menu of possible completions. 
+Instead, menu completion replaces the word to be completed with a single match 
+from the list of possible completions. Each time you press TAB again, the shell 
+shows you the next possible match, in turn, under your cursor. If you like one 
+of the choices, just keep typing the rest of the command line (or press ENTER to 
+execute it). When the shell has shown all the possible matches, it rings the 
+bell and restores the original text without a match. </p>
+<p class="docText">Menu completion doesn't work just with filenames. If your 
+shell supports it, menu completion probably works with all completion modes 
+(filenames, hostnames, etc.). </p>
+<h4  id="upt3-CHP-28-SECT-6.3" class="docSection2Title">28.6.3 Command-Specific Completion</h4>
+<p class="docText"><i>tcsh</i> and <i>zsh</i> let you customize completion even 
+farther: specific completion instructions for each Unix command you define. For 
+instance, the <i>mail</i> command wants email addresses on its command line, and 
+you can declare a list of addresses that are available to complete (this could 
+be a list of friends and associates you send a lot of mail to). You might use 
+the <i>ssh</i> and <span class="docEmphBold">telnet commands</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) to connect to particular remote hosts, and you'd like to be able to 
+complete the hostnames for those particular hosts. (The <i>bash</i> hostname 
+completion feature reads hostnames from a file like <i>/etc/hosts</i> — but it 
+only completes hostnames if the string starts with an <tt>@</tt> character or if 
+you use a special editor command for completing hostnames.) </p>
+<p class="docText">The <i>tcsh</i> command <i>complete</i> defines these custom 
+completions. The syntax is hairy, so I won't try to explain all of it here. 
+Instead, let's look at an overall example from the <span class="docEmphBold">MH 
+email system</span> (<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-2">Section 
+6.2</a>). You use MH commands directly from a shell prompt instead of first 
+starting an email command interpreter and entering commands at the interpreter's 
+own prompt, as you do with most other email packages. Most MH programs accept a 
+mail folder name as one of their command-line arguments. A mail folder name 
+starts with a <tt>+</tt> (plus sign)<span id="ENB28-1"><a class="docLink" href="#EN28-1"><sup>[1]</sup></a></span> 
+and can appear anywhere in a command line. </p>
+<p class="docText">MH mail folders can be stored anywhere on the filesystem — 
+even on a networked filesystem on a remote computer. Here are the four lines 
+that I put in my <span class="docEmphBold">.tcshrc</span>
+<span class="docEmphBold">setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>): </p>
+<p class="docText"><tt>{ }</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">
+Section 28.4</a></p>
+<pre># Set up MH folder name completion for &quot;folder&quot;, &quot;refile&quot;, &quot;scan&quot;, &quot;show&quot;:
+folders -fast -recurse | \
+     sed -e '/DELETE$/d' -e 's/^/+/' &gt; $HOME/Mail/folderlist
+complete {folder,refile,scan,show} 'C@*@`cat $HOME/Mail/folderlist`@'</pre>
+<p class="docText">The first command builds a file named
+<span class="docEmphasis">folderlist</span> with a list of strings (in this 
+case, folder names) to complete. I don't want completion to include folder names 
+I'll never look in, so I filtered the <i>folder</i> output with
+<span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) to exclude the names I don't want — in this case, folder names ending 
+with <span class="docEmphasis">DELETE</span>. (This list is also useful in other 
+places, it turns out, not just in <i>tcsh</i> completion.) A <tt>+</tt> is 
+prepended to each folder name because <i>folders</i> doesn't add the plus signs, 
+but we need them for <i>tcsh</i> matching. So the first few lines of
+<span class="docEmphasis">folderlist</span> look like this: </p>
+<pre>+drafts
++inbox
++jobs
++jobs/bay-area
++jobs/miscellaneous
+   <i>...</i></pre>
+<p class="docText">The second command, <i>complete</i>, starts with a list in 
+braces of the commands that should complete folder names. The next argument is 
+complex and has lots of possible variations; this one matches any pattern 
+included with <span class="docEmphBold">backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) from the <span class="docEmphBold">cat</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">Section 
+12.2</a>) command, which gives us the contents of <span class="docEmphasis">
+folderlist</span>. There are lots of variations! The bottom line is how this 
+works... here's an example of completing a folder name: </p>
+<pre>tcsh&gt; <b>scan +j </b>TAB
+tcsh&gt; scan +jobs<b>/m </b>TAB
+tcsh&gt; scan +jobs/miscellaneous <b>last:20</b></pre>
+<p class="docText">After completing the folder name (in two steps), <i>tcsh</i> 
+leaves a space; I type the rest of the command line and press ENTER to run it.
+</p>
+<h4  id="upt3-CHP-28-SECT-6.4" class="docSection2Title">28.6.4 Editor Functions for Completion</h4>
+<p class="docText">Some shells have customizable, built-in command-line editors 
+that use key bindings to control how and where completion takes place. For 
+example, in <i>tcsh</i>, pressing TAB invokes the <i>complete-word</i> function, 
+but you can change TAB to do menu completion (as explained above) by binding the 
+editor function <i>complete-word-fwd</i> to TAB key. </p>
+<p class="docText">In <i>bash</i>, TAB does basic completion with the editor's
+<i>complete</i> function. But the <i>bash</i> editor has many more bindings than
+<i>tcsh</i> does. For instance, typing <tt>M-/</tt> runs <i>complete-filename</i>, 
+which treats the text before the cursor as a filename and does filename 
+completion on it. Typing <tt>M-$</tt> runs <i>complete-variable</i>, which 
+treats the text before the cursor as a shell variable and does variable 
+completion on it. There are plenty of variations — like <tt>C-x $</tt>, which 
+invokes the <i>possible-variable-completions</i> function to list all shell 
+variable names that could be completed.
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">
+Section 28.4</a> has an example of <tt>M-{</tt>, the curly-brace completion 
+function. </p>
+<p class="docText">For details on your particular shell, check its manual page.</p>
+<p class="docText"><span class="docEmphasis">—JP, ML, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-7">28.7 Don't Match Useless Files in Filename 
+Completion</h3>
+<p class="docText">The shell variable <span class="docEmphasis">fignore</span> 
+in <i>csh</i> and <i>zsh</i> (<span class="docEmphasis">FIGNORE</span> in <i>
+bash</i> and also <i>zsh</i>) lets you tell the shell that you aren't interested 
+in some files when using <span class="docEmphBold">filename completion</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-6">Section 
+28.6</a>). For example, you may be more likely to refer to C language source 
+files (whose names end with <span class="docEmphasis">.c</span>) than object 
+files (<span class="docEmphasis">.o</span> files); you often need to edit your 
+source files, while you may never need to look at your object modules. Set
+<span class="docEmphasis">fignore</span> to the suffixes that you want to 
+ignore. For example, to ignore <span class="docEmphasis">.o</span> files in <i>
+tcsh</i> and <i>csh</i>, type: </p>
+<p class="docText"><tt>set</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+Section 35.9</a></p>
+<pre>% <b>set fignore=(.o)</b></pre>
+<p class="docText">Once you've done this, file completion will ignore your
+<span class="docEmphasis">.o</span> files when you press the TAB key (ESC in <i>
+csh</i>) — unless a <span class="docEmphasis">.o</span> file is the only match 
+it can find. </p>
+<p class="docText">Most likely, there's a whole list of suffixes that you don't 
+care about: <span class="docEmphasis">.o</span> (object modules),
+<span class="docEmphasis">.out</span> (random executables),
+<span class="docEmphasis">.gz</span> (<i>gzip</i>ped files), <tt>~</tt> (<span class="docEmphBold">Emacs 
+backup files</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-4">Section 
+19.4</a>)), and so on.
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-12">
+Section 1.12</a> has a list of them. Here's how to set <span class="docEmphasis">
+fignore</span> to a list of filenames:<span id="ENB28-2"><a class="docLink" href="#EN28-2"><sup>[2]</sup></a></span>
+</p>
+<pre>% <b>set fignore=(.o .out .gz \~) </b>   <i> ...tcsh, csh, zsh</i>
+$ <b>FIGNORE='.o:.out:.gz:~' </b>        <i> ...bash, zsh</i></pre>
+<p class="docText"><span class="docEmphasis">fignore</span> has no effect when 
+you press CTRL-d to get a listing of the files that match in <i>csh</i> and <i>
+tcsh</i>. Those shells always give you a complete list of all possible 
+completions. </p>
+<p class="docText"><span class="docEmphasis">—ML and JP </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-8">28.8 Repeating Commands</h3>
+<p class="docText">Let's start with some obvious ways to run commands more than 
+once: </p>
+<ul>
+  <li>
+  <p class="docList">Type <span class="docEmphBold">!!</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+  30.8</a>) to repeat the previous command line, or <span class="docEmphBold">
+  repeat a cycle of commands with !-n</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-9">Section 
+  30.9</a>) </li>
+  <li>
+  <p class="docList">Press <span class="docEmphBold">the up-arrow key</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-14">Section 
+  30.14</a>) or a <i>vi</i>- or Emacs-style editing command </li>
+  <li>
+  <p class="docList"><span class="docEmphBold">Copy and paste the command line 
+  with your mouse</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-10">Section 
+  28.10</a>) </li>
+</ul>
+<p class="docText">Whether each of those methods will work depends on the shell 
+you're using and whether you have copy-and-paste built into your interface. All 
+of those methods force you to take some action before each command line repeats 
+— pressing the up-arrow key, for instance. That lets you control exactly when 
+each command runs. </p>
+<p class="docText">The next four articles show automated ways to repeat a 
+command a certain number of times. You can &quot;mix and match&quot; some parts of 
+different articles — the tips on <i>read</i> and <i>sleep</i>, for instance. 
+Each article follows on to the one before, so we suggest glancing through all of 
+them: </p>
+<ul>
+  <li>
+  <p class="docList">In C shells, repeat a single command with the <i>repeat</i> 
+  command. </li>
+  <li>
+  <p class="docList"><i>zsh</i> can repeat a series of commands with its <i>
+  repeat</i> loop. </li>
+  <li>
+  <p class="docList">Methods for Bourne-type shells use more-general shell 
+  features. </li>
+  <li>
+  <p class="docList">An offbeat method that works with all shells is to output 
+  multiple commands using jot. </li>
+  <li>
+  <p class="docList">The shells' <span class="docEmphBold">for and foreach loops</span> 
+  (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">Section 
+  28.9</a>) can vary the commands they run by picking a string (a word, for 
+  instance) from a list of strings. </li>
+  <li>
+  <p class="docList">To repeat a command and display its output in the same 
+  place on the screen — so it's easy to spot differences over time — try
+  <span class="docEmphBold">vis</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-11">Section 
+  28.11</a>). </li>
+</ul>
+<p class="docText">Finally, remember that you aren't stuck with the login shell 
+you chose. If you want a feature that your shell doesn't have, you can use 
+another shell temporarily by typing its name (like <i>csh</i>), running the 
+commands you need, then typing <i>exit</i> to go back to your original shell.
+</p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-9">28.9 Repeating and Varying Commands</h3>
+<h4  id="upt3-CHP-28-SECT-9.1" class="docSection2Title">28.9.1 A foreach Loop</h4>
+<p class="docText">When some people need to repeat a command on several files, 
+the first thing they think of is <span class="docEmphBold">command line editing</span> 
+(<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-14">Section 
+30.14</a>) or — as we show here — <span class="docEmphBold">history substitution</span> 
+(<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-5">Section 
+30.5</a>): </p>
+<p class="docText"><tt>-v</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">
+Section 12.4</a>, <tt>less</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">
+Section 12.3</a></p>
+<pre>% <b>cat -t -v /usr/fran/report | less</b>
+   ...
+% <b>^fran/report^rob/file3</b>
+cat -t -v /usr/rob/file3 | less
+   ...
+% <b>^3^21</b>
+cat -t -v /usr/rob/file21 | less
+   ...
+%</pre>
+<p class="docText">The second substitution (changing <span class="docEmphasis">3</span> 
+to <span class="docEmphasis">21</span>) was quick to do, but the first one was 
+longer. If there are lots of related commands like this, it can be easier to 
+list all the variations at once — then let the shell do the dirty work. To do 
+that, use the shell's <i>foreach</i> loop in C-type shells — or, in Bourne-type 
+shells, use a <i>for</i> loop, shown later in this article. (<i>zsh</i> has both
+<i>foreach</i> and <i>for</i> loops.) You give the loop a list of the words that 
+will change each time the command line is run. In this example, it's a list of 
+filenames. The loop will step through the words, one by one, storing a word into 
+a <span class="docEmphBold">shell variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>), then running the command(s). The loop goes on until it has read all 
+the words. For example: </p>
+<pre>% <b>foreach file (/usr/fran/report /usr/rob/file3 /usr/rob/file21) </b>
+? <b>cat -t -v $file | less </b>
+? <b>end </b>
+   <i> ...Shell runs cat -t -v /usr/fran/report | less...</i>
+   <i> ...Shell runs cat -t -v /usr/rob/file3 | less...</i>
+   <i> ...Shell runs cat -t -v /usr/rob/file21 | less...</i>
+%</pre>
+<p class="docText">The question marks (<tt>?</tt>) are <span class="docEmphBold">
+secondary prompts</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-12">Section 
+28.12</a>); the shell will keep printing them until you type the command <i>end</i>. 
+Then the loop runs. </p>
+<p class="docText">The list between the parentheses doesn't have to be 
+filenames. Among other things, you can use <span class="docEmphBold">wildcards</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+1.13</a>), <span class="docEmphBold">backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) (command substitution), <span class="docEmphBold">variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">
+Section 35.3</a>), and the handy <span class="docEmphBold">curly brace ({}) 
+operators</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">Section 
+28.4</a>). For example, you could have typed the above loop this way: </p>
+<pre>% <b>foreach file (/usr/fran/report /usr/rob/file{3,21})</b>
+? <b>cat -t -v $file | less</b>
+? <b>end</b></pre>
+<p class="docText">If you want the loop to stop before or after running each 
+command, add the C shell operator <tt>$&lt;</tt>. It reads keyboard input and waits 
+for a RETURN. In this case, you can probably ignore the input; you'll use <tt>$&lt;</tt> 
+to make the loop wait. For example, to make the previous loop prompt before each 
+command line: </p>
+<p class="docText"><tt>set</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+Section 35.9</a></p>
+<pre>% <b>foreach file (/usr/fran/report /usr/rob/file{3,21}) </b>
+? <b>echo -n &quot;Press RETURN to see $file--&quot; </b>
+? <b>set x=&quot;$&lt;&quot; </b>
+? <b>cat -t -v $file | less </b>
+? <b>end </b>
+Press RETURN to see /usr/fran/report--RETURN
+   <i> Shell runs cat -t -v /usr/fran/report | less...</i>
+Press RETURN to see /usr/rob/file3--RETURN
+   <i> Shell runs cat -t -v /usr/rob/file3 | less...</i>
+Press RETURN to see /usr/rob/file21--RETURN
+   <i> Shell runs cat -t -v /usr/rob/file21 | less...</i></pre>
+<p class="docText">The loop parameters don't need to be filenames. For instance, 
+you could send a personalized <span class="docEmphBold">email</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) message to five people this way:<span id="ENB28-3"><a class="docLink" href="#EN28-3"><sup>[3]</sup></a></span>
+</p>
+<p class="docText"><tt>cat</tt> <tt>-</tt> <span class="docEmphBold">
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">
+Section 12.2</a></span> </p>
+<pre>% <b>foreach person (John Cathy Agnes Brett Elma)</b>
+? <b>echo &quot;Dear $person,&quot; | cat - formletter | mail $person</b>
+? <b>end</b></pre>
+<p class="docText">The first line of the first letter will be &quot;Dear John,&quot;; the 
+second letter &quot;Dear Cathy,&quot;; and so on. </p>
+<p class="docText">Want to take this idea further? It's a part of
+<span class="docEmphBold">shell programming</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-2">Section 
+35.2</a>). I usually don't recommend shell programming with the C shell, but 
+this is a handy technique to use interactively. </p>
+<h4  id="upt3-CHP-28-SECT-9.2" class="docSection2Title">28.9.2 A for Loop</h4>
+<p class="docText">The <i>for</i> loop in Bourne-type shells is like the <i>
+foreach</i> loop shown earlier: it loops through a list of words, running one or 
+more commands for each word in the list. This saves time when you want to run 
+the same series of commands separately on several files. </p>
+<p class="docText">Let's repeat an earlier example:</p>
+<pre>$ <b>for file in /usr/fran/report /usr/rob/file2 /usr/rob/file3 </b>
+&gt; <b>do </b>
+&gt; <b>cat -t -v $file | less </b>
+&gt; <b>done </b>
+   <i> ...Shell runs cat -t -v /usr/fran/report | less...</i>
+   <i> ...Shell runs cat -t -v /usr/rob/file2 | less...</i>
+   <i> ...Shell runs cat -t -v /usr/rob/file3 | less...</i>
+$</pre>
+<p class="docText">The greater-than signs (<tt>&gt;</tt>) are
+<span class="docEmphBold">secondary prompts</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-12">Section 
+28.12</a>); the Bourne shell will keep printing them until you type the command
+<i>done</i>. Then it runs the loop. You don't have to press RETURN after the <tt>
+do</tt>; you can type the first command on the same line after it. </p>
+<p class="docText">In a shell script, the loop body (the lines between <tt>do</tt> 
+and <tt>done</tt>) is usually indented for clarity. </p>
+<p class="docText">The list after the <tt>in</tt> doesn't have to be filenames. 
+Among other things, you can use <span class="docEmphBold">backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) (command substitution), <span class="docEmphBold">variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">
+Section 35.3</a>), <span class="docEmphBold">wildcards</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-1">Section 
+33.1</a>), and, on shells like <i>bash</i> that have them,
+<span class="docEmphBold">curly brace ({}) operators</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">Section 
+28.4</a>). For example, you could have typed the previous loop this way: </p>
+<pre>$ <b>for file in /usr/fran/report /usr/rob/file[23]</b>
+&gt; <b>do cat -t -v $file | less</b>
+&gt; <b>done</b></pre>
+<p class="docText">If you want the loop to stop before or after running each 
+command, add the shell's <span class="docEmphBold">read command</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-18">Section 
+35.18</a>). It reads keyboard input and waits for a RETURN. In this case, you 
+can ignore the input; you'll use <i>read</i> just to make the loop wait. For 
+example, to make the above loop prompt before each command line: </p>
+<pre>$ <b>for file in /usr/fran/report /usr/rob/file[23] </b>
+&gt; <b>do </b>
+&gt; <b>echo -n &quot;Press RETURN to see $file--&quot; </b>
+&gt; <b>read x </b>
+&gt; <b>cat -t -v $file | less </b>
+&gt; <b>done </b>
+Press RETURN to see /usr/fran/report--RETURN
+   <i> Shell runs cat -t -v /usr/fran/report | less...</i>
+Press RETURN to see /usr/rob/file2--RETURN
+   <i> Shell runs cat -t -v /usr/rob/file2 | less...</i>
+Press RETURN to see /usr/rob/file3--RETURN
+   <i> Shell runs cat -t -v /usr/rob/file3 | less...</i></pre>
+<p class="docText">
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">
+Section 35.21</a> has more information about the <i>for</i> loop.
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-12">
+Section 36.12</a> shows how to make a <i>for</i> loop that varies several 
+parameters at once. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-10">28.10 Repeating a Command with Copy-and-Paste</h3>
+<p class="docText">If you're using an <span class="docEmphBold">xterm window</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-20">Section 
+24.20</a>) or another type of terminal emulator with easy copy-and-paste 
+functionality, that might be the easiest way to repeat all or part of a previous 
+command line. Just select the part you want to copy, and paste it at a new 
+prompt, adding any other text before and after pasting. This can be easier than 
+using the shell's editing commands or history operators: what you see is what 
+you get. <a class="docLink" href="#upt3-CHP-28-FIG-1">Figure 28-1</a> shows 
+copy-and-paste.<span id="ENB28-4"><a class="docLink" href="#EN28-4"><sup>[4]</sup></a></span>
+</p>
+<center>
+<h5 id="upt3-CHP-28-FIG-1" class="docFigureTitle">Figure 28-1. Copying and pasting a command</h5>
+<p>
+<img alt="figs/upt3_2801.gif" src="upt3_2801.gif" border="0" width="368" height="167"></p>
+</center>
+<p class="docText">You can reuse the copied text over and over, if you want; 
+after copying it once, paste as many times and places as you need to. Also, if 
+you've got multiple pieces of text to copy and paste, try using a scratchpad 
+window or <span class="docEmphBold">xclipboard</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-19">Section 
+5.19</a>). </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-11">28.11 Repeating a Time-Varying Command</h3>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: vis</p>
+<p class="docText">Sometimes you find yourself repeating the same command over 
+and over again — for example, <span class="docEmphBold">ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>) to monitor the progress of your background processes, or
+<span class="docEmphBold">lpq</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">Section 
+45.2</a>) to know when your printout is finished. Instead of typing the same 
+command repeatedly, or even using shell <span class="docEmphBold">history</span> 
+(<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-2">Section 
+30.2</a>) to repeat it, use the <i>vis</i> command. For example: </p>
+<pre>% <b>vis ps</b></pre>
+<p class="docText">The <i>vis</i> command takes over your screen and shows the 
+output of the initial <i>ps</i> command. Every 15 seconds, the command is 
+executed again and your screen is updated with the new information. If this 
+delay is too long for you, you can get <i>vis</i> to use a shorter delay using 
+the <i>-d</i> option: </p>
+<pre>% <b>vis -d 2 ps</b></pre>
+<p class="docText">The information will now be updated every 2 seconds. Your 
+screen is cleared and you are shown the output of <i>ps</i>. On the top line, <i>
+vis</i> tells you the command being run, how long your delay is (if not the 
+default), and how many times it has been executed. The <tt>Exec</tt>: line is 
+incremented every time the command is repeated. </p>
+<pre>Command:  ps                      Delay:  2            Exec:  1
+
+  PID TT STAT  TIME COMMAND
+ 2971 p1 S     0:06 -sh (csh)
+ 6139 p1 S     0:00 vis -d 2 ps
+ 6145 p1 R     0:00 ps
+ 3401 q0 IW    0:13 -sh (csh)
+ 5954 q0 S     0:01 vi ch01
+14019 q5 IW    0:02 -sh (csh)
+29380 r7 IW    0:00 -bin/csh (csh)
+29401 rd IW    0:00 -bin/csh (csh)</pre>
+<p class="docText"><i>vis</i> provides a few other command-line options. The <i>
+-s</i> option is particularly neat: using <i>-s</i>, any lines that have changed 
+since the last iteration are printed in standout mode. </p>
+<p class="docText">Note that variations of this command have floated around in 
+the public domain under several different names, such as <i>display</i>, <i>rep</i>, 
+and <i>watch</i>. We found <i>vis</i> to be the most useful. </p>
+<p class="docText"><span class="docEmphasis">— LM</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-12">28.12 Multiline Commands, Secondary Prompts</h3>
+<p class="docText">All shells support multiline commands. In Bourne-type shells, 
+a newline following an open quote (<tt>'</tt> or <tt>&quot;</tt>), pipe symbol (<tt>|</tt>), 
+or backslash (<tt>\</tt>) will not cause the command to be executed. Instead, 
+you'll get a secondary prompt (from the <span class="docEmphasis">PS2</span> 
+shell variable, set to <tt>&gt;</tt> by default), and you can continue the command 
+on the next line. For example, to send a quick <span class="docEmphBold">write</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) message without making the other user wait for you to type the 
+message, try this: </p>
+<pre>$ <b>echo &quot;We're leaving in 10 minutes. See you downstairs.&quot; |</b>
+&gt; <b>write joanne</b></pre>
+<p class="docText">In the C shells, you can continue a line by
+<span class="docEmphBold">typing a backslash (\) before the newline</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">Section 
+27.13</a>). In <i>tcsh</i>, you'll see a secondary prompt, a question mark (<tt>?</tt>), 
+on each continued line. The original <i>csh</i> doesn't prompt in this case. </p>
+<p class="docText">Obviously, this is a convenience if you're typing a long 
+command line. It is a minor feature and one easily overlooked; however, it makes 
+it much easier to use a program like <i>sed</i> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) from the command line. For example, if you know you chronically make 
+the typos &quot;mvoe&quot; (for &quot;move&quot;) and &quot;thier&quot; (for &quot;their&quot;), you might be inspired 
+to type the following command: </p>
+<p class="docText"><tt>nroff -ms</tt><a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-21">Section 
+3.21</a>, <tt>lp</tt><a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">Section 
+45.2</a> </p>
+<pre>$ <b>sed '</b>
+&gt; <b>s/mvoe/move/g</b>
+&gt; <b>s/thier/their/g' myfile | nroff -ms | lp</b></pre>
+<p class="docText">More importantly, the ability to issue multiline commands 
+lets you use the shell's programming features interactively from the command 
+line. In both the Bourne and C shells, multiline programming constructs 
+automatically generate a secondary prompt (<tt>&gt;</tt> in Bourne shells and <tt>?</tt> 
+in C shells) until the construct is completed. This is how our favorite 
+programming constructs for non-programmers, the <span class="docEmphBold">for 
+and foreach loops</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">Section 
+28.9</a>), work. While a simple loop could be saved into a
+<span class="docEmphBold">shell script</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-8">Section 
+1.8</a>), it is often even easier to use it interactively. </p>
+<p class="docText">Here's an example with <i>zsh</i>, which makes secondary 
+prompts that show the names of the construct(s) it's continuing. This <i>for</i> 
+loop prints files from the current directory. If a filename ends with
+<span class="docEmphasis">.ps</span>, it's sent straight to the
+<span class="docEmphasis">ps</span> printer. Filenames ending with
+<span class="docEmphasis">.tif</span> are sent through <span class="docEmphBold">
+netpbm</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-19">Section 
+45.19</a>) filters, then to the <span class="docEmphasis">ps</span> printer. </p>
+<p class="docText"><tt>case</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">
+Section 35.10</a>, <tt>echo</tt><span class="docEmphBold"><a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-5">Section 
+27.5</a></span></p>
+<pre>zsh% <b>for file in *</b>
+for&gt; <b>do case &quot;$file&quot; in</b>
+for case&gt; <b>*.ps) lpr -Pps &quot;$file&quot; ;;</b>
+for case&gt; <b>*.tif) tifftopnm &quot;$file&quot; | pnmtops | lpr -Pps ;;</b>
+for case&gt; <b>*) echo &quot;skipping $file&quot; ;;</b>
+for case&gt; <b>esac</b>
+for&gt; <b>done</b>
+skipping README
+  ...
+zsh%</pre>
+<p class="docText"><i>zsh</i>'s multiline editing makes it easy to go back and 
+edit that multiline nested construct. In other shells, you might consider using 
+a throwaway script or copying and pasting with a mouse if you have one. </p>
+<p class="docText"><span class="docEmphasis">—TOR and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-13">28.13 Here Document Example #1: Unformatted Form 
+Letters</h3>
+<p class="docText">
+<img alt="figs/bomb.gif" src="bomb.gif" border="0" width="24" height="30">
+<tt>&lt;&lt;</tt><a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-16">Section 
+27.16</a> </p>
+<p class="docText">The <span class="docEmphBold">here document operator</span>
+<tt>&lt;&lt;</tt> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-16">Section 
+27.16</a>) is often used in shell scripts — but it's also handy at a shell 
+prompt, especially with <i>zsh</i> multiline editing or a throwaway script. But 
+you also can just type it in <span class="docEmphBold">at a Bourne shell prompt</span> 
+(<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-12">Section 
+28.12</a>). (If you use <i>csh</i> or <i>tcsh</i>, you can either use a
+<span class="docEmphBold">foreach loop</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">Section 
+28.9</a>) or <span class="docEmphBold">start a subshell</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>).) </p>
+<p class="docText">The example below shows a <span class="docEmphBold">for loop</span> 
+(<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">Section 
+28.9</a>) that prints three friendly form letters with the
+<span class="docEmphBold">lpr</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">Section 
+45.2</a>) command. Each letter has a different person's name and the current 
+date at the top. Each line of the loop body starts with a TAB character, which 
+the <tt>&lt;&lt;-</tt> operator removes before the printer gets the text: </p>
+<pre>for person in &quot;Mary Smith&quot; &quot;Doug Jones&quot; &quot;Alison Eddy&quot;
+do
+   lpr &lt;&lt;- ENDMSG
+
+   `date`
+
+   Dear $person,
+
+   This is your last notice. Buy me pizza tonight or
+   else I'll type &quot;rm -r *&quot; when you're not looking.
+
+   This is not a joak.
+
+   Signed,
+   The midnight skulker
+   ENDMSG
+done</pre>
+<p class="docText">The shell reads the standard input until it finds the 
+terminator word, which in this case is <tt>ENDMSG</tt>. The word <tt>ENDMSG</tt> 
+has to be on a line all by itself. (Some Bourne shells don't have the <tt>&lt;&lt;-</tt> 
+operator to remove leading TAB characters. In that case, use <tt>&lt;&lt;</tt> and 
+don't indent the loop body.) The <span class="docEmphBold">backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) run the <i>date</i> command and output its date; <tt>$person</tt> is 
+replaced with the person's name set at the top of the loop. The rest of the text 
+is copied as is to the standard input of the <i>lpr</i> command. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-14">28.14 Command Substitution</h3>
+<p class="docText">A pair of backquotes (``) does <span class="docEmphasis">
+command substitution</span>. This is really useful — it lets you use the 
+standard output from one command as arguments to another command. </p>
+<p class="docText">Here's an example. Assume you want to edit all files in the 
+current directory that contain the word &quot;error.&quot; Type this: </p>
+<p class="docText"><tt>-l</tt>
+<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-6">
+Section 33.6</a></p>
+<pre>$ <b>vi `grep -l error *.c`</b>
+3 files to edit
+&quot;bar.c&quot; 254 lines, 28338 characters
+   ...
+$</pre>
+<p class="docText">But why does this work? How did we build the incantation 
+above? First, think about how you'd do this without using any special 
+techniques. You'd use <i>grep</i> to find out which commands contain the word 
+&quot;error&quot;; then you'd use <i>vi</i> to edit this list: </p>
+<pre>$ <b>grep error *.c</b>
+bar.c:  error(&quot;input too long&quot;);
+bar.c:  error(&quot;input too long&quot;);
+baz.c:  error(&quot;data formatted incorrectly&quot;);
+foo.c:  error(&quot;can't divide by zero&quot;):
+foo.c:  error(&quot;insufficient memory&quot;):
+$ <b>vi bar.c baz.c foo.c</b></pre>
+<p class="docText">Is there any way to compress these into one command? Yes, by 
+using command substitution. First, we need to modify our <i>grep</i> command so 
+that it produces only a list of filenames, rather than filenames and text. 
+That's easy; use <i>grep -l</i>: </p>
+<pre>$ <b>grep -l error *.c</b>
+bar.c
+baz.c
+foo.c</pre>
+<p class="docText">The <i>-l</i> option lists each filename only once, even if 
+many lines in the file match. (This makes me think that <i>grep -l</i> was 
+designed with precisely this application in mind.) Now, we want to edit these 
+files; so we put the <i>grep</i> command inside backquotes, and use it as the 
+argument to <i>vi</i>: </p>
+<pre>$ <b>vi `grep -l error *.c`</b>
+3 files to edit
+&quot;bar.c&quot; 254 lines, 28338 characters
+   ...
+$</pre>
+<p class="docText">You might be wondering about the difference between the 
+&quot;vertical&quot; output from <i>grep</i> and the &quot;horizontal&quot; way that people usually 
+type arguments on a command line. The shell handles this with no problems. 
+Inside backquotes, both a newline and a space are argument separators. </p>
+<p class="docText">The list you use with command substitution doesn't have to be 
+filenames. Let's see how to send a <span class="docEmphBold">mail message</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) to all the users logged on to the system now. You want a command line 
+like this: </p>
+<pre>% <b>mail joe lisa franka mondo bozo harpo ...</b></pre>
+<p class="docText">Getting there takes a little thinking about what Unix 
+commands you need to run to get the output you want. (This is real &quot;Power Tools&quot; 
+stuff!) To get a list of those users, you could use <span class="docEmphBold">
+who</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-8">Section 
+2.8</a>). The <i>who</i> output also lists login time and other information — 
+but you can cut that off with a command like <span class="docEmphBold">cut</span> 
+(<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-14">Section 
+21.14</a>): </p>
+<pre>% <b>who | cut -c1-8</b>
+joe
+lisa
+franka
+lisa
+joe
+mondo
+joe
+...</pre>
+<p class="docText">Some users are logged on more than once. To get a unique 
+list, use <span class="docEmphBold">sort -u</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-6">Section 
+22.6</a>). You're done. Just put the name-making command line between backquotes:
+</p>
+<pre>% <b>mail `who | cut -c1-8 | sort -u`</b></pre>
+<p class="docText">If you aren't sure how this works, replace the command you 
+want to run with <span class="docEmphBold">echo</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-5">Section 
+26.5</a>): </p>
+<pre>% <b>echo `who | cut -c1-8 | sort -u`</b>
+bozo franka harpo joe lisa mondo</pre>
+<p class="docText">After using Unix for a while, you'll find that this is one of 
+its most useful features. You'll find many situations where you use one command 
+to generate a list of words, then put that command in backquotes and use it as 
+an argument to something else. Sometimes you'll want to
+<span class="docEmphBold">nest</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-24">Section 
+36.24</a>) the backquotes — this is where the <i>bash</i>, <i>ksh</i>, <i>bash</i>, 
+and <i>zsh</i> <tt>$( )</tt> operators (which replace the opening and closing 
+backquote, respectively) come in handy. There are some problems with command 
+substitution, but you usually won't run into them. </p>
+<p class="docText">This book has many, many examples of command substitution. 
+Here are some of them: <span class="docEmphBold">making unique filenames</span> 
+(<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-17">Section 
+8.17</a>), <span class="docEmphBold">removing some files from a list</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-18">Section 
+14.18</a>), <span class="docEmphBold">setting your shell prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-6">Section 
+4.6</a>,
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-8">
+Section 4.8</a>,
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-14">
+Section 4.14</a>), and <span class="docEmphBold">setting variables</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-8">Section 
+4.8</a>,
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-23">
+Section 36.23</a>). </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-15">28.15 Handling Lots of Text with Temporary Files</h3>
+<p class="docText">Sometimes you need to execute a command with a long list of 
+files for arguments. Here's an easy way to create that list without having to 
+type each filename yourself — put the list in a temporary file: </p>
+<p class="docText"><tt>'...'</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a></p>
+<pre>% <b>ls &gt; /tmp/mikel </b>
+% <b>vi /tmp/mikel </b>
+ <i> ...edit out any files you don't want...</i>
+% <i>process-the-files  </i><b>`cat /tmp/mikel` </b>
+% <b>rm /tmp/mikel </b></pre>
+<p class="docText">I added the <i>vi</i> step to remind you that you can edit 
+this list; for example, you may want to delete a few files that you don't want 
+to process. </p>
+<p class="docText">Possible problems: if the list is long enough, you may end up 
+with a command line that's too long for your shell to process. If this happens, 
+use <span class="docEmphBold">xargs</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-17">Section 
+28.17</a>). If your system doesn't have <i>xargs</i>, there are other 
+workarounds doesn't that should solve the problem. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-16">28.16 Separating Commands with Semicolons</h3>
+<p class="docText">When the shell sees a semicolon (<tt>;</tt>) on a command 
+line, it's treated as a command separator — basically like pressing the ENTER 
+key to execute a command. When would you want to use a semicolon instead of 
+pressing ENTER?</p>
+<ul>
+  <li>
+  <p class="docList">It's nice when you want to execute a series of commands, 
+  typing them all at once at a single prompt. You'll see all of them on the same 
+  command line and they'll be grouped together in the <span class="docEmphBold">
+  history list</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-7">Section 
+  30.7</a>). This makes it easy to see, later, that you intended this series of 
+  commands to be executed one after another. And you can re-execute them all 
+  with a simple history command. </p>
+  <p class="docList">As an example, here's a series of commands that puts a 
+  listing of the current directory into a temporary file, emails the listing, 
+  then overwrites the previous version of the file: </p>
+  <pre>$ <b>ll &gt; $tf-1; mail -s backup joe &lt; $tf-1; mv $tf-1 listing</b></pre>
+  <p class="docList">I can repeat that same command later by using a
+  <span class="docEmphBold">history substitution</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+  30.8</a>) like <tt>!ll</tt>. </li>
+  <li>
+  <p class="docList">It's useful with <span class="docEmphBold">sleep</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-9">Section 
+  25.9</a>) to run a command after a delay. The next example shows a series of 
+  commands in a C shell alias that you might use to print a warning and give the 
+  user a chance to abort before the last command (<i>exit</i>, which ends the 
+  current shell) is executed. Be sure to read the important note after this 
+  example: </p>
+  <pre>alias bye 'echo &quot;Type CTRL-c to abort logout&quot;; sleep 10; exit'</pre>
+  <p class="docList">Note that, in C-type shells and older Bourne-type shells, 
+  pressing your <span class="docEmphBold">interrupt key</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-10">Section 
+  24.10</a>) — like CTRL-c — will stop execution of all jobs on the current 
+  command line. The alias above works in shells like that. But in some shells, 
+  like <i>bash2</i>, interrupting a command in a string of commands separated by 
+  semicolons will affect only that single command. So I couldn't rewrite the 
+  alias above for <i>bash2</i> because, if I pressed CTRL-c while the <i>sleep</i> 
+  command was executing, that would simply abort <i>sleep</i> — and proceed to 
+  run <i>exit</i>, which would log me out immediately! </li>
+  <li>
+  <p class="docList">If you're running a series of commands that take some time 
+  to complete, you can type all the commands at once and leave them to run 
+  unattended. For example, I have little shell scripts named
+  <span class="docEmphBold">nup and ndown</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-22">Section 
+  24.22</a>) (which run <i>/sbin/ifup</i> and <i>/sbin/ifdown</i>, respectively) 
+  to start and disable the network. On a system with a dialup modem and a long 
+  file transfer to perform, it's nice to be able to type a series of commands 
+  that bring up the network, do a couple of file transfers, then bring down the 
+  network. I can type this string, go about my business somewhere else, and come 
+  back later: </p>
+  <pre>$ <b>nup;ptbk;getmail;ndown</b></pre>
+  <p class="docList">After <i>nup</i> returns, the network is up (the modem has 
+  connected). So the shell runs <span class="docEmphBold">ptbk</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-9">Section 
+  38.9</a>) to make a backup of my work on this book. Next, <i>getmail</i> gets 
+  my email (it basically runs <i>fetchmail</i>). When <i>getmail</i> finishes,
+  <i>ndown</i> hangs up the modem. This can take several minutes from start to 
+  finish, but the shell manages it all while I do something else. (If I didn't 
+  have a windowing system with multiple <i>xterm</i>s, I could have put that 
+  string of commands into a <span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">Section 
+  43.7</a>) in the <span class="docEmphBold">background</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-2">Section 
+  23.2</a>).) This is one place that a GUI interface for network control really 
+  loses to command-line utilities and the shell. </li>
+</ul>
+<p class="docText">Two related operators, <span class="docEmphBold">&amp;&amp; and ||</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">Section 
+35.14</a>), work like a semicolon, but they only execute the next command if the 
+previous one succeeded or failed, respectively. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-17">28.17 Dealing with Too Many Arguments</h3>
+<p class="docText">Historically, one of the more annoying things about the 
+design of many UNIX tools was their inability to handle large numbers of 
+arguments. For example, if you wanted to print several hundred files using <i>
+lpr</i>, you either had to pass them a few at a time, perhaps using wildcards on 
+the command line to split the list up into shorter groups, or call <i>lpr</i> 
+once per file, perhaps using <i>find</i> or a loop. One other method, which is 
+still useful today, involves the use of <i>xargs</i>. </p>
+<p class="docText"><i>xargs</i> is one of those Unix utilities that seems pretty 
+useless when you first hear about it — but turns into one of the handiest tools 
+you can have. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: xargs</p>
+<p class="docText">If your system doesn't already have <i>xargs</i>, be sure to 
+install it from the web site. </p>
+<p class="docText"><i>xargs</i> reads a group of arguments from its standard 
+input, then runs a Unix command with that group of arguments. It keeps reading 
+arguments and running the command until it runs out of arguments. The shell's
+<span class="docEmphBold">backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) do the same kind of thing, but they give all the arguments to the 
+command at once. This can give you a <tt>Too many arguments</tt> error. </p>
+<p class="docText">Here are some examples:</p>
+<ul>
+  <li>
+  <p class="docList">If you want to print most of the files in a large 
+  directory, put the output of <i>ls</i> into a file. Edit the file to leave 
+  just the filenames you want printed. Give the file to <i>xargs</i>' standard 
+  input: </p>
+  <p class="docList"><tt>&lt;</tt>
+  <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">
+  Section 43.1</a></p>
+  <pre>% <b>ls &gt; allfiles.tmp</b>
+% <b>vi allfiles.tmp</b>
+% <b>xargs lpr &lt; allfiles.tmp</b></pre>
+  <p class="docList">What did that do? With lines like these in
+  <span class="docEmphasis">allfiles.tmp</span>: </p>
+  <pre>% <b>cat allfiles.tmp</b>
+afile
+application
+   ...
+yoyotest
+zapme</pre>
+  <p class="docList"><i>xargs</i> ran one or more <i>lpr</i> commands, each with 
+  a group of arguments, until it had read every word in the file: </p>
+  <pre>lpr afile application ...
+   ...
+lpr ... yoyotest zapme</pre>
+  <p class="docList">This has another advantage for <i>lpr</i>: each print job 
+  is fairly short, so you can delete one from the print queue without losing all 
+  of them. </li>
+  <li>
+  <p class="docList">The standard output of <i>xargs</i> is the standard output 
+  of the commands it runs. So, if you'd created <span class="docEmphasis">
+  allfiles.tmp</span> above, but you wanted to format the files with
+  <span class="docEmphBold">pr</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-6">Section 
+  45.6</a>) first, you could type: </p>
+  <pre>% <b>xargs pr &lt; allfiles.tmp | lpr</b></pre>
+  <p class="docList">Then <i>xargs</i> would run all of these <i>pr</i> 
+  commands. The shell would pipe their standard outputs<span id="ENB28-5"><a class="docLink" href="#EN28-5"><sup>[5]</sup></a></span> 
+  to a single <i>lpr</i> command: </p>
+  <pre>pr afile application ...
+   ...
+</pre>
+  </li>
+  <li>
+  <p class="docList">In the next example, <span class="docEmphBold">find</span> 
+  (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-1">Section 
+  9.1</a>) gets a list of all files in the directory tree. Next, we use <i>xargs</i> 
+  to read those filenames and run <span class="docEmphBold">grep -l</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-6">Section 
+  33.6</a>) to find which files contain the word &quot;WARNING&quot;. Next, we pipe that 
+  to a setup with <i>pr</i> and <i>lpr</i>, like the one in the previous 
+  example: </p>
+  <pre>% <b>find . -type f -print | xargs grep -l WARNING | xargs pr | lpr</b></pre>
+  <p class="docList">&quot;Huh?&quot; you might say. Just take that step by step. The 
+  output of <i>find</i> is a list of filenames, like <tt>./afile ./bfile ... ./adir/zfile</tt> 
+  and so on. The first <i>xargs</i> gives those filenames to one or more <i>grep 
+  -l</i> commands: </p>
+  <pre>grep -l WARNING ./afile ./bfile ...
+   ...
+grep -l WARNING ./adir/zfile ...</pre>
+  <p class="docList">The standard output of all those <i>grep</i>s is a 
+  (shortened) list of filenames that match. That's piped to another <i>xargs</i> 
+  — it runs <i>pr</i> commands with the filenames that <i>grep</i> found. </p>
+  <p class="docList">Unix is weird and wonderful!</li>
+  <li>
+  <p class="docList">Sometimes you don't want <i>xargs</i> to run its command 
+  with as many arguments as it can fit on the command line. The <i>-n</i> option 
+  sets the maximum number of arguments <i>xargs</i> will give to each command. 
+  Another handy option, <i>-p</i>, prompts you before running each command. </p>
+  <p class="docList">Here's a directory full of files with errors (whose names 
+  end with <span class="docEmphasis">.bad</span>) and corrected versions (named
+  <span class="docEmphasis">.fixed</span>). I use <i>ls</i> to give the list of 
+  files to <i>xargs</i>; it reads two filenames at once, then asks whether I 
+  want to run <i>diff -c</i> to compare those two files. It keeps prompting me 
+  and running <i>diff -c</i> until it runs out of file pairs: </p>
+  <pre>% <b>ls </b>
+chap1.bad
+chap1.fixed
+chap2.bad
+chap2.fixed
+    ...
+chap9.bad
+chap9.fixed
+% <b>ls | xargs -p -n2 diff -c </b>
+diff -c chap1.bad chap1.fixed ?...<b>y </b>
+   <i> ...Output of diff command for chap1...</i>
+diff -c chap2.bad chap2.fixed ?...<b>n </b>
+diff -c chap3.bad chap3.fixed ?...<b>y </b>
+   <i> ...Output of diff command for chap3...</i></pre>
+  </li>
+</ul>
+<p class="docText"><span class="docEmphasis">—JP and SJC </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-28-SECT-18">28.18 Expect</h3>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: expect</p>
+<p class="docText">Expect is a program to control interactive applications such 
+as <span class="docEmphBold">telnet</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) and <i>passwd</i>. These and many other applications interactively 
+prompt and expect a user to enter keystrokes in response. But you can write 
+simple Expect scripts to automate these interactions. Then the Expect program 
+can run the &quot;interactive&quot; program noninteractively. Expect can also be used to 
+automate only parts of a dialogue, since control can be passed from the script 
+to the keyboard and vice versa. This allows a script to do the drudgery and a 
+user to do the fun stuff. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: tcl, tk</p>
+<p class="docText">Expect programs can be written in any language but are almost 
+always written in Tcl. Tcl is an interpreted language that is widely used in 
+many other applications. If you already use a Tcl-based application, you won't 
+have to learn a new language for Expect. </p>
+<p class="docText">Tcl is a very typical-looking shell-like language. There are 
+commands to set variables (<i>set</i>), control flow (<i>if</i>, <i>while</i>,
+<i>foreach</i>, etc.), and perform the usual math and string operations. Of 
+course, Unix programs can be called, too. </p>
+<p class="docText">Expect is integrated on top of Tcl and provides additional 
+commands for interacting with programs. Expect is named after the specific 
+command that waits for output from a program. The <i>expect</i> command is the 
+heart of the Expect program. It describes a list of patterns to watch for. Each 
+pattern is followed by an action; if the pattern is found, the action is 
+executed. </p>
+<p class="docText">For example, the following fragment is from a script that 
+involves a login. When executed, the script waits for the strings <tt>welcome</tt>,
+<tt>failed</tt>, or <tt>busy</tt>, and then it evaluates [(executes) —
+<span class="docEmphasis">JP</span>] one of the corresponding actions. The 
+action associated with <span class="docEmphasis">busy</span> shows how multiple 
+commands can be evaluated. The <span class="docEmphasis">timeout</span> keyword 
+is a special pattern that matches if no other patterns match in a certain amount 
+of time. </p>
+<pre>expect {
+   &quot;welcome&quot; break
+   &quot;failed&quot;  abort
+   timeout   abort
+   &quot;busy&quot;    {
+        puts &quot;I'll wait - the system is busy!&quot;
+        continue
+    }
+}</pre>
+<h4  id="upt3-CHP-28-SECT-18.1" class="docSection2Title">28.18.1 Dialback</h4>
+<p class="docText">It is surprising how little scripting is necessary to produce 
+something useful. Below is a script that dials a phone. It is used to reverse 
+the charges so that long-distance phone calls are charged to the computer. It is 
+invoked with the phone number as its argument. </p>
+<pre>spawn tip modem
+expect &quot;connected&quot;
+send &quot;ATD$argv\r&quot;
+# modem takes a while to connect
+set timeout 60
+expect &quot;CONNECT&quot;</pre>
+<p class="docText">The first line runs the <i>tip</i> program so that the output 
+of a modem can be read by <i>expect</i> and its input written by <i>send</i>. 
+Once <i>tip</i> says it is connected, the modem is told to dial using the 
+command <tt>ATD</tt> followed by the phone number. The phone number is retrieved 
+from <span class="docEmphasis">argv</span>, which is a variable predefined to 
+contain the original argument with which the script was called. </p>
+<p class="docText">The fourth line is just a comment noting that the variable 
+being set in the next line controls how long <i>expect</i> will wait before 
+giving up. At this point, the script waits for the call to complete. No matter 
+what happens, <i>expect</i> terminates. If the call succeeds, the system detects 
+that a user is connected and prompts with <tt>login</tt>:. </p>
+<p class="docText">Actual scripts do more error checking, of course. For 
+example, the script could retry if the call fails. But the point here is that it 
+does not take much code to produce useful scripts. This six-line script replaced 
+a 60 KB executable (written in C) that did the same thing! </p>
+<h4  id="upt3-CHP-28-SECT-18.2" class="docSection2Title">28.18.2 Automating /bin/passwd</h4>
+<p class="docText">Earlier I mentioned some programs that cannot be automated 
+with the shell. It is difficult to imagine why you might even want to embed some 
+of these programs in shell scripts. Certainly the original authors of the 
+programs did not conceive of this need. As an example, consider <i>passwd</i>.
+</p>
+<p class="docText"><i>passwd</i> is the command to change a password. The <i>
+passwd</i> program does not take the new password from the command line.<span id="ENB28-6"><a class="docLink" href="#EN28-6"><sup>[6]</sup></a></span> 
+Instead, it interactively prompts for it — twice. Here is what it looks like 
+when run by a system administrator. (When run by users, the interaction is 
+slightly more complex because they are prompted for their old passwords as 
+well.) </p>
+<pre># <b>passwd libes</b>
+Changing password for libes on thunder.
+New password:
+Retype new password:</pre>
+<p class="docText">This is fine for a single password. But suppose you have 
+accounts of your own on a number of unrelated computers and you would like them 
+all to have the same password. Or suppose you are a system administrator 
+establishing 1,000 accounts at the beginning of each semester. All of a sudden, 
+an automated <i>passwd</i> makes a lot of sense. Here is an Expect script to do 
+just that: automate <i>passwd</i> so that it can be called from a shell script.
+</p>
+<pre>spawn passwd [lindex $argv 0]
+set password [lindex $argv 1]
+expect &quot;password:&quot;
+send &quot;$password\r&quot;
+expect &quot;password:&quot;
+send &quot;$password\r&quot;
+expect eof</pre>
+<p class="docText">The first line starts the <i>passwd</i> program with the 
+username passed as an argument. The next line saves the password in a variable 
+for convenience. As in shell scripts, variables do not have to be declared in 
+advance. </p>
+<p class="docText">In the third line, the <i>expect</i> command looks for the 
+pattern <tt>password</tt>:. <i>expect</i> waits until the pattern is found 
+before continuing. </p>
+<p class="docText">After receiving the prompt, the next line sends a password to 
+the current process. The <tt>\r</tt> indicates a carriage return. (Most of the 
+usual C string conventions are supported.) There are two
+<span class="docEmphasis">expect</span>-<span class="docEmphasis">send</span> 
+sequences because <i>passwd</i> asks the password to be typed twice as a 
+spelling verification. There is no point to this in a noninteractive <i>passwd</i>, 
+but the script has to do it because <i>passwd</i> assumes it is interacting with 
+a human who does not type consistently. </p>
+<p class="docText">The final command <tt>expect eof</tt> causes the script to 
+wait for the end-of-file character in the output of <i>passwd</i>. Similar to
+<span class="docEmphasis">timeout</span>, <span class="docEmphasis">eof</span> 
+is another keyword pattern. This final <i>expect</i> effectively waits for <i>
+passwd</i> to complete execution before returning control to the script. </p>
+<p class="docText">Take a step back for a moment. Consider that this problem 
+could be solved in a different way. You could edit the source to <i>passwd</i> 
+(should you be so lucky as to have it) and modify it so that given an optional 
+flag, it reads its arguments from the command line just the way that the Expect 
+script does. If you lack the source and have to write <i>passwd</i> from 
+scratch, of course, then you will have to worry about how to encrypt passwords, 
+lock and write the password database, etc. In fact, even if you only modify the 
+existing code, you may find it surprisingly complicated code to look at. The <i>
+passwd</i> program does some very tricky things. If you do get it to work, pray 
+that nothing changes when your system is upgraded. If the vendor adds NIS, NIS+, 
+Kerberos, shadow passwords, a different encryption function, or some other new 
+feature, you will have to revisit the code. </p>
+<p class="docText">Expect comes with several example scripts that demonstrate 
+how you can do many things that are impossible with traditional shells. For 
+example, the <i>passmass</i> script lets you update your password on many 
+unrelated machines simultaneously. The <i>rftp</i> script provides your regular
+<i>ftp</i> client with additional commands to do recursive FTP in either 
+direction. The <i>cryptdir</i> script encrypts all the files in a directory. And 
+an amusing script is provided that lets two <i>chess</i> processes play each 
+other. Expect has no limit to the number of interactive programs it can drive at 
+the same time. The Unix system may limit Expect, though, by controlling the 
+maximum number of processes or other system resources available. </p>
+<h4  id="upt3-CHP-28-SECT-18.3" class="docSection2Title">28.18.3 Testing: A Story</h4>
+<p class="docText">Many people use Expect for testing. You can test interactive 
+programs as easily as you can automate them. And hardware lends itself to 
+testing with Expect, too. For example, we solved a thorny problem when we had to 
+deal with an unreliable bank of modems. We were receiving dozens of calls each 
+week reporting &quot;the modem is hung.&quot; No indication of which modem, of course. And 
+it was always too late for us to ask the user to try something to investigate 
+the problem. The connection was gone by then. Our solution was an Expect script 
+that connected to each modem hourly and exercised it. Any problems were recorded 
+so that we had a clear and full history of each modem's behavior. As soon as a 
+defective or hung modem was encountered, the Expect script would send email to 
+the system administrator. With this script in place, reports of modem problems 
+from our users dropped to zero. </p>
+<h4  id="upt3-CHP-28-SECT-18.4" class="docSection2Title">28.18.4 Other Problems</h4>
+<p class="docText">These are just a few of the problems that can be solved with 
+Expect. And as with all Expect solutions, recompilation of the original programs 
+is unnecessary. You don't even need the source code! Expect handles many other 
+problems as well. For example, Expect can wrap existing interactive tools with 
+GUI wrappers. This means you can wrap interactive programs with graphic 
+frontends to control applications by buttons, scrollbars, and other graphic 
+elements. And Expect scripts work great as CGI scripts or from
+<span class="docEmphBold">cron</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-2">Section 
+25.2</a>) or <i>inetd</i> [the daemon that controls Internet services provided 
+by a system — <span class="docEmphasis">JP</span>]. Finally, learning Expect may 
+be easier than you think. Expect can watch you interact and then produce an 
+Expect script for you. Interaction automation can't get much easier than this!
+</p>
+<p class="docText">More information on Expect is available in <i>Exploring 
+Expect</i>, by Don Libes, from O'Reilly &amp; Associates. </p>
+<p class="docText"><span class="docEmphasis">— DL</span> </p>
+<blockquote>
+<p class="docFootnote" id="EN28-1"><a class="docLink" href="#ENB28-1">[1]</a>&nbsp;&nbsp;An MH folder name can also start with an <tt>@</tt> (at sign), but that use is 
+less common. Besides, this is just an example!</p><p class="docFootnote" id="EN28-2"><a class="docLink" href="#ENB28-2">[2]</a>&nbsp;&nbsp;The <tt>~</tt> (for Emacs) 
+  has to be <span class="docEmphBold">quoted (</span>(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">Section 
+  27.13</a>) when it's stored in the <span class="docEmphasis">fignore</span> 
+  array. Otherwise, the shell would expand it to <span class="docEmphBold">your 
+  home directory path</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">Section 
+  31.11</a>).</p><p class="docFootnote" id="EN28-3"><a class="docLink" href="#ENB28-3">[3]</a>&nbsp;&nbsp;If you're sending lots of 
+  mail messages with a loop, your system mailer may get overloaded. In that 
+  case, it's a good idea to put a command like <span class="docEmphBold">sleep 5</span> 
+  (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-9">Section 
+  25.9</a>) on a separate line before the <tt>end</tt>. That will give the 
+  mailer five seconds to send each message.</p><p class="docFootnote" id="EN28-4"><a class="docLink" href="#ENB28-4">[4]</a>&nbsp;&nbsp;This is Figure 2-3 from 
+  O'Reilly &amp; Associates' <i>Learning the Unix Operating System</i>, Fourth 
+  Edition.</p><p class="docFootnote" id="EN28-5"><a class="docLink" href="#ENB28-5">[5]</a>&nbsp;&nbsp;Actually, the shell is 
+    piping the standard output of <i>xargs</i>. As I said above, <i>xargs</i> 
+    sends the standard output of commands it runs to its own standard output.</p><p class="docFootnote" id="EN28-6"><a class="docLink" href="#ENB28-6">[6]</a>&nbsp;&nbsp;Newer versions will accept 
+  input from <span class="docEmphasis">STDIN</span>, however.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 27.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 29.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

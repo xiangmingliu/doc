@@ -1,0 +1,761 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 13</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 12.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 14.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 13. Searching Through Files</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-1">13.1 Different Versions of grep</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-2">13.2 Searching for Text with grep</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-3">13.3 Finding Text That Doesn't Match</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-4">13.4 Extended Searching for Text with egrep</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-5">13.5 grepping for a List of Patterns</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-6">13.6 Approximate grep: agrep</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-7">13.7 Search RCS Files with rcsgrep</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-8">13.8 GNU Context greps</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-9">13.9 A Multiline Context grep Using sed</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-10">13.10 Compound Searches</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-11">13.11 Narrowing a Search Quickly</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-12">13.12 Faking Case-Insensitive Searches</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-13">13.13 Finding a Character in a Column</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-14">13.14 Fast Searches and Spelling Checks with &quot;look&quot;</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-15">13.15 Finding Words Inside Binary Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-13-SECT-16">13.16 A Highlighting grep</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-1">13.1 Different Versions of grep</h3>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 class="docSidebarTitle">Summary Box</h2>
+      <p class="docText"><i>grep</i> is one of Unix's most useful tools. As a 
+      result, all users seem to want their own, slightly different version that 
+      solves a different piece of the problem. (Maybe this is a problem in 
+      itself; there really should be only one <i>grep</i>, as the manpage says.) 
+      Three versions of <i>grep</i> come with every Unix system; in addition, 
+      there are six or seven freely available versions that we'll mention here, 
+      as well as probably dozens of others that you can find kicking around the 
+      Net. </p>
+      <p class="docText">Here are the different versions of <i>grep</i> and what 
+      they offer. We'll start with the standard versions: </p>
+      <dl class="docList">
+        <dt><span class="docPubcolor">Plain old <i>grep</i> </span></dt>
+        <dd>
+        <p class="docList">Great for searching with regular expressions (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-2">Section 
+        13.2</a>). </dd>
+        <dt><span class="docPubcolor">Extended <i>grep</i> (or <i>egrep</i>)</span>
+        </dt>
+        <dd>
+        <p class="docList">Handles extended regular expressions. It is also, 
+        arguably, the fastest of the standard <i>grep</i>s (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-4">Section 
+        13.4</a>). </dd>
+        <dt><span class="docPubcolor">Fixed <i>grep</i> (or <i>fgrep</i>)</span>
+        </dt>
+        <dd>
+        <p class="docList">So named because it matches fixed strings. It is 
+        sometimes inaccurately called &quot;fast <i>grep</i>&quot;; often it is really the 
+        slowest of them all. It is useful to search for patterns with literal 
+        backslashes, asterisks, and so on that you'd otherwise have to escape 
+        somehow. <i>fgrep</i> has the interesting ability to search for multiple 
+        strings (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-5">Section 
+        13.5</a>). </dd>
+      </dl>
+      <p class="docText">Of course, on many modern Unixes all three are the same 
+      executable, just with slightly different behaviors, and so you may not see 
+      dramatic speed differences between them. Now for the freeware versions:
+      </p>
+      <dl class="docList">
+        <dt><span class="docPubcolor"><i>agrep</i>, or &quot;approximate <i>grep</i>&quot;</span>
+        </dt>
+        <dd>
+        <p class="docList">A tool that finds lines that &quot;more or less&quot; match 
+        your search string. A very interesting and useful tool, it's part of the
+        <i>glimpse</i> package, which is an indexing and query system for fast 
+        searching of huge amounts of text. <i>agrep</i> is introduced in
+        <a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-6">
+        Section 13.6</a>. </dd>
+        <dt><span class="docPubcolor">Very fast versions of <i>grep</i>, such as 
+        GNU <i>grep</i>/<i>egrep</i>/<i>fgrep</i></span> </dt>
+        <dd>
+        <p class="docList">Most free Unixes use GNU <i>grep</i> as their main <i>
+        grep</i>. </dd>
+        <dt><span class="docPubcolor"><i>rcsgrep</i></span> </dt>
+        <dd>
+        <p class="docList">Searches through <span class="docEmphBold">RCS files</span> 
+        (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+        39.5</a>) (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-7">Section 
+        13.7</a>). </dd>
+      </dl>
+      <p class="docText">In addition, you can simulate the action of <i>grep</i> 
+      with <i>sed</i>, <i>awk</i>, and <i>perl</i>. These utilities allow you to 
+      write such variations as a <i>grep</i> that searches for a
+      <span class="docEmphBold">pattern that can be split across several lines</span> 
+      (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-9">Section 
+      13.9</a>) and other <span class="docEmphBold">context</span> <i>grep</i>
+      <span class="docEmphBold">programs</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-12">Section 
+      41.12</a>), which show you a few lines before and after the text you find. 
+      (Normal <i>grep</i>s just show the lines that match.) </p>
+      <p class="docText"><span class="docEmphasis">— ML</span></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-2">13.2 Searching for Text with grep</h3>
+<p class="docText">There are many well-known benefits provided by <i>grep</i> to 
+the user who doesn't remember what his files contain. Even users of non-Unix 
+systems wish they had a utility with its power to search through a set of files 
+for an arbitrary text pattern (known as a regular expression). </p>
+<p class="docText">The main function of <i>grep</i> is to look for strings 
+matching a regular expression and print only the lines found. Use <i>grep</i> 
+when you want to look at how a particular word is used in one or more files. For 
+example, here's how to list the lines in the file <span class="docEmphasis">ch04</span> 
+that contain either <span class="docEmphasis">run-time</span> or
+<span class="docEmphasis">run time</span>: </p>
+<p class="docText"><tt>&quot;..&quot;</tt>
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">
+Section 27.12</a></p>
+<pre>$ <b>grep &quot;run[- ]time&quot; ch04</b>
+This procedure avoids run-time errors for not-assigned
+and a run-time error message is produced.
+run-time error message is produced.
+program aborts and a run-time error message is produced.
+DIMENSION statement in BASIC is executable at run time.
+This means that arrays can be redimensioned at run time.
+accessible or not open, the program aborts and a run-time</pre>
+<p class="docText">Another use might be to look for a specific HTML tag in a 
+file. The following command will list top-level (<tt>&lt;H1&gt;</tt> <tt>or</tt> <tt>
+&lt;h1&gt;</tt>) and second-level (<tt>&lt;H2&gt;</tt> <tt>or</tt> <tt>&lt;h2&gt;</tt>) headings 
+that have the starting tag at the beginning (<tt>^</tt>) of the line: </p>
+<pre>$ <b>grep &quot;^&lt;[Hh][12]&gt;&quot; ch0[12].html</b>
+ch01.html:&lt;h1&gt;Introduction&lt;/h1&gt;
+ch01.html:&lt;h1&gt;Windows, Screens, and Images&lt;/h1&gt;
+ch01.html:&lt;h2&gt;The Standard Screen-stdscr&lt;/h2&gt;
+ch01.html:&lt;h2&gt;Adding Characters&lt;/h2&gt;
+ch02.html:&lt;H1&gt;Introduction&lt;/H1&gt;
+ch02.html:&lt;H1&gt;What Is Terminal Independence?&lt;/H1&gt;
+ch02.html:&lt;H2&gt;Termcap&lt;/H2&gt;
+ch02.html:&lt;H2&gt;Terminfo&lt;/H2&gt;</pre>
+<p class="docText">In effect, it produces a quick outline of the contents of 
+these files.</p>
+<p class="docText"><i>grep</i> is also often used as a <span class="docEmphBold">
+filter</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-5">Section 
+1.5</a>), to select from the output of some other program. For example, you 
+might want to find the process id of your inetd, if you just changed the 
+configuration file and need to HUP inetd to make it reread the configuration 
+file. Using <span class="docEmphBold">ps</span> (
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">
+Section 24.5</a>) and <i>grep</i> together allows you to do this without wading 
+through a bunch of lines of output: </p>
+<pre>% <b>ps -aux | grep inetd</b>
+root     321  0.0  0.2  1088  548  ??  Is   12Nov01   0:08.93 inetd -wW
+deb    40033  0.0  0.2  1056  556  p5  S+   12:55PM   0:00.00 grep inetd
+% <b>kill -HUP 321</b></pre>
+<p class="docText">There are several options commonly used with <i>grep</i>. The
+<i>-i</i> option specifies that the search ignore the distinction between upper- 
+and lowercase. The <i>-c</i> option tells <i>grep</i> to return only a count of 
+the number of lines matched. The <i>-w</i> option searches for the pattern &quot;as a 
+word.&quot; For example, <tt>grep if</tt> would match words like
+<span class="docEmphasis">cliff</span> or <span class="docEmphasis">knife</span>, 
+but <tt>grep -w if</tt> wouldn't. The <i>-l</i> option returns only the name of 
+the file when <i>grep</i> finds a match. This can be used to prepare a list of 
+files for another command. The <span class="docEmphBold">-v option</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-3">Section 
+13.3</a>) reverses the normal action, and only prints out lines that don't match 
+the search pattern. In the previous example, you can use the <i>-v</i> option to 
+get rid of the extra line of output: </p>
+<pre>% <b>ps -aux | grep inetd | grep -v grep</b>
+root     321  0.0  0.2  1088  548  ??  Is   12Nov01   0:08.93 inetd -wW
+% <b>kill -HUP 321</b></pre>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-3">13.3 Finding Text That Doesn't Match</h3>
+<p class="docText">The <i>grep</i> programs have one very handy feature: they 
+can select lines that don't match a pattern just as they can select the lines 
+that do. Simply use the <i>-v</i> option. </p>
+<p class="docText">I used this most recently when working on this book. We have 
+thousands of separate files under <span class="docEmphBold">RCS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+39.5</a>), and I sometimes forget which ones I've got checked out. Since there's 
+a lot of clutter in the directory and several people working there, a simple <i>
+ls</i> won't do. There are a series of temporary files created by some of our 
+printing scripts that I don't want to see. All of their filenames consist of one 
+or more <span class="docEmphasis">x</span> characters: nothing else. So I use a
+<i>findpt</i> alias to list only the files belonging to me. It's a version of 
+the <i>find.</i> alias described in
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-26">
+Section 9.26</a>, with <span class="docEmphasis">-user tim</span> added to 
+select only my own files and a <i>grep</i> pattern to exclude the temporary 
+files. My <i>findpt</i> alias executes the following command line: </p>
+<pre>find. | grep -v '^\./xx*$'</pre>
+<p class="docText">The leading <tt>./</tt> matches the start of each line of <i>
+find.</i> output, and <tt>xx*</tt> matches one <tt>x</tt> followed by zero or 
+more <tt>x</tt>s. I couldn't use the <i>find</i> operators <tt>! -name</tt> in 
+that case because <i>-name</i> uses shell-like wildcard patterns, and there's no 
+way to say &quot;one or more of the preceding character&quot; (in this case, the character
+<span class="docEmphasis">x</span>) with shell wildcards. </p>
+<p class="docText">Obviously, that's as specific and nonreproducible an example 
+as you're likely to find anywhere! But it's precisely these kinds of special 
+cases that call for a rich vocabulary of tips and tricks. You'll never have to 
+use <span class="docEmphasis">grep -v</span> for this particular purpose, but 
+you'll find a use for it someday. </p>
+<p class="docText">[Note that you could use a slightly simpler regular 
+expression by using<span class="docEmphBold"> egrep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-4">Section 
+13.4</a>), which supports the plus (<tt>+</tt>) operator to mean &quot;one or more,&quot; 
+instead of having to use the basic regular expression <span class="docEmphasis">
+character character zero-or-more</span> (<tt>xx*</tt>). The previous regular 
+expression would then become: </p>
+<pre>find. | egrep -v '^\./x+$'</pre>
+<p class="docText">The richer regular expression language is the primary 
+advantage of <i>egrep</i>. — DJPH] </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-4">13.4 Extended Searching for Text with egrep</h3>
+<p class="docText">The <i>egrep</i> command is yet another version of
+<span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-2">Section 
+13.2</a>), one that extends the syntax of regular expressions. (Versions where
+<i>grep</i> and <i>egrep</i> are the same allow you to get <i>egrep</i>-like 
+behavior from <i>grep</i> by using the <i>-E</i> option.) A plus sign (<tt>+</tt>) 
+following a regular expression matches one or more occurrences of the regular 
+expression; a question mark (<tt>?</tt>) matches zero or one occurrences. In 
+addition, regular expressions can be nested within parentheses: </p>
+<pre>% <b>egrep &quot;Lab(oratorie)?s&quot; name.list</b>
+AT&amp;T Bell Laboratories
+AT&amp;T Bell Labs
+
+Symtel Labs of Chicago</pre>
+<p class="docText">Parentheses surround a second regular expression and <tt>?</tt> 
+modifies this expression. The nesting helps to eliminate unwanted matches; for 
+instance, the word <span class="docEmphasis">Labors</span> or
+<span class="docEmphasis">oratories</span> would not be matched. </p>
+<p class="docText">Another special feature of <i>egrep</i> is the vertical bar (<tt>|</tt>), 
+which serves as an <span class="docEmphasis">or</span> operator between two 
+expressions. Lines matching either expression are printed, as in the next 
+example: </p>
+<pre>% <b>egrep &quot;stdscr|curscr&quot; ch03</b>
+into the stdscr, a character array.
+When stdscr is refreshed, the
+stdscr is refreshed.
+curscr.
+initscr( ) creates two windows: stdscr
+and curscr.</pre>
+<p class="docText">Remember to put the expression inside quotation marks to 
+protect the vertical bar from being interpreted by the shell as a pipe symbol. 
+Look at the next example: </p>
+<pre>% <b>egrep &quot;Alcuin (User|Programmer)('s)? Guide&quot; docguide</b>
+Alcuin Programmer's Guide is a thorough
+refer to the Alcuin User Guide
+Alcuin User's Guide introduces new users to</pre>
+<p class="docText">You can see the flexibility that <i>egrep</i>'s syntax can 
+give you, matching either <tt>User</tt> or <tt>Programmer</tt> and matching them 
+regardless of whether they had an <tt>'s</tt>. </p>
+<p class="docText">Both <i>egrep</i> and <i>fgrep</i> can read search patterns 
+from a file using the <span class="docEmphBold">-f option</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-5">Section 
+13.5</a>). </p>
+<p class="docText"><span class="docEmphasis">— DJPD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-5">13.5 grepping for a List of Patterns</h3>
+<p class="docText"><span class="docEmphBold">egrep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-4">Section 
+13.4</a>) lets you look for multiple patterns using its grouping and alternation 
+operators (big words for parentheses and a vertical bar). But sometimes, even 
+that isn't enough. </p>
+<p class="docText">Both <i>egrep</i> and <i>fgrep</i> support a <i>-f</i> 
+option, which allows you to save a list of patterns (fixed strings in the case 
+of <i>fgrep</i>) in a file, one pattern per line, and search for all the items 
+in the list with a single invocation of the program. For example, in writing 
+this book, we've used this feature to check for consistent usage in a list of 
+terms across all articles: </p>
+<pre>% <b>egrep -f terms *</b></pre>
+<p class="docText">(To be more accurate, we used <span class="docEmphBold">
+rcsegrep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-7">Section 
+13.7</a>), since the articles are all kept under <span class="docEmphBold">RCS</span> 
+(<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+39.5</a>), but you get the idea.) </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-6">13.6 Approximate grep: agrep</h3>
+<p class="docText"><i>agrep</i> is one of the nicer additions to the <i>grep</i> 
+family. It's not only one of the faster greps around; it also has the unique 
+feature of looking for approximate matches. It's also record oriented rather 
+than line oriented. The three most significant features of <i>agrep</i> that are 
+not supported by the <i>grep</i> family are as follows: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">The ability to search for approximate patterns, with a 
+  user-definable level of accuracy. For example: </p>
+  <pre>% <b>agrep -2 homogenos foo</b></pre>
+  <p class="docList">will find &quot;homogeneous,&quot; as well as any other word that can 
+  be obtained from &quot;homogenos&quot; with at most two substitutions, insertions, or 
+  deletions. </p>
+  <pre>% <b>agrep -B homogenos foo</b></pre>
+  <p class="docList">will generate a message of the form:</p>
+  <pre>best match has 2 errors, there are 5 matches, output them? (y/n)</pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList"><i>agrep</i> is record oriented rather than just line 
+  oriented; a record is by default a line, but it can be user-defined with the
+  <i>-d</i> option specifying a pattern that will be used as a record delimiter. 
+  For example: </p>
+  <pre>% <b>agrep -d '^From ' 'pizza' mbox</b></pre>
+  <p class="docList">outputs all <span class="docEmphBold">mail messages</span> 
+  (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+  1.21</a>) (delimited by a line beginning with <span class="docEmphasis">From</span> 
+  and a space) in the file <span class="docEmphasis">mbox</span> that contain 
+  the keyword <span class="docEmphasis">pizza</span>. Another example: </p>
+  <pre>% <b>agrep -d '$$'  </b><i>pattern </i><b> foo </b></pre>
+  <p class="docList">will output all paragraphs (separated by an empty line) 
+  that contain <span class="docEmphasis">pattern</span>. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList"><i>agrep</i> allows multiple patterns with AND (or OR) 
+  logic queries. For example: </p>
+  <pre>% <b>agrep -d '^From ' 'burger,pizza' mbox</b></pre>
+  <p class="docList">outputs all mail messages containing at least one of the 
+  two keywords (<tt>,</tt> stands for OR). </p>
+  <pre>% <b>agrep -d '^From ' 'good;pizza' mbox</b></pre>
+  <p class="docList">outputs all mail messages containing both keywords.</span></li>
+</ol>
+</span>
+<p class="docText">Putting these options together, one can write queries such as 
+the following:</p>
+<pre>% <b>agrep -d '$$' -2 '&lt;CACM&gt;; </b><i>TheAuthor </i><b>;Curriculum;&lt;198[5-9]&gt;' bib </b></pre>
+<p class="docText">which outputs all paragraphs referencing articles in CACM 
+between 1985 and 1989 by <span class="docEmphasis">TheAuthor</span> dealing with 
+Curriculum. Two errors are allowed, but they cannot be in either CACM or the 
+year. (The &lt; &gt; brackets forbid errors in the pattern between them.) </p>
+<p class="docText">Other <i>agrep</i> features include searching for regular 
+expressions (with or without errors), using unlimited wildcards, limiting the 
+errors to only insertions or only substitutions or any combination, allowing 
+each deletion, for example, to be counted as two substitutions or three 
+insertions, restricting parts of the query to be exact and parts to be 
+approximate, and many more. </p>
+<p class="docText"><span class="docEmphasis">—JP, SW, and UM</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-7">13.7 Search RCS Files with rcsgrep</h3>
+<p class="docText">Storing multiple versions of a file in
+<span class="docEmphBold">RCS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+39.5</a>) saves space. How can you search a lot of those files at once? You 
+could check out all the files, then run <i>grep</i> — but you'll have to remove 
+the files after you're done searching. Or, you could search the RCS files 
+themselves with a command like <tt>grep</tt> <tt>foo</tt> <tt>RCS/*,v</tt> — but 
+that can show you garbage lines from previous revisions, log messages, and other 
+text that isn't in the latest revision of your file. This article has two ways 
+to solve that problem. </p>
+<h4  id="upt3-CHP-13-SECT-7.1" class="docSection2Title">13.7.1 rcsgrep, rcsegrep, rcsfgrep</h4>
+<p class="docText">The <i>rcsgrep</i> script — and two links to it named <i>
+rcsegrep</i> and <i>rcsfgrep</i> — run <i>grep</i> , <span class="docEmphBold">
+egrep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-4">Section 
+13.4</a>), and <i>fgrep</i> on all files in the RCS directory. (You can also 
+choose the files to search.) </p>
+<p class="docText">The script tests its name to decide whether to act like <i>
+grep</i>, <i>egrep</i>, or <i>fgrep</i>. Then it checks out each file and pipes 
+it to the version of grep you chose. The output looks just like <i>grep</i>'s — 
+although, by default, you'll also see the messages from the <i>co</i> command 
+(the <i>-s</i> option silences those messages). </p>
+<p class="docText">By default, <i>rcsgrep</i> searches the latest revision of 
+every file. With the <i>-a</i> option, <i>rcsgrep</i> will search all revisions 
+of every file, from first to last. This is very handy when you're trying to see 
+what was changed in a particular place and to find which revision(s) have some 
+text that was deleted some time ago. (<i>rcsgrep</i> uses
+<span class="docEmphBold">rcsrevs</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-6">Section 
+39.6</a>) to implement <i>-a</i>.) </p>
+<p class="docText">Some <i>grep</i> options need special handling to work right 
+in the script: <i>-e</i>, <i>-f</i>, and <i>-l</i>. (For instance, <i>-e</i> and
+<i>-f</i> have an argument after them. The script has to pass both the option 
+and its argument.) The script passes any other options you type to the <i>grep</i> 
+command. Your <i>grep</i> versions may have some other options that need special 
+handling, too. Just edit the script to handle them. </p>
+<h4  id="upt3-CHP-13-SECT-7.2" class="docSection2Title">13.7.2 rcsegrep.fast</h4>
+<p class="docText">To search an RCS file, <i>rcsgrep</i> and its cousins run 
+several Unix processes: <i>co</i>, <i>grep</i>, <i>sed</i>, and others. Each 
+process takes time to start and run. If your directory has hundreds of RCS files 
+(like our directory for this book does), searching the whole thing can take a 
+lot of time. I could have cut the number of processes by rewriting <i>rcsgrep</i> 
+in Perl; Perl has the functionality of <i>grep</i>, <i>sed</i>, and others built 
+in, so all it would need to do is run hundreds of <i>co</i> processes . . . 
+which would still make it too slow. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: rcsegrep.fast</p>
+<p class="docText">The solution I came up with was to do everything in 
+(basically) one process: a <span class="docEmphBold">gawk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-11">Section 
+20.11</a>) script. Instead of using the RCS <i>co</i> command to extract each 
+file's latest revision, the <i>rcsegrep.fast</i> script reads each RCS file 
+directly (The <span class="docEmphasis">rcsfile</span>(5) manpage explains the 
+format of an RCS file.) An RCS file contains the latest revision of its working 
+file as plain text, with one difference: each <tt>@</tt> character is changed to
+<tt>@@</tt>. <i>rcsegrep.fast</i> searches the RCS file until it finds the 
+beginning of the latest revision. Then it applies an <i>egrep</i>-like regular 
+expression to each line. Matching lines are written to standard output with the 
+filename first; the <i>-n</i> option gives a line number after the filename. </p>
+<p class="docText"><i>rcsegrep.fast</i> is sort of a kludge because it's 
+accessing RCS files without using RCS tools. There's a chance that it won't work 
+on some versions of RCS or that I've made some other programming goof. But it's 
+worked very well for us. It's much faster than <i>rcsgrep</i> and friends. I'd 
+recommend using <i>rcsegrep.fast</i> when you need to search the latest 
+revisions of a lot of RCS files; otherwise, stick to the <i>rcsgrep</i>s. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-8">13.8 GNU Context greps</h3>
+<p class="docText">By default, standard <i>grep</i> utilities show only the 
+lines of text that match the search pattern. Sometimes, though, you need to see 
+the matching line's context: the lines before or after the matching line. The 
+GNU <i>grep</i>s (<i>grep</i>, <i>fgrep</i>, and <i>egrep</i>) can do this. 
+There are three context grep options: </p>
+<ul>
+  <li>
+  <p class="docList">The <i>-C</i> option shows two lines of context around each 
+  match; you can also give a numeric argument, such as <tt>-C 4</tt>, to choose 
+  how many lines of context (here, four). </li>
+  <li>
+  <p class="docList">The <i>-B</i> option shows context before each match. A 
+  numeric argument, such as <tt>-B 2</tt> for two lines of context, is required.
+  </li>
+  <li>
+  <p class="docList">The <i>-A</i> option shows context after each match. A 
+  numeric argument, such as <tt>-A 3</tt> for three lines of context, is 
+  required. </li>
+</ul>
+<p class="docText">Each set of contiguous matching lines is separated by a line 
+of two dashes (<tt>--</tt>). </p>
+<p class="docText">Let's look at an example: I'd like to search my system mail 
+log for all messages sent to anyone at <span class="docEmphasis">oreilly.com</span>. 
+But <i>sendmail</i> doesn't put all information about a message on the <tt>to=</tt> 
+log line; some info is in the <tt>from=</tt> line, which is usually the previous 
+line. So I'll search for all &quot;to&quot; lines and add one line of context before each 
+match. I'll also use the <i>-n</i>, which numbers the output lines, to make the 
+context easier to see. This option also puts marker characters after the line 
+number: a line number ends with a colon (:) if this line contains a match, and a 
+dash (<tt>-</tt>) marks lines before or after a match. Here goes: </p>
+<pre># <b>grep -n -B 1 'to=&lt;[^@]*@oreilly\.com&gt;' maillog</b>
+7-Nov 12 18:57:42 jpeek sendmail[30148]: SAA30148: from=&lt;jpeek@jpeek.com&gt;...
+8:Nov 12 18:57:43 jpeek sendmail[30150]: SAA30148: to=&lt;al@oreilly.com&gt;...
+9-Nov 12 22:49:51 jpeek sendmail[1901]: WAA01901: from=&lt;jpeek@jpeek.com&gt;...
+10:Nov 12 22:49:51 jpeek sendmail[1901]: WAA01901: to=&lt;wfurby@oreilly.com&gt;...
+11:Nov 12 22:50:23 jpeek sendmail[2000]: WAA01901: to=&lt;wfurby@oreilly.com&gt;...
+--
+25-Nov 13 07:42:38 jpeek sendmail[9408]: HAA09408: from=&lt;jpeek@jpeek.com&gt;...
+26:Nov 13 07:42:44 jpeek sendmail[9410]: HAA09408: to=&lt;al@oreilly.com&gt;...
+27-Nov 13 08:08:36 jpeek sendmail[10004]: IAA10004: from=&lt;jpeek@jpeek.com&gt;...
+28:Nov 13 08:08:37 jpeek sendmail[10006]: IAA10004: to=&lt;wfurby@oreilly.com&gt;...
+--
+32-Nov 13 11:59:46 jpeek sendmail[14473]: LAA14473: from=&lt;jpeek@jpeek.com&gt;...
+33:Nov 13 11:59:47 jpeek sendmail[14475]: LAA14473: to=&lt;al@oreilly.com&gt;...
+34-Nov 13 15:34:17 jpeek sendmail[18272]: PAA18272: from=&lt;jpeek@jpeek.com&gt;...
+35:Nov 13 15:34:19 jpeek sendmail[18274]: PAA18272: to=&lt;al@oreilly.com&gt;...</pre>
+<p class="docText">I've truncated each line for printing, but you still can see 
+the matches. A few notes about what's happening here: </p>
+<ul>
+  <li>
+  <p class="docList">Line 8 matches (so it has a colon after its line number), 
+  and line 7 is the line of context before (so it starts with a dash). </li>
+  <li>
+  <p class="docList">Note that a line is never shown more than once, as you can 
+  see in lines 9 through 11: lines 10 and 11 both match, so they both have 
+  colons. But because line 10 has already been shown once, it's not repeated as 
+  the line &quot;before&quot; line 11. </li>
+  <li>
+  <p class="docList">There are no matches on line 12, so a line of two dashes is 
+  printed as a separator. The next match is on line 26. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-9">13.9 A Multiline Context grep Using sed</h3>
+<p class="docText">[One weakness of the <i>grep</i> family of programs is that 
+they are line oriented. They read only one line at a time, so they can't find 
+patterns (such as phrases) that are split across two lines.
+<span class="docEmphBold">agrep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-6">Section 
+13.6</a>) can do multiline searches. One advantage of the <i>cgrep</i> script is 
+that it shows how to handle multiple-line patterns in <i>sed</i> and can be 
+adapted for work other than searches. — JP] </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: cgrep</p>
+<p class="docText">It may surprise you to learn that a fairly decent
+<span class="docEmphBold">context grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-8">Section 
+13.8</a>) program can be built using <i>sed</i>. As an example, the following 
+command line: </p>
+<pre>$ <b>cgrep -10 system main.c</b></pre>
+<p class="docText">will find all lines containing the word
+<span class="docEmphasis">system</span> in the file <span class="docEmphasis">
+main.c</span> and show ten additional lines of context above and below each 
+match. (The -<tt><i>context</i></tt> option must be at least one, and it 
+defaults to two lines.) If several matches occur within the same context, the 
+lines are printed as one large &quot;hunk&quot; rather than repeated smaller hunks. Each 
+new block of context is preceded by the line number of the first occurrence in 
+that hunk. This script, which can also search for patterns that span lines: </p>
+<pre>$ <b>cgrep -3 &quot;awk.*perl&quot;</b></pre>
+<p class="docText">will find all occurrences of the word &quot;awk&quot; where it is 
+followed by the word &quot;perl&quot; somewhere within the next three lines. The pattern 
+can be any simple regular expression, with one notable exception: because you 
+can match across lines, you should use <tt>\n</tt> in place of the <tt>^</tt> 
+and <tt>$</tt> metacharacters. </p>
+<p class="docText">[While this is a wonderful example of some neat sed 
+techniques, if this is all you're trying to do, use perl. It has features 
+designed to do exactly this sort of thing very efficiently, and it will be much 
+faster. — DH] </p>
+<p class="docText"><span class="docEmphasis">— GU</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-10">13.10 Compound Searches</h3>
+<p class="docText">You may recall that you can search for lines containing 
+&quot;this&quot; <span class="docEmphasis">or</span> &quot;that&quot; using the
+<span class="docEmphBold">egrep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-4">Section 
+13.4</a>) <tt>|</tt> metacharacter: </p>
+<pre>egrep 'this|that' <tt><i>files</i></tt></pre>
+<p class="docText">But how do you grep for &quot;this&quot; <span class="docEmphasis">and</span> 
+&quot;that&quot;? Conventional regular expressions don't support an
+<span class="docEmphasis">and</span> operator because it breaks the rule of 
+patterns matching one consecutive string of text. Well,
+<span class="docEmphBold">agrep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-6">Section 
+13.6</a>) is one version of <i>grep</i> that breaks all the rules. If you're 
+lucky enough to have it installed, just use this: </p>
+<pre>agrep 'cat;dog;bird' <tt><i>files</i></tt></pre>
+<p class="docText">If you don't have <i>agrep</i>, a common technique is to 
+filter the text through several <i>grep</i>s so that only lines containing all 
+the keywords make it through the pipeline intact: </p>
+<pre>grep cat <tt><i>files</i></tt> | grep dog | grep bird</pre>
+<p class="docText">But can it be done in one command? The closest you can come 
+with <i>grep</i> is this idea: </p>
+<pre>grep 'cat.*dog.*bird' <tt><i>files</i></tt></pre>
+<p class="docText">which has two limitations — the words must appear in the 
+given order, and they cannot overlap. (The first limitation can be overcome 
+using <tt>egrep 'cat.*dog|dog.*cat'</tt>, but this trick is not really scalable 
+to more than two terms.) </p>
+<p class="docText">As usual, the problem can also be solved by moving beyond the 
+grep family to the more powerful tools. Here is how to do a line-by-line
+<span class="docEmphasis">and</span> search using <i>sed</i>, <i>awk</i>, or <i>
+perl</i>:<span id="ENB13-1"><a class="docLink" href="#EN13-1"><sup>[1]</sup></a></span></p>
+<pre>sed '/cat/!d; /dog/!d; /bird/!d' <tt><i>files</i></tt>
+awk '/cat/ &amp;&amp; /dog/ &amp;&amp; /bird/' <tt><i>files</i></tt>
+perl -ne 'print if /cat/ &amp;&amp; /dog/ &amp;&amp; /bird/' <tt><i>files</i></tt></pre>
+<p class="docText">Okay, but what if you want to find where all the words occur 
+in the same <span class="docEmphasis">paragraph</span>? Just turn on paragraph 
+mode by setting <tt>RS=&quot;&quot;</tt> in <i>awk</i> or by giving the <i>-00</i> option 
+to <i>perl</i>: </p>
+<pre>awk '/cat/ &amp;&amp; /dog/ &amp;&amp; /bird/ {print $0 ORS}' RS= <tt><i>files</i></tt>
+perl -n00e 'print &quot;$_\n&quot; if /cat/ &amp;&amp; /dog/ &amp;&amp; /bird/' <tt><i>files</i></tt></pre>
+<p class="docText">And if you just want a list of the <tt><i>files</i></tt> that 
+contain all the words anywhere in them? Well, <i>perl</i> can easily slurp in 
+entire files if you have the memory and you use the <i>-0</i> option to set the 
+record separator to something that won't occur in the file (like
+<span class="docEmphasis">NUL</span>): </p>
+<pre>perl -ln0e 'print $ARGV if /cat/ &amp;&amp; /dog/ &amp;&amp; /bird/' <tt><i>files</i></tt></pre>
+<p class="docText">(Notice that as the problem gets harder, the less powerful 
+commands drop out.) </p>
+<p class="docText">The <i>grep</i> filter technique shown earlier also works on 
+this problem. Just add a <i>-l</i> option and the <span class="docEmphBold">
+xargs command</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-17">Section 
+27.17</a>) to make it pass filenames, rather than text lines, through the 
+pipeline: </p>
+<pre>grep -l cat <tt><i>files</i></tt> | xargs grep -l dog | xargs grep -l bird</pre>
+<p class="docText">(<i>xargs</i> is basically the glue used when one program 
+produces output needed by another program as command-line arguments.) </p>
+<p class="docText"><span class="docEmphasis">— GU</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-11">13.11 Narrowing a Search Quickly</h3>
+<p class="docText">If you're searching a long file to find a particular word or 
+name, or you're running a program like <span class="docEmphasis">ls -l</span> 
+and you want to filter some lines, here's a quick way to narrow down the search. 
+As an example, say your phone file has 20,000 lines like these: </p>
+<pre>Smith, Nancy:MFG:50 Park Place:Huntsville:(205)234-5678</pre>
+<p class="docText">and you want to find someone named Nancy. When you see more 
+information, you know you can find which of the Nancys she is: </p>
+<pre>% <b>grep Nancy phones </b>
+<i> ...150 lines of names...</i></pre>
+<p class="docText">Use the C shell's <span class="docEmphBold">history mechanism</span> 
+(<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-2">Section 
+30.2</a>) and <i>sed</i> to cut out lines you don't want. For example, about a 
+third of the Nancys are in Huntsville, and you know she doesn't work there: </p>
+<pre>% <b>!! | sed -e /Huntsville/d </b>
+grep Nancy phones | sed -e /Huntsville/d
+<i> ...100 lines of names...</i></pre>
+<p class="docText">The shell shows the command it's executing: the previous 
+command (<tt>!!</tt>) piped to <i>sed</i>, which deletes lines in the <i>grep</i> 
+output that have the word <span class="docEmphasis">Huntsville</span>. </p>
+<p class="docText">Okay. You know Nancy doesn't work in the MFG or SLS groups, 
+so delete those lines, too: </p>
+<pre>% <b>!! -e /MFG/d -e /SLS/d </b>
+grep Nancy phones | sed -e /Huntsville/d -e /MFG/d -e /SLS/d
+<i> ...20 lines of names...</i></pre>
+<p class="docText">Keep using <tt>!!</tt> to repeat the previous command line, 
+and keep adding more <i>sed</i> expressions until the list gets short enough. 
+The same thing works for other commands. When you're hunting for errors in a 
+BSDish system log, for example, and you want to skip lines from <i>named</i> and
+<i>sudo</i>, use the following: </p>
+<pre>% <b>cat /var/log/messages | sed -e /named/d -e /sudo/d</b>
+...</pre>
+<p class="docText">If the matching pattern has anything but letters and numbers 
+in it, you'll have to understand <span class="docEmphBold">shell quoting</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) and <i>sed</i> regular expressions. Most times, though, this 
+quick-and-dirty method works just fine. </p>
+<p class="docText">[Yes, you can do the exact same thing with multiple
+<span class="docEmphBold">grep -v</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-3">Section 
+13.3</a>) commands, but using <i>sed</i> like this allows multiple matches with 
+only one execution of <i>sed</i>. <span class="docEmphasis">grep</span> -<span class="docEmphasis">v</span> 
+requires a new <i>grep</i> process for each condition. — DH] </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-12">13.12 Faking Case-Insensitive Searches</h3>
+<p class="docText">This may be the simplest tip in the book, but it's something 
+that doesn't occur to lots of users. </p>
+<p class="docText">Some versions of <i>egrep</i> don't support the <i>-i</i> 
+option, which requests case-insensitive searches. I find that case-insensitive 
+searches are absolutely essential, particularly to writers. You never know 
+whether any particular word will be capitalized. </p>
+<p class="docText">To fake a case-insensitive search with <i>egrep</i>, just 
+eliminate any letters that might be uppercase. Instead of searching for
+<span class="docEmphasis">Example</span>, just search for
+<span class="docEmphasis">xample</span>. If the letter that might be capitalized 
+occurs in the middle of a phrase, you can replace the missing letter with a 
+&quot;dot&quot; (single character) wildcard, rather than omitting it. </p>
+<p class="docText">Sure, you could do this the &quot;right way&quot; with a command like:
+</p>
+<pre>% <b>egrep '[eE]xample' *</b></pre>
+<p class="docText">but our shortcut is easier.</p>
+<p class="docText">This tip obviously isn't limited to <i>egrep</i>; it applies 
+to any utility that only implements case-sensitive searches, like <i>more</i>.
+</p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-13">13.13 Finding a Character in a Column</h3>
+<p class="docText">Here's an idea for finding lines that have a given character 
+in a column. Use the following simple <span class="docEmphBold">awk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+20.10</a>) command: </p>
+<pre>% <b>awk 'substr($0, </b><i>n </i><b>,1) == &quot; </b><i>c </i><b>&quot;' </b> <i>filename </i></pre>
+<p class="docText">where <span class="docEmphasis">c</span> is the character 
+you're searching for, and <span class="docEmphasis">n</span> is the column you 
+care about. </p>
+<p class="docText">Where would you do this? If you're processing a file with 
+strict formatting, this might be useful; for example, you might have a telephone 
+list with a <tt>#</tt> in column 2 for &quot;audio&quot; telephone numbers, <tt>$</tt> for 
+dialup modems, and <tt>%</tt> for fax machines. A script for looking up phone 
+numbers might use an <i>awk</i> command like this to prevent you from mistakenly 
+talking to a fax machine. </p>
+<p class="docText">If your data has any TAB characters, the columns might not be 
+where you expect. In that case, use <i>expand</i> on the file, then pipe it to
+<i>awk</i>. </p>
+<p class="docText"><span class="docEmphasis">—JP and ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-14">13.14 Fast Searches and Spelling Checks with &quot;look&quot;</h3>
+<p class="docText">Every so often, someone has designed a new, faster <i>grep</i>-type 
+program. Public- domain software archives have more than a few of them. One of 
+the fastest search programs has been around for years: <i>look</i>. It uses a 
+binary search method that's very fast. But <i>look</i> won't solve all your 
+problems: it works only on files that have been <span class="docEmphBold">sorted</span> 
+(<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-1">Section 
+22.1</a>). If you have a big file or database that can be sorted, searching it 
+with <i>look</i> will save a lot of time. For example, to search for all lines 
+that start with <span class="docEmphasis">Alpha</span>: </p>
+<pre>% <b>look Alpha </b> <i>filename </i>
+Alpha particle
+Alphanumeric</pre>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: look</p>
+<p class="docText">The <i>look</i> program can also be used to check the 
+spelling of a word or find a related word; see
+<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-3">
+Section 16.3</a>. If you don't have <i>look</i> installed on your system, you 
+can get it from the Unix Power Tools web site. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<ul>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-15">13.15 Finding Words Inside Binary Files</h3>
+<p class="docText">If you try to read binaries on your screen with
+<span class="docEmphBold">cat -v</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">Section 
+12.4</a>), you'll see a lot of nonprintable characters. Buried in there 
+somewhere, though, are words and strings of characters that might make some 
+sense. For example, if the code is copyrighted, you can usually find that 
+information in the binary. The pathnames of special files read by the program 
+will probably show up. If you're trying to figure out which program printed an 
+error message, use <i>strings</i> on the binaries and look for the error. Some 
+versions of <i>strings</i> do a better job of getting just the useful 
+information; others may write a lot of junk, too. But what the heck? — pipe the 
+output to <span class="docEmphBold">a pager</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>) or <span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-2">Section 
+13.2</a>), redirect it to a file, and ignore the stuff you don't want. </p>
+<p class="docText">Here's a (shortened) example on FreeBSD: </p>
+<pre>% <b>strings /usr/bin/write</b>
+/usr/libexec/ld-elf.so.1
+FreeBSD
+libc.so.4
+strcpy
+...
+@(#) Copyright (c) 1989, 1993
+        The Regents of the University of California.  All rights reserved.
+$FreeBSD: src/usr.bin/write/write.c,v 1.12 1999/08/28 01:07:48 peter Exp $
+can't find your tty
+can't find your tty's name
+you have write permission turned off
+/dev/
+%s is not logged in on %s
+%s has messages disabled on %s
+usage: write user [tty]
+/var/run/utmp
+utmp
+%s is not logged in
+%s has messages disabled
+%s is logged in more than once; writing to %s
+%s%s
+Message from %s@%s on %s at %s ...</pre>
+<p class="docText">The eighth line (<span class="docEmphasis">$FreeBSD: ... $</span>) 
+comes from <span class="docEmphBold">RCS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+39.5</a>) — you can see the version number, the date the code was last modified 
+or released, and so on. The <tt>%s</tt> is a special pattern that the
+<span class="docEmphasis">printf</span>(3) function will replace with values 
+like the username, hostname, and time. </p>
+<p class="docText">By default, <i>strings</i> doesn't search all of a binary 
+file: it only reads the initialized and loaded sections. The <tt>-</tt> (dash) 
+option tells <i>strings</i> to search all of the file. Another useful option is
+<tt>-<i>n</i></tt>, where <span class="docEmphasis">n</span> is the 
+minimum-length string to print. Setting a higher limit will cut the &quot;noise,&quot; but 
+you might also lose what you're looking for. </p>
+<p class="docText">The <i>od</i> command with its option <tt>-s<i>n</i></tt> 
+command does a similar thing: finds all null-terminated strings that are at 
+least <span class="docEmphasis">n</span> characters long. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-13-SECT-16">13.16 A Highlighting grep</h3>
+<p class="docText">Do you ever <i>grep</i> for a word, and when lines scroll 
+down your screen, it's hard to find the word on each line? For example, suppose 
+I'm looking for any mail messages I've saved that say anything about the <i>perl</i> 
+programming language. But when I <i>grep</i> the file, most of it seems useless:
+</p>
+<pre>% <b>grep perl ~/Mail/save</b>
+&gt; and some of it wouldn't compile properly.  I wonder if
+Subject: install script, for perl scripts
+ perl itself is installed?
+&gt; run but dies with a read error because it isn't properly
+&gt; if I can get it installed properly on another machine I
+&gt; run but dies with a read error because it isn't properly
+&gt; if I can get it installed properly on another machine I</pre>
+<p class="docText">Well, as described on its own manual page, here's a program 
+that's &quot;trivial, but cute.&quot; <i>hgrep</i> runs a <i>grep</i> and highlights the 
+string being searched for, to make it easier for us to find what we're looking 
+for. </p>
+<pre>% <b>hgrep perl ~/Mail/save </b>
+&gt; and some of it wouldn't compile pro<i>perl </i>y.  I wonder if
+Subject: install script, for <i>perl </i> scripts
+ <i>perl </i> itself is installed?
+&gt; run but dies with a read error because it isn't pro<i>perl </i>y
+&gt; if I can get it installed pro<i>perl </i>y on another machine I
+&gt; run but dies with a read error because it isn't pro<i>perl </i>y
+&gt; if I can get it installed pro<i>perl </i>y on another machine I</pre>
+<p class="docText">And now we know why the output looked useless: because most 
+of it is! Luckily, <i>hgrep</i> is just a frontend; it simply passes all its 
+arguments to <i>grep</i>. So <i>hgrep</i> necessarily accepts all of <i>grep</i>'s 
+options, and I can just use the <i>-w</i> option to pare the output down to what 
+I want: </p>
+<pre>% <b>hgrep -w perl ~/Mail/save </b>
+Subject: install script, for <i>perl </i> scripts
+ <i>perl </i> itself is installed?</pre>
+<p class="docText">The <span class="docEmphBold">less</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>) pager also automatically highlights matched patterns as you search.
+</p>
+<p class="docText"><span class="docEmphasis">— LM</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN13-1"><a class="docLink" href="#ENB13-1">[1]</a>&nbsp;&nbsp;Some versions of <i>nawk</i> require an explicit <tt>$0~</tt> in front of each 
+pattern.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 12.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 14.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

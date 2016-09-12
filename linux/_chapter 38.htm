@@ -1,0 +1,995 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 38</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 37.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 39.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 38. Backing Up Files</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-1">38.1 What Is This &quot;Backup&quot; Thing?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-2">38.2 tar in a Nutshell</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-3">38.3 Make Your Own Backups</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-4">38.4 More Ways to Back Up</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-5">38.5 How to Make Backups to a Local Device</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-6">38.6 Restoring Files from Tape with tar</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-7">38.7 Using tar to a Remote Tape Drive</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-8">38.8 Using GNU tar with a Remote Tape Drive</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-9">38.9 On-Demand Incremental Backups of a Project</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-10">38.10 Using Wildcards with tar</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-11">38.11 Avoid Absolute Paths with tar</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-12">38.12 Getting tar's Arguments in the Right Order</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-13">38.13 The cpio Tape Archiver</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-38-SECT-14">38.14 Industrial Strength Backups</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-1">38.1 What Is This &quot;Backup&quot; Thing?</h3>
+<p class="docText">Making copies of critical files in case the originals become 
+inaccessible is called backing them up or making backups. Backups are insurance. 
+They are time and effort you spend protecting yourself from things that might 
+never happen. Your hard drive might never crash, but what vital things would you 
+lose if it did? </p>
+<p class="docText">Exactly what &quot;making a backup&quot; means varies depending on your 
+circumstances. All of the following examples are ways to make backups applicable 
+to some specific environment: </p>
+<ul>
+  <li>
+  <p class="docList">Copying some files onto another disk on the same machine, 
+  so that if one hard drive dies you still have a copy. (A more sophisticated 
+  and automatic way of doing this, which you may have heard about, is called
+  <span class="docEmphasis">Redundant Array of Inexpensive Disks</span> or 
+  RAID.) </li>
+  <li>
+  <p class="docList">Making a compressed tar file and copying it to another 
+  machine, so that if one machine crashes you still have a copy. </li>
+  <li>
+  <p class="docList">Writing copies of your files to a Zip drive, CD-RW, or DVD-RW.</li>
+  <li>
+  <p class="docList"><span class="docEmphBold">tarring</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-2">Section 
+  38.2</a>) files to a tape. </li>
+  <li>
+  <p class="docList">Nightly automatic backups of everything that's changed that 
+  day (called an <span class="docEmphasis">incremental backup</span>) to 
+  multiple tapes, with copies of the tapes stored in offsite secure storage.
+  </li>
+</ul>
+<p class="docText">If you are just trying to protect your files on your personal 
+machine, simply making sure that critical files have copies on multiple physical 
+disks or occasionally copying files onto another machine or removable storage is 
+probably sufficient. If you're administering a machine that has multiple users, 
+regular backups are almost certainly a necessity. If those users are doing 
+business-critical tasks, very regular backups and off-site copies are a 
+requirement to protect the investment of time involved. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-2">38.2 tar in a Nutshell</h3>
+<p class="docText">When many Unix users think of file archives, on tape or in an 
+archive file, they think of the <i>tar</i> utility. There are other ways to make 
+archives and handle tapes — including <i>dump</i> and <i>dd</i>. This article 
+summarizes articles about <i>tar</i> in this chapter and others. </p>
+<ul>
+  <li>
+  <p class="docList">Although <i>tar</i> is a <span class="docEmphasis">t</span>ape
+  <span class="docEmphasis">ar</span>chiver, one of its common uses is
+  <span class="docEmphBold">making an archive file on disk</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-2">Section 
+  39.2</a>). Because <i>tar</i> &quot;pads&quot; its archives with NUL characters, on-disk
+  <i>tar</i> archive files can be much bigger than the size of the individual 
+  files put together. Both to fix that and generally to save space, <i>tar</i> 
+  files are often compressed. The <span class="docEmphBold">GNU tar</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-3">Section 
+  39.3</a>) can compress files while storing them and uncompress them while 
+  reading them, automatically. If you don't have GNU <i>tar</i>, you may need to 
+  uncompress an archive manually. Note that a compressed <i>tar</i> archive
+  <span class="docEmphBold">can take less disk space</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-7">Section 
+  15.7</a>) than compressing individual small files. </p>
+  <p class="docList">Because <i>tar</i> keeps most of a file's inode 
+  information, it can make a <span class="docEmphBold">more complete copy</span> 
+  (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-13">Section 
+  10.13</a>) of a file or directory tree than utilities such as <i>cp</i>. </li>
+  <li>
+  <p class="docList">Yes, we do have articles about archives on tape.
+  <a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-3">
+  Section 38.3</a> has enough information to make your own archive, although you 
+  might need the details from
+  <a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-5">
+  Section 38.5</a>, too. After you've made an archive, you'll probably want to 
+  restore it, at least as a test to be sure your archive is okay.
+  <a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-6">
+  Section 38.6</a> explains how. </p>
+  <p class="docList">If there isn't a tape drive on your computer, read
+  <a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-7">
+  Section 38.7</a> about using a drive on another computer. </li>
+  <li>
+  <p class="docList"><i>tar</i> copies a directory tree, recursively, from top 
+  to bottom. What if you don't want to archive everything? You can back up just 
+  some files by combining <span class="docEmphasis">ls -lt</span> and <i>find</i>. 
+  Some versions of <i>tar</i> have options for <span class="docEmphBold">
+  including or excluding certain files and directories</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-3">Section 
+  39.3</a>). </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-3">38.3 Make Your Own Backups</h3>
+<p class="docText">As someone who has been an end user and a system 
+administrator, I strongly believe that every user should understand the 
+importance of backups. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">If you have data that is important to you, you should 
+        have a known backup. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Accidents and oversights happen. Tapes can be damaged, lost, 
+or mislabeled. Assume that your system administrator is top-notch. The best 
+administrator can recover your lost data 99 percent of the time. There is still 
+a small chance that the files you need might not be recovered. Can you afford to 
+duplicate months of effort 1 percent of the time? No. </p>
+<p class="docText">An experienced user learns to be pessimistic. Typically, this 
+important perspective is learned the hard way. Perhaps a few hours are lost. 
+Perhaps days. Sometimes months are lost. </p>
+<p class="docText">Here are some common situations:</p>
+<ul>
+  <li>
+  <p class="docList">A user works on a file all day. At the end of the day, the 
+  file is deleted by accident. The system manager cannot recover the file. A 
+  day's work has been lost. </li>
+  <li>
+  <p class="docList">A programmer tries to clean up a project directory. Instead 
+  of typing <tt>rm *.o</tt> the programmer types <tt>rm * .o</tt> and the entire 
+  directory is lost. </li>
+  <li>
+  <p class="docList">A user deletes a file by accident. After a few days, the 
+  user asks the system administrator to recover the file. The incremental backup 
+  system has reused the only tape the missing file was on. </li>
+  <li>
+  <p class="docList">A large project is archived on a magnetic tape and deleted 
+  from the disk. A year later, some of the information is needed. The tape has a 
+  bad block at the beginning. The system manager must learn how to recover data 
+  from a bad tape. The attempt is often unsuccessful. The information is lost 
+  forever, and must be re-created at the cost of months of effort. </li>
+  <li>
+  <p class="docList">Someone breaks into a computer and alters or deletes 
+  crucial information. </li>
+  <li>
+  <p class="docList">A fire breaks out in the computer room. The disks and
+  <span class="docEmphasis">all</span> of the backup tapes are lost. </li>
+</ul>
+<p class="docText">Gulp! I scared myself. Excuse me for a few minutes while I 
+load a tape... </p>
+<p class="docText">Ah! I feel better now. As I was saying, being pessimistic has 
+its advantages. </p>
+<p class="docText">Making a backup is easy. Get a blank tape and put a label on 
+it. Learn how to load it into the tape drive. Then do the following: </p>
+<pre>% <b>cd</b>
+% <b>tar c .</b></pre>
+<p class="docText">Take the tape out. Write-protect the tape (usually, just 
+slide the tab). That's all. </p>
+<p class="docText">[Well, okay, not exactly. That would back up only your home 
+directory to the default tape device (usually something like <i>/dev/rmt0</i>). 
+You may want to back up more than just your home directory, the tape drive may 
+not be at the default device, and you may not have permission to write to the 
+tape drive by default. The rest of the chapter talks about variations on the 
+theme. — DJPH] </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-4">38.4 More Ways to Back Up</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-3">
+Section 38.3</a> explains the minimal basics of using <i>tar</i> to make 
+backups, but there are lots of variations that can be very useful. </p>
+<p class="docText">To create a <i>tar</i> archive for copying to another disk or 
+another machine: </p>
+<pre>% <b>tar cvf 20020214-book.tar ./book</b></pre>
+<p class="docText"><i>tar</i> 's <i>c</i> option stands for
+<span class="docEmphasis">c</span>reate, <i>v</i> for <span class="docEmphasis">
+v</span>erbose, and the <i>f</i> option for <span class="docEmphasis">f</span>ile.
+<i>20020214-book.tar</i> is the new archive file to create, and <i>./book</i> 
+says to archive the directory <span class="docEmphasis">book</span> in the 
+current directory. Once you have an archive, you might want to compress it to 
+save space. <i>gzip</i> and <i>bzip2</i> are your best bets. (I use <i>bzip2</i> 
+here largely because it tends to give better compression, but be aware that <i>
+gzip</i> is more widely available and thus may be safer for backups.) You can 
+compress it once you've made it: </p>
+<pre>% <b>ls -l 20020214-book.tar</b>
+-rw-r--r--  1 deb  deb  19415040 Feb 14 23:15 20020214-book.tar
+% <b>bzip2 20020214-book.tar</b>
+% <b>ls -l 20020214-book.tar.bz2</b>
+-rw-r--r--  1 deb  deb   4033775 Feb 14 23:15 20020214-book.tar.bz2</pre>
+<p class="docText">Or you can compress it as you make it. GNU <i>tar</i> 
+supports <i>gzip</i> compression on the fly with the <i>z</i> or <i>- -gzip</i> 
+options and <i>bzip2</i> compression on the fly with the <i>- -bzip2</i> option, 
+or you can pipe into <i>gzip</i> or <i>bzip2</i>: </p>
+<pre>% <b>tar czvf 20020214-book.tar.gz ./book</b>
+
+% <b>tar cvf 20020214-book.tar.bz2 --bzip2 ./book</b>
+
+% <b>tar cvf - ./book | bzip2 &gt; 20020214-book.tar.bz2</b></pre>
+<p class="docText">
+<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-2">
+Section 39.2</a> and
+<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-3">
+Section 39.3</a> have more information on using <i>tar</i>. </p>
+<p class="docText">You can get more protection from certain kinds of mishaps by 
+using a version control system like <span class="docEmphBold">RCS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+39.5</a>) or <span class="docEmphBold">CVS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-7">Section 
+39.7</a>) to save every version of a file you are updating frequently. While it 
+doesn't protect you from disk crashes, a version control system provides the 
+ability to back up to a previous version if something gets changed or deleted 
+incorrectly. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-5">38.5 How to Make Backups to a Local Device</h3>
+<p class="docText">This article was written for Linux systems, but the advice 
+applies everywhere. You may need to make some adjustments — in the names of the 
+tape drive devices and some filesystem directories, for instance. If you're 
+making personal backups (of the files on your account, for instance), you can 
+substitute your directory names for the system directories covered here, but the 
+command names and techniques won't change. </p>
+<h4  id="upt3-CHP-38-SECT-5.1" class="docSection2Title">38.5.1 What to Back Up</h4>
+<p class="docText">As
+<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-3">
+Section 38.3</a> says, the simplest way to make a backup is to use <i>tar</i> to 
+archive all the files on the system or only those files in a set of specific 
+directories. Before you do this, however, you need to decide what files to back 
+up. Do you need to back up every file on the system? This is rarely necessary, 
+especially if you have your original installation disks or CD-ROM. If you have 
+made specific, important changes to the system, but everything else could simply 
+be reinstalled in case of a problem, you could get by archiving only those files 
+you have made changes to. Over time, however, it is difficult to keep track of 
+such changes. </p>
+<p class="docText">In general, you will be making changes to the system 
+configuration files in <i>/etc</i>. There are other configuration files as well, 
+and it can't hurt to archive directories such as <i>/usr/local</i> (where 
+various packages generally get installed) and <i>/usr/X11R6/lib/X11</i> (which 
+contains the X Window System configuration files). You may want to do filtering 
+on these directories and back up only the configuration files, since binaries in
+<i>/usr/local</i> and things like fonts in the X11 distribution can be 
+reinstalled from their original packages easily enough. </p>
+<p class="docText">You should also back up your kernel sources (if you have 
+patched your kernel sources); these are found in <i>/usr/src/linux</i> (<i>/usr/src/sys</i> 
+on *BSD). At the very least, you'll want to back up your kernel configuration 
+file if you've built your own kernel; it's in <i>/usr/src/linux/.config</i> (or
+<i>/usr/src/sys/</i><tt><i>platform</i></tt>/<i>conf</i>/<tt><i>KERNELNAME</i></tt> 
+on *BSD). </p>
+<p class="docText">It's a good idea to keep notes on what features of the system 
+you've changed so you can make intelligent choices when making backups. If 
+you're truly paranoid, go ahead and back up the whole system: that can't hurt, 
+but the cost of backup media might. </p>
+<p class="docText">Of course, you should also back up the home directories for 
+each user on the system; these are generally found in <i>/home</i>. If you have 
+your system configured to receive electronic mail, you might want to back up the 
+incoming mail files for each user. Many people tend to keep old and &quot;important&quot; 
+electronic mail in their incoming mail spool, and it's not difficult to 
+accidentally corrupt one of these files through a mailer error or other mistake. 
+These files are usually found in <i>/var/spool/mail</i>. </p>
+<h4  id="upt3-CHP-38-SECT-5.2" class="docSection2Title">38.5.2 Backing Up to Tape</h4>
+<p class="docText">Assuming you know what files or directories to back up, 
+you're ready to roll. The <i>tar</i> command can be used directly, as we saw in
+<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-2">
+Section 39.2</a>, to make a backup. For example, the command: </p>
+<pre>tar cvf /dev/rft0 /usr/src /etc /home</pre>
+<p class="docText">archives all of the files from <i>/usr/src</i>, <i>/etc</i>, 
+and <i>/home</i> to <i>/dev/rft0</i>. <i>/dev/rft0</i> is the first 
+&quot;floppy-tape&quot; device — that is, for the type of tape drive that hangs off of the 
+floppy controller. Many popular tape drives for the PC use this interface. If 
+you have a SCSI tape drive, the device names are <i>/dev/st0</i>, <i>/dev/st1</i>, 
+and so on, based on the drive number. Those tape drives with another type of 
+interface have their own device names; you can determine these by looking at the 
+documentation for the device driver in the kernel. </p>
+<p class="docText">You can then read the archive back from the tape using a 
+command such as: </p>
+<pre>tar xvf /dev/rft0</pre>
+<p class="docText">This is exactly as if you were dealing with a tar file on 
+disk, as in
+<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-2">
+Section 39.2</a>. </p>
+<p class="docText">When you use the tape drive, the tape is seen as a stream 
+that may be read from or written to in one direction only. Once <i>tar</i> is 
+done, the tape device will be closed, and the tape will rewind (if you're using 
+the default tape device; see below on how to prevent this). You don't create a 
+filesystem on a tape, nor do you mount it or attempt to access the data on it as 
+files. You simply treat the tape device itself as a single &quot;file&quot; to create or 
+extract archives from. </p>
+<p class="docText">Be sure your tapes are formatted before you use them if you 
+are using a tape drive that needs it. This ensures that the beginning-of-tape 
+marker and bad-blocks information has been written to the tape. At the time of 
+this writing, no tools exist for formatting QIC-80 tapes (those used with floppy 
+tape drivers) under Linux; you'll have to format tapes under MS-DOS or use 
+preformatted tapes. </p>
+<p class="docText">Creating one tar file per tape might be wasteful if the 
+archive requires a fraction of the capacity of the tape. To place more than one 
+file on a tape, you must first prevent the tape from rewinding after each use, 
+and you must have a way to position the tape to the next &quot;file marker,&quot; both for 
+tar file creation and for extraction. </p>
+<p class="docText">The way to do this is to use the nonrewinding tape devices, 
+which are named <i>/dev/nrft0</i>, <i>/dev/nrft1</i>, and so on for floppy-tape 
+drivers, and <i>/dev/nrst0</i>, <i>/dev/nrst1</i>, and so on for SCSI tapes. 
+When this device is used for reading or writing, the tape will not be rewound 
+when the device is closed (that is, once <i>tar</i> has completed). You can then 
+use <i>tar</i> again to add another archive to the tape. The two tar files on 
+the tape won't have anything to do with each other. Of course, if you later 
+overwrite the first tar file, you may overwrite the second file or leave an 
+undesirable gap between the first and second files (which may be interpreted as 
+garbage). In general, don't attempt to replace just one file on a tape that has 
+multiple files on it. </p>
+<p class="docText">Using the nonrewinding tape device, you can add as many files 
+to the tape as space permits. To rewind the tape after use, use the <i>mt</i> 
+command. <i>mt</i> is a general-purpose command that performs a number of 
+functions with the tape drive. For example, the command: </p>
+<pre>mt /dev/nrft0 rewind</pre>
+<p class="docText">rewinds the tape in the first floppy-tape device. (In this 
+case, you can use the corresponding rewinding tape device as well; however, the 
+tape will rewind just as a side effect of the tape device being closed.) </p>
+<p class="docText">Similarly, the command: </p>
+<pre>mt /dev/nrft0 reten</pre>
+<p class="docText">retensions the tape by winding it to the end and then 
+rewinding it.</p>
+<p class="docText">When reading files on a multiple-file tape, you must use the 
+nonrewinding tape device with <i>tar</i> and the <i>mt</i> command to position 
+the tape to the appropriate file. </p>
+<p class="docText">For example, to skip to the next file on the tape, use the 
+command: </p>
+<pre>mt /dev/nrft0 fsf 1</pre>
+<p class="docText">This skips over one file on the tape. Similarly, to skip over 
+two files, use: </p>
+<pre>mt /dev/nrft0 fsf 2</pre>
+<p class="docText">Be sure to use the appropriate nonrewinding tape device with
+<i>mt</i>. Note that this command does not move to &quot;file number two&quot; on the 
+tape; it skips over the next two files based on the current tape position. Just 
+use <i>mt</i> to rewind the tape if you're not sure where the tape is currently 
+positioned. You can also skip back; see the <i>mt</i> manual page for a complete 
+list of options. </p>
+<p class="docText">You need to use <i>mt</i> every time you read a multifile 
+tape. Using <i>tar</i> twice in succession to read two archive files usually 
+won't work; this is because <i>tar</i> doesn't recognize the file marker placed 
+on the tape between files. Once the first <i>tar</i> finishes, the tape is 
+positioned at the beginning of the file marker. Using <i>tar</i> immediately 
+will give you an error message, because <i>tar</i> will attempt to read the file 
+marker. After reading one file from a tape, just use: </p>
+<pre>mt <tt><i>device</i></tt> fsf 1</pre>
+<p class="docText">to move to the next file.</p>
+<h4  id="upt3-CHP-38-SECT-5.3" class="docSection2Title">38.5.3 Backing Up to Floppies or Zip Disks</h4>
+<p class="docText">Just as we saw in the last section, the command: </p>
+<pre>tar cvf /dev/fd0 /usr/src /etc /home</pre>
+<p class="docText">makes a backup of <i>/usr/src</i>, <i>/etc</i>, and <i>/home</i> 
+to <i>/dev/fd0</i>, the first floppy device. You can then read the backup using 
+a command such as: </p>
+<pre>tar xvf /dev/fd0</pre>
+<p class="docText">If we use <i>/dev/hdd</i> instead of <i>/dev/fd0</i> (and our 
+Zip drive is the slave drive on the second IDE controller), we'll be writing to 
+and reading from a Zip disk instead of a floppy. (Your device name may vary 
+depending on your OS.) Because floppies and Zip disks have a rather limited 
+storage capacity, GNU <i>tar</i> allows you to create a &quot;multivolume&quot; archive. 
+(This feature applies to tapes as well, but it is far more useful in the case of 
+smaller media.) With this feature, <i>tar</i> prompts you to insert a new volume 
+after reading or writing each disk. To use this feature, simply provide the <i>M</i> 
+option to <i>tar</i>, as in: </p>
+<pre>tar cvMf /dev/fd0 /usr/src /etc /home</pre>
+<p class="docText">Be sure to label your disks well, and don't get them out of 
+order when attempting to restore the archive. </p>
+<p class="docText">One caveat of this feature is that it doesn't support the 
+automatic <i>gzip</i> compression provided by the <i>z</i> option. However, 
+there are various reasons why you may not want to compress your backups created 
+with <i>tar</i>, as discussed later. At any rate, you can create your own 
+multivolume backups using <i>tar</i> and <i>gzip</i> in conjunction with a 
+program that reads and writes data to a sequence of disks (or tapes), prompting 
+for each in succession. One such program is <i>backflops</i>, available on 
+several Linux distributions and on the FTP archive sites. A do-it-yourself way 
+to accomplish the same thing would be to write the backup archive to a disk file 
+and use <i>dd</i> or a similar command to write the archive as individual chunks 
+to each disk. If you're brave enough to try this, you can figure it out for 
+yourself. [Aw, come on, guys, have a heart! (Psst, readers: look at the end of
+<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-9">
+Section 21.9</a>.) — <span class="docEmphasis">JP</span>] </p>
+<h4  id="upt3-CHP-38-SECT-5.4" class="docSection2Title">38.5.4 To gzip, or Not to gzip?</h4>
+<p class="docText">There are good arguments both for and against compression of
+<i>tar</i> archives when making backups. The overall problem is that neither <i>
+tar</i> nor <i>gzip</i> is particularly fault-tolerant, no matter how convenient 
+they are. Although compression using <i>gzip</i> can greatly reduce the amount 
+of backup media required to store an archive, compressing entire <i>tar</i> 
+files as they are written to floppy or tape makes the backup prone to complete 
+loss if one block of the archive is corrupted, say, through a media error (not 
+uncommon in the case of floppies and tapes). Most compression algorithms, <i>
+gzip</i> included, depend on the coherency of data across many bytes to achieve 
+compression. If any data within a compressed archive is corrupt, <i>gunzip</i> 
+may not be able to uncompress the file at all, making it completely unreadable 
+to <i>tar</i>. The same applies to <i>bzip2</i>. It may compress things better 
+than <i>gzip</i>, but it has the same lack of fault-tolerance. </p>
+<p class="docText">This is much worse than if the tar file were uncompressed on 
+the tape. Although <i>tar</i> doesn't provide much protection against data 
+corruption within an archive, if there is minimal corruption within a tar file, 
+you can usually recover most of the archived files with little trouble, or at 
+least those files up until the corruption occurs. Although far from perfect, 
+it's better than losing your entire backup. </p>
+<p class="docText">A better solution would be to use an archiving tool other 
+than <i>tar</i> to make backups. There are several options available.
+<span class="docEmphBold">cpio</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-13">Section 
+38.13</a>) is an archiving utility that packs files together, much like <i>tar</i>. 
+However, because of the simpler storage method used by <i>cpio</i>, it recovers 
+cleanly from data corruption in an archive. (It still doesn't handle errors well 
+on gzipped files.) </p>
+<p class="docText">The best solution may be to use a tool such as <i>afio</i>.
+<i>afio</i> supports multivolume backups and is similar in some respects to <i>
+cpio</i>. However, <i>afio</i> includes compression and is more reliable because 
+each individual file is compressed. This means that if data on an archive is 
+corrupted, the damage can be isolated to individual files, instead of to the 
+entire backup. </p>
+<p class="docText">These tools should be available with your Linux distribution, 
+as well as from all of the Internet-based Linux archives. A number of other 
+backup utilities, with varying degrees of popularity and usability, have been 
+developed or ported for Linux. If you're serious about backups, you should look 
+into them.<span id="ENB38-1"><a class="docLink" href="#EN38-1"><sup>[1]</sup></a></span> </p>
+<p class="docText">—<span class="docEmphasis">MW, MKD, and LK</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-6">38.6 Restoring Files from Tape with tar</h3>
+<p class="docText">When you create an archive, there are several ways to specify 
+the directory. If the directory is under the current directory, you could type:
+</p>
+<pre>% <b>tar c project</b></pre>
+<p class="docText">A similar way to specify the same directory is:</p>
+<pre>% <b>tar c ./project</b></pre>
+<p class="docText">If you are currently in the directory you want archived, you 
+can type:</p>
+<pre>% <b>tar c .</b></pre>
+<p class="docText">Another way to archive the current directory is to type:</p>
+<pre>% <b>tar c *</b></pre>
+<p class="docText">Here, the shell expands the asterisk (<tt>*</tt>) to the 
+files in the current directory. However, it does not match files starting with a 
+dot (.), which is why the previous technique is preferred. </p>
+<p class="docText">This causes a problem when restoring a directory from a <i>
+tar</i> archive. You may not know whether an archive was created using . or the 
+directory name. </p>
+<p class="docText">I always check the names of the files before restoring an 
+archive:</p>
+<pre>% <b>tar t</b></pre>
+<p class="docText">If the archive loads the files into the current directory, I 
+create a new directory, change to it, and extract the files. </p>
+<p class="docText">If the archive restores the directory by name, then I restore 
+the files into the current directory. </p>
+<h4  id="upt3-CHP-38-SECT-6.1" class="docSection2Title">38.6.1 Restoring a Few Files</h4>
+<p class="docText">If you want to restore a single file, get the pathname of the 
+file as <i>tar</i> knows it, using the <i>t</i> flag. You must specify the exact 
+filename, because <i>filename</i> and <i>./filename</i> are not the same to <i>
+tar</i>. You can combine these two steps into one command by using: </p>
+<pre>% <b>tar xvf /dev/rst0 `tar tf /dev/rst0 | grep  </b><i>filename` </i></pre>
+<p class="docText">Note that this may run very slowly, though, as the entire tar 
+file has to be read once (and the tape rewound) before any restoration can 
+happen. Be careful: you may also get a lot more than you expected; for example, 
+if you're looking for <i>README</i> using this technique, you'd also get <i>
+README.Solaris</i> and everything in the <i>doc/READMEs</i> directory, possibly 
+overwriting files you wanted to keep. </p>
+<p class="docText">Whenever you use <i>tar</i> to restore a directory, you must 
+always specify <span class="docEmphasis">some</span> filename. If none is 
+specified, no files are restored. </p>
+<p class="docText">There is still the problem of restoring a directory whose 
+pathname starts with a slash (<tt>/</tt>). Because <i>tar</i> restores a file to 
+the pathname specified in the archive, you cannot change
+<span class="docEmphasis">where</span> the file will be restored. The danger is 
+that either you may overwrite some existing files or you will not be able to 
+restore the files because you don't have permission. </p>
+<p class="docText">You can ask the system administrator to rename a directory 
+and temporarily create a symbolic link pointing to a directory where you can 
+restore the files. Other solutions exist, including editing the <i>tar</i> 
+archive and creating a new directory structure with a C program executing the
+<span class="docEmphasis">chroot</span>(2) system call. Another solution is to 
+use <span class="docEmphBold">GNU tar</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-3">Section 
+39.3</a>), which allows you to remap pathnames starting with slash (<tt>/</tt>). 
+It also allows you to create archives that are too large for a single tape, 
+incremental archives, and a dozen other advantages. </p>
+<p class="docText">But the best solution is never to create an archive of a 
+directory that starts with slash (<tt>/</tt>) or <span class="docEmphBold">tilde</span> 
+(<tt>~</tt>) (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">Section 
+31.11</a>) (since the shell will expand <tt>~</tt> into an absolute path that 
+starts with a <tt>/</tt>). </p>
+<h4  id="upt3-CHP-38-SECT-6.2" class="docSection2Title">38.6.2 Remote Restoring</h4>
+<p class="docText">To restore a directory from a remote host, use the following 
+command: </p>
+<p class="docText"><tt>rsh</tt>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">
+Section 1.21</a></p>
+<pre>%<b> rsh -n  </b><i>host </i> <b>dd if=/dev/rst0 bs=20b | tar xvBfb - 20 </b> <i>files </i></pre>
+<p class="docText">This runs <i>dd</i> on the remote host, reading from <i>
+/dev/rst0</i> with a blocksize of twenty blocks, and pipes it to a local <i>tar</i>. 
+It is difficult to read fixed-size blocks over a network. This is why <i>tar</i> 
+uses the <i>B</i> flag to force it to read from the pipe until a block is 
+completely filled. Some versions of <i>tar</i>, including GNU <i>tar</i>,
+<span class="docEmphBold">handle remote drives automatically</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-8">Section 
+38.8</a>). </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-7">38.7 Using tar to a Remote Tape Drive</h3>
+<p class="docText">If your computer doesn't have a tape drive connected, 
+creating <span class="docEmphBold">tar</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-2">Section 
+38.2</a>) backup files is slightly more complicated. If you have an account on a 
+machine with a tape drive, and the directory is mounted via
+<span class="docEmphBold">NFS</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), you can just <span class="docEmphBold">rlogin</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) to the other machine and use <i>tar</i> to back up your directory. </p>
+<p class="docText">If the directory is not NFS mounted, or it is mounted but you 
+have permission problems accessing your own files, you can use <i>tar</i>,
+<span class="docEmphBold">rsh</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), and <span class="docEmphBold">dd</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-6">Section 
+21.6</a>) to solve this dilemma. The syntax is confusing, but if you forget, you 
+can use <span class="docEmphBold">man tar</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+2.1</a>) to refresh your memory. The command to dump the current directory to a 
+tape in a remote machine called <span class="docEmphasis">zephyrus</span> is:
+</p>
+<pre>% <b>tar cvfb - 20 . | rsh zephyrus dd of=/dev/rmt0 obs=20b</b></pre>
+<p class="docText">Here, the output file of <i>tar</i> is <tt>-</tt>, which <i>
+tar</i> interprets as standard input if <i>tar</i> is reading an archive or 
+standard output if <i>tar</i> is creating an archive. </p>
+<p class="docText">The <i>dd</i> command copies data from standard input to the 
+device <span class="docEmphasis">/dev/rmt0</span>. </p>
+<p class="docText">This example assumes you can use <i>rsh</i> without requiring 
+a password. You can add your current machine's name to the remote
+<span class="docEmphBold">.rhosts file</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) if you get a <tt>Password</tt>: prompt when you use <i>rlogin</i> to 
+access this machine. You also can use <i>ssh</i>, which is generally more secure 
+than <i>rsh</i>, and the <i>ssh-agent</i> utility to allow logins without a 
+password. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-8">38.8 Using GNU tar with a Remote Tape Drive</h3>
+<p class="docText">If you're using GNU <i>tar</i>, you can probably ignore the 
+tips in
+<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-7">
+Section 38.7</a> about using a tape drive on a remote system. GNU <i>tar</i> 
+makes it easy to access a remote drive via <i>rsh</i> or a similar command like
+<i>ssh</i>. </p>
+<p class="docText">When referring to a local host, the GNU <i>tar</i> <i>f</i> 
+option takes a plain filename like <span class="docEmphasis">foo.tar</span> or a 
+device name like <span class="docEmphasis">/dev/rmt0</span>. If you put a colon 
+(:) before that name, though, you can prepend a remote hostname — and, 
+optionally, a username. For example, to get a table of contents of the tape on 
+the drive <span class="docEmphasis">/dev/rmt8</span> on the remote host
+<span class="docEmphasis">server2</span>, logging into <span class="docEmphasis">
+server2</span> as yourself, type: </p>
+<pre>% <b>tar tf server2:/dev/rmt8</b></pre>
+<p class="docText">To specify a different username than the one on your local 
+host, add it with an <tt>@</tt> before the hostname. (This assumes you're 
+allowed to connect to the remote host without a password — because there's a
+<span class="docEmphasis">.rhosts</span> file on the remote system, for 
+instance.) For example, to connect to <span class="docEmphasis">server2</span> 
+as <span class="docEmphasis">heather</span> and extract the files
+<span class="docEmphasis">reports/products.sgml</span> and
+<span class="docEmphasis">reports/services.sgml</span> from
+<span class="docEmphasis">/dev/rmt8</span>: </p>
+<p class="docText"><tt>{ }</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">
+Section 28.4</a></p>
+<pre>% <b>tar xf</b>
+<b>heather@server2:/dev/rmt8 reports/{products,services}.sgml</b></pre>
+<p class="docText">By default, GNU <i>tar</i> uses <i>rsh</i>, <i>remsh</i>, or
+<i>nsh</i> to access the remote machine, though that can be changed when <i>tar</i> 
+is built and installed on your host. If you want another access command, like <i>
+ssh</i>, you can set that with the <i>- -rsh-command</i> option. The next 
+example gets the contents of the archive on the drive <span class="docEmphasis">
+/dev/rmt8</span> from the host <span class="docEmphasis">capannole.it</span> 
+using <i>ssh</i>. Note that <i>tar</i> doesn't check your
+<span class="docEmphBold">search path</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-6">Section 
+27.6</a>) for the <span class="docEmphasis">rsh-command</span>; you have to give 
+its absolute pathname (which you can get with a command like
+<span class="docEmphBold">which</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-6">Section 
+2.6</a>)): </p>
+<pre>% <b>tar -x --file=capannole.it:/dev/rmt8</b>
+<b>--rsh-command=/usr/bin/ssh</b></pre>
+<p class="docText">On the other hand, if you need to use a local filename with a 
+colon in it, add the <i>- -force-local</i> option. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-9">38.9 On-Demand Incremental Backups of a Project</h3>
+<p class="docText">As I was working on this book, I was constantly editing lots 
+of random files all through a directory tree. I archived some of the files in a
+<span class="docEmphBold">revision control system</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-4">Section 
+39.4</a>), but those archives, as well as the nonarchived files, still would be 
+vulnerable if my disk crashed. (And naturally, close to a deadline, one hard 
+disk started making whining noises...) </p>
+<p class="docText">The answer I came up with was easy to use and simple to set 
+up. It's a script named <i>ptbk</i>, and this article explains it. To run the 
+script, I just type its name. It searches my directory tree for files that have 
+been modified since the last time I ran <i>ptbk</i>. Those files are copied into 
+a dated compressed <i>tar</i> archive and copied to a remote system using <i>scp</i>. 
+The process looks like this: </p>
+<pre>$ <b>ptbk</b>
+upt/upt3_changes.html
+upt/BOOKFILES
+upt/art/0548.sgm
+upt/art/1420.sgm
+upt/art/1430.sgm
+upt/art/0524.sgm
+upt/BOOKIDS
+upt/ulpt3_table
+Now copying this file to bserver:
+-rw-rw-r--    1 jpeek    323740 Jan  3 23:08 /tmp/upt-200101032308.tgz
+upt-200101032308.tgz     |     316 KB |  63.2 kB/s | ETA: 00:00:00 | 100%</pre>
+<p class="docText">The script actually doesn't copy <span class="docEmphasis">
+all</span> of the files in my directory tree. I've set up a <i>tar</i> exclude 
+file that makes the script skip some files that don't need backing up. For 
+instance, it skips any filename that starts with a comma (,). Here's the file, 
+named <i>ptbk.exclude</i>: </p>
+<pre>upt/ptbk.exclude
+upt/tarfiles
+upt/gmatlogs
+upt/drv-jpeek-jpeek.ps
+upt/drv-jpeek.3l
+upt/BOOKFILES~
+upt/ch*.ps.gz
+upt/ch*.ps
+upt/,*
+upt/art/,*</pre>
+<p class="docText">After the script makes the tar file, it <i>touch</i>es a 
+timestamp file named <i>ptbk.last</i>. The next time the script runs, it uses
+<span class="docEmphBold">find -newer</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-8">Section 
+9.8</a>) to get only the files that have been modified since the timestamp file 
+was touched. </p>
+<p class="docText">The script uses <i>scp</i> and <i>ssh-agent</i> to copy the 
+archive without asking for a password. You could hack it to use another method. 
+For instance, it could copy using <span class="docEmphBold">rcp</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) or simply copy the file to another system with <i>cp</i> via an NFS-mounted 
+filesystem (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>). </p>
+<p class="docText">This doesn't take the place of regular backups, if only 
+because re-creating days' worth of work from the little individual archives 
+would be tedious. But this system makes it painless to take snapshots, as often 
+as I want, by typing a four-letter command. Here's the <i>ptbk</i> script: </p>
+<p class="docText"><tt>||</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+Section 35.14</a>, <tt>'...'</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a></p>
+<pre>#!/bin/sh
+# ptbk - back up latest UPT changes, scp to $remhost
+
+dirbase=upt
+dir=$HOME/$dirbase
+timestamp=$dir/ptbk.last     # the last time this script was run
+exclude=$dir/ptbk.exclude    # file with (wildcard) pathnames to skip
+remhost=bserver              # hostname to copy the files to
+remdir=tmp/upt_bak/.         # remote directory (relative to $HOME)
+cd $dir/.. || exit           # Go to parent directory of $dir
+datestr=`date '+%Y%m%d%H%M'`
+outfile=/tmp/upt-$datestr.tgz
+
+# Don't send vim recovery files (.*.swp):
+tar czvlf $outfile -X $exclude \
+     `find $dirbase -type f -newer $timestamp ! -name '.*.swp' -print`
+mv -f $timestamp $dir/,ptbk.last
+echo &quot;Timestamp file for $0.  Don't modify.&quot; &gt; $timestamp
+echo &quot;Now copying this file to $remhost:&quot;
+ls -l $outfile
+scp $outfile ${remhost}:${remdir}</pre>
+<p class="docText">If the copy fails (because the remote machine is down, for 
+instance), I have to either copy the archive somewhere else or wait and remember 
+to copy the archive later. If you have an unreliable connection, you might want 
+to modify the script to touch the timestamp file only if the copy succeeds — at 
+the possible cost of losing a data file that was modified while the previous 
+archive was (not?) being transferred to the remote host. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-10">38.10 Using Wildcards with tar</h3>
+<p class="docText">When extracting files from a <i>tar</i> archive, it's handy 
+to be able to use wildcards. You have to <span class="docEmphBold">protect them</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) from the shell, so that they are passed directly to <i>tar</i>. </p>
+<h4  id="upt3-CHP-38-SECT-10.1" class="docSection2Title">38.10.1 Without GNU tar</h4>
+<p class="docText">In general, <i>tar</i> can't do wildcard matching on the 
+filenames within an archive. There's a terribly ugly hack that you can use to 
+select the files you want anyway. Try a command like this: </p>
+<p class="docText"><tt>'...'</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a></p>
+<pre>% <b>tar xvf /dev/rst0 `tar tf /dev/rst0 | egrep  'lib/(foo|bar)'`</b></pre>
+<p class="docText">What you're doing here is using <i>tar</i> twice.
+<span class="docEmphasis">tar t</span> will print the names of all the files on 
+the tape. The pattern supplied to <span class="docEmphBold">egrep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-4">Section 
+13.4</a>) selects the pathnames containg <i>lib/foo</i> or <i>lib/bar</i>, and 
+the resulting filenames are passed to the first <i>tar</i> command, which 
+actually extracts the files from the archive. Note that these patterns are
+<span class="docEmphBold">regular expressions, not wildcards</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-2">Section 
+32.2</a>). </p>
+<p class="docText">Here's another subtle but important point. Because the 
+regular expression patterns in the example above are not anchored with
+<span class="docEmphBold">^ or $ characters</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-4">Section 
+32.4</a>), they can match anywhere in the file pathnames. So <tt>lib/(foo|bar)</tt> 
+would match a pathname like <span class="docEmphasis">lib/foo</span> as well as 
+a pathname like <span class="docEmphasis">/usr/lib/glib/foo.h</span>. </p>
+<h4  id="upt3-CHP-38-SECT-10.2" class="docSection2Title">38.10.2 With GNU tar</h4>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: GNU tar</p>
+<p class="docText">One of the many improvements in GNU <i>tar</i> is that it 
+understands wildcards in the names of files within an archive. (Remember that 
+because you want <i>tar</i>, not the shell, to see these wildcards, you have to
+<span class="docEmphBold">quote</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) the filename arguments that have wildcards.) </p>
+<p class="docText">Unlike the examples in the previous section, GNU <i>tar</i> 
+uses <span class="docEmphBold">wildcards, not regular expressions</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-2">Section 
+32.2</a>). Unlike shells, the wildcard expressions in GNU <i>tar</i> can match 
+across slashes (<tt>/</tt>) in pathnames. </p>
+<p class="docText">Here's a demonstration of using wildcards: we want to extract 
+all subdirectories named <span class="docEmphasis">editor</span>. Command 1 
+shows how you'd do it in non-GNU <i>tar</i>: list the exact pathnames of the 
+subdirectories. Notice that <i>tar</i> extracts the directory and any 
+subdirectories too. Command 2 shows the easy way to do the job with GNU <i>tar</i>: 
+make a wildcard expression that ends with a slash and the directory name. As 
+before, <i>tar</i> extracts the directory and any subdirectories. What if you 
+want to extract anything with the string <span class="docEmphasis">editor</span> 
+in its name — including individual files? Make a wildcard pattern without the 
+slash and a filename surrounded by stars, as in command 3. Finally, command 4 
+shows an example of how (different than in shells) a wildcard can match across 
+the <tt>/</tt> characters in pathnames. Command 4 extracts only directories 
+named <span class="docEmphasis">editor</span> somewhere (possibly several 
+layers) underneath a directory named <span class="docEmphasis">skin</span>: </p>
+<p class="docText"><tt>&gt;</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-12">
+Section 28.12</a></p>
+<pre>1$ <b>tar xvf mozilla.tar package/chrome/en-US/locale/en-US/editor</b> \
+&gt; <b>package/chrome/classic/skin/classic/content/editor</b> \
+&gt; <b>...</b>
+package/chrome/en-US/locale/en-US/editor/
+package/chrome/en-US/locale/en-US/editor/contents.rdf
+package/chrome/en-US/locale/en-US/editor/editor.dtd
+  ...
+package/chrome/classic/skin/classic/editor/
+package/chrome/classic/skin/classic/editor/EditModeTabs.css
+  ...
+package/chrome/classic/skin/classic/editor/images/
+package/chrome/classic/skin/classic/editor/images/Map_Copy.gif
+  ...
+2$ <b>tar xvf mozilla.tar '*/editor'</b>
+package/chrome/en-US/locale/en-US/editor/
+package/chrome/en-US/locale/en-US/editor/contents.rdf
+package/chrome/en-US/locale/en-US/editor/editor.dtd
+  ...
+package/chrome/classic/skin/classic/editor/
+package/chrome/classic/skin/classic/editor/EditModeTabs.css
+  ...
+package/chrome/classic/skin/classic/editor/images/
+package/chrome/classic/skin/classic/editor/images/Map_Copy.gif
+  ...
+3$ <b>tar xvf mozilla.tar '*editor*'</b>
+package/defaults/pref/editor.js
+package/components/editor.xpt
+  ...
+package/chrome/en-US/locale/en-US/editor/
+package/chrome/en-US/locale/en-US/editor/contents.rdf
+package/chrome/en-US/locale/en-US/editor/editor.dtd
+  ...
+package/chrome/comm/content/communicator/editorBindings.xul
+package/chrome/comm/content/communicator/search/search-editor.js
+  ...
+4$ <b>tar xvf mozilla.tar '*/skin/*/editor'</b>
+package/chrome/classic/skin/classic/editor/
+package/chrome/classic/skin/classic/editor/EditModeTabs.css
+  ...
+package/chrome/classic/skin/classic/editor/images/
+package/chrome/classic/skin/classic/editor/images/Map_Copy.gif
+  ...
+package/chrome/blue/skin/blue/editor/
+package/chrome/blue/skin/blue/editor/contents.rdf
+  ...
+package/chrome/blue/skin/blue/editor/images/
+package/chrome/blue/skin/blue/editor/images/Map_Copy.gif
+  ...
+package/chrome/modern/skin/modern/editor/
+package/chrome/modern/skin/modern/editor/contents.rdf
+  ...</pre>
+<p class="docText">There's more about wildcard matching in the GNU <i>tar</i> <i>
+info</i> page (but not its <span class="docEmphasis">manpage</span>). </p>
+<h4  id="upt3-CHP-38-SECT-10.3" class="docSection2Title">38.10.3 Wildcard Gotchas in GNU tar</h4>
+<p class="docText">One subtle (but sometimes important!) difference between GNU
+<i>tar</i> and other versions comes when you're trying to extract a file whose 
+name contains a wildcard character. You'll probably have to type a backslash (<tt>\</tt>) 
+before that name. Also, because the shell may also try to interpret that 
+wildcard character — or at least the backslash — you also may need to quote the 
+backslashed expression! (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-18">Section 
+27.18</a> shows a situation like this one, with multiple layers of backslash 
+interpretation.) </p>
+<p class="docText">Here's an example. We're archiving the system binary file 
+named <i>[</i> (or <i>test</i>) (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">Section 
+35.26</a>): </p>
+<pre>5$ <b>which [</b>
+/usr/bin/[
+6$ <b>cd /tmp</b>
+7$ <b>tar cvf tartest.tar /usr/bin/[</b>
+tar: Removing leading `/' from member names
+usr/bin/[
+8$ <b>tar xvf tartest.tar usr/bin/[</b>
+tar: usr/bin/[: Not found in archive
+tar: Error exit delayed from previous errors
+9$ <b>tar xvf tartest.tar usr/bin/\[</b>
+tar: usr/bin/[: Not found in archive
+tar: Error exit delayed from previous errors
+10$ <b>tar xvf tartest.tar 'usr/bin/\['</b>
+usr/bin/[</pre>
+<p class="docText">Storing the file in the archive, in command 7, is simple. The 
+shell doesn't have anything to expand; <i>tar</i> simply stores the name as-is 
+because wildcards make sense only when <i>tar</i> is <span class="docEmphasis">
+extracting</span> from an archive. In command 8, though, when we try to extract 
+the file into the current directory, <i>tar</i> says it isn't there — because 
+it's now treating <tt>[</tt> as a wildcard pattern. Adding a single backslash in 
+command 9 doesn't help because the shell strips it off before <i>tar</i> sees 
+it. We need to put quotes around the backslash, as in command 10, to make <i>tar</i> 
+match the actual name. </p>
+<p class="docText"><span class="docEmphasis">—JP and TOR </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-11">38.11 Avoid Absolute Paths with tar</h3>
+<p class="docText">One problem with most versions of <i>tar</i>: they can't 
+change a file's pathname when restoring. Let's say that you put your home 
+directory in an archive (tape or otherwise) with a command like this: </p>
+<pre>% <b>tar c /home/mike</b></pre>
+<p class="docText">What will these files be named when you restore them, either 
+on your own system or on some other system? They will have
+<span class="docEmphasis">exactly</span> the same pathnames they had originally. 
+So if <span class="docEmphasis">/home/mike</span> already exists, it will be 
+destroyed. There's no way to tell <i>tar</i> that it should be careful about 
+overwriting files; there's no way to tell <i>tar</i> to put the files in some 
+other directory when it takes them off the tape, etc. If you use
+<span class="docEmphBold">absolute pathnames</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-2">Section 
+31.2</a>) when you create a tape, you're stuck. If you use
+<span class="docEmphBold">relative paths</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-2">Section 
+31.2</a>) (for example, <tt>tar c</tt> .), you can restore the files in any 
+directory you want. </p>
+<p class="docText">This means that you should:</p>
+<ul>
+  <li>
+  <p class="docList">Avoid using absolute paths when you create an archive (see 
+  below).</li>
+  <li>
+  <p class="docList">Use <span class="docEmphasis">tar t</span> to see what 
+  files are on the tape before restoring the archive. </li>
+  <li>
+  <p class="docList">Use GNU <i>tar</i>. It strips the leading <tt>/</tt> by 
+  default when creating archives. (You can give it the <i>-P</i> option to make 
+  it store absolute pathnames.) </li>
+</ul>
+<p class="docText">Rather than giving a command like <tt>tar c /home/mike</tt>, 
+do something like: </p>
+<pre>% <b>cd /</b>
+% <b>tar c home/mike</b></pre>
+<p class="docText">Or, even more elegant, use <i>-C</i> on the <i>tar</i> 
+command line: </p>
+<pre>% <b>tar c -C /home/mike .</b></pre>
+<p class="docText">This command tells <i>tar</i> to <i>cd</i> to the directory
+<span class="docEmphasis">/home/mike</span> before creating an archive of . (the 
+current directory). If you want to archive several directories, you can use 
+several <i>-C</i> options: </p>
+<pre>% <b>tar c -C /home/mike ./docs  -C /home/susan ./test</b></pre>
+<p class="docText">This command archives <span class="docEmphasis">mike</span>'s
+<span class="docEmphasis">docs</span> directory and <span class="docEmphasis">
+susan</span>'s <span class="docEmphasis">test</span> directory. [Note that it 
+uses the subdirectory names, as we did in the second-previous example. When the 
+files are extracted, they'll be restored to separate subdirectories, instead of 
+all being mixed into the same . (current) directory. — <span class="docEmphasis">
+JP</span>] </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-12">38.12 Getting tar's Arguments in the Right Order</h3>
+<p class="docText"><i>tar</i>'s command line is one of Unix's little mysteries. 
+It's difficult to associate arguments with options. Let's say you want to 
+specify the block size (<i>b</i>), the output file ( <i>f</i> ), and an 
+&quot;exclude&quot; file (<i>X</i> ). Where do you put all this information? It's easy 
+enough to stick the option letters into a lump and put them into a command (<tt><b>tar 
+cXbf</b></tt>). But where do you put the block size, the name of the exclude 
+file, and so on? </p>
+<p class="docText">List any arguments that you need <span class="docEmphasis">
+after</span> the block of key letters. You must place the arguments in the
+<span class="docEmphasis">same order</span> as the key letters, as shown in
+<a class="docLink" href="#upt3-CHP-38-FIG-1">Figure 38-1</a>. </p>
+<center>
+<h5 id="upt3-CHP-38-FIG-1" class="docFigureTitle">Figure 38-1. tar options and arguments</h5>
+<p><img alt="figs/upt3_3801.gif" src="upt3_3801.gif" border="0" width="360" height="56"></p>
+</center>
+<p class="docText">In this command, <tt><b>keepout</b></tt> goes with the <i>X</i> 
+option, <tt><b>20</b></tt> goes with the <i>b</i> option, and <tt><b>
+archive.shar</b></tt> goes with the <i>f</i> option. If we put the options in a 
+different order, we also have to put the arguments in a different order (see
+<a class="docLink" href="#upt3-CHP-38-FIG-2">Figure 38-2</a>). </p>
+<center>
+<h5 id="upt3-CHP-38-FIG-2" class="docFigureTitle">Figure 38-2. The same command, rearranged</h5>
+<p><img alt="figs/upt3_3802.gif" src="upt3_3802.gif" border="0" width="360" height="56"></p>
+</center>
+<p class="docText">Note that the files you want to put on the tape (or the files 
+you want to extract from the tape) always go at the <span class="docEmphasis">
+end</span> of the command. These are not arguments to <i>c</i> or <i>X</i>; they 
+are part of the command itself. </p>
+<p class="docText">The <i>dump</i> command and a few others work the same way.
+</p>
+<p class="docText">GNU <i>tar</i> understands this traditional syntax as well as 
+two syntaxes with separate options. For instance, the command line above could 
+also be written in either of the following ways with GNU <i>tar</i>: </p>
+<pre>% <b>tar -c -b 20 -X keepout -f archive.tar *.txt</b>
+% <b>tar --create --block-size=20 --exclude-from=keepout \</b>
+    --file=archive.tar *.txt</pre>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-13">38.13 The cpio Tape Archiver</h3>
+<p class="docText">There was a time when people used to debate whether
+<span class="docEmphBold">BSD tar</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-2">Section 
+38.2</a>,
+<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-2">
+Section 39.2</a>) (tape archiver) or System V <i>cpio</i> (copy in/out) was the 
+better file archive and backup program. At this point, though, no one ships out
+<i>cpio</i> archives over <span class="docEmphBold">the Net</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>). <i>tar</i> is widespread, and there are free versions available, 
+including <span class="docEmphBold">GNU tar</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-3">Section 
+39.3</a>). </p>
+<p class="docText">There's still a good reason to use <i>cpio</i>: it's better 
+at recovering backups from partially damaged media. If a block of your tape or 
+disk archive goes bad, <i>cpio</i> can probably recover all files except the one 
+with the bad block. A <i>tar</i> archive may not fare as well. Though we don't 
+give it much air time in this book, here are a few <i>cpio</i> basics: </p>
+<ul>
+  <li>
+  <p class="docList">To write out an archive, use the <i>-o</i> option and 
+  redirect output either to a tape device or to an archive file. The list of 
+  files to be archived is often specified with <span class="docEmphBold">find</span> 
+  (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-1">Section 
+  9.1</a>), but it can be generated in other ways — <i>cpio</i> expects a list 
+  of filenames on its standard input. For example: </p>
+  <pre>% <b>find . -name &quot;*.old&quot; -print | cpio -ocBv &gt; /dev/rst8</b></pre>
+  <p class="docList">or:</p>
+  <pre>% <b>find . -print | cpio -ocBv &gt; mydir.cpio</b></pre>
+  </li>
+  <li>
+  <p class="docList">To read an archive in, use the <i>-i</i> option and 
+  redirect input from the file or tape drive containing the archive. The <i>-d</i> 
+  option is often important; it tells <i>cpio</i> to create directories as 
+  needed when copying files in. You can restore all files from the archive or 
+  specify a filename pattern (with wildcards quoted to protect them from the 
+  shell) to select only some of the files. For example, the following command 
+  restores from a tape drive all C source files: </p>
+  <pre>% <b>cpio -icdv &quot;*.c&quot; &lt; /dev/rst8</b></pre>
+  <p class="docList">Subdirectories are created if needed (<i>-d</i>), and <i>
+  cpio</i> will be verbose (<i>-v</i>), announcing the name of each file that it 
+  successfully reads in. </li>
+  <li>
+  <p class="docList">To copy an archive to another directory, use the <i>-p</i> 
+  option, followed by the name of the destination directory. (On some versions 
+  of <i>cpio</i>, this top-level destination directory must already exist.) For 
+  example, you could use the following command to copy the contents of the 
+  current directory (including all subdirectories) to another directory: </p>
+  <pre>% <b>find . -depth -print | cpio -pd newdir</b></pre>
+  </li>
+</ul>
+<p class="docText">There are lots of other options for things like resetting 
+file access times or ownership or changing the blocking factor on the tape. See 
+your friendly neighborhood manual page for details. Notice that options are 
+typically &quot;squashed together&quot; into an option string rather than written out as 
+separate options. </p>
+<p class="docText"><span class="docEmphasis">—TOR and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-38-SECT-14">38.14 Industrial Strength Backups</h3>
+<p class="docText">This book mostly focuses on tools like <i>tar</i>, because 
+that's what we expect most of you to use most of the time. However, there are 
+other tools that are very important for large-scale backups that it's good to 
+know at least a little about. </p>
+<p class="docText"><i>dump</i> is an old Unix standby and a complete if somewhat 
+arcane tool for backing up file systems. It is extremely useful for system 
+administrators and personal machines, and it is available as part of the 
+operating system on nearly any Unix. For industrial-strength backups, no simple 
+solution beats <i>dump</i> — it is the most reliable tool for ensuring data 
+consistency and stability. It's also a pain to use, so generally system 
+administrators end up writing scripts around it to make it easier, or using a 
+system like Amanda (see below). </p>
+<p class="docText">The Advanced Maryland Automatic Network Disk Archiver, known 
+as <span class="docEmphasis">Amanda</span>, is a free system for performing 
+regular backups of one or more network-connected machines. Information on Amanda 
+is generally available at
+<a class="docLink" href="http://www.amanda.org" target="_blank">
+http://www.amanda.org</a>. Amanda uses <i>tar</i> or <i>dump</i> to do the 
+actual work of backing up files; its job is to coordinate backups of multiple 
+filesystems to one or more network-accessible tape drives on a regular basis.
+</p>
+<p class="docText">Note also that full-scale backup processes need to address 
+things such as tape lifetimes, electronic and physical security of backed-up 
+data, off-site storage, incremental backup schemes and the like. Should you be 
+in a position to need to set up such a process, read one of the good books on 
+the subject — we might recommend O'Reilly's <i>Unix Backup and Recovery</i>. </p>
+<p class="docText"><span class="docEmphasis">— DJPH </span></p>
+<blockquote>
+<p class="docFootnote" id="EN38-1"><a class="docLink" href="#ENB38-1">[1]</a>&nbsp;&nbsp;Of course, this section was written after the author took the first backup of 
+his Linux system in nearly four years of use!</p></blockquote>
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 37.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 39.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

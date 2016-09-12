@@ -1,0 +1,671 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 25</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 24.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 26.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 25. Delayed Execution</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-25-SECT-1">25.1 Building Software Robots the Easy Way</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-25-SECT-2">25.2 Periodic Program Execution: The cron Facility</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-25-SECT-3">25.3 Adding crontab Entries</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-25-SECT-4">25.4 Including Standard Input Within a cron Entry</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-25-SECT-5">25.5 The at Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-25-SECT-6">25.6 Making Your at Jobs Quiet</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-25-SECT-7">25.7 Checking and Removing Jobs</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-25-SECT-8">25.8 Avoiding Other at and cron Jobs</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-25-SECT-9">25.9 Waiting a Little While: sleep</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-25-SECT-1">25.1 Building Software Robots the Easy Way</h3>
+<p class="docText">If you are more familiar with desktop systems than Unix, the 
+concept of delayed execution may be new to you. After all, the prime mover of 
+all activity in the desktop metaphor is the user. In Unix, all kinds of 
+processes start, execute, and report without any users on the system. </p>
+<p class="docText">There are a few good reasons why you need to know about 
+delayed execution. The first is that long, noninteractive jobs are best run when 
+the fewest users are likely to be on the system. Humans find responsive systems 
+desirable; processes aren't as likely to complain about getting sporadic CPU 
+time. The second situation in which delayed execution is desirable is when a 
+resource you need is only available at certain times. For instance, your group 
+of local workstations create <i>tar</i> archives for the day's work, and you 
+need to grab those files and copy them to tape. The third reason for delayed 
+execution is when you need to push or pull information on a regular basis. This 
+is the case with web masters who need to push their updated content to their 
+production environment from their editing machine. The reverse may also hold 
+true: you may need to collect Rich Site Summary files from a variety of web 
+sites for a local cache. In all these cases, you need processes to start without 
+you, like a band of relentless software robots.<span id="ENB25-1"><a class="docLink" href="#EN25-1"><sup>[1]</sup></a></span>
+</p>
+<p class="docText">This chapter covers the following techniques of delayed 
+execution:</p>
+<ul>
+  <li>
+  <p class="docList">The venerable <span class="docEmphBold">cron</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-2">Section 
+  25.2</a>) system schedules process for regular, periodic execution. It is the 
+  most frequently used utility for running programs after hours. </li>
+  <li>
+  <p class="docList">For processes that only need to run once at some future 
+  date, the <span class="docEmphBold">at</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-5">Section 
+  25.5</a>) command is ideally suited. </li>
+  <li>
+  <p class="docList">For simple scripts that need to pause before continuing on, 
+  the <span class="docEmphBold">sleep</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-9">Section 
+  25.9</a>) command is available. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-25-SECT-2">25.2 Periodic Program Execution: The cron Facility</h3>
+<p class="docText">This article covers two different versions of <i>cron</i>. 
+There are other versions around: Vixie <i>cron</i>, for instance, has some 
+different features and is common in Linux distributions. A variation called <i>
+anacron</i> doesn't assume (as <i>cron</i> does) that the system is running 24 
+hours a day; it's especially nice on portable computers. Rather than trying to 
+cover every flavor, this article has information on older, basic <i>cron</i>s 
+that should show you some of what to expect in whatever version you have. </p>
+<p class="docText"><i>cron</i> allows you to schedule programs for periodic 
+execution. For example, you can use <i>cron</i> to call <i>rsync</i> every hour 
+to update your production web site with new articles or to perform any number of 
+other tasks. </p>
+<p class="docText">With <span class="docEmphBold">redirection</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>), <i>cron</i> can send program output to a log file or to any username 
+via email. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText"><i>cron</i> jobs are run by a system program in an 
+        environment that's much different from your normal login sessions. The
+        <span class="docEmphBold">search path</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-6">Section 
+        27.6</a>) is usually shorter; you may need to use absolute pathnames for 
+        programs that aren't in standard system directories. Be careful about 
+        using command aliases, shell functions and variables, and other things 
+        that may not be set for you by the system. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-25-SECT-2.1" class="docSection2Title">25.2.1 Execution Scheduling</h4>
+<p class="docText">The <i>cron</i> system is serviced by the
+<span class="docEmphBold">cron</span> <span class="docEmphBold">daemon</span> (
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-10">
+Section 1.10</a>). What to run and when to run it are specified to <i>cron</i> 
+by <span class="docEmphasis">crontab</span> entries, which are stored in the 
+system's <i>cron</i> schedule. On older BSD systems, this consists of the files
+<span class="docEmphasis">/usr/lib/crontab</span> and <span class="docEmphasis">
+/usr/lib/crontab.local</span>; either file may be used to store
+<span class="docEmphasis">crontab</span> entries. Both are ASCII files and may 
+be modified with any text editor. Since usually only <span class="docEmphasis">
+root</span> has access to these files, all <i>cron</i> scheduling must go 
+through the system administrator. This can be either an advantage or a 
+disadvantage, depending on the needs and personality of your site. </p>
+<p class="docText">Under many other versions of Unix, any user may add entries 
+to the <i>cron</i> schedule. <span class="docEmphasis">crontab</span> entries 
+are stored in separate files for each user. The <span class="docEmphasis">
+crontab</span> files are not edited directly by ordinary users, but are placed 
+there with the <span class="docEmphasis">crontab</span> command (described later 
+in this section). [If your system is using Vixie <i>cron</i>, try creating a
+<span class="docEmphasis">crontab</span> file for yourself by typing <tt>crontab 
+-l</tt>. This will create a new file with <i>vi</i> or the editor you've named 
+in the <span class="docEmphasis">EDITOR</span> environment variable. Each line 
+of this file should contain either a comment or a <span class="docEmphasis">
+crontab</span> entry (described below). When you save and exit the editor, your 
+file will be added to the <span class="docEmphasis">cron</span> spool directory.
+<span class="docEmphasis">— JJ</span>] [In my experience, the current directory 
+during these personal <i>cron</i> jobs is your home directory. If you read a 
+file or redirect output to a file with a <span class="docEmphBold">relative 
+pathname</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-2">Section 
+31.2</a>), it will probably be in your home directory. Check your system to be 
+sure. <span class="docEmphasis">— JP</span>] </p>
+<p class="docText"><span class="docEmphasis">crontab</span> entries direct <i>
+cron</i> to run commands at regular intervals. Each one-line entry in the
+<span class="docEmphasis">crontab</span> file has the following format: </p>
+<pre><tt><i>mins hrs day-of-month month weekday username cmd</i></tt>     <i>(BSD)</i>
+<tt><i>mins hrs day-of-month month weekday cmd</i></tt>              <i>(other)</i></pre>
+<p class="docText">Spaces separate the fields. However, the final field,
+<span class="docEmphasis">cmd</span>, can contain spaces within it (i.e., the
+<span class="docEmphasis">cmd</span> field consists of everything after the 
+space following <span class="docEmphasis">weekday</span>); the other fields must 
+not contain spaces. The <span class="docEmphasis">username</span> field is used 
+in the original BSD version only and specifies the username under which to run 
+the command. In other versions, commands are run by the user who owns the
+<span class="docEmphasis">crontab</span> in which they appear (and for whom it 
+is named). </p>
+<p class="docText">The first five fields specify the times at which <i>cron</i> 
+should execute <span class="docEmphasis">cmd</span>. Their meanings are 
+described in <a class="docLink" href="#upt3-CHP-25-TABLE-1">Table 25-1</a>. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-25-TABLE-1" class="docTableTitle">Table 25-1. crontab entry time fields </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Field</th>
+    <th class="docTableHeader">
+    <p class="docText">Meaning</th>
+    <th class="docTableHeader">
+    <p class="docText">Range</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">mins</span></td>
+    <td class="docTableCell">
+    <p class="docText">The minutes after the hour</td>
+    <td class="docTableCell">
+    <p class="docText">0-59</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">hrs</span></td>
+    <td class="docTableCell">
+    <p class="docText">The hour of the day</td>
+    <td class="docTableCell">
+    <p class="docText">0-23 (0 = midnight)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">day-of-month</span></td>
+    <td class="docTableCell">
+    <p class="docText">The day within a month</td>
+    <td class="docTableCell">
+    <p class="docText">1-31</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">month</span></td>
+    <td class="docTableCell">
+    <p class="docText">The month of the year</td>
+    <td class="docTableCell">
+    <p class="docText">1-12</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">weekday</span></td>
+    <td class="docTableCell">
+    <p class="docText">The day of the week</td>
+    <td class="docTableCell">
+    <p class="docText">1-7 (1 = Monday) <span class="docEmphasis">BSD</span></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">0-6 (0 = Sunday) <span class="docEmphasis">System V</span></td>
+  </tr>
+</table>
+<p class="docText">These fields can contain a single number, a pair of numbers 
+separated by a dash (indicating a range of numbers), a comma-separated list of 
+numbers and ranges, or an asterisk (<tt>*</tt>, a wildcard that represents all 
+valid values for that field). Some versions accept strings of letters: for 
+instance, Vixie <i>cron</i>, at least, accepts month and day names instead of 
+numbers. </p>
+<p class="docText">If the first character in an entry is a hash mark (#), <i>
+cron</i> will treat the entry as a comment and ignore it. This is an easy way to 
+temporarily disable an entry without permanently deleting it. </p>
+<p class="docText">Here are some example <span class="docEmphasis">crontab</span> 
+entries (shown in non-BSD format): </p>
+<p class="docText"><tt>/proc</tt>
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-9">
+Section 24.9</a>, <tt>2&gt;&amp;1</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+Section 36.16</a>, <tt>\%</tt>
+<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-4">
+Section 25.4</a></p>
+<pre>0,15,30,45 * * * *  (echo -n '   '; date; cat /proc/loadavg) &gt;/dev/console
+0,10,20,30,40,50 7-18 * * * /usr/lib/atrun
+7 0 * * *  find / -name &quot;*.bak&quot; -type f -atime +7 -exec rm {} \;
+12 4 * * *  /bin/sh /usr/adm/ckdsk &gt;/usr/adm/disk.log 2&gt;&amp;1
+22 2 * * *  /bin/sh /usr/adm/ckpwd 2&gt;&amp;1 | mail root
+30 3 * * 1 /bin/csh -f /usr/lib/uucp/uu.weekly &gt;/dev/null 2&gt;&amp;1
+12 5 15-21 * * test `date +\%a` = Mon &amp;&amp; /usr/local/etc/mtg-notice
+#30 2 * * 0,6  /usr/lib/newsbin/news.weekend</pre>
+<p class="docText">The first entry displays the date on the console terminal 
+every 15 minutes (on the quarter hour); notice that multiple commands are 
+enclosed in parentheses to redirect their output as a group. (This runs the 
+commands together in a <span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">Section 
+43.7</a>).) The second entry runs <i>/usr/lib/atrun</i> every 10 minutes from 
+7:00 a.m. to 6:50 p.m. daily. The third entry runs a <i>find</i> command at 7 
+minutes after midnight to remove all <span class="docEmphasis">.bak</span> files 
+not accessed in 7 days. To cut wear and tear and load on your disk, try to
+<span class="docEmphBold">combine find jobs</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-19">Section 
+14.19</a>). Also, as
+<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-8">
+Section 25.8</a> explains, try <span class="docEmphasis">not</span> to schedule 
+your jobs at frequently chosen times like 1:00 a.m., 2:00 a.m., and so on; pick 
+oddball times like 4:12 a.m. </p>
+<p class="docText">The fourth and fifth lines run a shell script every day, at 
+4:12 a.m. and 2:22 a.m., respectively. The shell to execute the script is 
+specified explicitly on the command line in both cases; the system default 
+shell, usually the Bourne shell, is used if none is explicitly specified. Both 
+lines' entries redirect standard output and standard error, sending it to a file 
+in one case and mailing it to <span class="docEmphasis">root</span> in the 
+other. </p>
+<p class="docText">The sixth entry executes a C shell script named
+<span class="docEmphasis">uu.weekly</span>, stored in <span class="docEmphasis">
+/usr/lib/uucp</span>, at 3:30 a.m. on Monday mornings. Notice that the command 
+format — specifically the output redirection — is for the Bourne shell, even 
+though the script itself will be run under the C shell. The seventh entry runs 
+on the third Monday of every month; there's more explanation below. The final 
+entry would run the command <span class="docEmphasis">/usr/lib/newsbin/news.weekend</span> 
+at 2:30 a.m. on Saturday and Sunday mornings were it not disabled with a <tt>#</tt>. 
+(<tt>#</tt> can also be used to add comments to your <span class="docEmphasis">
+crontab</span>.) </p>
+<p class="docText">The fourth through sixth entries illustrate three 
+output-handling alternatives: redirecting it to a file, piping it through mail, 
+and discarding it to <span class="docEmphBold">/dev/null</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">Section 
+43.12</a>). If no output redirection is performed, the output is sent via mail 
+to the user who ran the command. </p>
+<p class="docText">The <span class="docEmphasis">cmd</span> field can be any 
+Unix command or group of commands (properly separated with semicolons). The 
+entire <span class="docEmphasis">crontab</span> entry can be arbitrarily long, 
+but it must be a single physical line in the file. </p>
+<p class="docText">One problem with the <span class="docEmphasis">crontab</span> 
+syntax is that it lets you specify any day of the month and any day of the week; 
+but it doesn't let you construct cases like &quot;the third Monday of every month.&quot; 
+You might think that the <span class="docEmphasis">crontab</span> entry: </p>
+<pre>12 5 15-21 * 1 <tt><i>your-command</i></tt></pre>
+<p class="docText">would do the trick, but it won't; this
+<span class="docEmphasis">crontab</span> entry runs your command on every 
+Monday, plus the 15th through the 21st of each month.<span id="ENB25-2"><a class="docLink" href="#EN25-2"><sup>[2]</sup></a></span> 
+An answer from Greg Ubben is shown in the seventh entry. He uses the
+<span class="docEmphBold">test</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">Section 
+35.26</a>) and <i>date</i> commands to compare the name of today (like <tt>Tue</tt>) 
+to the day we want the entry to be executed (here, <tt>Mon</tt>). This entry 
+will be run between the 15th and 21st of each month, but the
+<span class="docEmphasis">mtg-notice</span> command will run only on the Monday 
+during that period. The shell's<span class="docEmphBold"> &amp;&amp; operator</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">Section 
+35.14</a>) runs the <span class="docEmphasis">mtg-notice</span> command only 
+when the previous test succeeds. Greg actually writes the entry as shown here, 
+testing for failure of the <i>test</i> command: </p>
+<pre>12 5 15-21 * * test `date +\%a` != Mon || /usr/local/etc/mtg-notice</pre>
+<p class="docText">He did it that &quot;backwards&quot; way so the <i>cron</i> job's exit 
+status would be 0 (success) in the case when it doesn't execute
+<span class="docEmphasis">mtg-notice</span>. You may need that technique, too.
+</p>
+<p class="docText">The <i>cron</i> command starts the <i>cron</i> program. It 
+has no options. Once started, <i>cron</i> never terminates. It is normally 
+started automatically by one of the system initialization scripts. <i>cron</i> 
+reads the <span class="docEmphasis">crontab</span> file(s) every minute to see 
+whether there have been changes. Therefore, any change to its schedule will take 
+effect within one minute. </p>
+<h4  id="upt3-CHP-25-SECT-2.2" class="docSection2Title">25.2.2 A Little Help, etc.</h4>
+<p class="docText">Some flavors of Unix, notably Red Hat and Debian Linux, have 
+included an easy shortcut to creating periodic processes. In some systems, the
+<i>/etc</i> directory will contain the following directories: </p>
+<dl class="docList">
+  <dd><i>cron.daily</i> </dd>
+  <dd><i>cron.hourly</i> </dd>
+  <dd><i>cron.monthly</i> </dd>
+  <dd><i>cron.weekly</i> </dd>
+</dl>
+<p class="docText">By placing programs and scripts in these directories, you can 
+have those chosen processes occur at the interval designated by the extension of 
+the directory name. By sacrificing granularity of when those processes occur, 
+you gain ease of use. Of course, adding several resource-intensive programs to 
+the same directory may bring an underpowered system to its knees. Excerise care.
+</p>
+<p class="docText">In case you're curious, these directories are really just an 
+extension of the Vixie cron system. Looking inside <i>/etc/crontab</i>, we begin 
+to see the magic: </p>
+<pre>SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+HOME=/
+
+# run-parts
+01 * * * * root run-parts /etc/cron.hourly
+02 4 * * * root run-parts /etc/cron.daily
+22 4 * * 0 root run-parts /etc/cron.weekly
+42 4 1 * * root run-parts /etc/cron.monthly</pre>
+<p class="docText">If you want to change when these various
+<span class="docEmphasis">cron</span> groups execute, this is the place to make 
+your changes. The <span class="docEmphasis">run-parts</span> script is a little 
+be more complicated, but it's worth a brief look. </p>
+<pre>#!/bin/bash
+
+# run-parts - concept taken from Debian
+
+# keep going when something fails
+set +e
+
+if [ $# -lt 1 ]; then
+        echo &quot;Usage: run-parts &lt;dir&gt;&quot;
+        exit 1
+fi
+
+if [ ! -d $1 ]; then
+        echo &quot;Not a directory: $1&quot;
+        exit 1
+fi
+
+# Ignore *~ and *, scripts
+for i in $1/*[^~,] ; do
+        [ -d $i ] &amp;&amp; continue
+        # Don't run *.{rpmsave,rpmorig,rpmnew,swp} scripts
+        [ &quot;${i%.rpmsave}&quot; != &quot;${i}&quot; ] &amp;&amp; continue
+        [ &quot;${i%.rpmorig}&quot; != &quot;${i}&quot; ] &amp;&amp; continue
+        [ &quot;${i%.rpmnew}&quot; != &quot;${i}&quot; ] &amp;&amp; continue
+        [ &quot;${i%.swp}&quot; != &quot;${i}&quot; ] &amp;&amp; continue
+        [ &quot;${i%,v}&quot; != &quot;${i}&quot; ] &amp;&amp; continue
+
+        if [ -x $i ]; then
+                $i 2&gt;&amp;1 | awk -v &quot;progname=$i&quot; \
+                              'progname {
+                                   print progname &quot;:\n&quot;
+                                   progname=&quot;&quot;;
+                               }
+                               { print; }'
+        fi
+done
+
+exit 0</pre>
+<p class="docText">The first dozen or so lines of this script are either 
+comments or sanity checks to ensure that it was called with a directory name. 
+The meat of the script is the loop that looks at all the non-tilde files in the 
+given directory. As long as the file isn't a relic from the Red Hat Package 
+Manager or an RCS file, the file is run and its results sent to <i>awk</i>, so 
+that a somewhat clean report can be mailed by <i>cron</i>. You now have the code 
+to set up this system if your Unix doesn't have it. </p>
+<p class="docText"><span class="docEmphasis">— AF, JP, and JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-25-SECT-3">25.3 Adding crontab Entries</h3>
+<p class="docText">For a good tip on silencing <span class="docEmphasis">cron</span> 
+job mailings, see
+<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-6">
+Section 25.6</a>. </p>
+<p class="docText">Most recent versions of Unix have a special command for 
+maintaining the <span class="docEmphasis">crontab</span> file. To create a new
+<span class="docEmphasis">crontab</span> file, create a file containing the 
+desired <span class="docEmphasis">crontab</span> entries. Then run the <i>
+crontab</i> command to install the file in the <i>cron</i> spool area. For 
+example, if user <span class="docEmphasis">chavez</span> executes the command 
+below, the file <span class="docEmphasis">mycron</span> will be installed as
+<span class="docEmphasis">/usr/spool/cron/crontabs/chavez</span>: </p>
+<pre>$ <b>crontab mycron</b></pre>
+<p class="docText">If <span class="docEmphasis">chavez</span> had previously 
+installed <span class="docEmphasis">crontab</span> entries, they will be
+<span class="docEmphasis">replaced</span> by those in <span class="docEmphasis">
+mycron</span>; thus, any current entries that <span class="docEmphasis">chavez</span> 
+wishes to keep must also be present in <span class="docEmphasis">mycron</span>.
+</p>
+<p class="docText">The <i>-l</i> option to <i>crontab</i> lists the current
+<span class="docEmphasis">crontab</span> entries, and redirecting its output to 
+a file will allow them to be captured and edited: </p>
+<pre>$ <b>crontab -l &gt;mycron</b>
+$ <b>vi mycron</b>
+$ <b>crontab mycron</b></pre>
+<p class="docText">The <i>-r</i> option will remove all current
+<span class="docEmphasis">crontab</span> entries. Many versions of the <i>
+crontab</i> have an additional <i>-e</i> option that lets you directly edit your 
+current <span class="docEmphasis">crontab</span> entries in a single step. </p>
+<p class="docText">On original BSD-based Unix implementations, there is no 
+separate <i>crontab</i> command, nor does each user get a personal
+<span class="docEmphasis">crontab</span> file. It does distinguish between &quot; 
+global&quot; <span class="docEmphasis">crontab</span> entries (in
+<span class="docEmphasis">/usr/lib/crontab</span>) and &quot;local&quot; entries (in
+<span class="docEmphasis">/usr/lib/crontab.local</span>) — however, you have to 
+edit these files directly, which will probably require you to become superuser. 
+It's a good idea to collect personal and site-specific <span class="docEmphasis">
+crontab</span> entries in the <span class="docEmphasis">crontab.local</span> 
+file. </p>
+<p class="docText"><span class="docEmphasis">— AF, from Essential System 
+Administration (O'Reilly, 2002)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-25-SECT-4">25.4 Including Standard Input Within a cron Entry</h3>
+<p class="docText">Since <span class="docEmphasis">crontab</span> entries must 
+be a single line long, it's hard to include any standard input with them. Sure, 
+you can use commands like: </p>
+<pre>0 22 * * * echo &quot;It's 10PM; do you know where your children are?&quot; | wall</pre>
+<p class="docText">but you can't use &quot;here documents&quot; and other methods of 
+generating multiline input; they intrinsically take several lines. </p>
+<p class="docText">To solve this problem, <i>cron</i> allows you to include 
+standard input directly on the command line. If the command contains a percent 
+sign (<tt>%</tt>), <i>cron</i> uses any text following the sign as standard 
+input for <span class="docEmphasis">cmd</span>. Additional percent signs can be 
+used to subdivide this text into lines. For example, the following
+<span class="docEmphasis">crontab</span> entry: </p>
+<pre>30 11 31 12 * /etc/wall%Happy New Year!%Let's make next year great!</pre>
+<p class="docText">runs the <i>wall</i> command at 11:30 a.m. on December 31, 
+using the text: </p>
+<pre>Happy New Year!
+Let's make next year great!</pre>
+<p class="docText">as standard input. [If you need a literal percent sign in 
+your entry, for a command like <tt>date +%a</tt>, escape the percent sign with a 
+backslash: <tt>\%</tt>. <span class="docEmphasis">— JP</span>] </p>
+<p class="docText"><span class="docEmphasis">— AF </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-25-SECT-5">25.5 The at Command</h3>
+<p class="docText">The <span class="docEmphasis">at</span> facility submits a 
+command line (or a script) for execution at an arbitrary later time. It has the 
+form: </p>
+<pre>% <b>at <span class="docEmphasis">options time</span> &lt; <span class="docEmphasis">scriptfile </span></b></pre>
+<p class="docText">This submits <span class="docEmphasis">scriptfile</span> for 
+execution at a later <span class="docEmphasis">time</span>. The redirection (<tt>&lt;</tt>) 
+isn't required on versions that can read directly from a file. By default, <i>at</i> 
+reads the commands from its standard input. So if you don't want to write a 
+script, you can omit the file and type your commands on the terminal, terminated 
+by CTRL-d: </p>
+<pre>% <b>at  <span class="docEmphasis">options time</span></b>
+
+Command 1
+Command 2
+...
+CTRL-d</pre>
+<p class="docText">The <span class="docEmphasis">time</span> is most commonly a 
+four-digit number representing a time on a 24-hour clock. For example, <tt>0130</tt> 
+represents 1:30 a.m. and <tt>1400</tt> represents 2 p.m. You can also use 
+abbreviations such as <tt>1am</tt>, <tt>130pm</tt>, and so on. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-25-SECT-6">25.6 Making Your at Jobs Quiet</h3>
+<p class="docText">Most modern versions of <i>at</i> will mail you any output 
+that your commands make. You might think of using the command line below to 
+throw <i>at</i> output into the Unix trash can, <span class="docEmphBold">
+/dev/null</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">Section 
+43.12</a>): </p>
+<p class="docText"><tt>&gt;&amp;</tt>
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-5">
+Section 43.5</a></p>
+<pre>% <b>at <span class="docEmphasis">sometime... </span>&gt;&amp; /dev/null </b>     <i> ...wrong</i></pre>
+<p class="docText">but that won't work because it throws away the output of the
+<i>at</i> command itself. <i>at</i> just saves your job in a file to be run 
+later by a system program. The commands you want quiet are the commands stored 
+in that file. One way to keep <i>at</i> quiet, if you use a shell like <i>csh</i>, 
+is: </p>
+<pre>% <b>at <span class="docEmphasis">sometime</span>...</b>
+at&gt; <b><span class="docEmphasis">some command</span> &gt;&amp; /dev/null</b>
+at&gt; <b><span class="docEmphasis">another command</span> &gt;&amp; /dev/null</b>
+at&gt; <b><span class="docEmphasis">...etc...</span> &gt;&amp; /dev/null</b>
+at&gt; CTRL-d</pre>
+<p class="docText">Bourne-type shells make it easier: </p>
+<p class="docText"><tt>exec &gt;</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-5">
+Section 36.5</a></p>
+<pre>$ <b>at <span class="docEmphasis">sometime</span>...</b>
+at&gt; <b>exec &gt; /dev/null 2&gt;&amp;1</b>
+at&gt; <b><span class="docEmphasis">some command</span></b>
+at&gt; <b><span class="docEmphasis">another command</span></b>
+at&gt; <b><span class="docEmphasis">...etc...</span></b>
+at&gt; CTRL-d</pre>
+<p class="docText">Two notes:</p>
+<ul>
+  <li>
+  <p class="docList">Some versions of <i>at</i> have a <i>-s</i> option that 
+  runs your job with the Bourne shell. </li>
+  <li>
+  <p class="docList">Not all versions of <i>at</i> prompt you with <tt>at&gt;</tt> 
+  as I showed above. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-25-SECT-7">25.7 Checking and Removing Jobs</h3>
+<p class="docText">From time to time, you'll submit an <i>at</i> job and realize 
+that there's something wrong with it. How do you get it out of the queue? Two 
+tools help you do this: <i>atq</i>, which reports the jobs that are in the 
+queue, and <i>atrm</i>, which deletes jobs that are already in the queue. </p>
+<p class="docText"><i>atq</i> is pretty simple; by default, it reports on all 
+jobs that have been queued. Optionally, you can give it a user name as an 
+argument; in this case it reports all the jobs queued by the given user. The 
+report looks like this: </p>
+<pre>los% <b>atq</b>
+ Rank     Execution Date     Owner     Job #   Queue   Job Name
+  1st   Oct  9, 1996 22:27   mikel      4637       a   stdin
+  2nd   Oct 10, 1996 01:08   mikel      4641       a   stdin
+  3rd   Oct 10, 1996 02:34   judy       4663       a   stdin</pre>
+<p class="docText">Note that <i>atq</i> has no objection to telling you about 
+other users' jobs. Although this might seem like a security hole, it's actually 
+useful — see
+<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-8">
+Section 25.8</a>. The jobs are ordered according to their execution date. With 
+the <i>-c</i> option, <i>atq</i> orders jobs according to when they were queued 
+— conceivably a useful feature. (<span class="docEmphasis">atq -n</span> just 
+prints the number of jobs that are queued; I'm not sure when this would be 
+useful.) </p>
+<p class="docText">Once you've found out the job number, you can delete it with 
+the command <i>atrm</i>. You can only delete your own jobs, not someone else's:
+</p>
+<pre>% <b>atrm 4637</b>
+4637: removed
+% <b>atrm 4663</b>
+4663: permission denied</pre>
+<p class="docText">The command <i>atrm -</i> removes all the jobs you submitted; 
+it's good for cleaning out your queue completely. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">On some versions, use <span class="docEmphasis">at -l</span> 
+        to list your jobs (instead of <i>atq</i>) and <span class="docEmphasis">
+        at -r</span> to delete your jobs (instead of <i>atrm</i>). Other systems 
+        may have different commands and options; check your manpage. </p>
+        <p class="docText">Some older BSD-based implementations may not support 
+        any of these options. Once you submit a job, you can delete it by 
+        finding its filename in the <span class="docEmphasis">/usr/spool/at</span> 
+        directory and <span class="docEmphBold">emptying the file</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-2">Section 
+        15.2</a>). Or the <span class="docEmphBold">superuser</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-18">Section 
+        1.18</a>) can go to the spool directory and delete the file by hand.
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-25-SECT-8">25.8 Avoiding Other at and cron Jobs</h3>
+<p class="docText"><i>atq</i> and <span class="docEmphBold">at -l</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-7">Section 
+24.7</a>) are more important than they seem. They give you a way to decide when 
+to run your jobs. I suggest that you check <i>atq</i> before picking a time to 
+run your job. If you don't, the system may have a dozen huge jobs starting at 
+midnight or 1 a.m. They will bring the system to its knees when there's no one 
+around to help out. Here's an example of what can happen, using the BSD-style <i>
+at</i> commands: </p>
+<pre>% <b>atq</b>
+ Rank      Execution Date    Owner   Job#   Queue  Job Name
+ 1st    Sep 12, 1996 01:00   mikel   4529     a    trashsys.sh
+ 2nd    Sep 12, 1996 01:00   johnt   4531     a    flame.sh
+ 3rd    Sep 12, 1996 01:00   davek   4532     a    stdin
+ 4th    Sep 12, 1996 01:00   joek    4533     a    troffit
+ 5th    Sep 13, 1996 02:00   bobr    4534     a    stdin</pre>
+<p class="docText">Four of the five users happened to pick 1 a.m. as their 
+submission time. Therefore, four big jobs will start in the middle of the night. 
+Will your system survive? Will any of these be done in the morning? These are 
+good questions. Instead of submitting your jobs to run at 1 a.m., midnight, or 
+some other integral number, start them at different times, and make them times 
+like 3:48 a.m. If your system administrator notices lots of jobs running at the 
+same times on your system, she might delete some of them and ask you to 
+reschedule. </p>
+<p class="docText">If your system has <span class="docEmphBold">personal crontab 
+files</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-2">Section 
+25.2</a>), you won't be able to see other users' <i>cron</i> jobs. The best way 
+to cut system load is to pick strange times like 4:37 a.m. for your <i>cron</i> 
+jobs. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-25-SECT-9">25.9 Waiting a Little While: sleep</h3>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: sleep</p>
+<p class="docText">The <i>sleep</i> command waits. That's all it does. (GNU 
+versions are usually loaded with features, but the <i>sleep</i> on the CD-ROM 
+[see <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>] doesn't do more than the standard 
+version.) So what good is it? </p>
+<ul>
+  <li>
+  <p class="docList">A quick-and-dirty reminder service when you don't have <i>
+  leave</i>. This will print the message <tt>Time to go now...</tt>. in 10 
+  minutes (600 seconds): </p>
+  <p class="docList"><tt>( ) &amp;</tt>
+  <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">
+  Section 43.7</a>, <tt>;</tt>
+  <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-16">
+  Section 28.16</a></p>
+  <pre>%<b> (sleep 600; echo Time to go now....)
+&amp;</b></pre>
+  </li>
+  <li>
+  <p class="docList">You can't use <span class="docEmphBold">at</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-5">Section 
+  25.5</a>), and you have to run a job later (say, in three hours): </p>
+  <pre>% <b>(sleep 10800; someprog) &amp;</b></pre>
+  </li>
+  <li>
+  <p class="docList">To watch a program (usually a shell script) that's running 
+  in the background and see what processes it runs: </p>
+  <p class="docList"><tt>!!</tt>
+  <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">
+  Section 30.8</a></p>
+  <pre>% <b>prog </b> &amp;
+[1] 12345
+% <b>sleep 5;ps </b>
+  PID TT STAT  TIME COMMAND
+18305 p4 S     0:01 -csh (csh)
+18435 p4 S     0:00 /bin/sh prog
+18437 p4 D     0:00 /bin/sort -r temp
+18438 p4 R     0:00 ps
+% <b>!!;!!;!!;!!;!! </b>
+sleep 5; ps; sleep 5; ps; sleep 5; ps; sleep 5; ps; sleep 5; ps
+  PID TT STAT  TIME COMMAND
+    ...
+    <i> ...5 seconds pass...</i>
+  PID TT STAT  TIME COMMAND
+    ...</pre>
+  </li>
+  <li>
+  <p class="docList">When you're running a series of commands that could swamp 
+  the computer, to give it time to catch up. For instance, the
+  <span class="docEmphBold">mail</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+  1.21</a>) program starts background processes to deliver the mail. If you're 
+  sending a bunch of form letters, sleep five or ten seconds after each one: </p>
+  <p class="docList"><tt>foreach</tt>
+  <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">
+  Section 28.9</a></p>
+  <pre>% <b>foreach name (`cat people`)</b>
+? <b>formltrprog $name | mail $name</b>
+? <b>sleep 10</b>
+? <b>end</b></pre>
+  <p class="docList">Or, to send print jobs while you're at lunch — but give 
+  other people a chance to print between yours: </p>
+  <pre>% <b>lp bigfile1;sleep 600;lp bigfile2;sleep 600;lp bigfile3</b></pre>
+  </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span> </p>
+
+<blockquote>
+<p class="docFootnote" id="EN25-1"><a class="docLink" href="#ENB25-1">[1]</a>&nbsp;&nbsp;Thanks to Jeff Sumler for the phrase &quot;software robots.&quot;</p><p class="docFootnote" id="EN25-2"><a class="docLink" href="#ENB25-2">[2]</a>&nbsp;&nbsp;This strange behavior seems 
+  to be a System V peculiarity that somehow infected the rest of the world. 
+  Original BSD systems behave the way we explained earlier.</p></blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 24.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 26.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

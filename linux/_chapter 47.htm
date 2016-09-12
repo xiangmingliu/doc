@@ -1,0 +1,638 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 47</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 46.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 48.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 47. Connecting to MS Windows</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-47-SECT-1">47.1 Building Bridges</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-47-SECT-2">47.2 Installing and Configuring Samba</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-47-SECT-3">47.3 Securing Samba</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-47-SECT-4">47.4 SWAT and GUI SMB Browsers</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-47-SECT-5">47.5 Printing with Samba</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-47-SECT-6">47.6 Connecting to SMB Shares from Unix</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-47-SECT-7">47.7 Sharing Desktops with VNC</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-47-SECT-8">47.8 Of Emulators and APIs</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-47-SECT-9">47.9 Citrix: Making Windows Multiuser</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-47-SECT-1">47.1 Building Bridges</h3>
+<p class="docText">Too often, it seems, the discussion of operating systems 
+devolves into accusations, recriminations, and hurt feelings. However, the 
+reality of a heterogeneous computing environment makes cooperation among the 
+various operating systems critically important. There are a number of ways that 
+Unix machines can interact with and partipate in Windows networks. Many of those 
+connections work in reverse, too, so that Windows users can begin to experience 
+Unix without abandoning their preferred desktop. Polemics aside, operating 
+systems are only a means to an end that is defined by your business. 
+Fortunately, interoperability is becoming increasingly easier. The following 
+sections will show some of the options available to you. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-47-SECT-2">47.2 Installing and Configuring Samba</h3>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: Samba</p>
+<p class="docText">Samba is an open source project that implements the Session 
+Message Block (SMB) protocol, which is the core networking language of the 
+Microsoft Windows family. Of course, the dominant networking protocol in Unix is 
+the Transmission Control Protocol/Internet Protocol (TCP/IP). The challenge of 
+the Samba project is to map SMB traffic onto TCP/IP networks. This is no small 
+feat since SMB was designed for small, nonsegmented networks. Because all SMB 
+network machine names exist in one global namespace, the practical size of an 
+SMB network is quite limited. Although there are workgroups and NT domains 
+(dolled-up workgroups with a domain controller), these groups don't partition a 
+network in the same way that IP subnets do. Workgroups are simply an 
+organizational grouping of machine names (although NT domains can also exercise 
+some access control over the resources within their jurisdiction). </p>
+<p class="docText">Despite these limitations, most offices these days have a 
+very large installed base of Windows servers and workstations. With Samba, your 
+Unix machine can participate in Windows file sharing and print services. In 
+fact, Samba can replace Windows file and print servers in many cases. For the 
+full reference on Samba (plus a good number of useful tips), pick up a copy of
+<span class="docEmphasis">Using Samba</span> from O'Reilly &amp; Associates. </p>
+<p class="docText">Samba consists mainly of two daemons and a host of supporting 
+programs. The <i>smbd</i> daemon is responsible for making your machine's 
+filesystem and printers available to a Windows network. The <i>nmbd</i> daemon 
+handles the mapping of SMB machine names into the IP namespace and browsing 
+other SMB resources. Some Unix systems, like Linux, are also able to mount other 
+SMB drives onto their local filesystems using the <i>smbmnt</i> command. </p>
+<p class="docText">Samba is available for all popular Unix platforms. The 
+project web site, <a class="docLink" href="http://www.samba.org" target="_blank">
+http://www.samba.org</a>, is mirrored throughout the world, so you should be 
+able to find a server near you. The current stable release of samba will be 
+available as a link called <i>samba-latest.tar.gz</i>. As of this writing, the 
+latest release is 2.2.3a. </p>
+<p class="docText">After unpacking the archive file, change into the newly 
+created <i>samba</i> subdirectory, become the root user, and type: </p>
+<pre># ./configure &amp;&amp; make</pre>
+<p class="docText">This bit of shell logic simply means, &quot;Execute the program <i>
+configure</i> in the current directory. It is important to run the configure as 
+root, since there will be certain tests done that require root access. If it 
+succeeds, run <i>make</i>.&quot; If the compilation proceeds without error, you 
+should install the Samba components with: </p>
+<pre># make install</pre>
+<p class="docText">Now you can configure Samba to share your system's 
+directories and printers with your Windows neighbors. </p>
+<p class="docText">There is only one configuration script for both Samba 
+daemons: <i>smb.conf</i>. The Samba build process does not normally create this 
+file for you. However, there are several example <i>smb.conf</i> files in the <i>
+examples</i> directory of the unpacked source code. These can be easily modified 
+for your system. Alternatively, you may wish to use the web administration tool
+<span class="docEmphBold">SWAT</span> (<a class="docLink" href="_chapter 47.htm#upt3-CHP-47-SECT-4">Section 
+47.4</a>) to configure your installation. It is worth understanding a bit about 
+how to configure <i>smb.conf</i> by hand. </p>
+<p class="docText">Perhaps the best example configuration to start with is the 
+file called <i>smb.conf.default</i>. Lines that start with a semicolon or pound 
+sign (<tt>#</tt>) are comments and are ignored by the Samba daemons entirely. 
+Blocks of related options begin with a line that has a label in square brackets. 
+A special block called <tt>[global]</tt> precedes blocks that define individual 
+shared resources. Global configuration options include what workgroup your 
+machine is part of, what guest account to use for public shares, and which IP 
+addresses are allowed to connect to your SMB service. For instance: </p>
+<pre>[global]
+   workgroup     = MYGROUP
+;  hosts allow   = 192.168.1. 192.168.2. 127.
+   guest account = pcguest
+   log file      = /usr/local/samba/var/log.%m
+   max log size  = 50
+   security      = user
+;  encrypt passwords = yes</pre>
+<p class="docText">Here, all the shares that will be described later in the 
+configuration file will be advertised in the <span class="docEmphasis">MYGROUP</span> 
+workgroup. Although the next line is commented out, you can use the <tt>host 
+allow</tt> directive to permit only certain hosts or subnets access to your SMB 
+shares. In this example, machines would have to be in either one of the two 
+class C networks (IPs beginning with 192.168.1 and 192.168.2) or in the class A 
+network (IPs beginning with 127) to even connect to your Samba daemons. 
+Sometimes you will create public shares that won't require a authentication. For 
+these shares, some real Unix account is needed. That account is specified with
+<tt>guest account</tt> and is usually a nonprivileged account, like
+<span class="docEmphasis">pcguest</span>. </p>
+<p class="docText">A good rule of thumb when customizing your <i>smb.conf</i> is 
+to leave the defaults in place where you don't fully understand the directive. 
+The defaults err on the side of caution. Unless you have a good reason for 
+changing them, leave the <tt>log file</tt> and <tt>max log size</tt> directives 
+as is. The <tt>security</tt> and <tt>encrypt passwords</tt> directives are 
+important and are talked about in more detail in
+<a class="docLink" href="_chapter 47.htm#upt3-CHP-47-SECT-6">
+Section 47.6</a>. For now, keep the defaults. </p>
+<p class="docText">Sharing one of your local directories with the SMB network is 
+easy. For instance: </p>
+<pre>[tmp]
+   comment   = Temporary file space
+   browseable = yes
+   path      = /tmp
+   read only = no
+   public    = yes</pre>
+<p class="docText">This block describes sharing the local system's <i>/tmp</i> 
+directory with your SMB network. The <tt>comment</tt> option is a human-readable 
+description of the share that is available to SMB browsers (like the Network 
+Neighborhood application in Windows). The <tt>path</tt> directive indicates the 
+local path you wish to share. The <tt>browseable</tt> option, which defaults to 
+yes anyway, makes sure that this share appears in browse lists. The <tt>read 
+only</tt> statement is set to no, making the share writable by SMB clients that 
+are able to <span class="docEmphBold">connect</span> (<a class="docLink" href="_chapter 47.htm#upt3-CHP-47-SECT-6">Section 
+47.6</a>). When the <tt>public</tt> directive is set to yes, passwords are not 
+required to access this resource. </p>
+<p class="docText">There are far too many configuration options to detail here. 
+See the Samba documention or <span class="docEmphasis">Using Samba</span> for 
+the full story. </p>
+<p class="docText">After you have finished configuring the system, you are ready 
+to run the SMB daemons. You can run these servers (as root) directly from the 
+command line with the following: </p>
+<pre># /<tt><i>path</i></tt>/<tt><i>to</i></tt>/<tt><i>samba</i></tt>/bin/smbd -D;
+# /<tt><i>path</i></tt>/<tt><i>to</i></tt>/<tt><i>samba</i></tt>/bin/nmbd -D;</pre>
+<p class="docText">You can also have <i>inetd</i> run them. Simply add the 
+following lines to <i>/etc/services</i>: </p>
+<pre>netbios-ssn   139/tcp
+netbios-ns    137/udp</pre>
+<p class="docText">Add the following lines to <i>/etc/inetd.conf</i>: </p>
+<pre>netbios-snn stream tcp nowait root <tt><i>/path/to/samba/</i></tt>bin/smbd smbd
+netbios-ns  dgram upd wait root <tt><i>/path/to/samba/</i></tt>bin/nmbd nmbd</pre>
+<p class="docText">Simply restart <i>inetd</i> to begin answering SMB requests.
+</p>
+<p class="docText">To verify that your SMB services are running, use the 
+command-line tool <i>smbclient</i> to browse yourself. </p>
+<pre>$ smbclient -L <tt><i>netbios-name</i></tt></pre>
+<p class="docText">Your machine's NETBIOS name (that is, the name by which SMB 
+peers are known) will be your DNS hostname or whatever you set the global 
+directive <tt>netbios name</tt> to be. If prompted for a password, you can 
+simply hit Enter for now. If your service is running, you should see your shares 
+displayed in a similiar way to the following: </p>
+<pre>[jjohn@marian upt]$ smbclient -L marian
+added interface ip=192.168.1.50 bcast=192.168.1.255 nmask=255.255.255.0
+Password:
+Anonymous login successful
+Domain=[WORKGROUP] OS=[Unix] Server=[Samba 2.2.2]
+
+        Sharename      Type      Comment
+        ---------      ----      -------
+        homes          Disk      Home Directories
+        IPC$           IPC       IPC Service (Samba Server)
+        ADMIN$         Disk      IPC Service (Samba Server)
+        lp             Printer   hp
+        tmp            Disk      Temporary file space
+        Server               Comment
+        ---------            -------
+        MARIAN               Samba Server
+
+        Workgroup            Master
+        ---------            -------
+        WORKGROUP            MARIAN</pre>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-47-SECT-3">47.3 Securing Samba</h3>
+<p class="docText">The topic of security under Samba falls mainly into two 
+categories: how to make the SMB server secure and how clients authenticate with 
+the SMB server. Since the authentication issue is the thorniest, let's talk 
+about it first. </p>
+<p class="docText">In the <tt>[global]</tt> section of the <i>smb.conf</i> file, 
+there is a directive called <tt>security</tt> that can take one of four values:
+<span class="docEmphasis">share</span>, <span class="docEmphasis">user</span>,
+<span class="docEmphasis">server</span>, or <span class="docEmphasis">domain</span>. 
+Choosing <span class="docEmphasis">share</span> means that each shared resource 
+has a set of passwords associated with it. Users must present one of those 
+passwords to use the resource. <span class="docEmphasis">User</span> security 
+requires users to provide a username and password to gain access to any of the 
+shares. Samba can ask another SMB server to authenticate user credentials, 
+instead of using local files, by selecting the <span class="docEmphasis">server</span> 
+security setting. If you choose this security option, you will need to provide 
+the <tt>password server</tt> directive a space-separated list of NETBIOS machine 
+names that will do the authentication. The last security option is
+<span class="docEmphasis">domain</span>. In this model, your machine joins an 
+existing NT domain that does all the user credential authentication. </p>
+<p class="docText">If you are new to Samba, your best bet is to use
+<span class="docEmphasis">user</span> security. The ugliest problem of Samba now 
+rears its head: to use encrypted passwords or not to. The issue here is that 
+older Windows clients (early Windows 95 and pre-SP3 NT 4.0) send user passwords 
+over the network in clear text. The good news about clear text passwords is that 
+Samba can use your system's <i>/etc/passwd</i> to authenticate users. All real 
+accounts on your system will use their Unix username and password to connect to 
+your SMB shares. The problems with this approach are: </p>
+<ul>
+  <li>
+  <p class="docList">Passwords can be easily snooped from the network.</li>
+  <li>
+  <p class="docList">Every SMB user requires a real account on your system.</li>
+  <li>
+  <p class="docList">Newer SMB clients will need to be patched to connect to 
+  your shares.</li>
+</ul>
+<p class="docText">If the first two reasons don't scare you off using clear text 
+passwords, the last reason is pretty daunting if you need to patch a lot of 
+workstations. However, if you still want to go this route, you need to add the 
+elements listed in <a class="docLink" href="#upt3-CHP-47-TABLE-1">Table 47-1</a> 
+to each client's registry (using <i>REGEDIT.EXE</i>). </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-47-TABLE-1" class="docTableTitle">Table 47-1. Registry settings for clear text SMB 
+  passwords </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Operating system</th>
+    <th class="docTableHeader">
+    <p class="docText">Registry hack</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Windows 95, Windows 98, Windows Me</td>
+    <td class="docTableCell">
+    <p class="docText">Create a new field called <tt>EnablePlainTextPassword</tt> 
+    with the <span class="docEmphasis">dword</span> value 1 in the registry key:
+    <tt>\HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\VxD\VNETSUP\</tt>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Windows NT</td>
+    <td class="docTableCell">
+    <p class="docText">Create a new field called <tt>EnablePlainTextPassword</tt> 
+    with a <span class="docEmphasis">dword</span> value of 1 in the registry 
+    key: <tt>HKEY_LOCAL_MACHINE\system\CurrentControlSet\Services\Rdr\Parameters\</tt>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Windows 2000</td>
+    <td class="docTableCell">
+    <p class="docText">Create a new field <tt>EnablePlainTextPassword</tt> with 
+    a <span class="docEmphasis">dword</span> value of 1 in the registry key: <tt>
+    HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanWorkStation\Parameters\</tt>
+    </td>
+  </tr>
+</table>
+<p class="docText">If you're not sold on clear text passwords, you will need to 
+create a separate password file for SMB users. Luckily, there's a utility called
+<i>smbpasswd</i> that can manage this file for you. Adding a new SMB user who 
+already has a Unix account on your system is as simple as: </p>
+<pre># smbpasswd <tt><i>username</i></tt></pre>
+<p class="docText">You will then be prompted for a password for this account. 
+The drawback to this approach is the added maintenance of keeping the SMB 
+passwords in sync with the Unix passwords. See <span class="docEmphasis">Using 
+Samba</span> for some guidance here. The hope of the near future is to use an 
+LDAP server (either Microsoft's Active Directory or a Unix LDAP server) for all 
+system passwords. This is the dream of single-source logins and something the 
+Samba team is working towards supporting. </p>
+<p class="docText">After authentication issues, the big security concerns about 
+Samba involve access control. Some of the ways to handle access control have 
+been shown in the configuration section of this article. Additionally, each 
+share can use the <tt>valid users</tt> directive to limit the set of users to a 
+space-separated list. You might also consider making the share <tt>read only</tt> 
+and then put only a few users on the <tt>write</tt> <tt>list</tt>. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-47-SECT-4">47.4 SWAT and GUI SMB Browsers</h3>
+<p class="docText">Modern versions of Samba come bundled with a web 
+adminstration tool called <i>swat</i>. <i>swat</i> doesn't need any web server 
+to run, but you will need to configure your system's <i>inetd</i>. As with any 
+new service, you'll need to define a name and a port for it in <i>/etc/services</i>. 
+For instance: </p>
+<pre>swat    901/tcp</pre>
+<p class="docText">You are now ready to make <i>inetd</i> serve <i>swat</i>. Add 
+the following to <i>/etc/inetd.conf</i>: </p>
+<pre>swat  stream  tcp  nowait.400 root <tt><i>/path/to/samba/</i></tt>bin/swat swat</pre>
+<p class="docText">Now, restart <i>inetd</i> and point your web browser to
+<a class="docLink" href="http://localhost:901" target="_blank">
+http://localhost:901</a>. You will be asked for the root username and password. 
+If all is successful, you will see a screen that has seven navigation icons: 
+home, globals, shares, printers, status, view, and password, as shown in
+<a class="docLink" href="#upt3-CHP-47-FIG-1">Figure 47-1</a>. </p>
+<center>
+<h5 id="upt3-CHP-47-FIG-1" class="docFigureTitle">Figure 47-1. SWAT's globals page</h5>
+<p><img alt="figs/upt3_4701.gif" src="upt3_4701.gif" border="0" width="339" height="552"></p>
+</center>
+<p class="docText"><i>swat</i> will be on the <span class="docEmphasis">globals</span> 
+page first. Here you can set the global directives, such as workgroup name and 
+security type. There is online help, should an option not be immediately clear. 
+Clicking on the <span class="docEmphasis">shares</span> icon shows you the 
+services you are currently advertising and allows you to add more. Clicking on
+<span class="docEmphasis">printers</span> allows you to configure which printers 
+you share with the SMB network. You can even restart the server from <i>swat</i>.
+</p>
+<p class="docText">Third-party browsing tools are also available for Samba. Some 
+of these, like <span class="docEmphasis">smb2www</span>, are web applications 
+that show you the local SMB neighborhood. Others, like gsnhood and xSMBrowser, 
+are X11 programs that work somewhat like the Windows Network Neighborhood 
+application. One of the advantages of the X11 browsers is that they can be 
+configured to allow users to mount SMB drives (if your Unix supports the
+<span class="docEmphasis">smbfs</span> filesystem). You will certainly be 
+rewarded by searching the web for third-party SMB tools. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-47-SECT-5">47.5 Printing with Samba</h3>
+<p class="docText">Sharing Unix printers with a SMB network is pretty 
+straightforward. You can use <i>swat</i> to select the printer you want to 
+share. If your <i>/etc/printcap</i> is configured correctly, <i>swat</i> will 
+allow you to select one of those printers from a drop-down menu. You will then 
+be able to set access controls over that printer, as well as make the printer 
+browsable. Be sure to click the Commit Changes button when you're finished to 
+save your settings. If you're running the SMB daemons as standalone processes, 
+you can restart them from the <span class="docEmphasis">status</span> section of
+<i>swat</i>. In any case, your printers won't be shared until the daemons are 
+restarted. </p>
+<p class="docText">Of course, you can also edit the <i>smb.conf</i> file 
+directly. Here's how to share your default printer with the SMB network: </p>
+<pre>[lp]
+        printable = Yes
+        printer name = lp
+        ; printing = BSD
+        ; print command = /usr/bin/lpr -r %s
+        path = /var/spool/samba
+        guest ok = Yes
+        read only = No
+        comment = hp</pre>
+<p class="docText">The block should start off with the <i>lpr</i> queue name. 
+The most important directive for print shares is <tt>printable</tt>, which 
+identifies this block as defining a print share. The <tt>printer name</tt> needs 
+to match the Unix printer queue name for the printer you wish to share. If you 
+have defined a global directive <tt>printing</tt> (which defaults to BSD style 
+print queues), you don't need to worry about explicitly telling Samba how to 
+print to the queue. In the commented-out <tt>print command</tt> directive, the
+<tt>%s</tt> stands for the file you wish to print. The <tt>path</tt> directive 
+defines the samba print spool directory. This directory needs to be writable by 
+the <i>smbd</i> process. Both <tt>guest ok</tt> and <tt>read only</tt> 
+directives are simple access controls. The <tt>comment</tt> block is 
+self-explanatory. </p>
+<p class="docText">After saving your changes and restarting the Samba servers 
+(if needed), your shares should be browsable by the SMB network. From Unix, you 
+can print to SMB printers with the following command: </p>
+<pre>$ smbclient //<tt><i>netbios-name</i></tt>/<tt><i>printer</i></tt>
+smb: \&gt; print <tt><i>filename-to-print</i></tt></pre>
+<p class="docText">Here the <i>smbclient</i> program (described in more detail 
+below) is used to connect to the SMB printer. Using the interactive shell, the
+<span class="docEmphasis">print</span> command will send any file you specify to 
+the printer. On some systems, you may find a program called <i>smbprint</i> that 
+is a Bourne shell wrapper around <i>smbclient</i>. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-47-SECT-6">47.6 Connecting to SMB Shares from Unix</h3>
+<p class="docText">From Unix, you can connect to SMB shares with the <i>
+smbclient</i> command. It provides an <i>ftp</i>-like interactive environment 
+for transferring files between your Unix system and the SMB share. It also is an 
+excellent tool for debugging your Samba setup. For instance, you can see what 
+shares are available from an SMB host with the following: </p>
+<pre>$ smbclient -L //<tt><i>netbios-name</i></tt> -U <tt><i>SMB_username</i></tt></pre>
+<p class="docText">The <tt>-L</tt> flag request the list of available shares 
+from the machine specified by its NETBIOS name. You may optionally provide an 
+SMB username name with the <tt>-U</tt> flag. If no explicit username is 
+provided, your Unix account name is used. </p>
+<p class="docText">Once you have found a directory share that interests you, you 
+can &quot;log in&quot; to it: </p>
+<pre>$ smbclient //<tt><i>netbios-name</i></tt>/<tt><i>share</i></tt> -U <tt><i>SMB_username</i></tt>
+smb: /&gt;</pre>
+<p class="docText">You will be prompted for the SMB password associated with 
+whichever account you used. If successful, you will be at an interactive prompt. 
+You may type <tt>?</tt> or <tt>help</tt> to get all the options available to 
+you. Use the <span class="docEmphasis">get</span> command to copy files from the 
+remote host to your Unix machine and <span class="docEmphasis">put</span> to 
+copy files in the other direction. Like <i>ftp</i>, Samba also provides the 
+filename wildcard variants <span class="docEmphasis">mget</span> and
+<span class="docEmphasis">mput</span> to allow you to handle multiple files 
+easily. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-47-SECT-7">47.7 Sharing Desktops with VNC</h3>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: VNC</p>
+<p class="docText">Virtual Network Computing (VNC) is an open source project 
+from AT&amp;T Labs in Cambridge, England. It is a client/server system that allows 
+users to manipulate desktop environments remotely. There are VNC servers for 
+Unix, Windows, and pre-MacOS X environments. The options for clients are even 
+wider since there is a Java applet VNC client. This can be used on any system 
+that supports a modern web browser and Java. There is also a native VNC client 
+for Unix, Windows, and pre-MacOS X machines. VNC provides a platform-independent 
+way to control a heterogeneous network from any client platform. </p>
+<p class="docText">VNC provides a live picture of a desktop. When you move your 
+mouse on the client end, the mouse also moves on the server. The VNC client gets 
+a kind of &quot;graphic diff&quot; of the change on the remote desktop and applies that to 
+its current notion of the desktop. As you might guess, VNC isn't ideal for 
+high-performance video games, but it is very serviceable for system 
+administration and development. </p>
+<p class="docText">You can get either precompiled binaries or the source code at
+<a class="docLink" href="http://www.uk.research.att.com/vnc/download.html" target="_blank">
+http://www.uk.research.att.com/vnc/download.html</a>. If you choose to compile 
+VNC from the source, you will need to get and unpack the tar archive from the 
+above site. To build the source, change into the unpacked archive directory and 
+type: </p>
+<pre>$ xmkmf
+$ make World &amp;&amp; cd Xvnc &amp;&amp; make World</pre>
+<p class="docText">If the compile goes cleanly, change to root and install:</p>
+<pre># make install</pre>
+<h4  id="upt3-CHP-47-SECT-7.1" class="docSection2Title">47.7.1 Connecting to a Windows VNC server</h4>
+<p class="docText">Setting up a VNC server on a Windows machine is fairly 
+straightforward. Simply grab the appropriate binary from the VNC download page, 
+unzip the archive, and run the <i>SETUP.EXE</i> program in the <i>vncserver</i> 
+folder. VNC will create a folder in the Start menu in which you'll find the VNC 
+server program. When started, this program will ask you for a password that 
+clients will need to be able to use your Windows machine. </p>
+<p class="docText">Connecting to any VNC server requires three things. The first 
+is the server's hostname or IP address. The second is the
+<span class="docEmphasis">display</span> number of the remote desktop. Windows 
+and Macintosh servers can only have one display (the desktop), while Unix 
+machines can have many VNC servers active at once (just like they can have many 
+X sessions running concurrently). Display numbers begin at zero. The last piece 
+of information needed is the password. Be advised that this password is in no 
+way secure, nor is the VNC network traffic encrypted. </p>
+<p class="docText">To connect to a VNC server requires running X. From an Xterm, 
+type the following: </p>
+<pre>$ vncviewer <tt><i>hostname</i></tt>:<tt><i>display_number</i></tt></pre>
+<p class="docText">If the VNC server is running on that machine, you'll be 
+prompted for a password. You should see something like
+<a class="docLink" href="#upt3-CHP-47-FIG-2">Figure 47-2</a>. </p>
+<center>
+<h5 id="upt3-CHP-47-FIG-2" class="docFigureTitle">Figure 47-2. Unix VNC client connecting to a Windows 
+server</h5>
+<p><img alt="figs/upt3_4702.gif" src="upt3_4702.gif" border="0" width="450" height="313"></p>
+</center>
+<p class="docText">VNC desktops are also available through Java applets that can 
+be accessed through modern web browsers. The URL for that applet is comprised of 
+the hostname of the VNC server and a port number that is the display number plus 
+5800. For example, the URL for connecting to the VNC server on a Windows machine 
+called <span class="docEmphasis">karl.oreilly.com</span> would be
+<span class="docEmphasis">http://karl.oreilly.com:5800</span>. </p>
+<h4  id="upt3-CHP-47-SECT-7.2" class="docSection2Title">47.7.2 Setting up VNC on Unix</h4>
+<p class="docText">It is sometimes convenient to be able to connect to a Unix 
+desktop remotely from a machine that isn't running X. Fortunately, setting up 
+VNC on UNIX can be as straightforward as: </p>
+<pre>$ vncserver</pre>
+<p class="docText">VNC will pick the next available display number for your VNC 
+server and report this to you. </p>
+<pre>New 'X' desktop is marian:1
+
+Starting applications specified in /home/jjohn/.vnc/xstartup
+Log file is /home/jjohn/.vnc/marian:1.log</pre>
+<p class="docText">If you haven't picked one before, you will be prompted for a 
+password. Again, this has nothing to do with your system's <i>/etc/passwd</i>. 
+Keep in mind that the new server is running under the account that started it. 
+The security issues are manifold, so think carefully about how you deploy this 
+very useful service. </p>
+<p class="docText">By default, VNC runs the very lean window manager <i>twm</i>. 
+The fewer the needless graphic elements, the better network performance you can 
+expected. However, you can adjust the details of that desktop by looking in your 
+home directory for the <i>.vnc</i> directory. There, you'll find the VNC log, 
+pid, and password files. More importantly, you'll find the <i>xstartup</i> file, 
+which works just like <i>xinitrc</i>. You can start X programs, set the desktop 
+color, and choose the window manager to run from this file. Here's an example of 
+the kinds of customizations you can do: </p>
+<pre>#!/bin/sh
+xrdb $HOME/.Xresources
+xsetroot -solid gray85 &amp;
+xterm -fg blue    -bg lightyellow -g 80x25+0+0 &amp;
+xterm -fg red     -bg lightyellow -g 80x25+0-0 &amp;
+xterm -fg darkgreen  -bg lightyellow -g 80x25-0+0 &amp;
+xclock -digital -update 5 -bg lightyellow -g -0-300 &amp;
+exec twm</pre>
+<p class="docText">Here, three Xterms and <i>xclock</i> are arranged in a 
+convenient way. VNC will also look in your <i>.twmrc</i>, if you're using the 
+default window manager, for further customizations. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-47-SECT-8">47.8 Of Emulators and APIs</h3>
+<p class="docText">Sometimes you will need to use a Windows application that 
+hasn't been ported to Unix. While you can buy an additional Windows machine just 
+for that program, there are a few Unix solutions that will allow you access to 
+the Windows environment from the comfort of X. While none of the solutions 
+offered below have the performance of Windows running natively on dedicated 
+hardware, each is worth mentioning. </p>
+<h4  id="upt3-CHP-47-SECT-8.1" class="docSection2Title">47.8.1 VMWare</h4>
+<p class="docText">What's the next best thing to having another machine run 
+Windows? Having a virtual machine running Windows. VMWare, Inc., has produced 
+software called <i>vmware</i> for Intel Linux that creates a virtual i386-class 
+machine on which Windows can be installed. All your hardware is virtualized, so 
+the virtual machine created is a somewhat slower clone of the host. Still, the 
+performance is adequate for Office applications and development. <i>vmware</i> 
+creates a private network on your machine so that, with
+<span class="docEmphBold">Samba</span> (<a class="docLink" href="_chapter 47.htm#upt3-CHP-47-SECT-2">Section 
+47.2</a>), you can get to your Unix filesystem from your virtual Windows 
+machine. You can get an evaluation copy at
+<a class="docLink" href="http://www.vmware.com" target="_blank">
+http://www.vmware.com</a>. </p>
+<h4  id="upt3-CHP-47-SECT-8.2" class="docSection2Title">47.8.2 Wine</h4>
+<p class="docText">If a virtual machine is overkill for your needs, you might 
+want to look into the open source project called <i>wine</i> . A recursive 
+acronym for Wine Is Not an Emulator, the <i>wine</i> project also runs only on 
+Intel machines, and it tries to emulate the Windows API for Windows-native 
+applications. This project has been under development for a long time and isn't 
+quite ready for mission-critical applications yet. However, many Windows 
+projects can mostly function under <i>wine</i>, including some video games, such 
+as Blizzard's StarCraft. You will find more information about <i>wine</i> at
+<a class="docLink" href="http://www.winehq.com" target="_blank">
+http://www.winehq.com</a>. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-47-SECT-9">47.9 Citrix: Making Windows Multiuser</h3>
+<p class="docText">Unix users needing to access Windows applications will find 
+that VNC is not a workable solution in all instances. The reason for this is 
+that Windows operating systems were not designed to be multiuser; they do not 
+allow multiple concurrent user sessions. When you have more than a few users 
+needing to run a Windows application, such as Outlook to connect to corporate 
+email, your options are to put a Windows PC on every desk, run Windows under a 
+virtual machine, or set up Windows Terminal Services (WTS). </p>
+<p class="docText">WTS is the current name of the multiuser software Microsoft 
+provides with the Windows 2000 Server product family. Its former iteration was 
+Windows NT 4.0 Terminal Server. Similar to VNC, WTS provides a Windows 2000 
+desktop to a connecting client, but does it in true multiuser fashion. Dozens of 
+users can be connected to the same machine, running different processes, all 
+independent of the other. However, WTS is only part of the solution for Unix 
+users. This is because Microsoft only allows connections to a WTS server via the 
+Remote Desktop Protocol (RDP) but doesn't provide any non-Windows clients that 
+use RDP. </p>
+<p class="docText">On the flip side, Citrix provides a Unix client program that 
+can connect to a WTS server, but it only uses the Independent Computing 
+Architecture (ICA) protocol. For that client to work, a server add-on product to 
+WTS called Citrix Metaframe must be installed. Thankfully, Metaframe provides 
+additional features to a WTS server besides ICA connectivity that helps to 
+justify the additional cost. </p>
+<p class="docText">One thing to be careful of when implementing a WTS solution 
+is licensing. Microsoft is very strict in its rules about what machines can 
+connect under which circumstances. Like tollbooths on the highway, Microsoft 
+wants to get paid no matter how you get on, or which vehicle you're driving. To 
+put licensing simply, you must have a Windows 2000 Server license for each 
+server, a Windows 2000 Server Client Access License for each machine connecting 
+to the server, a Terminal Services License for each machine actually using WTS, 
+and, if you are using Office, each machine that runs Office off the WTS server 
+must have a license. These are not concurrent licenses: if 50 machines are going 
+to use Office at some point, all 50 must have licenses, not just the 10 that are 
+connected at any given moment. Citrix licenses are in addition to Microsoft 
+licenses but are thankfully more friendly. Citrix allows the use of concurrent 
+licenses, which means 20 licenses could cover the needs of 50 users, if only 20 
+are going to be connected at a time. Full details about Microsoft licensing in a 
+WTS environment can be found at
+<a class="docLink" href="http://www.microsoft.com/windows2000/server/howtobuy/pricing/tsfaq.asp" target="_blank">
+http://www.microsoft.com/windows2000/server/howtobuy/pricing/tsfaq.asp</a>. </p>
+<h4  id="upt3-CHP-47-SECT-9.1" class="docSection2Title">47.9.1 Citrix Metaframe</h4>
+<p class="docText">Assuming that you have a properly installed and configured 
+Citrix Metaframe server to connect to, you should download and install the 
+appropriate ICA client for your operating system from
+<a class="docLink" href="http://www.citrix.com/download/" target="_blank">
+http://www.citrix.com/download/</a>. Installation is very simple and adequately 
+explained in the provided documentation. </p>
+<p class="docText">After installation, as a user, run <i>wfcmgr</i> from program 
+directory you installed to. This will launch the configuration program for the 
+ICA client; see <a class="docLink" href="#upt3-CHP-47-FIG-3">Figure 47-3</a>.
+</p>
+<center>
+<h5 id="upt3-CHP-47-FIG-3" class="docFigureTitle">Figure 47-3. Existing entries in wfcmgr</h5>
+<p><img alt="figs/upt3_4703.gif" src="upt3_4703.gif" border="0" width="450" height="156"></p>
+</center>
+<p class="docText">To create a new entry, select New from the Entry menu. You 
+will see <a class="docLink" href="#upt3-CHP-47-FIG-4">Figure 47-4</a>. Though 
+all settings are important, be sure to adjust the settings pertaining to the 
+Window properties. A good tip is to set up your screen to be 90 percent of your 
+display size, to use a shared palette of colors, and to map drive letters to 
+your home directory, floppy, and CD-ROM. Using full-screen mode will disable the 
+use of multiple desktops on your Unix system, so it is not a good idea. Using a 
+shared palette prevents odd coloring on your display. Mapping to your local 
+devices is useful for transferring files between the WTS server and your 
+workstation. The settings to do this are under the Option menu after you've 
+saved the entry. </p>
+<center>
+<h5 id="upt3-CHP-47-FIG-4" class="docFigureTitle">Figure 47-4. Creating a new entry in wfcmgr</h5>
+<p><img alt="figs/upt3_4704.gif" src="upt3_4704.gif" border="0" width="450" height="449"></p>
+</center>
+<p class="docText">Running <i>wfcmgr</i> also creates a <i>.ICAClient</i> 
+directory in the user's home directory. Copy this directory to <i>/etc/skel</i> 
+to insure that new users are automatically setup with default settings to access 
+WTS. For existing users, copy the directory to their home directory and give 
+ownership to that user. </p>
+<p class="docText">Create a symbolic link, such as <i>/usr/local/bin/citrix</i>, 
+in your default path that points to <i>wfcmgr</i>. Give it an easy name like
+<span class="docEmphasis">citrix</span>. Using this link name, you can launch 
+saved configurations in <i>wfcmgr</i> with a single command. </p>
+<pre>$ citrix <tt><i>desc</i></tt> <tt><i>description_name</i></tt></pre>
+<p class="docText"><tt><i>description_name</i></tt>, in this instance, is the 
+descriptive name you gave your entry in <i>wfcmgr</i> (see
+<a class="docLink" href="#upt3-CHP-47-FIG-3">Figure 47-3</a>). It is 
+case-sensitive. </p>
+<p class="docText">Metaframe offers many additional features, such as load 
+balancing, application publishing, automatic updates of ICA clients, and a 
+web-based client, that may help justify its cost. Citrix even sells a Metaframe 
+for Unix that provides Unix programs to Windows clients that don't have an X 
+Server. </p>
+<h4  id="upt3-CHP-47-SECT-9.2" class="docSection2Title">47.9.2 rdesktop</h4>
+<p class="docText">The fact that Microsoft has not provided an RDP client for 
+Unix has not stopped enterprising programmers in the Open Source community from 
+creating one. This program, called <i>rdesktop</i>, is available at
+<a class="docLink" href="http://www.rdesktop.org" target="_blank">
+http://www.rdesktop.org</a>. In everyday use this program has proven to be as 
+useful as the ICA client, though it lacks support for sound, high color depths, 
+drive mapping, or client-side support for serial and parallel ports. If these 
+features are important to you, you will need Metaframe; if not, this free 
+program is an excellent alternative. </p>
+<h4  id="upt3-CHP-47-SECT-9.3" class="docSection2Title">47.9.3 Hob</h4>
+<p class="docText">Another RDP client, called HOBLink JWT, is available from 
+Hobsoft, <a class="docLink" href="http://www.hobsoft.com" target="_blank">
+http://www.hobsoft.com</a>. The most interesting feature of this program is that 
+it is written in Java. This means that any client that has a browser with a 
+working Java runtime should be able to run this program. Hobsoft has provided a 
+lot of features in this product, and it is a viable alternative to Citrix 
+Metaframe. </p>
+<p class="docText"><span class="docEmphasis">— DB</span> </p>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 46.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 48.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

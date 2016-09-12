@@ -1,0 +1,1273 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 30</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 29.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 31.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+<h2 class="docChapterTitle">Chapter 30. The Use of History</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-1">30.1 The Lessons of 
+  History</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-2">30.2 History in a Nutshell</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-2sb">Summary Box</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-3">30.3 My Favorite Is !$</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-4">30.4 My Favorite Is !:n*</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-5">30.5 My Favorite Is ^^</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-6">30.6 Using !$ for Safety with 
+Wildcards</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-7">30.7 History by Number</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-8">30.8 History Substitutions</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-9">30.9 Repeating a Cycle of 
+Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-10">30.10 Running a Series of 
+Commands on a File</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-11">30.11 Check Your History 
+First with :p</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-12">30.12 Picking Up Where You 
+Left Off</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-13">30.13 Pass History to 
+Another Shell</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-14">30.14 Shell Command-Line 
+Editing</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-15">30.15 Changing History 
+Characters with histchars</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-30-SECT-16">30.16 Instead of Changing 
+History Characters</a></li>
+</ul>
+
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-1">30.1 The Lessons of History</h3>
+<p class="docText">It has been said that &quot;the only thing we learn from history 
+is that people don't learn from history.&quot; </p>
+<p class="docText">Fortunately, the original maxim that &quot;history repeats itself&quot; 
+is more appropriate to Unix. </p>
+<p class="docText">Most shells include a powerful history mechanism that lets 
+you recall and repeat past commands, potentially editing them before execution. 
+This can be a godsend, especially when typing a long or complex command. </p>
+<p class="docText">All that is needed to set C shell history in motion is a 
+command like this in your <i>.cshrc</i> (or <i>.tcshrc</i>) file, where <tt><i>n</i></tt> 
+is the number of past commands that you want to save: </p>
+<pre>set history=<tt><i>n</i></tt></pre>
+<p class="docText">In <i>ksh</i> and <i>bash</i>, the variable is
+<span class="docEmphasis">HISTSIZE</span>, and it's already set for you; the 
+default values are 128 and 500, respectively. </p>
+<p class="docText">The <span class="docEmphBold">history command</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-7">Section 
+30.7</a>) lists the saved commands, each with an identifying number. (It's also 
+possible to configure the shells to print the history number of each command
+<span class="docEmphBold">as part of your prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-3">Section 
+4.3</a>).) </p>
+<p class="docText">In <i>tcsh</i>, <i>csh,</i> and <i>bash</i>, you can repeat a 
+past command by typing its number (or its name) preceded by an exclamation point 
+(<tt>!</tt>). You can also select only parts of the command to be repeated and 
+use various editing operators to modify it.
+<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">
+Section 30.8</a> and
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-5">
+Section 28.5</a> give quick tutorial summaries of some of the wonderful things 
+you can do. Most of the rest of the chapter gives a miscellany of tips for using 
+and abusing the shells' history mechanism. </p>
+<p class="docText">Most shells — except the original Bourne and C shells — also 
+have <span class="docEmphBold">interactive command-line editing</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-14">Section 
+30.14</a>). Interactive editing might seem to be better than typing <tt>!vi</tt> 
+or <tt>lpr !$</tt>. If you learn both systems, though, you'll find plenty of 
+cases where the <tt>!</tt> system is faster and more useful than interactive 
+editing. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-2">30.2 History in a Nutshell</h3>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h3 class="docSidebarTitle" id="upt3-CHP-30-SECT-2sb">Summary Box</h3>
+      <p class="docText">The C shell and <i>bash</i> can save copies of the 
+      previous command lines you type. Later, you can ask for a copy of some or 
+      all of a previous command line. That can save time and retyping. </p>
+      <p class="docText">This feature is called <span class="docEmphasis">
+      history substitution</span>, and it's done when you type a string that 
+      starts with an exclamation point (<tt>!<i>command</i></tt>). You can think 
+      of it like <span class="docEmphBold">variable substitution ($varname)</span> 
+      (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+      35.9</a>) or <span class="docEmphBold">command substitution ('command')</span> 
+      (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+      28.14</a>): the shell replaces what you type (like <tt>!$</tt>) with 
+      something else (in this case, part or all of a previous command line). </p>
+      <p class="docText">
+      <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-1">
+      Section 30.1</a> is an introduction to shell history. These articles show 
+      lots of ways to use history substitution: </p>
+      <ul>
+        <li>
+        <p class="docList">We start with favorite uses from several contributors 
+        —
+        <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-3">
+        Section 30.3</a>,
+        <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-4">
+        Section 30.4</a>,
+        <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-5">
+        Section 30.5</a>, and
+        <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-6">
+        Section 30.6</a>. </li>
+        <li>
+        <p class="docList">
+        <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">
+        Section 30.8</a> starts with a quick introduction, then covers the full 
+        range of history substitutions with a series of examples that show the 
+        different kinds of things you can do with history. </p>
+        <p class="docList">(Back in
+        <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-5">
+        Section 28.5</a> are examples of <i>csh</i>/<i>tcsh</i> and <i>bash</i> 
+        operators such as <tt>:r</tt>. Many of these can be used to edit history 
+        substitutions.) </li>
+        <li>
+        <p class="docList">See an easy way to repeat a set of <i>csh</i>/<i>tcsh</i> 
+        or <i>bash</i> commands in
+        <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-9">
+        Section 30.9</a>. </li>
+        <li>
+        <p class="docList">Each shell saves its own history. To pass a shell's 
+        history to another shell, see
+        <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-12">
+        Section 30.12</a> and
+        <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-13">
+        Section 30.13</a>. </li>
+        <li>
+        <p class="docList">You don't have to use an exclamation point (<tt>!</tt>) 
+        for history.
+        <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-15">
+        Section 30.15</a> shows how to use some other character. </li>
+        <li>
+        <p class="docList">The Korn shell does history in a different way.
+        <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-14">
+        Section 30.14</a> introduces part of that: command-line editing in <i>
+        ksh</i> and <i>bash</i>. </li>
+      </ul>
+      <p class="docText">One last note: <span class="docEmphBold">putting the 
+      history number in your prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-3">Section 
+      4.3</a>) makes it easy to reuse commands that haven't scrolled off your 
+      screen. </p>
+      <p class="docText"><span class="docEmphasis">— JP</span></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-3">30.3 My Favorite Is !$</h3>
+<p class="docText">I use <tt>!$</tt> so much that it's almost a single character 
+to me. It means &quot;take the last thing on the previous command line.&quot; Since most 
+Unix commands have the filename last, you often need to type filenames only 
+once, and then you can use <tt>!$</tt> in subsequent lines. Here are some 
+examples of where it comes in handy: </p>
+<ul>
+  <li>
+  <p class="docList">I get a lot of <span class="docEmphBold">tar archives</span> 
+  (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-2">Section 
+  39.2</a>). To extract and edit a file from them, I first make a backup for 
+  easy comparison after editing: </p>
+  <pre>% <b>tar xzf prog.1.05.tar.gz foo.c</b>
+% <b>cp -i !$ !$.orig</b>
+cp -i foo.c foo.c.orig</pre>
+  </li>
+  <li>
+  <p class="docList">The same trick is also good when you've edited a file with
+  <i>vi</i> and then want to check its spelling: </p>
+  <pre>% <b>vi fred.letter.txt</b>
+% <b>ispell !$</b></pre>
+  </li>
+  <li>
+  <p class="docList">You often want to move a file to another directory and then
+  <i>cd</i> to that directory. The <tt>!$</tt> sequence can also be used to 
+  refer to a directory: </p>
+  <pre>% <b>mv grmacs.tar /usr/lib/tmac</b>
+% <b>cd !$</b>
+cd /usr/lib/tmac</pre>
+  </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— AN</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-4">30.4 My Favorite Is !:n*</h3>
+<p class="docText">I use <span class="docEmphBold">!$</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-3">Section 
+30.3</a>) a lot, but my favorite history substitution is <tt>!</tt>:<tt><i>n</i>*</tt>, 
+where <tt><i>n</i></tt> is a number from 0 to 9. It means &quot;take arguments <tt>
+<i>n</i></tt> through the last argument on the previous command line.&quot; Since I 
+tend to use more than one argument with Unix commands, this lets me type the 
+arguments (usually filenames) only once. For example, to use
+<span class="docEmphBold">RCS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+39.5</a>) and make an edit to article files named
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">
+Section 35.5</a> and
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">
+Section 29.2</a> for this book, I did: </p>
+<pre>% <b>co -l 1171.sgm 6830.sgm 2340.sgm</b>
+RCS/1171.sgm,v  -&gt;  1171.sgm
+   ...
+RCS/2340.sgm,v  -&gt;  2340.sgm
+revision 1.8 (locked)
+done
+% <b>vi !:2*</b>
+vi 1171.sgm 6830.sgm 2340.sgm
+3 files to edit
+   ...
+% <b>ci -m&quot;Changed TERM xref.&quot; !*</b>
+ci -m&quot;Changed TERM xref.&quot; 1171.sgm 6830.sgm 2340.sgm
+   ...</pre>
+<p class="docText">In the first command line (<i>co</i>), I typed the filenames 
+as arguments 2, 3, and 4. In the second command line (<i>vi</i>), I used <tt>
+!:2*</tt>; which grabbed arguments 2 through the last (in this case, argument 4) 
+from the first command line. The result was a second command line that had those 
+three filenames as its arguments 1, 2, and 3. So, in the third command line (<i>ci</i>), 
+I used <tt>!*</tt> to pick arguments 1 through the last from the previous 
+(second) command line. (<tt>!*</tt> is shorthand for <tt>!:1*</tt>.) </p>
+<p class="docText">You can also grab arguments from previous command lines. For 
+example, <tt>!em:2*</tt> grabs the second through last arguments on the previous
+<i>emacs</i> command line (command line starting with &quot;em&quot;). There are lots more 
+of these in
+<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">
+Section 30.8</a>. </p>
+<p class="docText">If these examples look complicated, they won't be for long. 
+Just learn to count to the first argument you want to grab. It took me years to 
+start using these substitutions — but they've saved me so much typing that I'm 
+sorry I didn't get started earlier! </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-5">30.5 My Favorite Is ^^</h3>
+<p class="docText">Well, maybe it's not my favorite, but it's probably the 
+history substitution I use most often. It's especially handy if you have 
+fumble-fingers on a strange keyboard: </p>
+<pre>% <b>cat myflie</b>
+cat: myflie: No such file or directory
+% <b>^li^il</b>
+cat myfile</pre>
+<p class="docText">Obviously, this doesn't save much typing for a short command, 
+but it can sure be handy with a long one. I also use <tt>^^</tt> with
+<span class="docEmphBold">:p</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-11">Section 
+30.11</a>) to recall an earlier command so I can change it. For example: </p>
+<pre>% <b>!m:p</b>
+more gobbledygook.c
+% <b>^k^k2</b>
+more gobbledygook2.c</pre>
+<p class="docText">The point is sometimes not to save typing, but to save the 
+effort of remembering, such as, I want to print the file I looked at earlier, 
+but don't remember the exact name. </p>
+<p class="docText">[My keyboard can repeat characters when I'm not expecting it. 
+I use a single <tt>^</tt> to delete extra characters. For example: </p>
+<pre>% <b>lpr sources/aproggg.c</b>
+lpr: sources/aproggg.c: no such file or directory
+% <b>^gg</b>
+lpr sources/aprog.c</pre>
+<p class="docText">You could type <tt>^gg^</tt>, but the second caret isn't 
+required. With a single caret, you don't type a replacement string — just the 
+string to delete. <span class="docEmphasis">— JP</span>] </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-6">30.6 Using !$ for Safety with Wildcards</h3>
+<p class="docText">We all know about using <i>ls</i> before a wildcarded <i>rm</i> 
+to make sure that we're only deleting what we want. But that doesn't really 
+solve the problem: you can type <tt>ls a*</tt> and then mistakenly type <tt>rm 
+s*</tt> with bad consequences — it's just a minor slip of your finger. But what 
+will always work is: </p>
+<pre>% <b>ls a*</b>
+a1 a2 a3
+% <b>rm !$</b></pre>
+<p class="docText">(<span class="docEmphBold">ls -d a*</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-5">Section 
+8.5</a>) will make less output if any subdirectory names match the wildcard.)
+</p>
+<p class="docText">Using the history mechanism to grab the previous command's 
+arguments is a good way to prevent mistakes. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-7">30.7 History by Number</h3>
+<p class="docText">Most of the history examples we've shown use the first few 
+letters in a command's name: <tt>!em</tt> to repeat the previous Emacs command, 
+for example. But you also can recall previous commands by their numbered 
+position in the history list. That's useful when you have several command lines 
+that start with the same command. It's also more useful than
+<span class="docEmphBold">interactive command-line editing</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-14">Section 
+30.14</a>) when you'd like to see a lot of previous commands at once and then 
+choose one of them by number. </p>
+<p class="docText">To list previous commands, use the <i>history</i> command. 
+For instance, in <i>bash</i> and the C shells, <i>history 20</i> shows your last 
+20 commands. In <i>zsh</i> and the Korn shell, use a hyphen before the number:
+<i>history -20</i> (also see the discussion of <i>fc</i>, later in this 
+article). Here's an example: </p>
+<pre>$ <b>history 8</b>
+ 15  show last +upt/authors
+ 16  vi ../todo
+ 17  co -l 0444.sgm
+ 18  vi 0444.sgm
+ 19  ci -u 0444.sgm
+ 20  rcsdiff -u3.4 0444.sgm &gt; /tmp/0444-diff.txt
+ 21  scp /tmp/0444-diff.txt webhost:adir/11.03-diff.txt
+ 22  getmail;ndown
+$ <b>rm !20:$</b>
+rm /tmp/0444-diff.txt
+$ <b>!16</b>
+vi ../todo</pre>
+<p class="docText">The number at the start of each line is the history number. 
+So, to remove the temporary file I created in command 20 (the name of which I'd 
+already forgotten!), I can use <span class="docEmphBold">!20:$</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+30.8</a>) to pass that filename as an argument to <i>rm</i>. And to repeat 
+command 16 (<i>vi ../todo</i>), I can type <tt>!16</tt>. </p>
+<p class="docText">This sort of thing is often faster than using arrow keys and 
+editor commands to recall and edit previous commands. It lets me see several 
+commands all at once, which makes it easier to spot the one(s) I want and to 
+remember what I was doing as I worked. I use it so often that I've got a set of 
+aliases that list bigger and bigger chunks of previous commands and an alias 
+that searches history, giving me a chunk of matching command lines. Here they 
+are in C shell syntax: </p>
+<p class="docText"><tt>less</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">
+Section 12.3</a>, <tt>\!*</tt>
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-3">
+Section 29.3</a></p>
+<pre>alias h     history 5     # show last five lines
+alias hi    history 10    # show last ten lines
+alias his   history 20    # show last 20 lines
+alias hist  'history 40 | less'        # show last 40; pipe to 'less'
+alias histo 'history 70 | less'        # show last 70; pipe to 'less'
+alias H     'history -r | fgrep &quot;\!*&quot;' # find something in history</pre>
+<p class="docText">The <i>history</i> -<i>r</i> option shows the list in reverse 
+order: most recent first. If you don't give a count of lines to list, you'll see 
+all of them.</p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="50" src="screw.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Be careful! In <i>bash</i>, <i>history</i> -<i>r</i> 
+        reads the current history file and uses it as the history from that 
+        point onward, trashing any current history for that shell if it has not 
+        yet been written to the history file (defined in the environment 
+        variable <span class="docEmphasis">HISTFILE</span>). </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">To avoid typing the <i>history</i> command, you can
+<span class="docEmphBold">include the history number in your prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-3">Section 
+4.3</a>). Then you can repeat a recent command by glancing up your screen to 
+find the command number from its prompt. </p>
+<p class="docText">There's another way to see a list of your previous commands 
+in <i>bash</i>, <i>ksh</i>, and <i>zsh</i>: the command <i>fc</i> -<i>l</i> 
+(lowercase L, for &quot;list&quot;). (In <i>ksh</i>, the command <i>history</i> is 
+actually just an alias that executes <i>fc -l</i>.) By itself, <i>fc -l</i> 
+lists the previous 16 commands: </p>
+<pre>$ <b>fc -l</b>
+   ...
+19      ls -F
+20      less expn.c
+21      vi expn.c
+22      make
+23      expn info@oreilly.com
+24      fc -l</pre>
+<p class="docText">For an even shorter list, give <i>fc</i> the first number or 
+name you want to list. For instance, <tt>fc -l vi</tt> or <tt>fc -l 21</tt> 
+would give the last four lines above. You can also use a second argument that 
+ends the range before the current line. If you type <tt>fc -l vi expn</tt> or
+<tt>fc -l 21 23</tt>, you'll see commands 21 through 23. </p>
+<p class="docText"><i>tcsh</i> and <i>zsh</i> automatically keep timestamps with 
+their history. The <i>tcsh</i> command <i>history</i> shows the time of day by 
+default. In <i>zsh</i>, you can see this info with the options <i>-d</i>, which 
+shows the times, <i>-f</i>, which shows both dates and times, and <i>-D</i>, 
+which shows elapsed times. For example, the <i>scp</i> command started running 
+at 12:23 (PM) and took 1 minute 29 seconds to run: </p>
+<pre>% <b>fc -l -f -4</b>
+ 1003  10/23/2000 12:23  nup
+ 1004  10/23/2000 12:23  scp ../upt3_changes.html webhost:adir/.
+ 1005  10/23/2000 12:25  less /etc/hosts
+ 1006  10/23/2000 12:25  getmail;ndown
+% <b>fc -l -D -5</b>
+ 1003  0:29  nup
+ 1004  1:29  scp ../upt3_changes.html webhost:adir/.
+ 1005  0:05  less /etc/hosts
+ 1006  0:21  getmail;ndown
+ 1007  0:00  fc -l -f -4</pre>
+<p class="docText"><i>zsh</i> also has several related options for <i>fc</i> 
+that allow for the history to be written out to a file, read in from a file, et 
+cetera. The other shells allow for even more extended functionality. In <i>bash</i>, 
+for example, <i>fc</i> -<i>e</i> with appropriate options will start an editor 
+(defined by the <span class="docEmphasis">FCEDIT</span> environment variable) 
+and load up a new file containing the recent history items. Think of it is jump 
+starting a script from a sequence of (hopefully) successfully executed commands. 
+See the other shells' manual pages for more details. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-8">30.8 History Substitutions</h3>
+<p class="docText">Although most of the examples here use <i>echo</i> to 
+demonstrate clearly just what is going on, you'll normally use history with 
+other Unix commands. </p>
+<p class="docText">The exclamation point (<tt>!</tt>) is the
+<span class="docEmphBold">default</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-15">Section 
+30.15</a>) history substitution character. This allows you to recall previously 
+entered commands and re-execute them without retyping. To use the <tt>!</tt> in 
+a command line, you have several choices. Some of the following examples are 
+more of a headache than they may be worth, but they are also used to
+<span class="docEmphBold">select arguments from the command line in aliases</span> 
+(<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-3">Section 
+29.3</a>): </p>
+<ul>
+  <li>
+  <p class="docList"><tt>!!</tt> repeats the last command. </li>
+  <li>
+  <p class="docList"><tt>!:</tt> repeats the last command. This form is used if 
+  you want to add a <span class="docEmphBold">modifier</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-5">Section 
+  28.5</a>) like the following: </p>
+  <pre>% <b>echo xy</b>
+xy
+% <b>!:s/xy/yx</b>
+echo yx
+yx</pre>
+  <p class="docList">The second <tt>!</tt> was left out.</li>
+  <li>
+  <p class="docList"><tt>!so</tt> repeats the last command that starts with <tt>
+  so</tt>. </li>
+  <li>
+  <p class="docList"><tt>!?fn?</tt> repeats the last command that has <tt>fn</tt> 
+  anywhere in it. The string could be found in an argument or in the command 
+  name. This is opposed to <tt>!fn</tt>, in which <tt>!fn</tt> must be in a 
+  command name. (The last <tt>?</tt> need not be there. Thus <tt>!?fn</tt> means 
+  the same thing.) </li>
+  <li>
+  <p class="docList"><tt>!34</tt>executes command number 34. You can find the 
+  appropriate history number when you list your history using the <i>history</i> 
+  command, or by <span class="docEmphBold">putting the history number in your 
+  prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-3">Section 
+  4.3</a>). </li>
+  <li>
+  <p class="docList"><tt>!! &amp;</tt> adds an ampersand (<tt>&amp;</tt>) to the end of 
+  the last command, which executes it and places it into the background. You can 
+  add anything to the end of a previous command. For example: </p>
+  <pre>% <b>cat -v foo</b>
+       ...
+% <b>!! | more</b>
+cat -v foo | more
+       ...</pre>
+  <p class="docList">In this case the shell will repeat the command to be 
+  executed and run it, adding the pipe through the <i>more</i> pager. Another 
+  common usage is: </p>
+  <pre>% <b>cat -v foo</b>
+       ...
+% <b>!! &gt; out</b>
+cat -v foo &gt; out</pre>
+  <p class="docList">which returns the command but redirects the output into a 
+  file.</li>
+  <li>
+  <p class="docList"><tt>!:0</tt>selects only the command name, rather than the 
+  entire command line. </p>
+  <pre>% <b>/usr/bin/grep Ah fn1</b>
+       ...
+% <b>!:0 Bh fn2</b>
+/usr/bin/grep Bh fn2</pre>
+  <p class="docList">Note that as an <span class="docEmphBold">operator</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-5">Section 
+  28.5</a>,), <tt>:0</tt> can be appended to these history substitutions as 
+  well. For example, <tt>!!:0</tt> will give the last command name, and a colon 
+  followed by any number will give the corresponding argument. For example, <tt>
+  !:3</tt> gives the third argument: </p>
+  <pre>% <b>cat fn fn1 fn2</b>
+       ...
+% <b>more !:3</b>
+more fn2
+       ...</pre>
+  </li>
+  <li>
+  <p class="docList"><tt>!:2-4</tt> gives the second through the fourth 
+  argument; use any numbers you choose: </p>
+  <pre>% <b>echo 1 2 3 4 5</b>
+1 2 3 4 5
+% <b>echo !:2-4</b>
+echo 2 3 4
+2 3 4</pre>
+  </li>
+  <li>
+  <p class="docList"><tt>!:-3</tt> gives zero through the third argument; use 
+  any number you wish: </p>
+  <pre>% <b>echo 1 2 3 4</b>
+1 2 3 4
+% <b>echo !:-3</b>
+echo echo 1 2 3
+echo 1 2 3</pre>
+  </li>
+  <li>
+  <p class="docList"><tt>!^</tt> gives the first argument of the previous 
+  command. This is the same as <tt>!:1</tt>. Remember that just as the <tt>^</tt> 
+  (caret) is the beginning-of-line anchor in <span class="docEmphBold">regular 
+  expressions</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-5">Section 
+  32.5</a>), <tt>!^</tt> gives the beginning history argument. </p>
+  <pre>% <b>cat fn fn1 fn2</b>
+       ...
+% <b>more !^</b>
+more fn
+       ...</pre>
+  </li>
+  <li>
+  <p class="docList"><tt>!$</tt> gives the last argument of the last command. In 
+  the same way that <tt>$</tt> (dollar sign) is the end-of-line anchor in 
+  regular expressions, <tt>!$</tt> gives the ending history argument. Thus: </p>
+  <pre>% <b>cat fn</b>
+       ...
+% <b>more !$</b>
+more fn
+       ...</pre>
+  <p class="docList">The new command (<tt>more</tt>) is given the last argument 
+  of the previous command. This is also handy for pulling the last argument from 
+  earlier commands, which is typically a filename. To get the last argument from 
+  the previous <i>vi</i> command, for example, you'd use <tt>!vi:$</tt>. So you 
+  could type <tt>lpr !vi:$</tt> to print the last file you edited with <i>vi</i>.
+  </li>
+  <li>
+  <p class="docList"><tt>!*</tt>is shorthand for the first through the last 
+  argument. This is used a lot in aliases: </p>
+  <pre>% <b>echo 1 2 3 4 5</b>
+1 2 3 4 5
+% <b>echo !*</b>
+echo 1 2 3 4 5
+1 2 3 4 5</pre>
+  <p class="docList">In an alias:</p>
+  <pre>alias vcat 'cat -v \!* | more'</pre>
+  <p class="docList">This alias will pipe the output of
+  <span class="docEmphBold">cat -v</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">Section 
+  12.4</a>) command through <i>more</i>. The backslash (<tt>\</tt>) has to be 
+  there to hide the history character, <tt>!</tt>, until the alias is used — see
+  <a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-3">
+  Section 29.3</a> for more information. </li>
+  <li>
+  <p class="docList"><tt>!:2*</tt> gives the second through the last arguments; 
+  use any number you wish: </p>
+  <pre>% <b>echo 1 2 3 4 5</b>
+1 2 3 4 5
+% <b>echo !:2*</b>
+echo 2 3 4 5
+2 3 4 5</pre>
+  </li>
+  <li>
+  <p class="docList"><tt>!:2-</tt> is like <tt>2*</tt> but the last argument is 
+  dropped: </p>
+  <pre>% <b>echo 1 2 3 4 5</b>
+1 2 3 4 5
+% <b>echo !:2-</b>
+echo 2 3 4
+2 3 4</pre>
+  </li>
+  <li>
+  <p class="docList"><tt>!?fn?%</tt> gives the first word found that has <tt>fn</tt> 
+  in it: </p>
+  <pre>% <b>sort fn1 fn2 fn3</b>
+       ...
+% <b>echo !?fn?%</b>
+echo fn1
+fn1</pre>
+  <p class="docList">That found the <tt>fn</tt> in <tt>fn1</tt>. You can get 
+  wilder with: </p>
+  <pre>% <b>echo 1 2 3 4 5</b>
+1 2 3 4 5
+% <b>echo !?ec?^</b>
+echo 1
+1</pre>
+  <p class="docList">That selected the command that had <tt>ec</tt> in it, and 
+  the caret (<tt>^</tt>) said to give the first argument of that command. You 
+  can also do something like this: </p>
+  <pre>% <b>echo fn fn1 fn2</b>
+fn fn1 fn2
+% <b>echo !?fn1?^ !$</b>
+echo fn fn2
+fn fn2</pre>
+  <p class="docList">That cryptic command told the shell to look for a command 
+  that had <tt>fn1</tt> in it (<tt>!?fn1?</tt>), and gave the first argument of 
+  that command (<tt>^</tt>). Then it gave the last argument (<tt>!$</tt>). </li>
+  <li>
+  <p class="docList"><tt>^xy^yx</tt> is the <span class="docEmphBold">shorthand 
+  substitution</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-3">Section 
+  30.3</a>,
+  <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-5">
+  Section 30.5</a>) command. In the case of: </p>
+  <pre>% <b>echo xxyyzzxx</b>
+xxyyzzxx
+% <b>^xx^ab</b>
+echo abyyzzxx
+abyyzzxx</pre>
+  <p class="docList">it replaced the first set of characters <tt>xx</tt> with
+  <tt>ab</tt>. This makes editing the previous command much easier. </li>
+  <li>
+  <p class="docList"><tt>!!:s/xx/ab/</tt> is doing the same thing as the 
+  previous example, but it is using the substitute command instead of the <tt>^</tt>. 
+  This works for any previous command, as in: </p>
+  <pre>% <b>more afile bfile</b>
+       ...
+% <b>echo xy</b>
+xy
+% <b>!m:s/b/c/</b>
+more afile cfile</pre>
+  <p class="docList">You do not have to use the slashes (<tt>/</tt>); any 
+  character can act as a delimiter. </p>
+  <pre>% <b>!!:s:xy:yx</b></pre>
+  <p class="docList">There we used colons (:), good when the characters you're 
+  trying to edit contain a slash. If you want to add more to the replacement, 
+  use <tt>&amp;</tt> to &quot;replay it&quot; and then add on whatever you like: </p>
+  <pre>% <b>echo xy</b>
+xy
+% <b>!!:s/xy/&amp;yx</b>
+echo xyyx
+xyyx</pre>
+  <p class="docList">The <tt>&amp;</tt> in the replacement part said to give what 
+  the search part found, which was the <tt>xy</tt> characters. </p>
+  <p class="docList">The search part, or left side, cannot include
+  <span class="docEmphBold">metacharacters</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-3">Section 
+  32.3</a>). You must type the actual string you are looking for. </p>
+  <p class="docList">Also, the example above replaces only the first occurrence 
+  of <tt>xy</tt>. To replace them all, use <span class="docEmphasis">g</span>:
+  </p>
+  <pre>% <b>echo xy xy xy xy</b>
+xy xy xy xy
+% <b>!!:s/xy/yx/</b>
+echo yx xy xy xy
+yx xy xy xy
+% <b>!!:gs/xy/yx/</b>
+echo yx yx yx yx
+yx yx yx yx</pre>
+  <p class="docList">The <span class="docEmphasis">g</span> command in this case 
+  meant &quot;do all the <tt>xy</tt>s.&quot; And oddly enough, the
+  <span class="docEmphasis">g</span> has to come before the
+  <span class="docEmphasis">s</span> command. This may seem odd to those of you 
+  familiar with <i>vi</i>, so be careful. </p>
+  <p class="docList">Or you could have done this:</p>
+  <pre>% <b>echo xy xy xy xy</b>
+xy xy xy xy
+% <b>!!:s/xy/yx/</b>
+echo yx xy xy xy
+yx xy xy xy
+% <b>!!:g&amp;</b>
+echo yx yx yx yx
+yx yx yx yx</pre>
+  <p class="docList">In this example, we told the shell to globally (<tt>:g</tt>) 
+  replace every matched string from the last command with the last substitution 
+  (<tt>&amp;</tt>). Without the <span class="docEmphasis">g</span> command, the 
+  shells would have replaced just one more <tt>xy</tt> with <tt>yx</tt>. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— DR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-9">30.9 Repeating a Cycle of Commands</h3>
+<p class="docText">The <tt>!!</tt> history substitution gives a copy of the 
+previous command. Most people use it to re-execute the previous command line. 
+Sometimes I want to repeat a cycle of two commands, one after the other. To do 
+that, I just type <tt>!-2</tt> (second-previous command) over and over: </p>
+<pre>% <b>vi plot</b>
+   ...
+% <b>vtroff -w plot</b>
+   ...
+% <b>!-2</b>
+vi plot
+   ...
+% <b>!-2</b>
+vtroff -w plot
+   ...</pre>
+<p class="docText">You can cycle through three commands with <tt>!-3</tt>, four 
+commands with <tt>!-4</tt>, and so on. The best part is that if you can count, 
+you never have to remember what to do next. <tt>:-)</tt> </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-10">30.10 Running a Series of Commands on a File</h3>
+<p class="docText">[There are times when history is not the best way to repeat 
+commands. Here, Jerry gives an example where a few well-chosen aliases can make 
+a sequence of commands, all run on the same file, even easier to execute. — TOR]
+</p>
+<p class="docText">While I was writing the articles for this book, I needed to 
+look through a set of files, one by one, and run certain commands on some of 
+those files. I couldn't know which files would need which commands, or in what 
+order. So I typed a few temporary aliases on the C shell command line. (I could 
+have used <span class="docEmphBold">shell functions</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>) on <i>sh</i>-like shells.) Most of these aliases run
+<span class="docEmphBold">RCS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+39.5</a>) commands, but they could run any Unix command (compilers, debuggers, 
+printers, and so on). </p>
+<pre>% <b>alias h 'set f=&quot;\!*&quot;;co -p -q &quot;$f&quot; | grep NOTE'</b>
+% <b>alias o 'co -l &quot;$f&quot;'</b>
+% <b>alias v 'vi &quot;$f&quot;'</b>
+% <b>alias i 'ci -m&quot;Fixed NOTE.&quot; &quot;$f&quot;'</b></pre>
+<p class="docText">The <i>h</i> alias stores the filename in a
+<span class="docEmphBold">shell variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>). Then it runs a command on that file. What's nice is that, after I use
+<i>h</i> once, I don't need to type the filename again. Other aliases get the 
+filename from <tt>$f</tt>: </p>
+<pre>% <b>h ch01_summary</b>
+NOTE: Shorten this paragraph:
+% <b>o</b>
+RCS/ch01_summary,v  -&gt;  ch01_summary
+revision 1.3 (locked)
+done
+% <b>v</b>
+&quot;ch01_summary&quot; 23 lines, 1243 characters
+   ...</pre>
+<p class="docText">Typing a new <i>h</i> command stores a new filename.</p>
+<p class="docText">If you always want to do the same commands on a file, you can 
+store all the commands in one alias: </p>
+<pre>% <b>alias d 'set f=&quot;\!*&quot;; co -l &quot;$f&quot; &amp;&amp; vi &quot;$f&quot; &amp;&amp; ci &quot;$f&quot;'</b>
+% <b>d ch01_summary</b></pre>
+<p class="docText">The <tt>&amp;&amp;</tt> (two ampersands) (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">Section 
+35.14</a>) means that the following command won't run unless the previous 
+command returns a zero (&quot;success&quot;) status. If you don't want that, use <tt>;</tt> 
+(semicolon) (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-16">Section 
+28.16</a>) instead of <tt>&amp;&amp;</tt>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-11">30.11 Check Your History First with :p</h3>
+<p class="docText">Here's how to be more sure of your history before you use it. 
+First, remember that the history substitutions <tt>!/</tt> and <tt>!fra</tt> are 
+replaced with the most recent command lines that started with <tt>/</tt> and <tt>
+fra</tt>, respectively. </p>
+<p class="docText">If your memory is like mine (not very good), you might not be 
+sure that <tt>!/</tt> will bring back the command you want. You can test it by 
+adding <tt>:p</tt> to the end. The shell will print the substitution but won't 
+execute the command line. If you like what you got, type <tt>!!</tt> to execute 
+it. For example: </p>
+<pre># <b>!/:p</b>
+/usr/sbin/sendmail -qv
+# <b>!!</b>
+/usr/sbin/sendmail -qv
+Running id12345...</pre>
+<p class="docText">At the first prompt, the <tt>:p</tt> meant the command line 
+was only printed. At the second prompt, I didn't use <tt>:p</tt> and the <i>
+sendmail</i> command was executed. The <tt>:p</tt> works with all history 
+operators — for instance, <tt>!?sendmail?:p</tt>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-12">30.12 Picking Up Where You Left Off</h3>
+<p class="docText">If you want your command history to be remembered even when 
+you log out, set the C shell's <span class="docEmphasis">savehist</span>
+<span class="docEmphBold">shell variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>) to the number of lines of history you want saved. Other shells save 
+history automatically; you don't need to set a variable. (If you want to change 
+the number of lines saved by <i>bash</i>, set its <span class="docEmphasis">
+HISTFILESIZE</span> environment variable. In <i>zsh</i>, the variable is
+<span class="docEmphasis">SAVEHIST</span>. In <i>ksh</i>, the
+<span class="docEmphasis">HISTSIZE</span> variable sets the number of commands 
+available to be recalled in your current shell as well the number saved for 
+other shells.) </p>
+<p class="docText">When you log out, the specified number of lines from the <i>
+csh</i> history list will be saved in a file called <i>.history</i> in your home 
+directory. <i>zsh</i>, <i>bash</i> and <i>ksh</i> use the filename given in the
+<span class="docEmphasis">HISTFILE</span> environment variable. By default, <i>
+bash</i> calls the file <i>.bash_history</i>, and the original <i>ksh</i> uses
+<i>.sh_history</i> — but note that the new <i>pdksh</i> and <i>zsh</i> don't 
+save history unless you set <span class="docEmphasis">HISTFILE</span> to a 
+filename. For <i>zsh</i>, I chose <i>$HOME/.zsh_history</i>, but you can use 
+anything you want. </p>
+<p class="docText">On modern windowing systems, this isn't as trivial as it 
+sounds. On an old-style terminal, people usually started only one main shell, so 
+they could set the history-saving variable in their <i>.login</i> or <i>.profile</i> 
+file and have it apply to their login shell. </p>
+<p class="docText">However, under window systems like X or networked filesystems 
+that share your home directory between several hosts, or on networked servers to 
+which you might login via <i>ssh</i>, you may have multiple shells saving into 
+the same history file. Linux systems with multiple <span class="docEmphBold">
+virtual consoles</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-12">Section 
+23.12</a>) logged on as the same user will have the same problem. The shells 
+might be overwriting instead of appending, or appending instead of overwriting, 
+or jumbling commands together when you want them separated. The sections below 
+give some possible fixes. </p>
+<h4  id="upt3-CHP-30-SECT-12.1" class="docSection2Title">30.12.1 bash, ksh, zsh</h4>
+<p class="docText">Here's the basic way to give a separate history file to each
+<i>bash</i>, <i>zsh</i>, or <i>ksh</i> shell: customize your
+<span class="docEmphBold">setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) to set a different <span class="docEmphasis">HISTFILE</span> on each 
+host or each window. Use names like <i>$HOME/.sh_history.window</i><tt><i>n</i></tt> 
+or <i>~/.bash_history.</i><tt><i>hostname</i></tt> to match each file to its 
+window or host. If your setup is always the same each time you log in, that 
+should give each window and/or host the same history it had on the last 
+invocation. (There are related tips in
+<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-18">
+Section 3.18</a> and a series starting at
+<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-10">
+Section 3.10</a>.) </p>
+<p class="docText">If you open random windows, though, you'll have a harder time 
+automatically matching a history file to a shell the next time you log in. Cook 
+up your own scheme. </p>
+<p class="docText">The simplest fix is to use<span class="docEmphBold"> $$</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-17">Section 
+27.17</a>) — which will probably expand differently in almost every shell you 
+ever start — as a unique part of the filename. Here are two possibilities: </p>
+<pre>HISTFILE=/tmp/sh_hist.$$
+HISTFILE=$HOME/.sh_hist.$$</pre>
+<p class="docText">The first example uses the system's temporary-file directory. 
+If your system's <i>/tmp</i> is cleaned out often, you may be able to leave your 
+history files there and let the system remove them; ask the administrator. Note 
+that the history file may be <span class="docEmphBold">world-readable</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+50.2</a>) if your umask isn't set to protect your files. If that matters to you, 
+you could make the temporary files in your home directory (or some protected 
+directory), as in the second example shown earlier. Alternately, at the end of 
+each session, you might want to run a command that appends your shell's history 
+file to a global history file that you then read in at startup of a new session 
+(see below). </p>
+<p class="docText">Two more bits of trivia:</p>
+<ul>
+  <li>
+  <p class="docList">The original Korn shell maintains the history file 
+  constantly, adding a new line to it as soon as you run a command. This means 
+  you share history between all your current shells with the same
+  <span class="docEmphasis">HISTFILE</span> name, which can be a benefit or a 
+  problem. </li>
+  <li>
+  <p class="docList">In most other shells, each shell process keeps its own 
+  history list in memory. History isn't written to the history file (named by 
+  the <span class="docEmphasis">HISTFILE</span> variable in each shell) until 
+  the shell exits. </p>
+  <p class="docList">In <i>bash</i>, you can force a write with the command <i>
+  history -w</i>. In the same way, if you have an existing history file (or, 
+  actually, any file full of command lines), you can read it into your current
+  <i>bash</i> with <i>history -r</i>.
+  <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-13">
+  Section 30.13</a> has another example. Each shell has its own way to do this, 
+  so check your manual page carefully and experiment to get it right. </li>
+</ul>
+<h4  id="upt3-CHP-30-SECT-12.2" class="docSection2Title">30.12.2 C Shells</h4>
+<p class="docText">In <i>tcsh</i>, you can set a history file name in the
+<span class="docEmphasis">histfile</span> variable; the default filename is <i>
+.history</i> in your home directory. To avoid conflicts between multiple saved
+<i>tcsh</i> histories, use a system like the one described earlier for Bourne 
+shells. </p>
+<p class="docText">The original C shell has only one possible filename for its 
+automatic history file: <i>.history</i>. If you set the C shell variable
+<span class="docEmphasis">savehist</span> in each of your windows (e.g., by 
+setting it in your <i>.cshrc</i> or <i>.tcshrc</i>), they will all try to write
+<i>.history</i> at once, leading to trouble. And even if that weren't true, you 
+get the history from every window or host, which might not be what you want. </p>
+<p class="docText">Of course, you could set <span class="docEmphasis">savehist</span> 
+manually in a single window when you thought you were doing work you might want 
+to pick up later. But there is another way: use the C shell's command <i>history 
+-h</i> (which prints the history list without leading numbers, so it can be read 
+back in later) and redirect the output to a file. Then use <i>source -h</i> to 
+read it back into your history list when you log in. </p>
+<p class="docText">Do you want to automate this? First, you'll need to choose a 
+system of filenames, like <i>~/.history.window</i><tt><i>n</i></tt> or <i>~/.history.</i><tt><i>hostname</i></tt><span class="docEmphasis">,</span> 
+to match each file to its window or host. If each of your C shells is a
+<span class="docEmphBold">login shell</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">Section 
+3.4</a>),<span id="ENB30-1"><a class="docLink" href="#EN30-1"><sup>[1]</sup></a></span> you 
+can run <i>history -h</i> from your <i>.logout</i> file and <i>source -h</i> 
+from your <i>.login</i> file. For nonlogin shells, automation is tougher — try 
+this: </p>
+<ul>
+  <li>
+  <p class="docList">Set the <span class="docEmphasis">ignoreeof</span> variable 
+  to force you to leave the shell with an <span class="docEmphBold">exit</span> 
+  (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+  24.4</a>) command. </li>
+  <li>
+  <p class="docList">Set an <span class="docEmphBold">alias for exit</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-8">Section 
+  29.8</a>) that runs <i>history -h</i> before exiting. </li>
+  <li>
+  <p class="docList">Run <i>source -h</i> from your <i>.cshrc</i> or <i>.tcshrc</i> 
+  file. Use a <tt>$?prompt</tt> test to be sure this runs only in interactive 
+  shells. </li>
+</ul>
+<p class="docText">If you choose to run <i>history -h</i> and <i>source -h</i> 
+by hand occasionally, they will allow you the kind of control you need to
+<span class="docEmphBold">write a script</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-13">Section 
+30.13</a>) that saves and restores only what you want. </p>
+<p class="docText"><span class="docEmphasis">—JP, TOR, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-13">30.13 Pass History to Another Shell</h3>
+<p class="docText">Most shells can <span class="docEmphBold">save a history of 
+the commands you type</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-12">Section 
+30.12</a>). You can add your own commands to some shells' history lists without 
+retyping them. Why would you do that? </p>
+<ul>
+  <li>
+  <p class="docList">You might have a set of commands that you want to be able 
+  to recall and reuse every time you log in. This can be more convenient than 
+  aliases because you don't have to think of names for the aliases. It's handier 
+  than a shell script if you need to do a series of commands that aren't always 
+  in the same order. </li>
+  <li>
+  <p class="docList">You might have several shells running (say, in several 
+  windows) and want to <span class="docEmphBold">pass the history from one shell 
+  to another shell</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-12">Section 
+  30.12</a>). </li>
+</ul>
+<p class="docText">Unfortunately, this isn't easy to do in all shells. For 
+instance, the new <i>pdksh</i> saves its history in a file with NUL-separated 
+lines. And the <i>tcsh</i> history file has a timestamp-comment before each 
+saved line, like this: </p>
+<pre>#+0972337571
+less 1928.sgm
+#+0972337575
+vi 1928.sgm
+#+0972337702
+ls -lt | head</pre>
+<p class="docText">Let's look at an example for two of the shells that make 
+history editing easy. Use the <i>csh</i> command <i>history -h</i>, or the <i>
+bash</i> command <i>history -w</i>, to save the history from a shell to a file. 
+Edit the file to take out commands you don't want: </p>
+<pre>% <b>mail -s &quot;My report&quot; bigboss </b>   $ <b>mail -s &quot;My report&quot; bigboss </b>
+    ...                                           ...
+% <b>history -h &gt; history.std </b>      $ <b>history -w history.std </b>
+% <b>vi history.std </b>                $ <b>vi history.std </b>
+       <i> ...Clean up history...</i>                   <i> ...Clean up history...</i></pre>
+<p class="docText">Read that file into another shell's history list with the <i>
+csh</i> command <i>source -h</i> or the <i>bash</i> command <i>history -r</i>:
+</p>
+<pre>% <b>source -h history.std</b>         $ <b>history -r history.std</b>
+% <b>!ma</b>                           $ <b>!ma</b>
+mail -s &quot;My report&quot; bigboss     mail -s &quot;My report&quot; bigboss</pre>
+<p class="docText">Of course, you can also use <i>bash</i>
+<span class="docEmphBold">interactive command-line editing</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-14">Section 
+30.14</a>) on the saved commands. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-14">30.14 Shell Command-Line Editing</h3>
+<p class="docText">When Unix started, a lot of people used real teletypes — with 
+a roll or box of paper instead of a glass screen. So there was no way to recall 
+and edit previous commands. (You could see them on the paper, of course, but to 
+reuse them you had to retype them.) The C shell added <span class="docEmphBold">
+history substitution operators</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-2">Section 
+30.2</a>) that were great on teletypes — and are still surprisingly useful on 
+&quot;glass teletypes&quot; these days. All shells except the oldest Bourne shells still 
+have history substitution, although it's limited in the Korn shells. </p>
+<p class="docText">Modern shells also have interactive command-line editing. 
+That's the ability to recall previous command lines and edit them using familiar
+<i>vi</i> or <i>emacs</i> commands. Arrow keys — along with Backspace and DELETE 
+keys — generally work, too. So you don't need to know <i>emacs</i> or <i>vi</i> 
+to edit command lines. But — especially if you're comfortable with Emacs-style 
+commands (meta-<span class="docEmphasis">this that</span>, control-<span class="docEmphasis">foo 
+bar</span>) — you'll find that most shells let you do much more than simply 
+editing command lines. Shells can automatically correct spelling,
+<span class="docEmphBold">complete partially-typed filenames</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-6">Section 
+28.6</a>), and much more. </p>
+<p class="docText">The basic idea of command-line editing is that the previous 
+commands are treated like lines in a plain-text file, with the most recently 
+typed commands at the &quot;end&quot; of the file. By using the editor's &quot;up line&quot; 
+commands (like <span class="docEmphasis">k</span> in <i>vi</i> or <tt>C-p</tt> 
+in Emacs), you can bring copies of earlier commands under your cursor, where you 
+can edit them or simply re-execute them without changes. (It's important to 
+understand that you're not editing the original commands; you're editing
+<span class="docEmphasis">copies</span> of them. You can recall a previous 
+command as many times as you want to; its original version won't be changed as 
+you edit the copy.) When you've got a command you want to run, you simply press 
+ENTER; your cursor doesn't have to be at the end of the line. You can use CTRL-c 
+(<tt>C-c</tt> in Emacs jargon) to cancel a command without running it and get a 
+clean shell prompt. </p>
+<p class="docText">It would be easy for us to fill a chapter with info on 
+command-line editing. (In this book's fourth edition, maybe we should!) Because 
+every shell has its own way to do this, though, we've decided to stick to the 
+basics — with a few of the bells and whistles tossed in as examples. To really 
+dig into this, check your shell's manpage or its Nutshell Handbook. </p>
+<p class="docText">Another way to do history editing is with your own editor: 
+use the <i>fc</i> command. </p>
+<h4  id="upt3-CHP-30-SECT-14.1" class="docSection2Title">30.14.1 vi Editing Mode</h4>
+<p class="docText">All shells with command-line editing have support for basic
+<i>vi</i> commands, but it's usually not complete and historically not well 
+documented. For instance, I've used some shells where the . (dot) command 
+wouldn't repeat the previous edit — and other shells where it would — but 
+neither shell's manual page mentioned this useful fact. Macros are limited, and 
+you don't define them with the usual <span class="docEmphBold">map</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+18.2</a>) command; instead, the shell's built-in key binding command controls 
+which built-in shell editing function is executed when a key is pressed. (The 
+Korn shell doesn't allow any special <i>vi</i> bindings, though at least it has 
+complete documentation.) Still, with all those caveats, you'll probably find 
+that <i>vi</i> editing is pretty comfortable if you already know <i>vi</i>. (If 
+you don't know <i>vi</i>, though, I'd recommend Emacs editing. See the next 
+section.) </p>
+<p class="docText">At a bare shell prompt, you're effectively in <i>vi</i> 
+text-input mode: the characters you type appear on the command line. If you want 
+to edit, press ESC to go to command mode. Then you can use typical commands like
+<tt>dw</tt> to delete a word and <tt>ct</tt>. to change all characters to the 
+next dot on the line. Commands like <i>a</i>, <i>i</i>, and <i>c</i> take you to 
+text-input mode. You can execute a command line from either command mode or 
+text-input mode: just press ENTER anywhere on the line. </p>
+<p class="docText">One difference between the shell's <i>vi</i> mode and real <i>
+vi</i> is that the direction of searches is opposite. In real <i>vi</i>, the 
+motion command <i>k</i> and the search command <i>?</i> (question mark) both 
+move to previous commands. In shells, <i>k</i> still moves to a previous 
+command, but <i>/</i> (slash) searches for previous commands. By the way, after 
+you specify a search with <tt>\</tt>, press ENTER to do the search. These 
+differences from real <i>vi</i> can be confusing at first, but with practice 
+they soon become natural. </p>
+<p class="docText">To choose <i>vi</i> mode, type <tt>set</tt> <tt>-o</tt> <tt>
+vi</tt> in Bourne-type shells and <tt>bindkey -v</tt> in <i>tcsh</i>. In <i>bash</i>, 
+you may also use <i>keymap </i><span class="docEmphasis">editor</span>, with
+<span class="docEmphBold">a variety of different editor settings</span> (<a class="docLink" href="#upt3-CHP-30-SECT-14.5">Section 
+30.14.5</a>), to set up the editing mode. To make this the default, store the 
+command in your shell's <span class="docEmphBold">setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) (in <i>bash</i>, you can also edit your Readline <i>inputrc</i> file). 
+You can switch back and forth between the two modes as you work; this is useful 
+because the Emacs mode lets you do things you can't do in <i>vi</i>. </p>
+<h4  id="upt3-CHP-30-SECT-14.2" class="docSection2Title">30.14.2 Emacs Editing Mode</h4>
+<p class="docText">If you know the <span class="docEmphBold">Emacs</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-1">Section 
+19.1</a>) editor, you'll feel right at home in the shells. Although the support 
+isn't complete — for instance, you can't write eLisp code (and you can't run
+<span class="docEmphBold">psychoanalyze-pinhead</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-13">Section 
+19.13</a>) <tt>:-)</tt>) — the emacs-mode commands act like a natural extension 
+to traditional, simple shell editing commands. So, even if you don't know <i>
+emacs</i>, you'll probably be comfortable with emacs mode. Even many browsers 
+nowadays use the traditional emacs mode commands for moving about in the 
+Location field, so you may already know some of these even if you're not aware 
+that you do. </p>
+<p class="docText">To move to the beginning of a line, use <tt>C-a</tt> (that's 
+CTRL-a in Emacs-speak); <tt>C-e</tt> moves to the end of a line. <tt>C-f</tt> 
+moves forward a character, and <tt>C-b</tt> moves backward one character 
+(without deleting). <tt>C-n</tt> moves forward to the next command, and <tt>C-p</tt> 
+moves backward to the previous line. Your keyboard's arrow keys probably also 
+work. Your shell has at least one search command; try <tt>C-r</tt> to start a 
+search and press ENTER to run the search. </p>
+<p class="docText">Your keyboard's usual delete key (Backspace or DEL) deletes 
+one character backward, and <tt>C-d</tt> deletes one character forward. <tt>C-k</tt> 
+deletes (&quot;kills&quot;) to the end of the line, and <tt>C-w</tt> deletes (&quot;wipes&quot;) 
+backward to the start of the line. </p>
+<p class="docText">To choose emacs mode, type <tt>set -o emacs</tt> in 
+Bourne-type shells and <tt>bindkey -e</tt> in <i>tcsh</i>. In <i>bash</i>, use 
+one of the <i>keymap </i>editor commands, such as <i>keymap emacs</i>. To make 
+this the default, store the command in your shell's <span class="docEmphBold">
+setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) (in <i>bash</i>, you can also edit your Readline <i>inputrc</i> file). 
+You can switch back and forth between emacs and vi modes as you work. </p>
+<h4  id="upt3-CHP-30-SECT-14.3" class="docSection2Title">30.14.3 tcsh Editing</h4>
+<p class="docText">The <i>bindkey</i> command is used to bind keys to built-in 
+editor functions. With no arguments, it gives a list of all key bindings, like 
+this: </p>
+<pre>tcsh&gt; <b>bindkey</b>
+Standard key bindings
+&quot;^@&quot;           -&gt;  set-mark-command
+&quot;^A&quot;           -&gt;  beginning-of-line
+&quot;^B&quot;           -&gt;  backward-char
+        ...
+&quot;¡&quot;  to &quot;<sup>^</sup>y&quot;    -&gt;  self-insert-command
+Alternative key bindings
+Multi-character bindings
+&quot;^[[A&quot;         -&gt; up-history
+&quot;^[[B&quot;         -&gt; down-history
+        ...
+&quot;^X^D&quot;         -&gt; list-choices-raw
+Arrow key bindings
+down           -&gt; down-history
+up             -&gt; up-history
+left           -&gt; backward-char
+right          -&gt; forward-char</pre>
+<p class="docText">In this list, <tt>^</tt> (caret) starts control characters, 
+so <tt>^A</tt> means CTRL-a. <tt>^[</tt> is an escape character (which is also 
+generated when you press a function key, like F1 or up-arrow, on most 
+keyboards). Thus, <tt>^[[A</tt> is the sequence <span class="docEmphasis">ESC 
+left-bracket A</span> (which is also sent by the up-arrow key on VT100-type 
+keyboards). The &quot;alternative key bindings&quot; are used in <i>vi</i> command mode, 
+which wasn't enabled in the example above, because I made it while using emacs 
+bindings. </p>
+<p class="docText">There's a list of some editor functions in the <i>tcsh</i> 
+manual page, but that list only includes &quot;interesting&quot; functions. To get a 
+complete list, including &quot;boring&quot; functions like <i>backward-char</i> (to move 
+backward one character), type the command <i>bindkey</i> -<i>l</i> (lowercase 
+letter L); that lists all the editor functions and describes each one briefly:
+</p>
+<pre>tcsh&gt; <b>bindkey -l</b>
+backward-char
+          Move back a character
+backward-delete-char
+          Delete the character behind cursor
+     ...</pre>
+<p class="docText">You'll probably want to redirect the output of those <i>
+bindkey</i> commands into a file — or pipe it to a pager such as
+<span class="docEmphBold">less</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>) that lets you page through and do searches. (You could probably merge 
+the output of <i>bindkey</i> and <i>bindkey -l</i> into one list with
+<span class="docEmphBold">perl</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-1">Section 
+41.1</a>) or <span class="docEmphBold">awk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+20.10</a>) and an associative array, but I haven't tried.) </p>
+<p class="docText">To bind a key to an editor function, use <i>bindkey</i> with 
+two arguments: the key to bind and the function name. The key can be the literal 
+key you want to type, but that can be messy when you're trying to put the 
+definition in a shell setup file (which traditionally doesn't have nonprintable 
+characters in it) or when you're trying to bind an arrow key or some other key. 
+So you can represent a control character with two characters: a literal caret (<tt>^</tt>) 
+followed by the letter — for example, <tt>^A</tt>. You can use standard 
+backslash escape sequences, such as <tt>\t</tt> for a TAB character, but 
+remember to <span class="docEmphBold">quote</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">Section 
+27.13</a>) special characters. And the special option <i>-k</i> lets you name an 
+arrow key: for instance, <tt>bindkey -k left</tt> for the left arrow. </p>
+<p class="docText">Here's an example of one of my favorite <i>tcsh</i> editor 
+functions: <i>magic-space</i>. By default, it isn't bound to a key, but it's 
+meant to be bound to the space key. The function expands any
+<span class="docEmphBold">history substitutions</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+30.8</a>) in the command line, then lets you continue editing. In this example, 
+I start by executing an <i>ls</i> command. Then I bind the space key. After 
+that, I start a new command line. I type <tt>find</tt> and a space, but nothing 
+happens yet because there are no history references. Then I type <tt>!ls:$</tt>, 
+which is the history substitution for the last argument of the previous <i>ls</i> 
+command; when I press the space key, that argument is expanded to
+<span class="docEmphasis">/usr/local/bin</span>, and I can type the rest of the 
+command line: </p>
+<pre>tcsh&gt; <b>ls /usr/local/bin</b>
+acroread               netscape  rsh-add      ssh
+ex                     nex       rsh-agent    ssh-add
+lcdctl                 nsgmls    rsh-askpass  ssh-add1
+    ...
+tcsh&gt; <b>bindkey &quot; &quot; magic-space</b>
+tcsh&gt; <b>find !ls:$</b> SPACE
+tcsh&gt; find /usr/local/bin <b>-perm </b> ...</pre>
+<p class="docText">You also can bind a key to a Unix command by using <i>bindkey</i> 
+with its <i>-c</i> option. This is different from simply executing a command at 
+a shell prompt. When a Unix command is bound to a key, the shell will run that 
+command without disturbing the command line you're editing! When the bound 
+command finishes running, the command line you were editing is redisplayed as it 
+was. For example, the binding below makes <tt>CTRL-x l</tt> run the command <tt>
+ls -lt | less</tt>: </p>
+<pre>bindkey -c ^Xl 'ls -lt | less'</pre>
+<p class="docText">There's much, much more. The <i>tcsh</i>(1) manpage is too 
+brief to teach this well (for me, at least). I recommend the O'Reilly book <i>
+Using csh &amp; tcsh</i>; it doesn't cover all of the newest <i>tcsh</i>, but it 
+does a complete job on the command-line editor. </p>
+<h4  id="upt3-CHP-30-SECT-14.4" class="docSection2Title">30.14.4 ksh Editing</h4>
+<p class="docText">This section covers the public domain Korn shell, <i>pdksh</i>. 
+The original Korn shell is similar. </p>
+<p class="docText">The <i>bind</i> command binds keys to built-in Emacs editor 
+functions. (You can't re-bind in <i>vi</i> mode.) With no arguments, it gives a 
+list of all key bindings, like this: </p>
+<pre>$ <b>bind</b>
+^A = beginning-of-line
+^B = backward-char
+   ...
+^[b = backward-word
+^[c = capitalize-word
+   ...
+^XC = forward-char
+^XD = backward-char</pre>
+<p class="docText">In that list, <tt>^</tt> (caret) starts control characters, 
+so <tt>^A</tt> means CTRL-a. And <tt>^[</tt> is an escape character (which is 
+also generated when you press a function key, like F1 or up-arrow, on most 
+keyboards) — so <tt>^[b</tt> is the sequence <span class="docEmphasis">ESC b</span>.
+</p>
+<p class="docText">There's a complete list of editor functions in the <i>ksh</i> 
+manual page. You can also get a list from the command <i>bind</i> -<i>l</i> 
+(lowercase letter L): </p>
+<pre>$ <b>bind -l</b>
+abort
+beginning-of-history
+complete-command
+     ...</pre>
+<p class="docText">To bind a key to an editor function, use <i>bind</i> with the 
+string to bind, an equal sign (<tt>=</tt>), then the binding. The key can be the 
+literal key you want to type, but that can be messy when you're trying to put 
+the definition in a shell setup file (which traditionally doesn't have 
+nonprintable characters in it) or when you're trying to bind an arrow key or 
+some other key. So you can represent a control character with two characters: a 
+literal caret (<tt>^</tt>) followed by the letter — for example, <tt>^A</tt>. 
+The other special prefix supported is the two-character sequence <tt>^[</tt> 
+(caret left-square-bracket), which stands for the ESC or Meta key. And remember 
+to <span class="docEmphBold">quote</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) any special characters. So, if you want to make CTRL-r be the 
+traditional Unix <span class="docEmphBold">rprnt</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-2">Section 
+28.2</a>) operation (to reprint the command line), and make META-r search the 
+history (which is bound to CTRL-r by default in <i>pdksh</i>), you could use 
+these two bindings: </p>
+<pre>bind '^R'=redraw
+bind '^[r'=search-history</pre>
+<h4  id="upt3-CHP-30-SECT-14.5" class="docSection2Title">30.14.5 bash Editing</h4>
+<p class="docText">The most permanent place to customize <i>bash</i> editing is 
+in the Readline <i>inputrc</i> file. But you also can add temporary bindings 
+from the command line with the <i>bind</i> command. These bindings work only in 
+the current shell, until the shell exits. The <i>bind</i> syntax is the same as 
+the <i>inputrc</i> file, but you have to put <span class="docEmphBold">quotes</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) around the whole binding — so watch out for quoting conflicts. For 
+example, to make CTRL-o output a <span class="docEmphBold">redirection</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>) command and pathname: </p>
+<pre>bash$ <b>bind 'Control-o: &quot;&gt;&gt; /usr/local/project/log&quot;'</b></pre>
+<p class="docText">To get a list of all key bindings, use <i>bind</i> -<i>P</i> 
+in Version 2 or <i>bind</i> -<i>v</i> in original <i>bash</i>. In the next 
+example, for instance, you can see that CTRL-m (the ENTER key) and CTRL-j (the 
+LINEFEED key) both accept the command line. Quite a few characters (CTRL-a, 
+CTRL-b, etc.) simply insert themselves into the command line when you type them. 
+If you need a literal control character, you may be able to type CTRL-v and then 
+the character. </p>
+<p class="docText"><tt>less</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">
+Section 12.3</a></p>
+<pre>bash$ <b>bind -P | less</b>
+abort is not bound to any keys
+accept-line can be found on &quot;\C-j&quot;, &quot;\C-m&quot;.
+   ...
+backward-delete-char can be found on &quot;\C-h&quot;, &quot;\C-?&quot;.
+   ...
+self-insert can be found on &quot;\C-a&quot;, &quot;\C-b&quot;, &quot;\C-c&quot;, &quot;\C-e&quot;, &quot;\C-f&quot;, ...</pre>
+<p class="docText">There are two <i>bind</i> options good for use with <i>
+inputrc</i> type files. To write all the current key bindings out to a file 
+named <i>inputrc.new</i>, type <tt>bind -p &gt; inputrc.new</tt> in <i>bash2</i>; 
+use the <i>-d</i> option in original <i>bash</i>. (You can overwrite your 
+default <i>.inputrc</i> file this way, too, if you want.) To read an <i>inputrc</i> 
+file into the current shell (if you've just edited it, for instance), use <i>
+bind</i> -<i>f</i> and give the filename as an argument. </p>
+<p class="docText">Finally, the <i>bind</i> option <i>-m</i>
+<span class="docEmphasis">keymap</span> chooses the keymap that subsequent 
+bindings apply to. The keymap names that <i>bash2</i> understands are
+<span class="docEmphasis">emacs</span>, <span class="docEmphasis">emacs-standard</span>,
+<span class="docEmphasis">emacs-meta</span>, <span class="docEmphasis">
+emacs-ctlx</span>, <span class="docEmphasis">vi</span>,
+<span class="docEmphasis">vi-move</span>, <span class="docEmphasis">vi-command</span>, 
+and <span class="docEmphasis">vi-insert</span>. (<span class="docEmphasis">vi</span> 
+is the same as <span class="docEmphasis">vi-command,</span> and
+<span class="docEmphasis">emacs</span> is the same as <span class="docEmphasis">
+emacs-standard</span>.) </p>
+<h4  id="upt3-CHP-30-SECT-14.6" class="docSection2Title">30.14.6 zsh Editing</h4>
+<p class="docText"><i>zsh</i>, as you migh expect by now, has a wide variety of 
+command-line editing capabilities, many similar to or the same as those found in
+<i>ksh,</i> <i>tcsh</i>, or <i>bash</i>. Emacs mode is the default, but vi mode 
+may also be chosen, and all of the key commands found in either mode may be 
+bound to any character you like using the <i>bindkey</i> -<i>v</i> command. See 
+the <span class="docEmphasis">zshzle</span> manual page for a long list of these 
+commands and their default bindings. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-15">30.15 Changing History Characters with histchars</h3>
+<p class="docText">The existence of special characters (particularly <tt>!</tt>) 
+can be a pain; you may often need to type commands that have exclamation points 
+in them, and occasionally need commands with carets (<tt>^</tt>). These get the 
+C shell confused unless you &quot;quote&quot; them properly. If you use these special 
+characters often, you can choose different ones by setting the
+<span class="docEmphasis">histchars</span> variable. <span class="docEmphasis">
+histchars</span> is a two-character string; the first character replaces the 
+exclamation point (the &quot;history&quot; character), and the second character replaces 
+the caret (the <span class="docEmphBold">&quot;modification&quot; character</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-5">Section 
+30.5</a>)). For example: </p>
+<pre>% <b>set histchars='@#' </b>
+% <b>ls file* </b>
+file1   file2   file3
+% <b>@@ </b>                    <i> Repeat previous command (was !!  )</i>
+ls file*
+file1   file2   file3
+% <b>#file#data# </b>           <i> Edit previous command (was ^file^data^  )</i>
+ls data*
+data4   data5</pre>
+<p class="docText"><i>zsh</i>'s <span class="docEmphasis">histchars</span> is 
+like the <i>csh</i> and <i>tcsh</i> version, but it has three characters. The 
+third is the comment character — by default, <tt>#</tt>. </p>
+<p class="docText">An obvious point: you can set <span class="docEmphasis">
+histchars</span> to any characters you like (provided they are different!), but 
+it's a good idea to choose characters that you aren't likely to use often on 
+command lines. Two good choices might be <tt>#</tt> (hash mark) and , (comma).<span id="ENB30-2"><a class="docLink" href="#EN30-2"><sup>[2]</sup></a></span>
+</p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-30-SECT-16">30.16 Instead of Changing History Characters</h3>
+<p class="docText">If you need to use <tt>!</tt> (or your current history 
+character) for a command (for example, if you still use <i>uucp</i> or send mail 
+to someone who does, using the command-line <span class="docEmphBold">mail</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) command), you can type a backslash (<tt>\</tt>) before each history 
+character. You can also drop into the Bourne or Korn shell quickly — assuming 
+that you aren't on a system that has replaced the real Bourne shell with a shell 
+like <i>bash</i> that has history substitution built in. (If you're stuck, you 
+can use the command <tt>set +H</tt> in <i>bash</i>; this disables history 
+substitution.) Either of these are probably easier than changing
+<span class="docEmphasis">histchars</span>. For example: </p>
+<pre>% <b>mail ora\!ishtar\!sally &lt; file1 </b>    <i> Quote the !s</i>
+% <b>sh    </b>                              <i> Start the Bourne shell</i>
+$ <b>mail ora!ishtar!sally &lt; file1 </b>      <i> ! not special here</i>
+$ <b>exit    </b>                            <i> Quit the Bourne shell</i>
+%                                    <i> And back to the C shell</i></pre>
+<p class="docText">The original Bourne shell doesn't have any kind of history 
+substitution, so <tt>!</tt> doesn't mean anything special; it's just a regular 
+character. </p>
+<p class="docText">By the way, if you have a window system, you can probably
+<span class="docEmphBold">copy and paste the command line</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-10">Section 
+28.10</a>) instead of using shell history. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<blockquote>
+<p class="docFootnote" id="EN30-1"><a class="docLink" href="#ENB30-1">[1]</a>&nbsp;&nbsp;<span class="docEmphBold">
+  xterm -ls</span><a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-10">Section 
+  5.10</a> runs a login shell in your <i>xterm</i> window.</p><p class="docFootnote" id="EN30-2"><a class="docLink" href="#ENB30-2">[2]</a>&nbsp;&nbsp;In the C shell and <i>tcsh</i>,
+  <tt>#</tt> is a <span class="docEmphBold">comment character</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-1">Section 
+  35.1</a>) only in noninteractive shells. Using it as a history character 
+  doesn't conflict because history isn't enabled in noninteractive shells.</p></blockquote>
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 29.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 31.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

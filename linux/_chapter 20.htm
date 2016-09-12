@@ -1,0 +1,1700 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 20</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 19.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 21.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 20. Batch Editing</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-20-SECT-1">20.1 Why Line Editors Aren't Dinosaurs</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-20-SECT-2">20.2 Writing Editing Scripts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-20-SECT-3">20.3 Line Addressing</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-20-SECT-4">20.4 Useful ex Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-20-SECT-5">20.5 Running Editing Scripts Within vi</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-20-SECT-6">20.6 Change Many Files by Editing Just One</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-20-SECT-7">20.7 ed/ex Batch Edits: A Typical Example</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-20-SECT-8">20.8 Batch Editing Gotcha: Editors Fail on Big Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-20-SECT-9">20.9 patch: Generalized Updating of Files That Differ</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-20-SECT-10">20.10 Quick Reference: awk</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-20-SECT-11">20.11 Versions of awk</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-20-SECT-1">20.1 Why Line Editors Aren't Dinosaurs</h3>
+<p class="docText">In the &quot;old days,&quot; when programmers worked on printing 
+terminals, editing was done one line at a time. Editors that let you move a 
+cursor around the screen to select text to edit hadn't yet been invented, 
+because there weren't any screens to look at text on! </p>
+<p class="docText">With ever more advanced WYSIWYG (What You See Is What You 
+Get) word processors and editing programs, it's easy for novices to think of 
+line editors as a bizarre relic. Perhaps they are — but if so, they are a relic 
+of extraordinary power. </p>
+<p class="docText">You see, line editors lend themselves to
+<span class="docEmphasis">scripting</span> — the ability to write what in effect 
+are editing programs that can be applied over and over to different files. </p>
+<p class="docText">When we talk about &quot;batch editing&quot; or scripts, here are some 
+of the programs you might use: </p>
+<ul>
+  <li>
+  <p class="docList"><i>ed</i> is the original Unix line editor. </li>
+  <li>
+  <p class="docList"><i>ex</i> supports a superset of <i>ed</i> commands; it is 
+  widely used from within <i>vi</i>, which is the <i>ex</i> &quot;visual&quot; or &quot;screen&quot; 
+  mode. </li>
+  <li>
+  <p class="docList"><span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+  34.1</a>) is an editor that can <span class="docEmphasis">only</span> be run 
+  with scripts or by entering a few short commands as command-line arguments; 
+  while it has many similar commands, it has some <span class="docEmphBold">
+  important differences</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-2">Section 
+  34.2</a>) from <i>ed</i> and <i>ex</i>. </li>
+  <li>
+  <p class="docList"><span class="docEmphBold">awk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+  20.10</a>) is a great way to pull apart a line of text into a sequence of 
+  elements. Used frequently with <i>sed</i>. </li>
+  <li>
+  <p class="docList"><span class="docEmphBold">patch</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-9">Section 
+  20.9</a>) is a specialized editor designed to apply editing scripts created 
+  with <i>diff</i> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-1">Section 
+  11.1</a>). You can do this with <i>ed</i> or <i>ex</i> as well, but <i>patch</i> 
+  is especially clever at it. </li>
+</ul>
+<p class="docText">Of course, editing is a continuum, and beyond <i>sed</i> and
+<span class="docEmphBold">awk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+20.10</a>) lie more complete programming languages like
+<span class="docEmphBold">perl</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-1">Section 
+41.1</a>) and <span class="docEmphBold">python</span> (<a class="docLink" href="_chapter 42.htm#upt3-CHP-42-SECT-1">Section 
+42.1</a>) that are very adept at manipulating text. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-20-SECT-2">20.2 Writing Editing Scripts</h3>
+<p class="docText">When you write a script that contains a series of editing 
+actions and then run the script on an input file, you take what would be a 
+hands-on procedure in an editor such as <i>vi</i> and transform it into a 
+look-no-hands procedure. </p>
+<p class="docText">When performing edits manually, you get to trust the 
+cause-and-effect relationship of entering an editing command and seeing the 
+immediate result. There is usually an &quot;undo&quot; command that allows you to reverse 
+the effect of a command and return the text file to its previous state. Once you 
+learn an interactive text editor, you have the feeling of making changes in a 
+safe and controlled manner, one step at a time. </p>
+<p class="docText">Most people new to &quot;power editing&quot; will feel there is greater 
+risk in writing a script to perform a series of edits than in making those 
+changes manually. The fear is that by automating the task, something will happen 
+that cannot be reversed. The object of learning scripting with <i>ex</i> or <i>
+sed</i> is to understand the commands well enough to see that your results are 
+predictable. In other words, you come to understand the cause-and-effect 
+relationship between your editing script and the output you get. </p>
+<p class="docText">This requires using the editor in a controlled, methodical 
+way. Gradually, you will develop methods for creating and testing editing 
+scripts. You will come to rely upon these methods and gain confidence that you 
+know what your script is doing and why. </p>
+<p class="docText">Here are a few tips:</p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Carefully examine your input file, using <i>grep</i>, 
+  before designing your script. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Start with a small sample of occurrences in a test file. 
+  Run your script on the sample and make sure the script is working. Remember, 
+  it's just as important to make sure the script <span class="docEmphasis">
+  doesn't</span> work where you <span class="docEmphasis">don't</span> want it 
+  to. Then increase the size of the sample. Try to increase the complexity of 
+  the input. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Work carefully, testing each command that you add to a 
+  script. Compare the output against the input file to see what has changed. 
+  Prove to yourself that your script is complete. Your script may work perfectly 
+  based on your assumptions of what is in the input file, but your assumptions 
+  may be wrong. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList"><span class="docEmphasis">Be pragmatic!</span> Try to 
+  accomplish what you can with your script, but understand that it doesn't have 
+  to do 100 percent of the job. If you encounter difficult situations, check to 
+  see how frequently they occur. Sometimes it's better to do a few remaining 
+  edits manually. </span></li>
+</ol>
+</span>
+<p class="docText">If you can add to these tips with your experience, tack them 
+on.</p>
+<p class="docText">One additional suggestion is to use a
+<span class="docEmphBold">revision control system</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-4">Section 
+39.4</a>) to preserve previous versions. That makes it easy to undo your edits.
+</p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-20-SECT-3">20.3 Line Addressing</h3>
+<p class="docText">The key to making line editors work for you is understanding 
+how to select (or &quot;address&quot;) the lines that will be affected by the commands in 
+your script. </p>
+<p class="docText">In <i>ed</i> and <i>ex</i>, a command affects only the 
+&quot;current&quot; line — the first line of the file to begin with, and later the site of 
+the last edit or movement command — unless you precede the command with an 
+address to indicate some other line or lines. In <i>sed</i>, most commands apply 
+to every line unless you give an address. </p>
+<p class="docText">Most line editors address lines in three ways:</p>
+<ul>
+  <li>
+  <p class="docList">with line numbers</li>
+  <li>
+  <p class="docList">with regular expression patterns</li>
+  <li>
+  <p class="docList">with special symbols</li>
+</ul>
+<p class="docText">It's possible to address single lines or a range of lines.
+</p>
+<p class="docText"><a class="docLink" href="#upt3-CHP-20-TABLE-1">Table 20-1</a> 
+describes the addresses you can use with <i>ex</i>. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-20-TABLE-1" class="docTableTitle">Table 20-1. Line addressing in the ex editor </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Address</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>1,$</tt></td>
+    <td class="docTableCell">
+    <p class="docText">All lines in the file.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>%</tt></td>
+    <td class="docTableCell">
+    <p class="docText">All lines; same as <tt>1,$</tt>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt><i>x</i></tt>,<tt><i>y</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText">Lines <span class="docEmphasis">x</span> through
+    <span class="docEmphasis">y</span>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt><i>x</i>;<i>y</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Lines <span class="docEmphasis">x</span> through
+    <span class="docEmphasis">y</span>, with current line reset to
+    <span class="docEmphasis">x</span>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>1</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Top of file.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>0</tt></td>
+    <td class="docTableCell">
+    <p class="docText">&quot;Before the top&quot; of file. Used to add text above top 
+    line: <tt>0r</tt>, <tt><i>x</i>m0</tt>, etc. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.</td>
+    <td class="docTableCell">
+    <p class="docText">Current line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt><i>n</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText">Absolute line number <span class="docEmphasis">n</span>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>$</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Last line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt><i>x</i>-<i>n</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">n</span> lines before
+    <span class="docEmphasis">x</span>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt><i>x</i>+<i>n</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">n</span> lines after
+    <span class="docEmphasis">x</span>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-<i>n</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">n</span> lines previous.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Previous line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>+<i>n</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">n</span> lines ahead.</td>
+  </tr>
+</table>
+<p class="docText">If the address specifies a range of lines, the format is:</p>
+<pre><tt><i>x</i></tt>,<tt><i>y</i></tt></pre>
+<p class="docText">where <tt><i>x</i></tt> and <tt><i>y</i></tt> are the first 
+and last addressed lines. <tt><i>x</i></tt> must precede <tt><i>y</i></tt> in 
+the file. </p>
+<p class="docText"><span class="docEmphasis">—TOR, DG, and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-20-SECT-4">20.4 Useful ex Commands</h3>
+<p class="docText">Many line editor commands are not particularly useful in 
+scripts. The two commands that you will use far and away the most often are <tt>
+s</tt> (substitute), to replace one pattern with another, and <tt>d</tt> 
+(delete), to delete one or more lines. On occasion, though, you'll want to 
+insert text from a script. (<span class="docEmphBold">Editing scripts built by 
+diff</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">Section 
+18.6</a>) make heavy use of insert, append, delete, and change commands.) And of 
+course, you need commands to write the file and quit the editor. </p>
+<p class="docText">Here's the syntax of most of the commands you may encounter 
+in <i>ex</i> editing scripts. (The <i>ed</i> editor understands the abbreviated 
+versions of some, but not all, of these commands.) Elements in [brackets] are 
+optional; don't type the <tt>[</tt> or <tt>]</tt>. The leading colon (:) shown 
+in examples is the <i>ex</i> command character used to issue an <i>ex</i> 
+command from <i>vi</i>; in a script, the colon would be omitted. The autoindent 
+feature referred to below aids anyone writing structured text. Your editor can 
+ease the burden of creating outlines and source code by positioning the cursor 
+beneath the first character of the previous line. </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">append</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] a[!]</tt> <tt><i>text</i></tt> <tt>.</tt>
+  </p>
+  <p class="docList">Append <tt><i>text</i></tt> at specified <tt><i>address</i></tt>, 
+  or at present address if none is specified. Add a <tt>!</tt> to switch the <tt>
+  autoindent</tt> setting that will be used during input. For example, if <tt>
+  autoindent</tt> was enabled, <tt>!</tt> disables it. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">change</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] c[!]</tt> <tt><i>text</i></tt> <tt>.</tt>
+  </p>
+  <p class="docList">Replace the specified lines with <span class="docEmphasis">
+  text</span>. Add a <tt>!</tt> to switch the <tt>autoindent</tt> setting during 
+  input of <tt><i>text</i></tt>. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">copy</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] co</tt> <tt><i>destination</i></tt>
+  <tt>[<i>address</i>] t</tt> <tt><i>destination</i></tt> </p>
+  <p class="docList">Copy<span id="ENB20-1"><a class="docLink" href="#EN20-1"><sup>[1]</sup></a></span> 
+  the lines included in <tt><i>address</i></tt> to the specified <tt><i>
+  destination</i></tt> address. </p>
+  <pre>:1,10 co 50
+:1,10t50</pre>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">delete</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] d [<i>buffer</i>]</tt> </p>
+  <p class="docList">Delete the lines included in <tt><i>address</i></tt>. If
+  <tt><i>buffer</i></tt> is specified, save or append the text to the named 
+  buffer. </p>
+  <pre>:/Part I/,/Part II/-1d   <i>Delete to line above &quot;Part II&quot;</i>
+:/main/+d                <i>Delete line below &quot;main&quot;</i>
+:.,$d                    <i>Delete from this line to last line</i></pre>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">global</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] g[!]/pattern/[<i>commands</i>]</tt>
+  </p>
+  <p class="docList">Execute <tt><i>commands</i></tt> on all lines that contain
+  <tt><i>pattern</i></tt>, or if <tt><i>address</i></tt> is specified, on all 
+  lines within that range. If <tt><i>commands</i></tt> are not specified, print 
+  all such lines. (Exception: doesn't print when you use it from <i>vi</i> by 
+  typing : first. You'll need to add a <tt><i>p</i></tt>, as in the second 
+  example below). If <tt>!</tt> is used, execute <tt><i>commands</i></tt> on all 
+  lines that <span class="docEmphasis">don't</span> contain <tt><i>pattern</i></tt>.
+  </p>
+  <pre>:g/Unix/
+:g/Unix/p
+:g/Name:/s/tom/Tom/</pre>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">insert</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] i[!]</tt> <tt><i>text</i></tt> <tt>.</tt>
+  </p>
+  <p class="docList">Insert <tt><i>text</i></tt> at line before the specified
+  <tt><i>address</i></tt>, or at present address if none is specified. Add a <tt>
+  !</tt> to switch the <tt>autoindent</tt> setting during input of <tt><i>text</i></tt>.
+  </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">move</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] m</tt> <tt><i>destination</i></tt> </p>
+  <p class="docList">Move the lines specified by <tt><i>address</i></tt> to the
+  <tt><i>destination</i></tt> address. </p>
+  <pre>:.,/Note/m /END/          <i>Move block after line containing &quot;END&quot;</i></pre>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">print</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] p [<i>count</i>]</tt> </p>
+  <p class="docList">Print the lines specified by <tt><i>address</i></tt>. <tt>
+  <i>count</i></tt> specifies the number of lines to print, starting with <tt>
+  <i>address</i></tt>. </p>
+  <pre>:100;+5p                  <i>Show line 100 and the next five lines</i></pre>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">quit</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>q[!]</tt></p>
+  <p class="docList">Terminate current editing session. Use <tt>!</tt> to 
+  discard changes made since the last save. If the editing session includes 
+  additional files in the argument list that were never accessed, quit by typing
+  <tt>q!</tt> or by typing <tt>q</tt> twice. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">read</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] r</tt> <tt><i>file</i></tt> </p>
+  <p class="docList">Copy in the text from <tt><i>file</i></tt> on the line 
+  below the specified <tt><i>address</i></tt>. If <tt><i>file</i></tt> is not 
+  specified, the current filename is used. </p>
+  <pre>:0r $HOME/data             <i>Read file in at top of current file</i></pre>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">read</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] r !<i>command</i></tt> </p>
+  <p class="docList">Read the output of Unix <tt><i>command</i></tt> into the 
+  text after the line specified by <tt><i>address</i></tt>. </p>
+  <pre>:$r !cal                   <i>Place a calendar at end of file</i></pre>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">source</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>so</tt> <tt><i>file</i></tt></p>
+  <p class="docList">Read and execute <span class="docEmphasis">ex</span> 
+  commands from <tt><i>file</i></tt>. </p>
+  <pre>:so $HOME/.exrc</pre>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">substitute</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] s [<i>/pattern/replacement/</i>] [<i>options</i>] 
+  [<i>count</i>]</tt> </p>
+  <p class="docList">Replace first instance of <tt><i>pattern</i></tt> on each 
+  of the specified lines with <tt><i>replacement</i></tt>. If <tt><i>pattern</i></tt> 
+  and <tt><i>replacement</i></tt> are omitted, repeat last substitution. <tt><i>
+  count</i></tt> specifies the number of lines on which to substitute, starting 
+  with <tt><i>address</i></tt>. The following can be used as <tt><i>options</i></tt>:
+  <dl class="docList">
+    <dt><span class="docPubcolor"><span class="docMonofont">c</span></span> </dt>
+    <dd>
+    <p class="docList">Prompt for confirmation before each change.</dd>
+    <dt><span class="docPubcolor"><span class="docMonofont">g</span></span> </dt>
+    <dd>
+    <p class="docList">Substitute all instances of <tt><i>pattern</i></tt> on 
+    each line. </dd>
+    <dt><span class="docPubcolor"><span class="docMonofont">p</span></span> </dt>
+    <dd>
+    <p class="docList">Print the last line on which a substitution was made.</p>
+    <p class="docList"><tt>c</tt>
+    <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-9">
+    Section 17.9</a>, <tt>\U</tt>
+    <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-14">
+    Section 17.14</a></p>
+    <pre>:1,10s/yes/no/g      <i>Substitute on first 10 lines</i>
+:%s/[Hh]ello/Hi/gc   <i>Confirm global substitutions</i>
+:s/Fortran/\U&amp;/ 3    <i>Uppercase &quot;Fortran&quot; on next 3 lines</i></pre>
+    </dd>
+  </dl>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">write</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] w[!] [&gt;&gt;]</tt> <tt><i>file</i>]</tt>
+  </p>
+  <p class="docList">Write lines specified by <tt><i>address</i></tt> to <tt><i>
+  file</i></tt>, or write full contents of buffer if <tt><i>address</i></tt> is 
+  not specified. If <tt><i>file</i></tt> is also omitted, save the contents of 
+  the buffer to the current filename. If <tt>&gt;&gt;</tt> <tt><i>file</i></tt> is 
+  used, write contents to the end of an existing <tt><i>file</i></tt>. The <tt>!</tt> 
+  flag forces the editor to write over any current contents of <tt><i>file</i></tt>.
+  </p>
+  <pre>:1,10w name_list    <i>Copy first 10 lines to name_list</i>
+:50w &gt;&gt; name_list   <i>Now append line 50</i></pre>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">write</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>[<i>address</i>] w !<i>command</i></tt> </p>
+  <p class="docList">Write lines specified by <tt><i>address</i></tt>, or write 
+  full contents of buffer if <tt><i>address</i></tt> is not specified, to the
+  <span class="docEmphBold">standard input</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+  43.1</a>) of <tt><i>command</i></tt>. </p>
+  <pre>:1,10w !spell       <i>Send first 10 lines to the spell command</i>
+:w !lpr             <i>Print entire buffer with lpr command</i></pre>
+  </dd>
+</dl>
+<p class="docText"><span class="docEmphasis">— TOR and DG</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-20-SECT-5">20.5 Running Editing Scripts Within vi</h3>
+<p class="docText">Because <i>vi</i> is built on top of the <i>ex</i> line 
+editor, you get all the power of a line editor as well. Any experienced <i>vi</i> 
+user issues <i>ex</i> commands all the time — but usually one by one, at the 
+colon (:) prompt. </p>
+<p class="docText">The one exception is the <span class="docEmphBold">.exrc file</span> 
+(<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-5">Section 
+17.5</a>), which is, at bottom, a list of commands for <i>ex</i> to run on 
+startup — in short, an editor script. </p>
+<p class="docText">What many beginners don't know is that you can save a 
+sequence of <i>ex</i> commands in any file and execute it with the
+<span class="docEmphBold">:so command</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-4">Section 
+20.4</a>). For example, Bruce Barnett uses this trick to set himself up 
+specially for <span class="docEmphBold">editing FORTRAN programs</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-10">Section 
+18.10</a>). </p>
+<p class="docText">In general, <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) is better for general-purpose batch editing — such as making a set of 
+global substitutions over and over again on multiple files — therefore, <tt>:so</tt> 
+is most often used for reading in setup commands. Keep in mind, though, any time 
+you find yourself issuing the same commands over and over again,
+<span class="docEmphasis">think script!</span> </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-20-SECT-6">20.6 Change Many Files by Editing Just One</h3>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: diff</p>
+<p class="docText">The <i>diff</i> command can make an editing script that you 
+give to the <i>ex</i> or <i>ed</i> editors or the <span class="docEmphBold">
+patch</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-9">Section 
+20.9</a>) program. They'll apply your same edits to other copies of the same 
+file. This is handy if you have a lot of copies of a big file, spread around a 
+network or on a lot of disks, and you want to make the same changes to all the
+</p>
+<p class="docText">
+<img alt="figs/bomb.gif" src="bomb.gif" border="0" width="24" height="30">
+<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-8">
+Section 20.8</a></p>
+<p class="docText">files. In fact, this is how the Concurrent Version Control 
+(CVS) system works. Instead of sending new copies of the whole file, just have
+<i>diff</i> make a script — and use that little script to update all the big 
+files. </p>
+<p class="docText">Here's a demo. I'm going to modify a program called pqs.c. 
+Then I'll use diff and ed to apply the same changes to a copy of the file named 
+remote-pqs.c (which might be at a remote computer): </p>
+<p class="docText"><tt>&gt;&gt;</tt>
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">
+Section 43.1</a></p>
+<pre>1% <b>cp pqs.c remote-pqs.c</b>
+2% <b>cp pqs.c pqs.c.new</b>
+3% <b>vi pqs.c.new</b>
+4% <b>diff pqs.c pqs.c.new</b>
+106,107c106
+&lt;       fprintf(stderr,
+&lt;           &quot;%s: quitting: not able to %s your .pq_profile file.\n&quot;,
+--
+&gt;       fprintf(stderr, &quot;%s: quitting: can't %s your .pq_profile file.\n&quot;,
+390a390
+&gt;               &quot;WARNING:&quot;,
+5% <b>diff -e pqs.c pqs.c.new &gt; edscr</b>
+6% <b>cat edscr</b>
+390a
+                &quot;WARNING:&quot;,
+.
+106,107c
+        fprintf(stderr, &quot;%s: quitting: can't %s your .pq_profile file.\n&quot;,
+.
+7% <b>echo w &gt;&gt; edscr</b>
+8% <b>ed remote-pqs.c &lt; edscr</b>
+19176
+19184
+9% <b>diff pqs.c.new remote-pqs.c</b>
+10%</pre>
+<p class="docText">At prompt <tt>1%</tt>, I make the simulated &quot;remote&quot; copy of 
+the <span class="docEmphasis">pqs.c</span> file. At prompt <tt>2%</tt>, I make 
+another copy of it; at prompt <tt>3%</tt>, I edit the copy. Prompt <tt>4%</tt> 
+has a <i>diff</i> that shows the changes I made. Then, at prompt <tt>5%</tt>, I 
+run <span class="docEmphBold">diff -e</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-1">Section 
+11.1</a>); I save the result in <span class="docEmphasis">edscr</span>, which I 
+show at prompt <tt>6%</tt>. </p>
+<p class="docText">Prompt <tt>7%</tt> is important because
+<span class="docEmphasis">diff -e</span> doesn't add a <tt>w</tt> command to the 
+script file. That tells <i>ed</i> to write its changes to the file. I use
+<span class="docEmphBold">echo w</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-5">Section 
+27.5</a>) to add the command. </p>
+<p class="docText">In prompt <tt>8%</tt>, I give <i>ed</i> the name of the 
+&quot;remote&quot; file to edit as a command-line argument and give it the script file on 
+its standard input. At prompt <tt>9%</tt>, I do a <i>diff</i> that shows the 
+changes have been made and the two versions are the same. </p>
+<p class="docText">If you find yourself needing to keep multiple copies of the 
+same set of files in sync with each other, you might want to consider using CVS. 
+Not only is it a client/server system ready for network use, it is also designed 
+for multiple users. Every check-in is logged, and updating a whole set of files 
+(called &quot;projects&quot;) can be done with the command <tt>cvs update</tt>. This can 
+be a great timesaver for webmasters maintaining multiple web servers with static 
+(or even dynamic) content. </p>
+<p class="docText">Another great tool for synchronizing many filesystems is <i>
+rsync</i>. This program can be used to update a remote filesystem, say a web 
+directory, with more current version of existing files or add new ones. The 
+synchronization can go both ways. <i>rsync</i> even has built-in support for SSH. 
+Here's an example of using <i>rsync</i> to publish new web documents to a live 
+server: </p>
+<pre>$ rsync -urz -e /<tt><i>path</i></tt>/<tt><i>to</i></tt>/ssh <tt><i>local_dir hostname</i></tt>:/<tt><i>path</i></tt>/<tt><i>to</i></tt>/<tt><i>web</i></tt>/<tt><i>docs</i></tt></pre>
+<p class="docText">The <tt>-u</tt> flag tells rsync to update the remote 
+filesystem with newer files on the local system. The <tt>-r</tt> flag tells <i>
+rsync</i> to recurse into subdirectories. The <tt>-z</tt> allows the files to be 
+gzipped during transfer (good for slow modem links). While it can be a 
+client/server system, <i>rsync</i> can work just fine as a peer-to-peer system 
+where it will need to run some commands on the remote machine. The <tt>-e</tt> 
+flag provides the path to the <i>rsh</i> or <i>ssh</i> program that you to have 
+rsync use. The next argument is the directory on the local machine <i>rsync</i> 
+is to copy, and the last argument is the hostname and target directory to be 
+updated. <i>rsync</i> is a very handy tool, and the manpage illustrates its 
+flexibility. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-20-SECT-7">20.7 ed/ex Batch Edits: A Typical Example</h3>
+<p class="docText">What <i>ed</i> and <i>ex</i> lack in intutitive interface 
+design, they make up for when used in batch editing shell scripts. For example, 
+you might be maintaining a web site with a lot of static content all stored in 
+traditional HTML files. One such file might look like this: </p>
+<pre>&lt;html&gt;
+&lt;body&gt;
+&lt;h1&gt;Hello, world!&lt;/h1&gt;
+&lt;p&gt;Glad you could make it
+&lt;img src=&quot;/graphics/smiley.gif&quot; alt=&quot;[:-)]&quot;&gt;.
+&lt;p&gt;Here's a picture of my house:
+&lt;img src=&quot;/graphics/house.gif&quot; alt=&quot;[my house]&quot;&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<p class="docText">One day, you get an email that all the images will now be 
+served out of the directory <span class="docEmphasis">/img</span> instead of
+<span class="docEmphasis">/graphics</span>. Also, all existing
+<span class="docEmphasis">gif</span> files have been replaced with <tt>png</tt> 
+files. Although these changes don't sound like much, making these modifications 
+to a large number of files quickly becomes tedious. By writing a shell script 
+that calls either <i>ed</i> or <i>ex</i>, you will not only solve today's 
+problem, but you'll also be ready to make new changes to the files whenever that 
+becomes necessary. A Bourne shell script that makes these changes looks like the 
+following: </p>
+<pre>#!/bin/sh
+# Convert some of the hard coded values in HTML
+# into the new site schema
+
+# Patterns to be replaced
+old_graphics_dir=&quot;graphics&quot;
+old_graphics_ext=&quot;gif&quot;
+
+# new values
+new_graphics_dir=&quot;img&quot;
+new_graphics_ext=&quot;png&quot;
+
+# Make the changes
+for file in *html;
+do
+   ed $file &lt;&lt;EOF
+1,\$s/$old_graphics_dir/$new_graphics_dir/g
+1,\$s/$old_graphics_ext/$new_graphics_ext/g
+w
+EOF
+done</pre>
+<p class="docText">The script is fairly simple. It defines a few variables to 
+hold the patterns to be found and replaced. The replacement values are defined 
+next. This script is meant to be run in the directory containing all the HTML 
+files. The list of all files ending in &quot;html&quot; is iterated over in a <tt>for</tt> 
+loop in which <i>ed</i> is fed commands from a here document. Recall that <tt>$</tt> 
+is a special character for Bourne shell and must be escaped in the 
+line-addressing part of the <i>ed</i> command. After the search and replace 
+operations finish, the <i>ed</i> buffers need to be written back to disk with 
+the <tt>w</tt> command. This script works with both <i>ed</i> and <i>ex</i>. </p>
+<p class="docText">In older versions of <i>ed</i>, you may find that if the 
+first pattern doesn't match, <i>ed</i> doesn't even try the second pattern. If 
+your version does this, one workaround suggested by Chris Torek is to use the 
+global command <tt>g</tt> like this: </p>
+<pre>ed - $i &lt;&lt; end
+g/$old_graphics_dir/s//$new_graphics_dir/g
+g/$old_graphics_ext/s//$new_graphics_ext/g
+w
+end</pre>
+<p class="docText">The addition of the <tt>-</tt> suppresses the two numbers 
+that <i>ed</i> normally prints. </p>
+<p class="docText"><span class="docEmphasis">— CT and JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-20-SECT-8">20.8 Batch Editing Gotcha: Editors Fail on Big 
+Files</h3>
+<p class="docText">People use the <i>ed</i> editor with script files to make 
+global edits. But many versions of <i>ed</i> can't edit large files. The <i>ex</i> 
+editor is usually better, but it has limits, too. How large is &quot;large&quot;? That 
+depends on your version. Most <i>ed</i>s I've seen can't handle more than about 
+100,000 characters. </p>
+<p class="docText">There are no limits on <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>), although you'll need to <span class="docEmphBold">save its output 
+somehow</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-4">Section 
+34.4</a>), and your editing script may have to be changed to work with <i>sed</i>.<span id="ENB20-2"><a class="docLink" href="#EN20-2"><sup>[2]</sup></a></span> 
+Here's what you'll see when <i>ed</i> fails: </p>
+<pre>% <b>cat edscr </b>
+s/Unix/UNIX/g
+w
+% <b>ed - words &lt; edscr</b>
+?
+%</pre>
+<p class="docText">The <tt>?</tt> is <i>ed</i>'s &quot;verbose&quot; way of telling you 
+that something's wrong. This obscure message is especially bad if you write a 
+shell script that edits multiple files in a loop; you may not notice the error 
+or be able to tell which file had the problem. Be sure your script checks for 
+errors! </p>
+<p class="docText">Unfortunately for programmers, <i>ed</i> may not return an 
+error status that you can test. There are workarounds, though. When the <tt>ed -</tt> 
+command succeeds, it doesn't display anything. The simplest way to find errors 
+is to check for any output on <span class="docEmphasis">stdout</span> or
+<span class="docEmphasis">stderr</span>. This chunk of a Bourne shell script 
+shows how (your filename is in the <span class="docEmphBold">shell variable 
+$filename</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>)): </p>
+<p class="docText"><tt>2&gt;&amp;1</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+Section 36.16</a>, <tt>[ ]</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">
+Section 35.26</a>, <tt>$?</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">
+Section 35.12</a></p>
+<pre>edout=&quot;`ed - $filename &lt; edscr 2&gt;&amp;1`&quot;
+if [ -n &quot;$edout&quot; -o $? -ne 0 ]
+then
+   echo &quot;$edout&quot; 1&gt;&amp;2
+   echo &quot;QUITTING: 'ed - $filename &lt; edscr' failed?!?&quot; 1&gt;&amp;2
+   exit 1
+fi</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-20-SECT-9">20.9 patch: Generalized Updating of Files That 
+Differ</h3>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: patch</p>
+<p class="docText">Like all of Larry Wall's widely used programs (including
+<span class="docEmphBold">perl</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-1">Section 
+41.1</a>), a software configuration script called <i>Configure</i>, and the <i>
+rn</i> news reader), <i>patch</i> betrays a whimsical intelligence of its own. 
+Feed it any kind of <span class="docEmphBold">diff listing</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-1">Section 
+11.1</a>) (not just an editing script produced with the <i>-e</i> option — the 
+typical way before <i>patch</i> came around). <i>patch</i> figures out what it 
+needs to do to apply the diff, and updates the file, supplying all the while a 
+breezy commentary on what it's doing: </p>
+<pre>% <b>patch &lt; testfile.diff</b>
+Hmm...  Looks like a normal diff to me...
+File to patch: <b>testfile</b>
+Patching file testfile using Plan A...
+Hunk #1 succeeded at 2.
+done</pre>
+<p class="docText">As Larry once noted, <i>patch</i> has done an awful lot to 
+&quot;change the culture of computing.&quot; Almost all free software is now updated by 
+means of patches rather than complete new releases. <i>patch</i> is smart enough 
+to discard any leading or trailing garbage (such as mail headers or signatures), 
+so a program source file can be updated by piping a mail message containing a 
+diff listing between old and new versions directly to <i>patch</i>. </p>
+<p class="docText">Here are a few of the other things <i>patch</i> is smart 
+enough to do: </p>
+<ul>
+  <li>
+  <p class="docList">Figure out the name of the file to be updated and do it 
+  without asking (usually only if the diff file is a <span class="docEmphBold">
+  context diff</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-3">Section 
+  11.3</a>) produced with the <i>-c</i> option). </li>
+  <li>
+  <p class="docList">Look for a suitable <span class="docEmphBold">RCS or CVS</span> 
+  (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-4">Section 
+  39.4</a>) file and check it out, if the filename itself can't be found. </li>
+  <li>
+  <p class="docList">Handle diff listings that don't quite match. This makes it 
+  possible for <i>patch</i> to update a file that the recipient has already 
+  changed from the one that the diff was based on. </li>
+  <li>
+  <p class="docList">Save any pieces of the diff file that don't end up being 
+  used, in a file named by adding the suffix <span class="docEmphasis">.rej</span> 
+  (reject) to the name of the file being patched. </li>
+  <li>
+  <p class="docList">Back up the file that is being patched, appending the 
+  suffix <span class="docEmphasis">.orig</span> to the name of the file being 
+  patched. </li>
+  <li>
+  <p class="docList">Recognize that its input may actually apply to several 
+  files, and patch each of them separately. For example, a whole directory might 
+  be updated by a &quot;patch&quot; file that contained diff listings for each of the 
+  files in the directory. (By the way, the <i>-d</i> option to <i>patch</i> 
+  tells it to <i>cd</i> to a specified directory before starting work.) </li>
+  <li>
+  <p class="docList">Recognize (or at least speculate) that a patch might have 
+  been created incorrectly, with the old and new files swapped. Larry says, 
+  &quot;Yes, I'm afraid that does happen occasionally, human nature being what it 
+  is.&quot; <span class="docEmphasis">patch</span>'s <i>-R</i> option will force <i>
+  patch</i> to reverse the sense of the patch; what's really amusing is to see
+  <i>patch</i> suggest that this might be the thing to do, when things seem out 
+  of sync. </li>
+</ul>
+<p class="docText">If you are a programmer, <i>patch</i> is worth studying just 
+to see how much a program can do to anticipate errors, deal with fuzzy input, 
+and in general &quot;make the computer do the dirty work.&quot; But if you're a 
+programmer, you doubtless already know about <i>patch</i>. </p>
+<p class="docText">One last note: <i>patch</i> is so useful that it's been added 
+to many Unix systems. Check to see if your system has it before installing the 
+program. Some versions of <i>patch</i> we've seen are limted versions or buggy 
+when they come from software vendors, though. The one on the book's website is 
+worth comparing to yours. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-20-SECT-10">20.10 Quick Reference: awk</h3>
+<p class="docText">Up to this point, we've shown you tools to do basic batch 
+editing of text files. These tools, although powerful, have limitations. 
+Although you can script <i>ex</i> commands, the range of text manipulation is 
+quite limited. If you need more powerful and flexible batch editing tools, you 
+need to look at programming languages that are designed for text manipulation. 
+One of the earliest Unix languages to do this is <i>awk</i>, created by Al Aho, 
+Peter Weinberger, and Brian Kernighan. Even if you've never programmed before, 
+there are some simple but powerful ways that you can use <i>awk</i>. Whenever 
+you have a text file that's arranged in columns from which you need to extract 
+data, <i>awk</i> should come to mind. </p>
+<p class="docText">For example, every Red Hat Linux system stores its version 
+number in <i>/etc/redhat-release</i>. On my system, it looks like this: </p>
+<pre>Red Hat Linux release 7.1 (Seawolf)</pre>
+<p class="docText">When applying new RPM files to your system, it is often 
+helpful to know which Red Hat version you're using. On the command line, you can 
+retrieve just that number with: </p>
+<pre>awk '{print $5}' /etc/redhat-release</pre>
+<p class="docText">What's going on here? By default, <i>awk</i> splits each line 
+read from standard input on whitespace, as is explained below. In effect, it's 
+like you are looking at one row of a spreadsheet. In spreadsheets, columns are 
+usually named with letters. In <i>awk</i>, columns are numbered and you only can 
+see one row (that is, one line of input) at a time. The Red Hat version number 
+is in the fifth column. Similar to the way shells use <tt>$</tt> for variable 
+interpolation, the values of columns in <i>awk</i> are retrieved using variables 
+that start with <tt>$</tt> and are followed by an integer. </p>
+<p class="docText">As you can guess, this is a fairly simple demostration of <i>
+awk</i>, which includes support for regular expressions, branching and looping, 
+and subroutines. For a more complete reference on using <i>awk</i>, see
+<span class="docEmphasis">Effective awk Programming</span> or
+<span class="docEmphasis">sed &amp; awk Pocket Reference</span>, both published by 
+O'Reilly. </p>
+<p class="docText">Since there are many flavor of <i>awk</i>, such as
+<span class="docEmphBold">nawk and gawk</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-11">Section 
+18.11</a>), this article tries to provide a usable reference for the most common 
+elements of the language. Dialect differences, when they occur, are noted. With 
+the exception of array subscripts, values in <tt>[</tt>brackets<tt>]</tt> are 
+optional; don't type the <tt>[</tt> or <tt>]</tt>. </p>
+<h4  id="upt3-CHP-20-SECT-10.1" class="docSection2Title">20.10.1 Command-Line Syntax</h4>
+<p class="docText"><i>awk</i> can be invoked in one of two ways: </p>
+<pre>awk [<tt><i>options</i></tt>] '<tt><i>script</i></tt>' [<tt><i>var</i></tt>=<tt><i>value</i></tt>] [<tt><i>file(s)</i></tt>]
+awk [<tt><i>options</i></tt>] -f <tt><i>scriptfile </i></tt>[<tt><i>var</i></tt>=<tt><i>value</i></tt>] [<tt><i>file(s)</i></tt>]</pre>
+<p class="docText">You can specify a <tt><i>script</i></tt> directly on the 
+command line, or you can store a script in a <tt><i>scriptfile</i></tt> and 
+specify it with <i>-f</i>. In most versions, the <i>-f</i> option can be used 
+multiple times. The variable <tt><i>var</i></tt> can be assigned a value on the 
+command line. The value can be a literal, a shell variable (<tt>$<i>name</i></tt>), 
+or a command substitution (<tt>'<i>cmd</i>'</tt>), but the value is available 
+only after a line of input is read (i.e., after the BEGIN statement). <i>awk</i> 
+operates on one or more <tt><i>file(s)</i></tt>. If none are specified (or if
+<tt>-</tt> is specified), <i>awk</i> reads from the <span class="docEmphBold">
+standard input</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>). </p>
+<p class="docText">The other recognized <tt><i>options</i></tt> are:</p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">-F</span> <tt><i>c</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Set the field separator to character <tt><i>c</i></tt>. 
+  This is the same as setting the system variable <span class="docEmphasis">FS</span>.
+  <i>nawk</i> allows <tt><i>c</i></tt> to be a <span class="docEmphBold">regular 
+  expression</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-4">Section 
+  32.4</a>). Each record (by default, one input line) is divided into fields by 
+  whitespace (blanks or tabs) or by some other user-definable field separator. 
+  Fields are referred to by the variables <tt>$1</tt>, <tt>$2</tt>, . . . <tt>$<i>n</i></tt>.
+  <tt>$0</tt> refers to the entire record. For example, to print the first three 
+  (colon-separated) fields on separate lines: </dd>
+</dl>
+<pre>    % <b>awk -F: '{print $1; print $2; print $3}' /etc/passwd</b></pre>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">-v</span> <tt><i>var</i></tt><span class="docMonofont">=</span>
+  <tt><i>value</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Assign a <tt><i>value</i></tt> to variable <tt><i>var</i></tt>. 
+  This allows assignment before the script begins execution. (Available in <i>
+  nawk</i> only.) </dd>
+</dl>
+<h4  id="upt3-CHP-20-SECT-10.2" class="docSection2Title">20.10.2 Patterns and Procedures</h4>
+<p class="docText"><i>awk</i> scripts consist of patterns and procedures: </p>
+<blockquote>
+  <p class="docText"><tt><i>pattern</i></tt> <tt>{<i>procedure</i>}</tt> </p>
+</blockquote>
+<p class="docText">Both are optional. If <tt><i>pattern</i></tt> is missing, <tt>
+{<i>procedure</i>}</tt> is applied to all records. If <tt>{<i>procedure</i>}</tt> 
+is missing, the matched record is written to the standard output. </p>
+<h5  id="upt3-CHP-20-SECT-10.2.1" class="docSection3Title">20.10.2.1 Patterns</h5>
+<p class="docText"><tt><i>pattern</i></tt> can be any of the following: </p>
+<pre>/<tt><i>regular expression</i></tt>/
+<tt><i>relational expression</i></tt>
+<tt><i>pattern-matching expression</i></tt>
+BEGIN
+END</pre>
+<ul>
+  <li>
+  <p class="docList">Expressions can be composed of quoted strings, numbers, 
+  operators, functions, defined variables, and any of the predefined variables 
+  described later in <a class="docLink" href="#upt3-CHP-20-SECT-10.3">Section 
+  20.10.3</a>. </li>
+  <li>
+  <p class="docList">Regular expressions use the extended set of metacharacters, 
+  as described in
+  <a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-15">
+  Section 32.15</a>. In addition, <span class="docEmphBold">^ and $</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-5">Section 
+  32.5</a>) can be used to refer to the beginning and end of a field, 
+  respectively, rather than the beginning and end of a record (line). </li>
+  <li>
+  <p class="docList">Relational expressions use the relational operators listed 
+  in <a class="docLink" href="#upt3-CHP-20-SECT-10.4">Section 20.10.4</a> later 
+  in this article. Comparisons can be either string or numeric. For example, <tt>
+  $2</tt> <tt>&gt;</tt> <tt>$1</tt> selects records for which the second field is 
+  greater than the first. </li>
+  <li>
+  <p class="docList">Pattern-matching expressions use the operators <tt>~</tt> 
+  (match) and <tt>!~</tt> (don't match). See
+  <a class="docLink" href="#upt3-CHP-20-SECT-10.4">Section 20.10.4</a> later in 
+  this article. </li>
+  <li>
+  <p class="docList">The BEGIN pattern lets you specify procedures that will 
+  take place <span class="docEmphasis">before</span> the first input record is 
+  processed. (Generally, you set global variables here.) </li>
+  <li>
+  <p class="docList">The END pattern lets you specify procedures that will take 
+  place <span class="docEmphasis">after</span> the last input record is read.
+  </li>
+</ul>
+<p class="docText">Except for BEGIN and END, patterns can be combined with the 
+Boolean operators <tt>||</tt> ( OR), <tt>&amp;&amp;</tt> (AND), and <tt>!</tt> (NOT). A 
+range of lines can also be specified using comma-separated patterns: </p>
+<blockquote>
+  <p class="docText"><tt><i>pattern</i></tt>,<tt><i>pattern</i></tt></p>
+</blockquote>
+<h5  id="upt3-CHP-20-SECT-10.2.2" class="docSection3Title">20.10.2.2 Procedures</h5>
+<p class="docText"><tt><i>procedure</i></tt> can consist of one or more 
+commands, functions, or variable assignments, separated by newlines or 
+semicolons (<tt>;</tt>), and contained within curly braces (<tt>{}</tt>). 
+Commands fall into four groups: </p>
+<ul>
+  <li>
+  <p class="docList">Variable or array assignments</li>
+  <li>
+  <p class="docList">Printing commands</li>
+  <li>
+  <p class="docList">Built-in functions</li>
+  <li>
+  <p class="docList">Control-flow commands</li>
+</ul>
+<h5  id="upt3-CHP-20-SECT-10.2.3" class="docSection3Title">20.10.2.3 Simple pattern-procedure examples</h5>
+<ul>
+  <li>
+  <p class="docList">Print the first field of each line:</p>
+  <pre>{ print $1 }</pre>
+  </li>
+  <li>
+  <p class="docList">Print all lines that contain <tt>pattern</tt>:</p>
+  <pre>/pattern/</pre>
+  </li>
+  <li>
+  <p class="docList">Print first field of lines that contain <tt>pattern</tt>:</p>
+  <pre>/pattern/{ print $1 }</pre>
+  </li>
+  <li>
+  <p class="docList">Print records containing more than two fields:</p>
+  <pre>NF &gt; 2</pre>
+  </li>
+  <li>
+  <p class="docList">Interpret input records as a group of lines up to a blank 
+  line:</p>
+  <pre>BEGIN { FS = &quot;\n&quot;; RS = &quot;&quot; }
+{ <i>...process records...</i> }</pre>
+  </li>
+  <li>
+  <p class="docList">Print fields 2 and 3 in switched order, but only on lines 
+  whose first field matches the string <tt>URGENT</tt>: </p>
+  <pre>$1 ~ /URGENT/ { print $3, $2 }</pre>
+  </li>
+  <li>
+  <p class="docList">Count and print the number of <tt>pattern</tt> found:</p>
+  <pre>/pattern/ { ++x }
+END { print x }</pre>
+  </li>
+  <li>
+  <p class="docList">Add numbers in second column and print total:</p>
+  <pre>{total += $2 };
+END { print &quot;column total is&quot;, total}</pre>
+  </li>
+  <li>
+  <p class="docList">Print lines that contain fewer than 20 characters:</p>
+  <pre>length($0) &lt; 20</pre>
+  </li>
+  <li>
+  <p class="docList">Print each line that begins with <tt>Name</tt>: and that 
+  contains exactly seven fields: </p>
+  <pre>NF == 7 &amp;&amp; /^Name:/</pre>
+  </li>
+</ul>
+<h4  id="upt3-CHP-20-SECT-10.3" class="docSection2Title">20.10.3 awk System Variables</h4>
+<p class="docText"><i>nawk</i> supports all <i>awk</i> variables. <i>gawk</i> 
+supports both <i>nawk</i> and <i>awk</i>. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Version</th>
+    <th class="docTableHeader">
+    <p class="docText">Variable</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">awk</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">FILENAME</span></td>
+    <td class="docTableCell">
+    <p class="docText">Current filename</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">FS</span></td>
+    <td class="docTableCell">
+    <p class="docText">Field separator (default is whitespace)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">NF</span></td>
+    <td class="docTableCell">
+    <p class="docText">Number of fields in current record</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">NR</span></td>
+    <td class="docTableCell">
+    <p class="docText">Number of the current record</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">OFMT</span></td>
+    <td class="docTableCell">
+    <p class="docText">Output format for numbers (default is <tt>%.6g</tt>)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">OFS</span></td>
+    <td class="docTableCell">
+    <p class="docText">Output field separator (default is a blank)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">ORS</span></td>
+    <td class="docTableCell">
+    <p class="docText">Output record separator (default is a newline)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">RS</span></td>
+    <td class="docTableCell">
+    <p class="docText">Record separator (default is a newline) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$0</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Entire input record </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$n</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt><i>n</i></tt>th field in current record; fields are 
+    separated by <span class="docEmphasis">FS</span> </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">nawk</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">ARGC</span></td>
+    <td class="docTableCell">
+    <p class="docText">Number of arguments on command line </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">ARGV</span></td>
+    <td class="docTableCell">
+    <p class="docText">An array containing the command-line arguments </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">ENVIRON</span></td>
+    <td class="docTableCell">
+    <p class="docText">An associative array of environment variables </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">FNR</span></td>
+    <td class="docTableCell">
+    <p class="docText">Like <span class="docEmphasis">NR</span>, but relative to 
+    the current file </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">RSTART</span></td>
+    <td class="docTableCell">
+    <p class="docText">First position in the string matched by
+    <span class="docEmphasis">match</span> function </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">RLENGTH</span></td>
+    <td class="docTableCell">
+    <p class="docText">Length of the string matched by <span class="docEmphasis">
+    match</span> function </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">SUBSEP</span></td>
+    <td class="docTableCell">
+    <p class="docText">Separator character for array subscripts (default is <tt>
+    \034</tt>) </td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-20-SECT-10.4" class="docSection2Title">20.10.4 Operators</h4>
+<p class="docText">This table lists the operators, in increasing precedence, 
+that are available in <i>awk</i>. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Symbol</th>
+    <th class="docTableHeader">
+    <p class="docText">Meaning</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>= += -= *= /= %= ^=</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Assignment (<tt>^=</tt> only in <span class="docEmphasis">
+    nawk</span> and <span class="docEmphasis">gawk</span>) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>?:</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">C conditional expression (<span class="docEmphasis">nawk</span> 
+    and <span class="docEmphasis">gawk</span>) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>||</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Logical OR</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&amp;&amp;</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Logical AND</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>~ !~</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Match regular expression and negation</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&lt; &lt;= &gt; &gt;= != ==</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Relational operators</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">(blank)</td>
+    <td class="docTableCell">
+    <p class="docText">Concatenation</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>+ -</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Addition, subtraction</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>* / %</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Multiplication, division, and modulus</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>+ - !</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Unary plus and minus, and logical negation</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>^</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Exponentiation (<span class="docEmphasis">nawk</span> and
+    <span class="docEmphasis">gawk</span>) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>++ --</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Increment and decrement, either prefix or postfix</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Field reference</td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-20-SECT-10.5" class="docSection2Title">20.10.5 Variables and Array Assignments</h4>
+<p class="docText">Variables can be assigned a value with an equal sign (<tt>=</tt>). 
+For example: </p>
+<pre>FS = &quot;,&quot;</pre>
+<p class="docText">Expressions using the operators <tt>+</tt>, <tt>-</tt>, <tt>*</tt>,
+<tt>/</tt>, and <tt>%</tt> (modulus) can be assigned to variables. </p>
+<p class="docText">Arrays can be created with the <span class="docEmphasis">
+split</span> function (see below), or they can simply be named in an assignment 
+statement. Array elements can be subscripted with numbers (<tt><i>array</i>[1]</tt>, 
+. . . ,<tt><i>array</i>[<i>n</i>]</tt>) or with names (as associative arrays). 
+For example, to count the number of occurrences of a pattern, you could use the 
+following script: </p>
+<pre>/<tt><i>pattern</i></tt>/ { <tt><i>array</i></tt>[&quot;<tt><i>pattern</i></tt>&quot;]++ }
+END { print <tt><i>array</i></tt>[&quot;<tt><i>pattern</i></tt>&quot;] }</pre>
+<h4  id="upt3-CHP-20-SECT-10.6" class="docSection2Title">20.10.6 Group Listing of awk Commands</h4>
+<p class="docText"><i>awk</i> commands may be classified as follows: </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="4">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Arithmetic functions</th>
+    <th class="docTableHeader">
+    <p class="docText">String functions</th>
+    <th class="docTableHeader">
+    <p class="docText">Control flow statements</th>
+    <th class="docTableHeader">
+    <p class="docText">Input/Output processing</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">atan2</span><span id="ENB20-3"><a class="docLink" href="#EN20-3"><sup>[3]</sup></a></span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">gsub</span><sup class="docFootnote"><a class="docLink" href="EN20-3">[3]</a></sup></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">break</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">close</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">cos</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">index</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">continue</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">delete</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">exp</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">length</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">do/while</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">getline</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">int</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">match</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">exit</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">next</span></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">log</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">split</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">for</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">print</span></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">rand</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">sub</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">if</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">printf</span></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">sin</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">substr</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">return</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">sprintf</span></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">sqrt</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">tolower</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">while</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">system</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">srand</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">toupper</span><sup class="docFootnote"><a class="docLink" href="#EN20-3">[3]</a></sup>
+    </td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-20-SECT-10.7" class="docSection2Title">20.10.7 Alphabetical Summary of Commands</h4>
+<p class="docText">The following alphabetical list of statements and functions 
+includes all that are available in <i>awk</i>, <i>nawk</i>, or <i>gawk</i>. 
+Unless otherwise mentioned, the statement or function is found in all versions. 
+New statements and functions introduced with <i>nawk</i> are also found in <i>
+gawk</i>. </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docEmphasis">atan2</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>atan2(<i>y</i></tt>,<tt><i>x</i>)</tt> </p>
+  <p class="docList">Returns the arctangent of <tt><i>y</i></tt>/<tt><i>x</i></tt> 
+  in radians. (<i>nawk</i>) </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">break</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Exit from a <span class="docEmphasis">while</span>,
+  <span class="docEmphasis">for</span>, or <span class="docEmphasis">do</span> 
+  loop. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">close</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>close(<i>filename-expr</i>)</tt> <tt>close(<i>command-expr</i>)</tt>
+  </p>
+  <p class="docList">In some implementations of <i>awk</i>, you can have only 
+  ten files open simultaneously and one pipe; modern versions allow more than 
+  one pipe open. Therefore, <i>nawk</i> provides a <span class="docEmphasis">
+  close</span> statement that allows you to close a file or a pipe.
+  <span class="docEmphasis">close</span> takes as an argument the same 
+  expression that opened the pipe or file. (<i>nawk</i>) </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">continue</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Begin next iteration of <span class="docEmphasis">while</span>,
+  <span class="docEmphasis">for</span>, or <span class="docEmphasis">do</span> 
+  loop immediately. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">cos</span></span> </dt>
+  <dd>
+  <p class="docList"><tt>cos(<i>x</i>)</tt> </p>
+  <p class="docList">Return cosine of <tt><i>x</i></tt> (in radians). (<i>nawk</i>)
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">delete</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>delete</tt> <tt><i>array</i></tt>[<tt><i>element</i></tt>]
+  </p>
+  <p class="docList">Delete <tt><i>element</i></tt> of <tt><i>array</i></tt>. (<i>nawk</i>)
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">do</span></span> </dt>
+  <dd>
+  <p class="docList"><tt>do</tt> <tt><i>body</i></tt> <tt>while (<i>expr</i>)</tt>
+  </p>
+  <p class="docList">Looping statement. Execute statements in <tt><i>body</i></tt>, 
+  then evaluate <tt><i>expr</i></tt>. If <tt><i>expr</i></tt> is true, execute
+  <tt><i>body</i></tt> again. More than one <tt><i>command</i></tt> must be put 
+  inside braces (<tt>{}</tt>). (<i>nawk</i>) </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">exit</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>exit</tt>[<tt><i>expr</i></tt>]</p>
+  <p class="docList">Do not execute remaining instructions and do not read new 
+  input. END procedure, if any, will be executed. The <tt><i>expr</i></tt>, if 
+  any, becomes <i>awk</i>'s <span class="docEmphBold">exit status</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-12">Section 
+  34.12</a>). </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">exp</span></span> </dt>
+  <dd>
+  <p class="docList"><tt>exp(<i>arg</i>)</tt> </p>
+  <p class="docList">Return the natural exponent of <tt><i>arg</i></tt>. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">for</span></span> </dt>
+  <dd>
+  <p class="docList"><tt>for (</tt>[<tt><i>init-expr</i></tt>]<tt>;</tt> [<tt><i>test-expr</i></tt>]<tt>;</tt> 
+  [<tt><i>incr-expr</i></tt>]<tt>)</tt> <tt><i>command</i></tt> </p>
+  <p class="docList">C-language-style looping construct. Typically, <tt><i>init-expr</i></tt> 
+  assigns the initial value of a counter variable. <tt><i>test-expr</i></tt> is 
+  a relational expression that is evaluated each time before executing the <tt>
+  <i>command</i></tt>. When <tt><i>test-expr</i></tt> is false, the loop is 
+  exited. <tt><i>incr-expr</i></tt> is used to increment the counter variable 
+  after each pass. A series of <tt><i>command</i></tt>s must be put within 
+  braces (<tt>{}</tt>). For example: </p>
+  <pre>for (i = 1; i &lt;= 10; i++)
+     printf &quot;Element %d is %s.\n&quot;, i, array[i]</pre>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">for</span></span> </dt>
+  <dd>
+  <p class="docList"><tt>for (<i>item</i></tt> <tt>in</tt> <tt><i>array</i>)</tt>
+  <tt><i>command</i></tt> </p>
+  <p class="docList">For each <tt><i>item</i></tt> in an associative <tt><i>
+  array</i></tt>, do <tt><i>command</i></tt>. More than one <tt><i>command</i></tt> 
+  must be put inside braces (<tt>{}</tt>). Refer to each element of the array as
+  <tt><i>array</i>[<i>item</i>]</tt>. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">getline</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>getline</tt> [<tt><i>var</i></tt>][<tt>&lt;<i>file</i></tt>] 
+  or <tt><i>command</i></tt> <tt>| getline</tt> [<tt><i>var</i></tt>] </p>
+  <p class="docList">Read next line of input. Original <i>awk</i> does not 
+  support the syntax to open multiple input streams. The first form reads input 
+  from <tt><i>file</i></tt>, and the second form reads the standard output of a 
+  Unix <tt><i>command</i></tt>. Both forms read one line at a time, and each 
+  time the statement is executed, it gets the next line of input. The line of 
+  input is assigned to <tt>$0</tt>, and it is parsed into fields, setting
+  <span class="docEmphasis">NF</span>, <span class="docEmphasis">NR</span>, and
+  <span class="docEmphasis">FNR</span>. If <tt><i>var</i></tt> is specified, the 
+  result is assigned to <tt><i>var</i></tt> and the <tt>$0</tt> is not changed. 
+  Thus, if the result is assigned to a variable, the current line does not 
+  change. <span class="docEmphasis">getline</span> is actually a function, and 
+  it returns 1 if it reads a record successfully, 0 if end-of-file is 
+  encountered, and -1 if for some reason it is otherwise unsuccessful. (<i>nawk</i>)
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">gsub</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>gsub(<i>r</i></tt>,<tt><i>s</i></tt>[,<tt><i>t</i></tt>]<tt>)</tt>
+  </p>
+  <p class="docList">Globally substitute <tt><i>s</i></tt> for each match of the 
+  regular expression <tt><i>r</i></tt> in the string <tt><i>t</i></tt>. Return 
+  the number of substitutions. If <tt><i>t</i></tt> is not supplied, defaults to
+  <tt>$0</tt>. (<i>nawk</i>) </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">if</span></span> </dt>
+  <dd>
+  <p class="docList"><tt>if (<i>condition</i>)</tt> <tt><i>command</i></tt> <tt>
+  [else</tt> <tt><i>command</i>]</tt> </p>
+  <p class="docList">If <tt><i>condition</i></tt> is true, do <tt><i>command(s)</i></tt>, 
+  otherwise do <tt><i>command(s)</i></tt> in <span class="docEmphasis">else</span> 
+  clause (if any). <tt><i>condition</i></tt> can be an expression that uses any 
+  of the relational operators <tt>&lt;</tt>, <tt>&lt;=</tt>, <tt>==</tt>, <tt>!=</tt> 
+  , <tt>&gt;=</tt>, or <tt>&gt;</tt>, as well as the pattern-matching operators <tt>~</tt> 
+  or <tt>!~</tt> (e.g., <tt>if ($1 ~ /[Aa].*[Zz]/)</tt>). A series of <tt><i>
+  command</i></tt>s must be put within braces (<tt>{}</tt>). </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">index</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>index(<i>str</i></tt>,<tt><i>substr</i>)</tt> </p>
+  <p class="docList">Return position of first substring <tt><i>substr</i></tt> 
+  in string <tt><i>str</i></tt> or 0 if not found. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">int</span></span> </dt>
+  <dd>
+  <p class="docList"><tt>int(<i>arg</i>)</tt> </p>
+  <p class="docList">Return integer value of <tt><i>arg</i></tt>. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">length</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>length(<i>arg</i>)</tt> </p>
+  <p class="docList">Return the length of <tt><i>arg</i></tt>. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">log</span></span> </dt>
+  <dd>
+  <p class="docList"><tt>log(<i>arg</i>)</tt> </p>
+  <p class="docList">Return the natural logarithm of <tt><i>arg</i></tt>. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">match</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>match(<i>s</i></tt>,<tt><i>r</i>)</tt> </p>
+  <p class="docList">Function that matches the pattern, specified by the regular 
+  expression <tt><i>r</i></tt>, in the string <tt><i>s</i></tt> and returns 
+  either the position in <tt><i>s</i></tt> where the match begins or 0 if no 
+  occurrences are found. Sets the values of <span class="docEmphasis">RSTART</span> 
+  and <span class="docEmphasis">RLENGTH</span>. (<i>nawk</i>) </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">next</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Read next input line and start new cycle through 
+  pattern/procedures statements. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">print</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>print</tt> [<tt><i>args</i></tt>] [<tt><i>destination</i></tt>]
+  </p>
+  <p class="docList">Print <tt><i>args</i></tt> on output, followed by a newline.
+  <tt><i>args</i></tt> is usually one or more fields, but it may also be one or 
+  more of the predefined variables — or arbitrary expressions. If no <tt><i>args</i></tt> 
+  are given, prints <tt>$0</tt> (the current input record). Literal strings must 
+  be quoted. Fields are printed in the order they are listed. If separated by 
+  commas (,) in the argument list, they are separated in the output by the
+  <span class="docEmphasis">OFS</span> character. If separated by spaces, they 
+  are concatenated in the output. <tt><i>destination</i></tt> is a Unix 
+  redirection or pipe expression (e.g., <tt>&gt;</tt> <tt><i>file</i></tt>) that 
+  redirects the default standard output. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">printf</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>printf<i> format</i></tt> [, <tt><i>expression(s)</i></tt>] 
+  [<tt><i>destination</i></tt>] </p>
+  <p class="docList">Formatted print statement. Fields or variables can be 
+  formatted according to instructions in the <tt><i>format</i></tt> argument. 
+  The number of <tt><i>expression</i></tt>s must correspond to the number 
+  specified in the format sections. <tt><i>format</i></tt> follows the 
+  conventions of the C-language <span class="docEmphasis">printf</span> 
+  statement. Here are a few of the most common formats: </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">%s</span></span> </dt>
+  <dd>
+  <p class="docList">A string.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">%d</span></span> </dt>
+  <dd>
+  <p class="docList">A decimal number.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">%</span> <tt><i>n</i></tt>.<tt><i>m</i></tt><span class="docMonofont">f</span>
+  </span></dt>
+  <dd>
+  <p class="docList">A floating-point number, where <tt><i>n</i></tt> is the 
+  total number of digits and <tt><i>m</i></tt> is the number of digits after the 
+  decimal point. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">%</span> [<span class="docMonofont">-</span> 
+  ]<tt><i>nc</i></tt></span> </dt>
+  <dd>
+  <p class="docList"><tt><i>n</i></tt> specifies minimum field length for format 
+  type <tt><i>c</i></tt>, while <tt>-</tt> left-justifies value in field; 
+  otherwise value is right-justified. </p>
+  <p class="docList"><tt><i>format</i></tt> can also contain embedded escape 
+  sequences: <tt>\n</tt> (newline) or <tt>\t</tt> (tab) are the most common. <tt>
+  <i>destination</i></tt> is a Unix redirection or pipe expression (e.g., <tt>&gt;</tt>
+  <tt><i>file</i></tt>) that redirects the default standard output. </p>
+  <p class="docList">For example, using the following script:</p>
+  <pre>{printf &quot;The sum on line %s is %d.\n&quot;, NR, $1+$2}</pre>
+  <p class="docList">and the following input line:</p>
+  <pre>5   5</pre>
+  <p class="docList">produces this output, followed by a newline:</p>
+  <pre>The sum on line 1 is 10.</pre>
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">rand</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>rand( )</tt></p>
+  <p class="docList">Generate a random number between 0 and 1. This function 
+  returns the same series of numbers each time the script is executed, unless 
+  the random number generator is seeded using the <span class="docEmphasis">
+  srand( )</span> function. (<i>nawk</i>) </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">return</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>return</tt> [<tt><i>expr</i></tt>]</p>
+  <p class="docList">Used at end of user-defined functions to exit the function, 
+  returning value of expression <tt><i>expr</i></tt>, if any. (<i>nawk</i>) </dd>
+  <dt><i><span class="docPubcolor">sin</span></i> </dt>
+  <dd>
+  <p class="docList"><tt>sin(<i>x</i>)</tt> </p>
+  <p class="docList">Return sine of <tt><i>x</i></tt> (in radians). (<i>nawk</i>)
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">split</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>split(<i>string</i></tt>,<tt><i>array</i></tt>[,<tt><i>sep</i></tt>]<tt>)</tt>
+  </p>
+  <p class="docList">Split <tt><i>string</i></tt> into elements of <tt><i>array</i></tt>
+  <tt>array[1]</tt>, . . . ,<tt>array[<i>n</i>]</tt>. <tt><i>string</i></tt> is 
+  split at each occurrence of separator <tt><i>sep</i></tt>. (In <i>nawk</i>, 
+  the separator may be a regular expression.) If <tt><i>sep</i></tt> is not 
+  specified, <span class="docEmphasis">FS</span> is used. The number of array 
+  elements created is returned. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">sprintf</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>sprintf (<i>format</i></tt> [, <tt><i>expression(s)</i></tt>]<tt>)</tt>
+  </p>
+  <p class="docList">Return the value of <tt><i>expression(s)</i></tt>, using 
+  the specified <tt><i>format</i></tt> (see <span class="docEmphasis">printf</span>). 
+  Data is formatted but not printed. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">sqrt</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>sqrt(<i>arg</i>)</tt> </p>
+  <p class="docList">Return square root of <tt><i>arg</i></tt>. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">srand</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>srand(<i>expr</i>)</tt> </p>
+  <p class="docList">Use <tt><i>expr</i></tt> to set a new seed for random 
+  number generator. Default is time of day. Returns the old seed. (<i>nawk</i>)
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">sub</span></span> </dt>
+  <dd>
+  <p class="docList"><tt>sub(<i>r</i></tt>,<tt><i>s</i></tt>[,<tt><i>t</i></tt>]<tt>)</tt>
+  </p>
+  <p class="docList">Substitute <tt><i>s</i></tt> for first match of the regular 
+  expression <tt><i>r</i></tt> in the string <tt><i>t</i></tt>. Return 1 if 
+  successful; 0 otherwise. If <tt><i>t</i></tt> is not supplied, defaults to <tt>
+  $0</tt>. (<i>nawk</i>) </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">substr</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>substr(<i>string</i></tt>,<tt><i>m</i></tt>[,<tt><i>n</i></tt>]<tt>)</tt>
+  </p>
+  <p class="docList">Return substring of <tt><i>string</i></tt>, beginning at 
+  character position <tt><i>m</i></tt> and consisting of the next <tt><i>n</i></tt> 
+  characters. If <tt><i>n</i></tt> is omitted, include all characters to the end 
+  of string. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">system</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>system(<i>command</i>)</tt> </p>
+  <p class="docList">Function that executes the specified Unix <tt><i>command</i></tt> 
+  and returns its <span class="docEmphBold">status</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-12">Section 
+  34.12</a>). The status of the command that is executed typically indicates its 
+  success (0) or failure (nonzero). The output of the command is not available 
+  for processing within the <i>nawk</i> script. Use <tt><i>command</i></tt> <tt>
+  |</tt> <tt>getline</tt> to read the output of the command into the script. (<i>nawk</i>)
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">tolower</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>tolower(<i>str</i>)</tt> </p>
+  <p class="docList">Translate all uppercase characters in <tt><i>str</i></tt> 
+  to lowercase and return the new string. (<i>nawk</i>) </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">toupper</span></span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>toupper(<i>str</i>)</tt> </p>
+  <p class="docList">Translate all lowercase characters in <tt><i>str</i></tt> 
+  to uppercase and return the new string. (<i>nawk</i>) </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">while</span> </span>
+  </dt>
+  <dd>
+  <p class="docList"><tt>while</tt> (<tt><i>condition</i></tt>) <tt><i>command</i></tt>
+  </p>
+  <p class="docList">Do <tt><i>command</i></tt> while <tt><i>condition</i></tt> 
+  is true (see <span class="docEmphasis">if</span> for a description of 
+  allowable conditions). A series of commands must be put within braces (<tt>{}</tt>).
+  </dd>
+</dl>
+<p class="docText"><span class="docEmphasis">— DG</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-20-SECT-11">20.11 Versions of awk</h3>
+<p class="docText"><i>awk</i> was introduced as part of Unix's seventh edition 
+and has been part of the standard distribution ever since. </p>
+<p class="docText">In 1985, the authors of <i>awk</i> extended the language, 
+adding many useful features. Unfortunately, this new version remained inside 
+AT&amp;T for several years. It became a regular part of AT&amp;T's System V as of 
+Release 3.1. It can be found under the name of <i>nawk</i> (for &quot;new <i>awk</i>&quot;); 
+the older version still exists under its original name. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: gawk</p>
+<p class="docText">Unfortunately, <i>nawk</i> is not available on all systems. 
+The good news is that the Free Software Foundation GNU project's version of <i>
+awk</i>, called <i>gawk</i>, implements all the features of the new <i>awk</i>.
+</p>
+<p class="docText">In general, you can assume that what is true for <i>nawk</i> 
+is true for <i>gawk</i>, unless <i>gawk</i> is explicitly called out. Scripts 
+written for <i>nawk</i> are 100 percent compatible with <i>gawk</i>. If you want 
+to use one of the <i>nawk</i> scripts and don't have <i>nawk</i> on your system, 
+simply change the script to invoke <i>gawk</i> instead. </p>
+<p class="docText">There are a few areas where <i>gawk</i> has introduced <i>
+gawk</i>-specific features; however, recent versions of <i>nawk</i> support many 
+of these features, suggesting that the remaining differences are really very 
+minor. This shouldn't matter in any case, since we do supply <i>gawk</i> on the 
+disc. </p>
+<p class="docText">This book doesn't cover any of the <i>awk</i>s in detail. The 
+recent <i>awk</i>s, especially, have quite a few features in common — so 
+documentation for any one of them should help you learn the others. </p>
+<p class="docText">In this book, we show scripts for <i>awk</i> as well as 
+scripts that work only on <i>nawk</i> and <i>gawk</i>. But we barely scratch the 
+surface of all the <i>awk</i>s' features. The completely revised second edition 
+of O'Reilly &amp; Associates' <span class="docEmphasis">sed &amp; awk</span> has 
+detailed information on all of them.<span id="ENB20-4"><a class="docLink" href="#EN20-4"><sup>[4]</sup></a></span> 
+There's also lots of documentation on the CD-ROM [see
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>]. Take your pick. </p>
+<p class="docText"><span class="docEmphasis">—JP and DD, TOR </span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN20-1"><a class="docLink" href="#ENB20-1">[1]</a>&nbsp;&nbsp;Note that &quot;t&quot; is short for &quot;to.&quot; The ed editor only has one-letter commands and 
+since &quot;c&quot; was already taken for &quot;change,&quot; they used &quot;t&quot; for &quot;copy TO.&quot;</p><p class="docFootnote" id="EN20-2"><a class="docLink" href="#ENB20-2">[2]</a>&nbsp;&nbsp;By default, <i>ed</i> 
+  commands apply to the current line. <i>sed</i> commands are global. Also, 
+  relative line addresses like <tt>-5</tt> don't work in <i>sed</i>.</p><p class="docFootnote" id="EN20-3"><a class="docLink" href="#ENB20-3">[3]</a>&nbsp;&nbsp;Not in 
+  original awk.</p><p class="docFootnote" id="EN20-4"><a class="docLink" href="#ENB20-4">[4]</a>&nbsp;&nbsp;And thanks to Arnold 
+  Robbins, coauthor of the second edition, for his help with this section and 
+  other <i>awk</i> material in this book.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 19.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 21.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

@@ -1,0 +1,1066 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 40</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 39.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 41.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+<h2 class="docChapterTitle">Chapter 40. Software Installation</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-40-SECT-1">40.1 /usr/bin and Other Software Directories</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-40-SECT-2">40.2 The Challenges of Software Installation on Unix</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-40-SECT-3">40.3 Which make?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-40-SECT-4">40.4 Simplifying the make Process</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-40-SECT-5">40.5 Using Debian's dselect</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-40-SECT-6">40.6 Installing Software with Debian's Apt-Get</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-40-SECT-7">40.7 Interruptable gets with wget</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-40-SECT-8">40.8 The curl Application and One-Step GNU-Darwin Auto-Installer for OS X</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-40-SECT-9">40.9 Installation with FreeBSD Ports</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-40-SECT-10">40.10 Installing with FreeBSD Packages</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-40-SECT-11">40.11 Finding and Installing RPM Packaged Software</a></li>
+</ul>
+
+<h3 class="docSection1Title" id="upt3-CHP-40-SECT-1">40.1 /usr/bin and Other Software Directories</h3>
+<p class="docText">The location for certain types of installed files is very 
+important. For instance, on many Unix systems, binary files accessible by users 
+are located in the subdirectory <span class="docEmphasis">/usr/bin</span> or
+<span class="docEmphasis">/usr/local/bin</span>. If the applications aren't in 
+these places, they may not be in the <span class="docEmphasis">PATH</span> 
+environment variable and not easily accessible from the command line. </p>
+<p class="docText">On my FreeBSD system, I've installed a utility called <tt>
+dos2unix</tt>, a file-formatting application that converts DOS newline character 
+combinations to the Unix newline character. I used the FreeBSD Ports system to 
+install the application, which automatically placed the program in my 
+application directory, in my case <span class="docEmphasis">/usr/local/bin.</span> 
+When I want to execute the application, I can run it from the command line 
+without having to provide the location of the file: </p>
+<pre>dos2unix some.txt &gt; new.txt</pre>
+<p class="docText">This command reformats the newline character of the contents 
+of <span class="docEmphasis">some.txt</span>, converting DOS linebreaks to Unix 
+ones. </p>
+<p class="docText">The <span class="docEmphasis">/usr/bin</span> subdirectory 
+differs from the <span class="docEmphasis">/bin</span> directory located 
+directly off of the main root directory. The <span class="docEmphasis">/bin</span> 
+directory has basic installed binaries built into the Unix operating system, 
+with commands such as <span class="docEmphasis">cd</span> to change directory 
+and so on. When you install an optional software application, it should not 
+install software in the top-level binary subdirectory, but in
+<span class="docEmphasis">/usr/bin</span>, instead. </p>
+<p class="docText">According to the Filesystem Hierarchy Standard (FHS), 
+subdirectories (Linux- and BSD-specific) shown in
+<a class="docLink" href="#upt3-CHP-40-TABLE-1">Table 40-1</a> are located 
+directly off the root directory within a standardized directory hierarchy. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-40-TABLE-1" class="docTableTitle">Table 40-1. FHS root subdirectories </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Subdirectory</th>
+    <th class="docTableHeader">
+    <p class="docText">Contents</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>bin</i> </td>
+    <td class="docTableCell">
+    <p class="docText">Application binaries</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>boot</i> </td>
+    <td class="docTableCell">
+    <p class="docText">Boot loader static files</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>dev</i> </td>
+    <td class="docTableCell">
+    <p class="docText">Device files</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>etc</i> </td>
+    <td class="docTableCell">
+    <p class="docText">System configuration files</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>lib</i> </td>
+    <td class="docTableCell">
+    <p class="docText">Shared libraries and kernel modules</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>mnt</i> </td>
+    <td class="docTableCell">
+    <p class="docText">Temporary mounting point for filesystems such as CD-ROMs</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>opt</i> </td>
+    <td class="docTableCell">
+    <p class="docText">Larger static software packages</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>sbin</i> </td>
+    <td class="docTableCell">
+    <p class="docText">System binaries</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>tmp</i> </td>
+    <td class="docTableCell">
+    <p class="docText">Temporary files</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>usr</i> </td>
+    <td class="docTableCell">
+    <p class="docText">User hierarchy, which has its own subdirectory with the 
+    following entries: </p>
+    <ul>
+      <li>
+      <p class="docList"><i>bin</i></li>
+      <li>
+      <p class="docList"><i>doc</i></li>
+      <li>
+      <p class="docList"><i>etc</i></li>
+      <li>
+      <p class="docList"><i>games</i></li>
+      <li>
+      <p class="docList"><i>include</i></li>
+      <li>
+      <p class="docList"><i>kerberos</i></li>
+      <li>
+      <p class="docList"><i>lib</i></li>
+      <li>
+      <p class="docList"><i>libexec</i></li>
+      <li>
+      <p class="docList"><i>local</i></li>
+      <li>
+      <p class="docList"><i>man</i></li>
+      <li>
+      <p class="docList"><i>sbin</i></li>
+      <li>
+      <p class="docList"><i>share</i></li>
+      <li>
+      <p class="docList"><i>src</i></li>
+      <li>
+      <p class="docList"><i>X11R6</i></li>
+    </ul>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><i>var</i> </td>
+    <td class="docTableCell">
+    <p class="docText">Variable data</td>
+  </tr>
+</table>
+<p class="docText">If you install an application and the binaries aren't placed 
+into the bin directory, you'll need to add the binary location to your
+<span class="docEmphasis">PATH</span> environment variable to access the 
+application from the command line. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">For more information about FHS, see the home page at
+        <a class="docLink" href="http://www.pathname.com/fhs/" target="_blank">
+        http://www.pathname.com/fhs/</a>. Many Unix systems support this 
+        hierarchy, including the BSD systems such as FreeBSD and NetBSD, as well 
+        as Red Hat Linux and others. However, your own Unix admin may adjust 
+        this hierarchy to fit the needs of your enterprise, so you'll want to 
+        check subdirectory locations before proceeding with manual software 
+        installation. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-40-SECT-2">40.2 The Challenges of Software Installation on 
+Unix</h3>
+<p class="docText">If you've worked with multiple operating systems such as the 
+Mac OS or Windows along with Unix, then you're aware that software installation 
+on a Unix system — Solaris, Linux, Darwin, and so on — isn't necessarily as easy 
+a task as it is on some of the other systems. The process can be difficult if 
+you're installing open source code that you download from the Internet; many 
+times open source code isn't packaged for ease in installation. </p>
+<p class="docText">I've worked with Unix for years but still look at the process 
+of installing a new piece of software as one would look at climbing a mountain: 
+be prepared, be brave, and don't look back. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-40-SECT-3">40.3 Which make?</h3>
+<p class="docText">Many applications and utilities within the Unix environment 
+come as source code that needs to be compiled and installed on your system. 
+Because of this, the make utility is probably the most important utility you 
+have within your Unix toolkit. However, the make utility installed on your 
+system may not necessarily be compatible with the make utility used when the 
+creators tested the software installation. </p>
+<p class="docText">In fact, one of the problems that can cause the most problems 
+with software installation is that the software compiles cleanly with GNU make 
+but not with other versions of make, because different features of the 
+installation process are supported with GNU make. This happens but not some of 
+the older, more system-specific makes. </p>
+<p class="docText">For instance, BSD operating systems such as FreeBSD and 
+Darwin, as well as Solaris, have their own version of make in addition to 
+accessibility to GNU make. In some of the systems, such as Darwin, GNU make is 
+installed as the default. In others, such as FreeBSD, BSD make is the default. 
+GNU make is installed but is usually called gmake. This typically isn't a 
+problem because if the compilation fails, try gmake instead: </p>
+<pre>% gmake install</pre>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-40-SECT-4">40.4 Simplifying the make Process</h3>
+<p class="docText">One of the problems associated with building and installing 
+software within a Unix environment is ensuring that all the necessary libraries 
+are present, the <i>makefile</i> is modified to fit the environment, and so on. 
+The general building process is simplified by two GNU utilities: <i>autoconf</i> 
+and <i>automake</i>. </p>
+<p class="docText">The <i>autoconf</i> utility takes an input file called
+<span class="docEmphasis">configure.in</span> containing macros that determine 
+how a configure file is built. The configure file, usually called <i>Makefile.in</i>, 
+is then used by automake to create a Makefile that can be used to compile the 
+application. </p>
+<p class="docText">A README file should provide instructions on building an 
+application, but if one is absent, you know that the application supports 
+autoconf if you see a <span class="docEmphasis">configure.in</span> file, or see 
+a script file called <span class="docEmphasis">configure.</span> If the package 
+creator built a configure script manually, instructions will most likely be 
+included within the README. </p>
+<p class="docText">As a demonstration, I downloaded a GNU library called
+<span class="docEmphasis">plotutils</span> that provides graphics capability. 
+After running <span class="docEmphasis">gunzip</span> and
+<span class="docEmphasis">tar</span> on the package to decompress the files, I 
+looked at the topmost directory and found a configure file. I ran this using the 
+following command: </p>
+<pre>&gt; ./configure</pre>
+<p class="docText">The application can actually take a bit of time, and when 
+finished, Makefiles have been generated for the application directories. All 
+that's required at this point is to run <tt>make install</tt> as root: </p>
+<pre>&gt; make install</pre>
+<p class="docText">Once the build was finished, I cleaned up by typing: </p>
+<pre>&gt; make clean
+&gt; make distclean</pre>
+<p class="docText">The first make cleans up any in-process installation files; 
+the second cleans up the distribution files. </p>
+<p class="docText">The autoconf and automake utilities have greatly simplified 
+installation of GNU and open source functionality. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-40-SECT-5">40.5 Using Debian's dselect</h3>
+<p class="docText">The <i>dselect</i> tool provides an easy-to-use, 
+character-based graphical frontend for accessing <i>dpkg</i> (the traditional 
+Debian installation package utility). To launch <i>dselect</i>, issue the 
+command: </p>
+<pre>dselect</pre>
+<p class="docText"><a class="docLink" href="#upt3-CHP-40-FIG-1">Figure 40-1</a> 
+shows the screen that appears. The screen presents a simple menu with six items:
+</p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Access</span></i> </dt>
+  <dd>
+  <p class="docList">Lets you choose the method used to access package files.</dd>
+  <dt><i><span class="docPubcolor">Update</span></i> </dt>
+  <dd>
+  <p class="docList">Lets you update the list of available packages.</dd>
+  <dt><i><span class="docPubcolor">Select</span></i> </dt>
+  <dd>
+  <p class="docList">Lets you choose packages for installation or removal.</dd>
+  <dt><i><span class="docPubcolor">Install</span></i> </dt>
+  <dd>
+  <p class="docList">Initiates installation of selected packages.</dd>
+  <dt><i><span class="docPubcolor">Config</span></i> </dt>
+  <dd>
+  <p class="docList">Initiates configuration of installed packages.</dd>
+  <dt><i><span class="docPubcolor">Remove</span></i> </dt>
+  <dd>
+  <p class="docList">Initiates removal of packages selection for removal.</dd>
+  <dt><i><span class="docPubcolor">Quit</span></i> </dt>
+  <dd>
+  <p class="docList">Exits <span class="docEmphasis">dselect</span>.</dd>
+</dl>
+<p class="docText">The menu items are generally used in the order in which they 
+are presented. </p>
+<center>
+<h5 id="upt3-CHP-40-FIG-1" class="docFigureTitle">Figure 40-1. The dselect screen</h5>
+<p><img alt="figs/upt3_4001.gif" src="upt3_4001.gif" border="0" width="406" height="128"></p>
+</center>
+<h4  id="upt3-CHP-40-SECT-5.1" class="docSection2Title">40.5.1 Choosing the Access Method</h4>
+<p class="docText">To choose the access method, use the arrow keys to highlight 
+the Access menu item and press Enter. The screen shown in
+<a class="docLink" href="#upt3-CHP-40-FIG-2">Figure 40-2</a> appears. </p>
+<center>
+<h5 id="upt3-CHP-40-FIG-2" class="docFigureTitle">Figure 40-2. Choosing the access method</h5>
+<p><img alt="figs/upt3_4002.gif" src="upt3_4002.gif" border="0" width="413" height="209"></p>
+</center>
+<p class="docText">The most flexible access method — and the method that's 
+generally recommended — is apt. Other available options include: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docEmphasis">cdrom</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Lets you install packages from a CD-ROM. This access method 
+  has been deprecated; you should use <i>multi_cd</i> instead. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">multi_cd</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Lets you install packages from a multivolume set of 
+  CD-ROMs.</dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">nfs</span> </span>
+  </dt>
+  <dd>
+  <p class="docList">Lets you install packages residing on an NFS server. This 
+  access method has been deprecated; you should use <i>multi_nfs</i> instead.
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">multi_nfs</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Lets you install packages residing on an NFS server that 
+  has access to a multivolume set of packages. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">harddisk</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Lets you install packages residing on a hard disk partition 
+  that is not currently mounted. This access method has been deprecated; you 
+  should use <i>apt</i> or <i>multi_mount</i> instead. </dd>
+  <dt><span class="docPubcolor"><i>mounted </i></span></dt>
+  <dd>
+  <p class="docList">Lets you install packages residing on a currently mounted 
+  filesystem. This access method has been deprecated; you should use
+  <span class="docEmphasis">apt</span> or <span class="docEmphasis">multi_mount</span> 
+  instead. </dd>
+  <dt><span class="docPubcolor"><i>multi_mount </i></span></dt>
+  <dd>
+  <p class="docList">Lets you install packages from a multivolume set, one 
+  volume of which is currently mounted. </dd>
+  <dt><span class="docPubcolor"><i>floppy </i></span></dt>
+  <dd>
+  <p class="docList">Lets you install packages from a set of floppy diskettes.</dd>
+  <dt><span class="docPubcolor"><i>ftp </i></span></dt>
+  <dd>
+  <p class="docList">Lets you install packages residing on an FTP server.</dd>
+</dl>
+<p class="docText">To choose an access method, use the arrow keys to highlight 
+the appropriate menu item and press Enter. </p>
+<p class="docText">If you selected the <span class="docEmphasis">apt</span> 
+access method, you'll be asked if you want to change the
+<span class="docEmphasis">sources.list</span> file. If you've previously 
+configured the file, you should respond No. If you've not configured the file, 
+you can respond Yes, which initiates a dialog that builds a simple 
+configuration. Here's a sample dialog that shows the responses you should give 
+to install packages : </p>
+<pre>I see you already have a source list.
+-------------------------------------------------------
+<i>source list displayed here: contents vary </i>
+-------------------------------------------------------
+Do you wish to change it?[y/N] <b>y </b>
+         Set up a list of distribution source locations
+
+ Please give the base URL of the debian distribution.
+ The access schemes I know about are: http ftp file
+
+ For example:
+              file:/mnt/debian,
+              ftp://ftp.debian.org/debian,
+              http://ftp.de.debian.org/debian,
+
+ URL [http://http.us.debian.org/debian]: <b>file:/cdrom </b>
+
+ Please give the distribution tag to get or a path to the
+ package file ending in a /. The distribution
+ tags are typically something like: stable unstable frozen non-US
+
+ Distribution [stable]: <b>stable </b>
+
+ Please give the components to get
+ The components are typically something like: main contrib non-free
+
+ Components [main contrib non-free]: <b>main contrib </b>
+
+ Would you like to add another source?[y/N] <b>N </b></pre>
+<p class="docText">The sample dialog assumes that your CD-ROM has been mounted 
+as <span class="docEmphasis">/cdrom</span>. If your CD-ROM is mounted 
+differently, you'll need to revise the dialog. </p>
+<p class="docText">After <span class="docEmphasis">dselect</span> records your 
+choice of access method, the main menu screen re- appears. </p>
+<h4  id="upt3-CHP-40-SECT-5.2" class="docSection2Title">40.5.2 Updating Information on Available Packages</h4>
+<p class="docText">After selecting the access method, you should instruct
+<span class="docEmphasis">dselect</span> to update information on available 
+packages. To do so, use the arrow keys to highlight the Update menu item and 
+press Enter. After a short time, the main menu will re-appear. </p>
+<h4  id="upt3-CHP-40-SECT-5.3" class="docSection2Title">40.5.3 Choosing Packages for Installation or 
+Removal</h4>
+<p class="docText">Once you've updated the information on available packages, 
+you're ready to select packages for installation or removal. To do so, use the 
+arrow keys to highlight the Select menu item and press Enter. The screen shown 
+in <a class="docLink" href="#upt3-CHP-40-FIG-3">Figure 40-3</a> appears. </p>
+<center>
+<h5 id="upt3-CHP-40-FIG-3" class="docFigureTitle">Figure 40-3. The introduction screen</h5>
+<p><img alt="figs/upt3_4003.gif" src="upt3_4003.gif" border="0" width="413" height="195"></p>
+</center>
+<p class="docText">This screen provides an overview of the package selection 
+screens. When you've read its contents, press Space to go to the package 
+selection screen, which is shown in <a class="docLink" href="#upt3-CHP-40-FIG-4">
+Figure 40-4</a>. </p>
+<p class="docText">This screen provides an overview of the package selection 
+screens. When you've read its contents, press Space to go to the package 
+selection screen, whih is shown in <a class="docLink" href="#upt3-CHP-40-FIG-4">
+Figure 40-4</a>. </p>
+<center>
+<h5 id="upt3-CHP-40-FIG-4" class="docFigureTitle">Figure 40-4. The package selection screen</h5>
+<p><img alt="figs/upt3_4004.gif" src="upt3_4004.gif" border="0" width="414" height="196"></p>
+</center>
+<p class="docText">To use the package selection screen, use the arrow keys to 
+highlight a package in the upper part of the screen. The lower part of the 
+screen will display information about the highlighted package. To select the 
+package for installation, press <span class="docEmphBold">+</span>; to select an 
+installed package for removal, press <span class="docEmphBold">-</span>. </p>
+<p class="docText">You can search the package database by typing a slash (/) 
+followed by the string for which you wish to search. To find successive 
+instances of the same string, type a backslash (\). For example, to find the 
+first package that contains the string <span class="docEmphasis">gnome</span> in 
+its name or description, type <span class="docEmphasis">/gnome</span> and press 
+Enter. </p>
+<p class="docText">If you select for installation a package that requires one or 
+more other packages that are not installed, a dependency conflict results. 
+Similarly, a dependency conflict results if you mark for removal a package 
+required by an installed package or if you mark for installation a package that 
+conflicts with an installed package. When <span class="docEmphasis">dselect</span> 
+detects a dependency conflict, it presents the screen shown in
+<a class="docLink" href="#upt3-CHP-40-FIG-5">Figure 40-5</a>. </p>
+<center>
+<h5 id="upt3-CHP-40-FIG-5" class="docFigureTitle">Figure 40-5. The dependency help screen</h5>
+<p><img alt="figs/upt3_4005.gif" src="upt3_4005.gif" border="0" width="409" height="195"></p>
+</center>
+<p class="docText">The same screen appears if you select for installation a 
+package that specifies recommended or suggested packages to be installed with 
+it. A recommended package is one that most users install with the recommending 
+package. A suggested package is one that is related to the suggesting package; 
+suggested packages often extend or complement the functionality of the 
+suggesting package. </p>
+<p class="docText">When you press Space, you're presented with the conflict 
+resolution screen, shown in <a class="docLink" href="#upt3-CHP-40-FIG-6">Figure 
+40-6</a>. This screen lets you quickly select for installation or removal the 
+packages involved in a dependency conflict. The screen also presents default 
+choices for recommended and suggested packages. </p>
+<center>
+<h5 id="upt3-CHP-40-FIG-6" class="docFigureTitle">Figure 40-6. The dependency resolution screen</h5>
+<p><img alt="figs/upt3_4006.gif" src="upt3_4006.gif" border="0" width="413" height="185"></p>
+</center>
+<p class="docText">Using the arrow keys to highlight an entry lets you view a 
+list of dependencies related to the entry. By pressing <span class="docEmphBold">
++</span> or <span class="docEmphBold">-</span>, you can select packages for 
+installation or removal, just as on the selection screen. When you're done 
+working out dependencies, you can press Space to return to the selection screen.
+</p>
+<h4  id="upt3-CHP-40-SECT-5.4" class="docSection2Title">40.5.4 Exiting the Select Function</h4>
+<p class="docText">You can select the Select function in any of several ways. 
+Pressing Space returns you to the main menu, where you can initiate installation 
+or removal of packages. Pressing x cancels your selections and returns you to 
+the main menu. This feature is useful if you change your mind about installing a 
+package, possibly owing to conflicts associated with the package. </p>
+<h4  id="upt3-CHP-40-SECT-5.5" class="docSection2Title">40.5.5 Installing Packages</h4>
+<p class="docText">To begin installing the selected packages, use the arrow keys 
+to highlight the Install menu item and press Enter. As packages are downloaded 
+or installed, you'll see messages on the screen. </p>
+<p class="docText">If you're using the <span class="docEmphasis">apt</span> 
+access method, selecting Install actually initiates installation, removal, and 
+configuration of packages. You can exit <span class="docEmphasis">dselect</span> 
+after the installation process completes. </p>
+<p class="docText">If you're using some other access method,
+<span class="docEmphasis">dselect</span> may not install every selected package 
+in a single operation. When the installation process completes, you should 
+select Install and see if more packages are installed. When you select Install 
+and no more packages are installed, you can proceed to the subsequent steps: 
+configuration and removal. </p>
+<p class="docText">When the installation process is complete,
+<span class="docEmphasis">dselect</span> prompts you to press Enter to return to 
+the main menu. </p>
+<h4  id="upt3-CHP-40-SECT-5.6" class="docSection2Title">40.5.6 Configuring Packages</h4>
+<p class="docText">To begin configuring the installed packages, use the arrow 
+keys to highlight the Configure menu item and press Enter. Packages that require 
+configuration will prompt you for configuration choices. When the configuration 
+process is complete, <span class="docEmphasis">dselect</span> prompts you to 
+press Enter to return to the main menu. </p>
+<h4  id="upt3-CHP-40-SECT-5.7" class="docSection2Title">40.5.7 Removing Packages</h4>
+<p class="docText">To begin removing the packages selected for removal, use the 
+arrow keys to highlight the Remove menu item and press Enter. When the removal 
+process is complete, <span class="docEmphasis">dselect</span> prompts you to 
+press Enter to return to the main menu. </p>
+<h4  id="upt3-CHP-40-SECT-5.8" class="docSection2Title">40.5.8 Exiting dselect</h4>
+<p class="docText">To exit <span class="docEmphasis">dselect</span>, use the 
+arrow keys to highlight the Quit menu item and press Enter. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-40-SECT-6">40.6 Installing Software with Debian's Apt-Get</h3>
+<p class="docText">The <span class="docEmphasis">dselect</span> program is 
+useful, because it lets you browse a list of available packages, viewing their 
+descriptions and dependencies, and selecting desired packages for installation. 
+However, if you know the name of a package you want to install,
+<span class="docEmphasis">apt-get</span> is often the easiest way to install it. 
+Before using <span class="docEmphasis">apt-get</span>, you must configure the
+<span class="docEmphasis">sources.list</span> file. This same file is used when 
+you choose the apt access method of <span class="docEmphasis">dselect</span>. 
+Even if you don't plan on using <span class="docEmphasis">apt-get</span>, you'll 
+find the information in the following subsection useful. </p>
+<h4  id="upt3-CHP-40-SECT-6.1" class="docSection2Title">40.6.1 Configuring the sources.list File</h4>
+<p class="docText">The <span class="docEmphasis">sources.list</span> file 
+resides in the <span class="docEmphasis">/etc/apt</span> directory. Like most 
+other Linux configuration files, it can be revised by using an ordinary text 
+editor, such as <span class="docEmphasis">ae</span>. </p>
+<p class="docText">The file contains a series of lines, each specifying a source 
+for packages. The lines are consulted serially, so it's usually advantageous to 
+place lines that specify local sources — such as a CD-ROM — ahead of lines that 
+specify remote sources. Doing so can save many minutes of download time. </p>
+<p class="docText">Each line has the form:</p>
+<pre>deb uri distribution components</pre>
+<p class="docText">The <i>uri</i> is a universal resource identifier (URI) that 
+specifies the computer on which the packages reside, the location of the 
+packages, and the protocol used for accessing the packages. It has the following 
+form: </p>
+<pre>protocol://host/path</pre>
+<p class="docText">Four protocols — sometimes called URI types — are recognized:</p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">cdrom</span></i> </dt>
+  <dd>
+  <p class="docList">A local CD-ROM drive </dd>
+  <dt><i><span class="docPubcolor">file</span></i> </dt>
+  <dd>
+  <p class="docList">A directory of the local filesystem </dd>
+  <dt><i><span class="docPubcolor">http</span></i> </dt>
+  <dd>
+  <p class="docList">A web server </dd>
+  <dt><i><span class="docPubcolor">ftp</span></i> </dt>
+  <dd>
+  <p class="docList">An FTP server </dd>
+</dl>
+<p class="docText">The <span class="docEmphasis">host</span> part of the URI and 
+the preceding pair of slashes (//) are used only for the http and ftp protocols. 
+There, the <i>host</i> part of the URI gives the name of the host that contains 
+the packages. </p>
+<p class="docText">The <span class="docEmphasis">path</span> part of the URI 
+always appears, with the preceding slash (/). It specifies the absolute path of 
+the directory that contains the packages. </p>
+<p class="docText">Here are some examples of typical URIs:</p>
+<pre>cdrom:/cdrom
+cdrom:/mnt/cdrom
+file:/mnt
+file:/debian
+http://www.us.debian.org/debian
+http://non-us.debian.org/debian-non-US
+ftp://ftp.debian.org/debian
+ftp://nonus.debian.org/debian-non-US</pre>
+<p class="docText">The distribution part of a <i>sources.list</i> line specifies 
+the distribution release that contains the packages. Typical values include: </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">stable</span></i> </dt>
+  <dd>
+  <p class="docList">The latest stable release; that is, one that is commonly 
+  regarded as having sufficiently few serious bugs for everyday use. </dd>
+  <dt><i><span class="docPubcolor">unstable</span></i> </dt>
+  <dd>
+  <p class="docList">The latest unstable release. This release sometimes 
+  contains serious bugs and should not be installed by users who require high 
+  levels of system availability or reliability. </dd>
+</dl>
+<p class="docText">The components part of a <span class="docEmphasis">
+sources.list</span> line specifies the parts of the distribution that will be 
+accessed. Typical values include: </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">main</span></i> </dt>
+  <dd>
+  <p class="docList">The main set of packages.</dd>
+  <dt><i><span class="docPubcolor">contrib</span></i> </dt>
+  <dd>
+  <p class="docList">Packages not an integral part of the distribution, but 
+  which may be useful. </dd>
+  <dt><i><span class="docPubcolor">non-free</span></i> </dt>
+  <dd>
+  <p class="docList">Packages that contain software distributed under terms too 
+  restrictive to allow inclusion in the distribution, but which may be useful.
+  </dd>
+</dl>
+<p class="docText">A typical <i>sources.list</i> file might contain the 
+following entries: </p>
+<pre>deb file:/cdrom stable main contrib
+deb http://www.us.debian.org/debian stable main contrib non-free
+deb http://non-us.debian.org/debian-non-US stable non-US</pre>
+<p class="docText">This configuration allows rapid access to the distribution 
+packages contained on the local CD-ROM. It also allows convenient access via the 
+network to other packages and more recent package versions stored on web 
+servers. </p>
+<h4  id="upt3-CHP-40-SECT-6.2" class="docSection2Title">40.6.2 Using apt-get</h4>
+<p class="docText">Once you've configured sources.list, you can use
+<span class="docEmphasis">apt-get</span> to update information on available 
+packages, install a package, or upgrade installed packages. </p>
+<h5  id="upt3-CHP-40-SECT-6.2.1" class="docSection3Title">40.6.2.1 Updating information on available packages</h5>
+<p class="docText">To update information on available packages, issue the 
+following command: </p>
+<pre>apt-get update</pre>
+<h5  id="upt3-CHP-40-SECT-6.2.2" class="docSection3Title">40.6.2.2 Installing a package</h5>
+<p class="docText">To install a specified package, issue the following command:</p>
+<pre>apt-get install <tt><i>package</i></tt></pre>
+<p class="docText">where <i>package</i> specifies the name of the package to be 
+installed. </p>
+<h5  id="upt3-CHP-40-SECT-6.2.3" class="docSection3Title">40.6.2.3 Upgrading installed packages</h5>
+<p class="docText">To automatically upgrade all installed packages to the latest 
+available version, issue the following command: </p>
+<pre>apt-get upgrade</pre>
+<p class="docText">— <span class="docEmphasis">SP </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-40-SECT-7">40.7 Interruptable gets with wget</h3>
+<p class="docText">The GNU utility <span class="docEmphasis">wget</span> can be 
+used to access files through the Internet using HTTP, HTTPS, or FTP. The best 
+thing about the utility is that if the process is interrupted and started again, 
+it continues from where it left off. </p>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: wget</p>
+<p class="docText">The <span class="docEmphasis">wget</span> utility is 
+installed by default in a lot of systems, but if you can't find it, it can be 
+downloaded from GNU, at
+<a class="docLink" href="http://www.gnu.org/software/wget/wget.html" target="_blank">
+http://www.gnu.org/software/wget/wget.html</a>. </p>
+<p class="docText">The basic syntax for <span class="docEmphasis">wget</span> is 
+very simple: type <tt>wget</tt> followed by the URL of the file or files you're 
+trying to download: </p>
+<pre>wget http://www.<tt><i>somefile</i></tt>.com/<tt><i>somefile</i></tt>.htm
+wget ftp://www.<tt><i>somefile</i></tt>.com/<tt><i>somefile</i></tt></pre>
+<p class="docText">The file is downloaded and saved and a status is printed out 
+to the screen: </p>
+<pre>--16:51:58--  http://dynamicearth.com:80/index.htm
+           =&gt; `index.htm'
+Connecting to dynamicearth.com:80... connected!
+HTTP request sent, awaiting response... 200 OK
+Length: 9,144 [text/html]
+
+    0K -&gt; ........                                               [100%]
+
+16:51:58 (496.09 KB/s) - `index.htm' saved [9144/9144]</pre>
+<p class="docText">The default use of <span class="docEmphasis">wget</span> 
+downloads the file into your current location. If the download is interrupted, 
+by default <span class="docEmphasis">wget</span> does not resume at the point of 
+interruption. You need to specify an option for this behavior. The
+<span class="docEmphasis">wget</span> options can be found in
+<a class="docLink" href="#upt3-CHP-40-TABLE-2">Table 40-2</a>. Short and long 
+forms of each option are specified, and options that don't require input can be 
+grouped together: </p>
+<pre>&gt; wget -drc URL</pre>
+<p class="docText">For those options that do require an input, you don't have to 
+separate the option and the input with whitespace: </p>
+<pre>&gt; wget -ooutput.file URL</pre>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-40-TABLE-2" class="docTableTitle">Table 40-2. wget options </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Option</th>
+    <th class="docTableHeader">
+    <p class="docText">Purpose</th>
+    <th class="docTableHeader">
+    <p class="docText">Examples</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-V</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Get version of wget</td>
+    <td class="docTableCell">
+    <pre>wget -V</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-h</tt> or <tt>--help</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Get listing of wget options</td>
+    <td class="docTableCell">
+    <pre>wget -help</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-b</tt> or <tt>--background</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Got to background after start</td>
+    <td class="docTableCell">
+    <pre>wget -b <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-e</tt> or <tt>--execute=<i>COMMAND</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Execute command</td>
+    <td class="docTableCell">
+    <pre>wget -e COMMAND <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-o</tt> or <tt>--output-file=<i>file</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Log messages to file</td>
+    <td class="docTableCell">
+    <pre>wget -o <tt><i>filename url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-a</tt> or <tt>--append-output=<i>file</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Appends to log file</td>
+    <td class="docTableCell">
+    <pre>wget -a <tt><i>filename url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-d</tt> or <tt>--debug</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Turn on debug output</td>
+    <td class="docTableCell">
+    <pre>wget -d <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-q</tt> or <tt>--quiet</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Turn off wget's output</td>
+    <td class="docTableCell">
+    <pre>wget -q <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-v</tt> or <tt>--verbose</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Turn on verbose output</td>
+    <td class="docTableCell">
+    <pre>wget -v <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-nv</tt> or <tt>-non-verbose</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Turn off verbose output</td>
+    <td class="docTableCell">
+    <pre>wget -nv <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-i</tt> or <tt>--input-file=<i>file</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Read urls from file</td>
+    <td class="docTableCell">
+    <pre>wget -I <tt><i>inputfile</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-F</tt> or <tt>--force-html</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Force input to be treated as HTML</td>
+    <td class="docTableCell">
+    <pre>wget -F <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-t</tt> or <tt>--tries=<i>number</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Number of re-tries to get file</td>
+    <td class="docTableCell">
+    <pre>wget -t 3 <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-O</tt> or -<tt>-output-document=<i>file</i></tt>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Forces all documents into specified</td>
+    <td class="docTableCell">
+    <pre>wget -O <tt><i>savedfile</i></tt> -i <tt><i>inputfile</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-nc</tt> or <tt>--no-clobber</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Don't clobber existing file</td>
+    <td class="docTableCell">
+    <pre>wget -nc <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-c</tt> or <tt>--continue</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Continue getting file</td>
+    <td class="docTableCell">
+    <pre>wget -c <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>--dot-style=<i>style</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText">Retrieval indicator</td>
+    <td class="docTableCell">
+    <pre>wget -dot-style=binary <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-N</tt> or <tt>--timestamping</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Turn on time-stamping</td>
+    <td class="docTableCell">
+    <pre>wget -N <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-S</tt> or <tt>--server-response</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Print HTTP headers, FTP responses</td>
+    <td class="docTableCell">
+    <pre>wget -S <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>--spider</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Wget behaves as a web spider, doesn't download</td>
+    <td class="docTableCell">
+    <pre>wget --spider <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-T</tt> or <tt>--timeout=<i>seconds</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Set the time out</td>
+    <td class="docTableCell">
+    <pre>-wget -T 30 <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-w</tt> or <tt>--wait=<i>seconds</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Wait specified number of seconds</td>
+    <td class="docTableCell">
+    <pre>wget -w 20 <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-Y</tt> or <tt>--proxy=<i>on/off</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Turn proxy on or off</td>
+    <td class="docTableCell">
+    <pre>wget -Y on <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-Q</tt> or <tt>--quota=<i>quota</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Specify download quota size</td>
+    <td class="docTableCell">
+    <pre>wget -Q2M <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-nd</tt> or <tt>--no-directories</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Do not create directories in recursive download</td>
+    <td class="docTableCell">
+    <pre>wget -nd <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-x</tt> or -- force-directories</td>
+    <td class="docTableCell">
+    <p class="docText">Opposite of -nd</td>
+    <td class="docTableCell">
+    <pre>wget -x <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-nh</tt> or <tt>--no-host-directories</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Disable host-prefixed directories</td>
+    <td class="docTableCell">
+    <pre>wget -nh <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>--cut-dirs=<i>number</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText">Ignore number directories</td>
+    <td class="docTableCell">
+    <pre>wget -cur-dirs=3 <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-P</tt> or <tt>--directory-prefix=<i>prefix</i></tt>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Set directory to prefix</td>
+    <td class="docTableCell">
+    <pre>wget -P test <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>--http-user=<i>user</i></tt> <tt>--http-passwd=<i>passwd</i></tt>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Set username and password</td>
+    <td class="docTableCell">
+    <pre>wget --http-user=<tt><i>user</i></tt> --http-passwd=<tt><i>password</i></tt> <tt><i>url</i></tt></pre>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— SP</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-40-SECT-8">40.8 The curl Application and One-Step GNU-Darwin 
+Auto-Installer for OS X</h3>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: curl</p>
+<p class="docText">The <span class="docEmphasis">cURL</span>, or
+<span class="docEmphasis">curl</span>, application acts similar to
+<span class="docEmphasis">wget</span>, except that it works with more protocols, 
+including <span class="docEmphBold">FTPS, GOPHER, DICT, TELNET, FILE, and LDAP, 
+as well as HTTP, HTTPS, and FTP</span> (<a class="docLink" href="#upt3-CHP-40-SECT-8">Section 
+40.8</a>). It also supports kerberos, cookies, user authentication, file 
+transfer resume and so on. You can access the application at
+<a class="docLink" href="http://curl.haxx.se" target="_blank">
+http://curl.haxx.se</a>, though <span class="docEmphasis">curl</span> is 
+installed by default on some systems, including Mac OS X Darwin. </p>
+<p class="docText">In particular, <span class="docEmphasis">curl</span> is used 
+to download and install the GNU-Darwin auto-installer for OS X, otherwise known 
+as One-Step. </p>
+<p class="docText">The following command starts the process of installing the 
+basefiles for One-Step. Note that the One-Step installation can take a 
+considerable length of time, and you might get messages about needing to modify 
+certain aspects of the installation, such as adding a font path and so on. 
+Still, the instructions are very clear and once the installation is finished, 
+you'll then be able to use One-Step. </p>
+<pre># curl http://gnu-darwin.sourceforge.net/one_stop | csh</pre>
+<p class="docText">You can CTRL-c at any time during the download portion, and 
+continue the installation at a later time. Use caution, though, with 
+interrupting the installation during the final build portion. You can view the 
+installation script for One-Step at
+<a class="docLink" href="http://gnu-darwin.sourceforge.net/one_stop/" target="_blank">
+http://gnu-darwin.sourceforge.net/one_stop/</a>. </p>
+<p class="docText">One of the applications installed during the process is
+<span class="docEmphasis">pkg_add</span>, which you can use to add additional 
+packages at a later time by specifying the command followed by the URL of the 
+package: </p>
+<pre># pkg_add url</pre>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-40-SECT-9">40.9 Installation with FreeBSD Ports</h3>
+<p class="docText">The FreeBSD operating system has a terrific software 
+installation system known as the FreePSD Ports. You can download the entire 
+distribution collection as root giving a specific command within the <i>/usr/ports</i> 
+directory: </p>
+<pre># /stand/sysinstall</pre>
+<p class="docText">Once the Ports collection is installed, you can then easily 
+install software by changing directory to the specific application and typing
+<tt>make install</tt>: </p>
+<pre># cd /usr/ports
+# cd lang
+# cd ruby
+# make install
+# make clean
+# make distclean</pre>
+<p class="docText">Not only will the Ports application install the application — 
+in this case support for the Ruby programming language — it also pulls in any 
+dependent files that might not exist on the system. </p>
+<p class="docText">You may have problems downloading the distribution file 
+because your system setup may not allow you to write to the <i>/usr/ports/distfiles</i> 
+subdirectory for some reason. To install the distribution to a different 
+location, set the <span class="docEmphasis">DISTDIR</span> environment variable 
+to a different location: </p>
+<pre># make DISTDIR=/local/dir/with/write/permission install</pre>
+<p class="docText">To removed an installed application, again change to the 
+ports subdirectory of the application and type: </p>
+<pre># make deinstall</pre>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-40-SECT-10">40.10 Installing with FreeBSD Packages</h3>
+<p class="docText">Instead of using the Ports you can install applications 
+individually as packages, using the <span class="docEmphasis">pkg_add</span> 
+utility, similar to that shown in (40.08). </p>
+<p class="docText">To install using <span class="docEmphasis">pkg_add</span>, 
+download the package by ftp'ing to the FreeBSD FTP server at ftp2.FreeBSD.org, 
+and then change to the <i>/pub/ports/packages</i> directory. At that point, the 
+directory at the FTP server should be similar to the Ports collection directory 
+organization. Change directory to the category (such as &quot;lang&quot;). Get the gzipped
+<span class="docEmphBold">tar</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-7">Section 
+15.7</a>) file of the package for your application, using binary transfer. For 
+instance, the Ruby scripting language interpretor is <i>
+ruby-1.7.2.2002.05.23.tgz</i>, which is then downloaded: </p>
+<pre>ftp &gt; get /pub/ports/packages/lang/ruby-1.7.2.2002.05.23.tgz</pre>
+<p class="docText">Once the file is downloaded, type <tt>pkg_add</tt> and the 
+package name:</p>
+<pre># pkg_add ruby-1.7.2.2002.05.23.tgz</pre>
+<p class="docText">Instead of downloading the file manually, you can use the
+<span class="docEmphasis">-r</span> option to have the <span class="docEmphasis">
+pkg_add</span> application look for the latest build of an application and 
+automatically download necessary dependent files and the target application 
+itself: </p>
+<pre># pkg_add -r ruby-1.7.2.2002.05.23.tgz</pre>
+<p class="docText">Note, though, that the newest versions of an application may 
+not be in the stable build directory. If you want an application not on this 
+tree, you'll have to download the application file manually. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-40-SECT-11">40.11 Finding and Installing RPM Packaged Software</h3>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: rpm</p>
+<p class="docText">A popular tool used to find and install software packages — 
+particularly in Linux — is RPM (at
+<a class="docLink" href="http://www.rpm.org/" target="_blank">
+http://www.rpm.org/</a>). In addition to working with Linux, RPM also works with 
+Solaris, HP-UX, FreeBSD, NetBSD, and other systems. </p>
+<p class="docText">To use RPM to install software, just type the following 
+command:</p>
+<pre>rpm -i <tt><i>application</i></tt>.rpm</pre>
+<p class="docText">The <span class="docEmphasis">-i</span> option flags RPM to 
+install the package. To uninstall the application, use: </p>
+<pre>rpm -e <tt><i>application</i></tt>.rpm</pre>
+<p class="docText">To upgrade a package, use the <span class="docEmphasis">-U</span> 
+option:</p>
+<pre>rpm -U <tt><i>application</i></tt>.rpm</pre>
+<p class="docText"><span class="docEmphasis">— SP </span></p>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 39.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 41.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

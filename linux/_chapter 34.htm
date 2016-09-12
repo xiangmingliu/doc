@@ -1,0 +1,1564 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 34</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 33.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 35.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 34. The sed Stream Editor</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-1">34.1 sed Sermon^H^H^H^H^H^HSummary</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-2">34.2 Two Things You Must Know About sed</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-3">34.3 Invoking sed</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-4">34.4 Testing and Using a sed Script: checksed, runsed</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-5">34.5 sed Addressing Basics</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-6">34.6 Order of Commands in a Script</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-7">34.7 One Thing at a Time</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-8">34.8 Delimiting a Regular Expression</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-9">34.9 Newlines in a sed Replacement</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-10">34.10 Referencing the Search String in a Replacement</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-11">34.11 Referencing Portions of a Search String</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-12">34.12 Search and Replacement: One Match Among Many</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-13">34.13 Transformations on Text</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-14">34.14 Hold Space: The Set-Aside Buffer</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-15">34.15 Transforming Part of a Line</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-16">34.16 Making Edits Across Line Boundaries</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-17">34.17 The Deliberate Scrivener</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-18">34.18 Searching for Patterns Split Across Lines</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-19">34.19 Multiline Delete</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-20">34.20 Making Edits Everywhere Except...</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-21">34.21 The sed Test Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-22">34.22 Uses of the sed Quit Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-23">34.23 Dangers of the sed Quit Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-34-SECT-24">34.24 sed Newlines, Quoting, and Backslashes in a Shell Script</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-1">34.1 sed Sermon^H^H^H^H^H^HSummary</h3>
+<p class="docText"><tt>^H^H^H</tt> are ASCII backspace characters. Written 
+printably in email and Usenet messages, they're a tongue-in-cheek way of 
+&quot;erasing&quot; the characters before without actually erasing them. They let you say 
+&quot;I didn't want you to see that&quot; when you actually do. </p>
+<p class="docText"><i>sed</i> (<span class="docEmphasis">s</span>tream
+<span class="docEmphasis">ed</span>itor) amazes me. Why? It's not just that <i>
+sed</i> can edit data as it streams through a pipe (like all well-behaved Unix
+<span class="docEmphBold">filters</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-5">Section 
+1.5</a>) do). <i>sed</i> can test and branch and substitute and hold and 
+exchange data as it streams through, but so can almost any scripting language. 
+Maybe it's the minimalist in me that loves a tiny program (by today's standards, 
+at least) with just a few operations — but operations so well-chosen that they 
+make the tool powerful for its size. Sure, sure, Perl probably can do everything 
+that <i>sed</i> can — and do each of those things in twenty different ways. Ah, 
+I've got it: when I'm trying to do anything more than a simple substitution on 
+data streaming by, <i>sed</i>'s elegant simplicity almost forces me to strip a 
+problem to its basics, to think of what I really need to do. No functions, no 
+libraries, nothing except beautifully simple functionality. </p>
+<p class="docText">[As someone who learned Perl regular expressions before I 
+learned <i>sed</i>, I can relate to what Jerry is saying. One of the things I 
+like about the classic Unix toolbox programs like <i>sed</i> is that they really 
+do force you into a sort of Shaker-like elegant simplicity; the best programs, 
+no matter what the language, have a quality like a Shaker chair: pure function, 
+but with a respect for the fact that function doesn't have to be ugly. —
+<span class="docEmphasis">SJC</span>] </p>
+<p class="docText">End of sermon. <tt>;-)</tt> Even if you aren't into elegance 
+and simplicity, and you just wanna get the job done, what do we cover about <i>
+sed</i> that might be useful? </p>
+<p class="docText">In this chapter, we start out with the basics:
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-2">
+Section 34.2</a>,
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-3">
+Section 34.3</a>,
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-4">
+Section 34.4</a>,
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-5">
+Section 34.5</a>,
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-6">
+Section 34.6</a>, and
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-7">
+Section 34.7</a> show you how to get started, how to test your scripts, and how 
+to structure more advanced scripts.
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-8">
+Section 34.8</a> through
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-14">
+Section 34.14</a> cover regular expressions and complex transformations.
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-15">
+Section 34.15</a> through
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-24">
+Section 34.24</a> deal with advanced topics such as multiline matching and 
+deletions, tests, and exiting a script when you're done. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-2">34.2 Two Things You Must Know About sed</h3>
+<p class="docText">If you are already familiar with global edits in other 
+editors like <i>vi</i> or <i>ex</i>, you know most of what you need to know to 
+begin to use <i>sed</i>. There are two things, though, that make it very 
+different: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">It doesn't change the file it edits. It is just what its 
+  name says: a &quot;<span class="docEmphasis">s</span>tream
+  <span class="docEmphasis">ed</span>itor&quot; — designed to take a stream of data 
+  from <span class="docEmphBold">standard input</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+  43.1</a>) or a file, transform it, and pass it to <span class="docEmphBold">
+  standard output</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+  43.1</a>). If you want to edit a file, you have to write a
+  <span class="docEmphBold">shell wrapper</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-4">Section 
+  34.4</a>) to capture standard output and write it back into your original 
+  file. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList"><i>sed</i> commands are implicitly global. In an editor 
+  like <i>ex</i>, the command: </p>
+  <pre>s/old/new/</pre>
+  <p class="docList">will change &quot;old&quot; to &quot;new&quot; only on the current line unless 
+  you use the global command or various addressing symbols to apply it to 
+  additional lines. In <i>sed</i>, exactly the opposite is true. A command like 
+  the one above will be applied to all lines in a file. Addressing symbols are 
+  used to <span class="docEmphasis">limit</span> the extent of the match. 
+  (However, like <i>ex</i>, only the first occurrence of a pattern on a given 
+  line will be changed unless the <span class="docEmphasis">g</span> flag is 
+  added to the end of the substitution command.) </span></li>
+</ol>
+</span>
+<p class="docText">If all you want to do is make simple substitutions, you're 
+ready to go. If you want to do more than that, <i>sed</i> has some unique and 
+powerful commands. </p>
+<p class="docText">This chapter makes no attempt to cover everything there is to 
+know about <i>sed</i>. For the most part, this chapter simply contains advice on 
+working with <i>sed</i> and extended explanations of how to use some of its more 
+difficult commands. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-3">34.3 Invoking sed</h3>
+<p class="docText">If you were using <i>sed</i> on the fly, as a
+<span class="docEmphBold">stream editor</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-2">Section 
+34.2</a>), you might execute it as simply as this: </p>
+<pre>% <i>somecommand </i><b> | sed 's/old/new/' |  </b><i>othercommand </i></pre>
+<p class="docText">Given filenames, <i>sed</i> will read them instead of 
+standard input: </p>
+<pre>% <b>sed 's/old/new/' myfile</b></pre>
+<p class="docText">A simple script can go right on the command line. If you want 
+to execute more than one editing command, you can use the <i>-e</i> option: </p>
+<pre>% <b>sed -e 's/old/new/' -e '/bad/d' myfile</b></pre>
+<p class="docText">Or you can use semicolons (<tt>;</tt>), which are a <i>sed</i> 
+command separator: </p>
+<pre>% <b>sed 's/old/new/; /bad/d' myfile</b></pre>
+<p class="docText">Or (especially useful in <span class="docEmphBold">shell 
+scripts</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-8">Section 
+1.8</a>)) you can use the Bourne shell's ability to understand multiline 
+commands: </p>
+<pre>sed '
+s/old/new/
+/bad/d' myfile</pre>
+<p class="docText">Or you can put your commands into a file and tell <i>sed</i> 
+to read that file with the <i>-f</i> option: </p>
+<pre>% <b>sed -f scriptfile myfile</b></pre>
+<p class="docText">There's only one other command-line option: <i>-n</i>. <i>sed</i> 
+normally prints every line of its input (except those that have been deleted by 
+the editing script). But there are times when you want only lines that your 
+script has affected or that you explicitly ask for with the
+<span class="docEmphasis">p</span> command. In these cases, use <i>-n</i> to 
+suppress the normal output. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-4">34.4 Testing and Using a sed Script: checksed, 
+runsed</h3>
+<p class="docText">All but the simplest <i>sed</i> scripts are often invoked 
+from a &quot;shell wrapper,&quot; a <span class="docEmphBold">shell script</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-2">Section 
+35.2</a>) that invokes <i>sed</i> and also contains the editing commands that <i>
+sed</i> executes. A shell wrapper is an easy way to turn what could be a complex 
+command line into a single-word command. The fact that <i>sed</i> is being used 
+might be transparent to users of the command. </p>
+<p class="docText">Two shell scripts that you should immediately arm yourself 
+with are described here. Both use a shell <span class="docEmphBold">for loop</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">Section 
+35.21</a>) to apply the same edits to any number of files. But the first just 
+shows the changes, so you can make sure that your edits were made correctly. The 
+second writes the edits back into the original file, making them permanent. </p>
+<h4  id="upt3-CHP-34-SECT-4.1" class="docSection2Title">34.4.1 checksed</h4>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: checksed</p>
+<p class="docText">The shell script <i>checksed</i> automates the process of 
+checking the edits that <i>sed</i> makes. It expects to find the script file,
+<span class="docEmphasis">sedscr</span>, in the current directory and applies 
+these instructions to the input files named on the command line. The output is 
+shown by a pager program; the default pager is <i>more</i> . </p>
+<pre>#! /bin/sh
+script=sedscr
+
+for file
+do
+        echo &quot;********** &lt; = $file    &gt; = sed output **********&quot;
+        sed -f $script &quot;$file&quot; | diff &quot;$file&quot; -
+done | ${PAGER-more}</pre>
+<p class="docText">For example:</p>
+<pre>$ <b>cat sedscr</b>
+s/jpeek@ora\.com/jpeek@jpeek.com/g
+$ <b>checksed home.html new.html</b>
+********** &lt; = home.html    &gt; = sed output **********
+102c102
+&lt; &lt;a href=&quot;mailto:jpeek@ora.com&quot;&gt;Email it&lt;/a&gt; or use this form:
+--
+&gt; &lt;a href=&quot;mailto:jpeek@jpeek.com&quot;&gt;Email it&lt;/a&gt; or use this form:
+124c124
+&lt; Page created by: &lt;a href=&quot;mailto:jpeek@ora.com&quot;&gt;jpeek@ora.com&lt;/a&gt;&gt;
+--
+&gt; Page created by: &lt;a href=&quot;mailto:jpeek@jpeek.com&quot;&gt;jpeek@jpeek.com&lt;/a&gt;
+********** &lt; = new.html    &gt; = sed output **********
+22c22
+&lt; &lt;a href=&quot;mailto:jpeek@ora.com&quot;&gt;Send comments&lt;/a&gt; to me!
+---
+&gt; &lt;a href=&quot;mailto:jpeek@jpeek.com&quot;&gt;Send comments&lt;/a&gt; to me!</pre>
+<p class="docText">If you find that your script did not produce the results you 
+expected, perfect the editing script and run <i>checksed</i> again. </p>
+<h4  id="upt3-CHP-34-SECT-4.2" class="docSection2Title">34.4.2 runsed</h4>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: runsed</p>
+<p class="docText">The shell script <i>runsed</i> was developed to make changes 
+to a file permanently. It applies your <span class="docEmphasis">sedscr</span> 
+to an input file, creates a temporary file, then copies that file over the 
+original. <i>runsed</i> has several safety checks: </p>
+<ul>
+  <li>
+  <p class="docList">It won't edit the <i>sed</i> script file (if you 
+  accidentally include <span class="docEmphasis">sedscr</span> on the command 
+  line). </li>
+  <li>
+  <p class="docList">It complains if you try to edit an empty file or something 
+  that isn't a file (like a directory). </li>
+  <li>
+  <p class="docList">If the <i>sed</i> script doesn't produce any output, <i>
+  runsed</i> aborts instead of emptying your original file. </li>
+</ul>
+<p class="docText"><i>runsed</i> only modifies a file if your
+<span class="docEmphasis">sedscr</span> made edits. So, the file's
+<span class="docEmphBold">timestamp</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-2">Section 
+8.2</a>) won't change if the file's contents weren't changed. </p>
+<p class="docText">Like <i>checksed</i>, <i>runsed</i> expects to find a <i>sed</i> 
+script named <span class="docEmphasis">sedscr</span> in the directory where you 
+want to make the edits. Supply the name or names of the files to edit on the 
+command line. Of course, <span class="docEmphBold">shell metacharacters</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">Section 
+33.2</a>) can be used to specify a set of files: </p>
+<pre>$ <b>runsed *.html</b>
+runsed: editing home.html:
+runsed: done with home.html
+runsed: editing new.html:
+runsed: done with new.html
+runsed: all done</pre>
+<p class="docText"><i>runsed</i> does not protect you from imperfect editing 
+scripts. You should use <i>checksed</i> first to verify your changes before 
+actually making them permanent with <i>runsed</i>. (You could also modify <i>
+runsed</i> to keep backup copies of the original versions.) </p>
+<p class="docText">—<span class="docEmphasis">DD, JP, and TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-5">34.5 sed Addressing Basics</h3>
+<p class="docText">A <i>sed</i> command can specify zero, one, or two addresses. 
+An address can be a line number, a line addressing symbol, or a
+<span class="docEmphBold">regular expression</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-4">Section 
+32.4</a>) that describes a pattern. </p>
+<ul>
+  <li>
+  <p class="docList">If no address is specified, the command is applied to each 
+  line.</li>
+  <li>
+  <p class="docList">If there is only one address, the command is applied to any 
+  line matching the address. </li>
+  <li>
+  <p class="docList">If two comma-separated addresses are specified, the command 
+  is performed on the first matching line and all succeeding lines up to and 
+  including a line matching the second address. This range may match multiple 
+  times throughout the input. </li>
+  <li>
+  <p class="docList">If an address is followed by an exclamation mark (<tt>!</tt>), 
+  the command is applied to all lines that do <span class="docEmphasis">not</span> 
+  match the address. </li>
+</ul>
+<p class="docText">To illustrate how addressing works, let's look at examples 
+using the delete command, <span class="docEmphasis">d</span>. A script 
+consisting of simply the <span class="docEmphasis">d</span> command and no 
+address: </p>
+<pre>d</pre>
+<p class="docText">produces no output since it deletes <span class="docEmphasis">
+all</span> lines.</p>
+<p class="docText">When a line number is supplied as an address, the command 
+affects only that line. For instance, the following example deletes only the 
+first line: </p>
+<pre>1d</pre>
+<p class="docText">The line number refers to an internal line count maintained 
+by <i>sed</i>. This counter is not reset for multiple input files. Thus, no 
+matter how many files were specified as input, there is only one line 1 in the 
+input stream. </p>
+<p class="docText">Similarly, the input stream has only one last line. It can be 
+specified using the addressing symbol, <tt>$</tt>. The following example deletes 
+the last line of input: </p>
+<pre>$d</pre>
+<p class="docText">The <tt>$</tt> symbol should not be confused with the <tt>$</tt> 
+used in regular expressions, where it means the end of the line. </p>
+<p class="docText">When a regular expression is supplied as an address, the 
+command affects only the lines matching that pattern. The regular expression 
+must be enclosed by slashes (<tt>/</tt>). The following delete command: </p>
+<pre>/^$/d</pre>
+<p class="docText">deletes only blank lines. All other lines are passed through 
+untouched. </p>
+<p class="docText">If you supply two addresses, you specify a range of lines 
+over which the command is executed. The following example shows how to delete 
+all lines surrounded by a pair of XHTML tags, in this case, <tt>&lt;ul&gt;</tt> and
+<tt>&lt;/ul&gt;</tt>, that mark the start and end of an unordered list: </p>
+<pre>/^&lt;ul&gt;/,/^&lt;\/ul&gt;/d</pre>
+<p class="docText">It deletes all lines beginning with the line matched by the 
+first pattern up to and including the line matched by the second pattern. Lines 
+outside this range are not affected. If there is more than one list (another 
+pair of <tt>&lt;ul&gt;</tt> and <tt>&lt;/ul&gt;</tt> after the first), those lists will also 
+be deleted. </p>
+<p class="docText">The following command deletes from line 50 to the last line 
+in the file: </p>
+<pre>50,$d</pre>
+<p class="docText">You can mix a line address and a pattern address:</p>
+<pre>1,/^$/d</pre>
+<p class="docText">This example deletes from the first line up to the first 
+blank line, which, for instance, will delete the header from an email message.
+</p>
+<p class="docText">You can think of the first address as enabling the action and 
+the second address as disabling it. <i>sed</i> has no way of looking ahead to 
+determine if the second match will be made. The action will be applied to lines 
+once the first match is made. The command will be applied to
+<span class="docEmphasis">all</span> subsequent lines until the second match is 
+made. In the previous example, if the file did not contain a blank line, then 
+all lines would be deleted. </p>
+<p class="docText">An exclamation mark following an address reverses the sense 
+of the match. For instance, the following script deletes all lines
+<span class="docEmphasis">except</span> those inside XHTML unordered lists: </p>
+<pre>/^&lt;ul&gt;/,/^&lt;\/ul&gt;/!d</pre>
+<p class="docText">Curly braces (<tt>{}</tt>) let you give more than one command 
+with an address. For example, to search every line of a list, capitalize the 
+word <tt>Caution</tt> on any of those lines, and delete any line with <tt>&lt;br /&gt;</tt>:
+</p>
+<pre>/^&lt;ul&gt;/,/^&lt;\/ul&gt;/{
+    s/Caution/CAUTION/g
+    /&lt;br \/&gt;/d
+}</pre>
+<p class="docText"><span class="docEmphasis">— DD </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-6">34.6 Order of Commands in a Script</h3>
+<p class="docText">Combining a series of edits in a script can have unexpected 
+results. You might not think of the consequences one edit can have on another. 
+New users typically think that <i>sed</i> applies an individual editing command 
+to all lines of input before applying the next editing command. But the opposite 
+is true. <i>sed</i> applies every editing command to the first input line before 
+reading the second input line and applying the editing script to it. Because <i>
+sed</i> is always working with the latest version of the original line, any edit 
+that is made changes the line for subsequent commands. <i>sed</i> doesn't retain 
+the original. This means that a pattern that might have matched the original 
+input line may no longer match the line after an edit has been made. </p>
+<p class="docText">Let's look at an example that uses the substitute command. 
+Suppose someone quickly wrote the following script to change <tt>pig</tt> to <tt>
+cow</tt> and <tt>cow</tt> to <tt>horse</tt>: </p>
+<pre>s/pig/cow/
+s/cow/horse/</pre>
+<p class="docText">The first command would change <tt>pig</tt> to <tt>cow</tt> 
+as expected. However, when the second command changed <tt>cow</tt> to <tt>horse</tt> 
+on the same line, it also changed the <tt>cow</tt> that had been a <tt>pig</tt>. 
+So, where the input file contained pigs and cows, the output file has only 
+horses! </p>
+<p class="docText">This mistake is simply a problem of the order of the commands 
+in the script. Reversing the order of the commands — changing <tt>cow</tt> into
+<tt>horse</tt> before changing <tt>pig</tt> into <tt>cow</tt> — does the trick.
+</p>
+<p class="docText">Another way to deal with this effect is to use a pattern you 
+know won't be in the document except when you put it there, as a temporary 
+placeholder. Either way, you know what the &quot;document&quot; looks like after each step 
+in the program. </p>
+<pre>s/pig/cXXXoXXXw/
+s/cow/horse/
+s/cXXXoXXXw/cow/</pre>
+<p class="docText">Some <i>sed</i> commands change the flow through the script. 
+For example, the <span class="docEmphBold">N command</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-16">Section 
+34.16</a>) reads another line into the pattern space without removing the 
+current line, so you can test for patterns across multiple lines. Other commands 
+tell <i>sed</i> to exit before reaching the bottom of the script or to go to a 
+labeled command. <i>sed</i> also maintains a second temporary buffer called the
+<span class="docEmphasis">hold space</span>. You can copy the contents of the 
+pattern space to the hold space and retrieve it later. The commands that make 
+use of the hold space are discussed in
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-14">
+Section 34.14</a> and other articles after it. </p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-7">34.7 One Thing at a Time</h3>
+<p class="docText">I find that when I begin to tackle a problem using <i>sed</i>, 
+I do best if I make a mental list of all the things I want to do. When I begin 
+coding, I write a script containing a single command that does one thing. I test 
+that it works, then I add another command, repeating this cycle until I've done 
+all that's obvious to do. I say what's obvious because my list is not always 
+complete, and the cycle of implement-and-test often adds other items to the 
+list. Another approach involves actually typing the list of tasks into a file, 
+as comments, and then slowly replacing them with sed commands. If you're one of 
+the rare but highly appreciated breed that actually documents their code, you 
+can just leave the comments in the script or expand on them. </p>
+<p class="docText">It may seem to be a rather tedious process to work this way, 
+and indeed there are a number of scripts where it's fine to take a crack at 
+writing the whole script in one pass and then begin testing it. However, the 
+one-step-at-a-time method is highly recommended for beginners, because you 
+isolate each command and get to easily see what is working and what is not. When 
+you try to do several commands at once, you might find that when problems arise, 
+you end up recreating the recommended process in reverse; that is, removing or 
+commenting out commands one by one until you locate the problem. </p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-8">34.8 Delimiting a Regular Expression</h3>
+<p class="docText">Whether in <i>sed</i> or <i>vi</i>, when using the 
+substitution command, a delimiter is required to separate the search pattern 
+from the replacement string. The delimiter can be any character except blank or 
+a newline (<i>vi</i> seems to be more restrictive than <i>sed</i>, although <i>
+vim</i> is extremely flexible). However, the usual practice is to use the slash 
+(<tt>/</tt>) as a delimiter (for example, <tt>s/<i>search</i>/<i>replacement</i>/</tt>).
+</p>
+<p class="docText">When either the search pattern or the replacement string 
+contains a slash, it is easier to change the delimiter character than to escape 
+the slash. Thus, if the pattern was attempting to match Unix pathnames, which 
+contain slashes, you could choose another character, such as a colon, as the 
+delimiter: </p>
+<pre>s:/usr/mail:/usr2/mail:</pre>
+<p class="docText">Note that the delimiter appears three times and is required 
+after the replacement. Regardless of which delimiter you use, if it does appear 
+in the search pattern or the replacement, put a backslash (<tt>\</tt>) before it 
+to escape it. </p>
+<p class="docText">If you don't know what characters the search pattern might 
+have (in a shell program that handles any kind of input, for instance), the 
+safest choice for the delimiter can be a control character. </p>
+<p class="docText">You can use any delimiter for a pattern address (not just a 
+slash). Put a backslash before the first delimiter. For example, to delete all 
+lines containing <span class="docEmphasis">/usr/mail</span>, using a colon (:) 
+as the delimiter: </p>
+<pre>\:/usr/mail:d</pre>
+<p class="docText">—<span class="docEmphasis">DD and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-9">34.9 Newlines in a sed Replacement</h3>
+<p class="docText">The backslash (<tt>\</tt>) in the replacement string of the
+<i>sed</i> substitution command is generally used to escape other metacharacters, 
+but it is also used to include a newline in a replacement string. </p>
+<p class="docText">Given the following input line where each item is separated 
+by a tab:</p>
+<pre>Column1     Column2    Column3     Column4</pre>
+<p class="docText">we can replace the second tab character on each line with a 
+newline character: </p>
+<p class="docText"><tt>2</tt>
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-12">
+Section 34.12</a></p>
+<pre>s/TAB/\
+/2</pre>
+<p class="docText">Note that no spaces are permitted after the backslash. This 
+script produces the following result: </p>
+<pre>Column1     Column2
+Column3     Column4</pre>
+<p class="docText">Another example comes from the conversion of a file for <i>
+troff</i> to HTML. It converts the following line for <i>troff</i>: </p>
+<pre>.Ah &quot;Major Heading&quot;</pre>
+<p class="docText">to a similar line for HTML:</p>
+<pre>&lt;h1&gt;Major Heading&lt;/h1&gt;</pre>
+<p class="docText">The twist in this problem is that the line needs to be 
+preceded and followed by a blank line. It is an example of writing a multiline 
+replacement string: </p>
+<pre>/^\.Ah/{
+s/\.Ah */\
+\
+&lt;h1&gt;
+s/&quot;//g
+s/$/&lt;h1&gt;\
+/
+}</pre>
+<p class="docText">The first substitute command replaces <tt>.Ah</tt> with two 
+newlines and <tt>&lt;h1&gt;</tt>. Each backslash at the end of the line is necessary 
+to escape the newline. The second substitution removes the quotation marks. The 
+last command matches the end of line in the pattern space (not the embedded 
+newlines) and adds a close <tt>h1</tt> tag and a newline after it. </p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-10">34.10 Referencing the Search String in a 
+Replacement</h3>
+<p class="docText">As a metacharacter, the ampersand (<tt>&amp;</tt>) represents the 
+extent of the pattern match, not the line that was matched. For instance, you 
+might use it to match a word and surround it with <i>troff</i> requests. The 
+following example surrounds a word with point-size requests: </p>
+<pre>s/UNIX/\\s-2&amp;\\s0/g</pre>
+<p class="docText">Because backslashes are also replacement metacharacters, two 
+backslashes are necessary to output a single backslash. The <tt>&amp;</tt> in the 
+replacement string refers to the string which was originally matched, <tt>UNIX</tt>. 
+If the input line is: </p>
+<pre>on the UNIX Operating System.</pre>
+<p class="docText">the substitute command produces:</p>
+<pre>on the \s-2UNIX\s0 Operating System.</pre>
+<p class="docText">The ampersand is particularly useful when the regular 
+expression matches variations of a word. It allows you to specify a variable 
+replacement string that corresponds to what was actually matched. For instance, 
+let's say that you wanted to surround with parentheses any cross reference to a 
+numbered section in a document. In other words, any reference such as <tt>See 
+Section 1.4</tt> or <tt>See Section 12.9</tt> should appear in parentheses, as
+<tt>(See Section 12.9)</tt>. A regular expression can match the different 
+combination of numbers, so we use <tt>&amp;</tt> in the replacement string and 
+surround whatever was matched: </p>
+<pre>s/See Section [1-9][0-9]*\.[1-9][0-9]*/(&amp;)/</pre>
+<p class="docText">The ampersand makes it possible to reference the entire match 
+in the replacement string. </p>
+<p class="docText">In the next example, the backslash is used to escape the 
+ampersand, which appears literally in the replacement section: </p>
+<pre>s/ORA/O'Reilly \&amp; Associates, Inc./g</pre>
+<p class="docText">It's easy to forget about the ampersand appearing literally 
+in the replacement string. If we had not escaped it in this example, the output 
+would have been <tt>O'Reilly ORA Associates, Inc</tt>. </p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-11">34.11 Referencing Portions of a Search String</h3>
+<p class="docText">In <i>sed</i>, the substitution command provides 
+metacharacters to select any individual portion of a string that is matched and 
+recall it in the replacement string. A pair of escaped parentheses are used in
+<i>sed</i> to enclose any part of a regular expression and save it for recall. 
+Up to nine &quot;saves&quot; are permitted for a single line. <tt>\<i>n</i></tt> is used 
+to recall the portion of the match that was saved, where <tt><i>n</i></tt> is a 
+number from 1 to 9 referencing a particular &quot;saved&quot; string in order of use. (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-13">Section 
+32.13</a> has more information.) </p>
+<p class="docText">For example, when converting a plain-text document into HTML, 
+we could convert section numbers that appear in a cross-reference into an HTML 
+hyperlink. The following expression is broken onto two lines for printing, but 
+you should type all of it on one line: </p>
+<pre>s/\([sS]ee \)\(Section \)\([1-9][0-9]*\)\.\([1-9][0-9]*\)/
+   \1&lt;a href=&quot;#SEC-\3_\4&quot;&gt;\2\3.\4&lt;\/a&gt;/</pre>
+<p class="docText">Four pairs of escaped parentheses are specified. String 1 
+captures the word <span class="docEmphasis">see</span> with an upper- or 
+lowercase <span class="docEmphasis">s</span>. String 2 captures the section 
+number (because this is a fixed string, it could have been simply retyped in the 
+replacement string). String 3 captures the part of the section number before the 
+decimal point, and String 4 captures the part of the section number after the 
+decimal point. The replacement string recalls the first saved substring as <tt>
+\1</tt>. Next starts a link where the two parts of the section number, <tt>\3</tt> 
+and <tt>\4</tt>, are separated by an underscore (<tt>_</tt>) and have the string
+<tt>SEC-</tt> before them. Finally, the link text replays the section number 
+again — this time with a decimal point between its parts. Note that although a 
+dot (.) is special in the search pattern and has to be quoted with a backslash 
+there, it's not special on the replacement side and can be typed literally. 
+Here's the script run on a short test document, using <span class="docEmphBold">
+checksed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-4">Section 
+34.4</a>): </p>
+<pre>% <b>checksed testdoc</b>
+********** &lt; = testdoc    &gt; = sed output **********
+8c8
+&lt; See Section 1.2 for details.
+---
+&gt; See &lt;a href=&quot;#SEC-1_2&quot;&gt;Section 1.2&lt;/a&gt; for details.
+19c19
+&lt; Be sure to see Section 23.16!
+---
+&gt; Be sure to see &lt;a href=&quot;#SEC-23_16&quot;&gt;Section 23.16&lt;/a&gt;!</pre>
+<p class="docText">We can use a similar technique to match parts of a line and 
+swap them. For instance, let's say there are two parts of a line separated by a 
+colon. We can match each part, putting them within escaped parentheses and 
+swapping them in the replacement: </p>
+<pre>% <b>cat test1</b>
+first:second
+one:two
+% <b>sed 's/\(.*\):\(.*\)/\2:\1/' test1</b>
+second:first
+two:one</pre>
+<p class="docText">The larger point is that you can recall a saved substring in 
+any order and multiple times. If you find that you need more than nine saved 
+matches, or would like to be able to group them into matches and submatches, 
+take a look at Perl. </p>
+<p class="docText">
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-10">
+Section 43.10</a>,
+<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-10">
+Section 31.10</a>,
+<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-9">
+Section 10.9</a>, and
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-23">
+Section 36.23</a> have examples. </p>
+<p class="docText">—<span class="docEmphasis">DD and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-12">34.12 Search and Replacement: One Match Among Many</h3>
+<p class="docText">One of the more unusual options of <i>sed</i>'s substitution 
+command is the numeric flag that allows you to point to one particular match 
+when there are many possible matches on a particular line. It is used where a 
+pattern repeats itself on a line and the replacement must be made for only one 
+of those occurrences by position. For instance, a line, perhaps containing <i>
+tbl</i> input, might contain multiple tab characters. Let's say that there are 
+three tabs per line, and you'd like to replace the second tab with <tt>&gt;</tt>. 
+The following substitute command would do it: </p>
+<pre>s/TAB/&gt;/2</pre>
+<p class="docText"><tt>TAB</tt> represents an actual tab character, which is 
+otherwise invisible on the screen. If the input is a one-line file such as the 
+following: </p>
+<pre>Column1TABColumn2TABColumn3TABColumn4</pre>
+<p class="docText">the output produced by running the script on this file will 
+be:</p>
+<pre>Column1TABColumn2&gt;Column3TABColumn4</pre>
+<p class="docText">Note that without the numeric flag, the substitute command 
+would replace only the first tab. (Therefore, <tt>1</tt> can be considered the 
+default numeric flag.) The range of the allowed numeric value is from 1 to 512, 
+though this may be implementation-dependent. </p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-13">34.13 Transformations on Text</h3>
+<p class="docText">The transform command (<span class="docEmphasis">y</span>) is 
+useful for exchanging lowercase letters for uppercase letters on a line. 
+Effectively, it performs a similar function to <span class="docEmphBold">tr</span> 
+(<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-11">Section 
+21.11</a>). It replaces any character found in the first string with the 
+equivalent character in the second string. The command: </p>
+<pre>y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/</pre>
+<p class="docText">will convert any lowercase letter into the corresponding 
+uppercase letter. The following: </p>
+<pre>y/abcdefghijklmnopqrstuvwxyz/nopqrstuvwxyzabcdefghijklm/</pre>
+<p class="docText">would perform a <span class="docEmphasis">rot13</span> 
+transformation — a simple form of encryption in which each alphabetic character 
+is replaced by the character halfway through the alphabet. (<span class="docEmphasis">rot13</span> 
+encryption is sometimes used to keep offensive (or comical)
+<span class="docEmphBold">news postings</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) from being read except by someone who really means to (such as if you 
+have read the joke and now want to read the punch line). Encryption and 
+decryption are automatically supported by most news readers, but it's fun to see 
+how simple the encryption is. By the way, the command above handles only 
+lowercase letters; if we'd shown uppercase as well, the command would have run 
+past the margins!) </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-14">34.14 Hold Space: The Set-Aside Buffer</h3>
+<p class="docText">The <span class="docEmphasis">pattern space</span> is a 
+buffer that contains the current input line. There is also a set-aside buffer 
+called the <span class="docEmphasis">hold space</span> . The contents of the 
+pattern space can be copied to the hold space, and the contents of the hold 
+space can be copied to the pattern space. A group of commands allows you to move 
+data between the hold space and the pattern space. The hold space is used for 
+temporary storage, and that's it. Individual commands can't address the hold 
+space or alter its contents. </p>
+<p class="docText">The most frequent use of the hold space is to have it retain 
+a duplicate of the current input line while you change the original in the 
+pattern space. [It's also used as a way to do the &quot;move&quot; and &quot;copy&quot; commands 
+that most editors have — but which <i>sed</i> can't do directly because it's 
+designed for editing a stream of input text line-by-line.
+<span class="docEmphasis">— GU</span>] The commands that affect the hold space 
+are: </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Hold</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">h</span></td>
+    <td class="docTableCell">
+    <p class="docText">Copy contents of pattern space to hold space, replacing 
+    previous.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">H</span></td>
+    <td class="docTableCell">
+    <p class="docText">Append newline, then append contents of pattern space, to 
+    hold space.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Get</span></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">g</span></td>
+    <td class="docTableCell">
+    <p class="docText">Copy contents of hold space to pattern space, replacing 
+    previous.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphasis">G</span></td>
+    <td class="docTableCell">
+    <p class="docText">Append newline, then append contents of hold space, to 
+    pattern space.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Exchange</span></td>
+    <td class="docTableCell">
+    <p class="docText">x</td>
+    <td class="docTableCell">
+    <p class="docText">Swap contents of hold space and pattern space.</td>
+  </tr>
+</table>
+<p class="docText">Each of these commands can take an address that specifies a 
+single line or a range of lines. The hold commands (<span class="docEmphasis">h</span>,
+<span class="docEmphasis">H</span>) move data into the hold space and the get 
+commands (<span class="docEmphasis">g</span>, <span class="docEmphasis">G</span>) 
+move data from the hold space back into the pattern space. The difference 
+between the lowercase and uppercase versions of the same command is that the 
+lowercase command overwrites the contents of the target buffer, while the 
+uppercase command appends to the existing contents after adding a newline. </p>
+<p class="docText">The hold command replaces the contents of the hold space with 
+the contents of the pattern space. The get command replaces the contents of the 
+pattern space with the contents of the hold space. The Hold command puts a 
+newline followed by the contents of the pattern space after the contents of the 
+hold space. (The newline is appended to the hold space even if the hold space is 
+empty.) The Get command puts a newline followed by the contents of the hold 
+space after the contents of the pattern space. </p>
+<p class="docText">The exchange command (<span class="docEmphasis">x</span>) 
+swaps the contents of the two buffers. It has no side effects on either buffer.
+</p>
+<p class="docText">Here's an example to illustrate putting lines into the hold 
+space and retrieving them later. We are going to write a script that reads a 
+particular HTML file and copies all headings to the end of the file for a 
+summary. The headings we want start with <tt>&lt;h1&gt;</tt> or <tt>&lt;h2&gt;</tt>. For 
+example: </p>
+<pre>...
+&lt;body&gt;
+&lt;h1&gt;Introduction&lt;/h1&gt;
+The blah blah blah
+&lt;h1&gt;Background of the Project&lt;/h1&gt;
+   ...
+&lt;h2&gt;The First Year&lt;/h2&gt;
+   ...
+&lt;h2&gt;The Second Year&lt;/h2&gt;
+   ...
+&lt;/body&gt;</pre>
+<p class="docText">The object is to copy those headings into the hold space as
+<i>sed</i> reads them. When <i>sed</i> reaches the end of the body (at the <tt>
+&lt;/body&gt;</tt> tag), output <tt>Summary</tt>:, then output the saved tags without 
+the heading tags (<tt>&lt;h1&gt;</tt> or <tt>&lt;h2&gt;</tt>). </p>
+<p class="docText">Look at the script:</p>
+<pre>/^&lt;h[12]&gt;/H
+/^&lt;\/body&gt;/ {
+    i\
+&lt;strong&gt;Summary:&lt;/strong&gt;
+    x
+    G
+    s/&lt;\/*h[12]&gt;//g
+}</pre>
+<p class="docText">Any line matching <tt>&lt;h1&gt;</tt> or <tt>&lt;h2&gt;</tt> is added to 
+the hold space. (All those lines are also printed; that's the default in <i>sed</i> 
+unless lines have been deleted.<span id="ENB34-1"><a class="docLink" href="#EN34-1"><sup>[1]</sup></a></span>) 
+The last part of the script watches for the <tt>&lt;/body&gt;</tt> tag. When it's 
+reached, <span class="docEmphasis">sed</span> inserts the <tt>Summary</tt>: 
+heading. Then the script uses <tt>x</tt> to exchange the pattern space (which 
+has the <tt>&lt;/body&gt;</tt> tag) with the saved headers from the hold space. Now 
+the pattern space has the saved headers. Next, <tt>G</tt> adds the <tt>&lt;/body&gt;</tt> 
+tag to the end of the headers in the pattern space. Finally, a substitute 
+command strips the <tt>&lt;h1&gt;</tt>, <tt>&lt;/h1&gt;</tt>, <tt>&lt;h2&gt;</tt>, and <tt>&lt;/h2&gt;</tt> 
+tags. At the end of the script, the pattern space is printed by default. </p>
+<p class="docText">The sequence of <span class="docEmphasis">x</span> followed 
+by <span class="docEmphasis">G</span> is a way to find a matching line — in this 
+case, <tt>&lt;/body&gt;</tt> — and insert the contents of the hold space before the 
+matched line. In other words, it's like an <span class="docEmphasis">i</span> 
+command that inserts the hold space at the current line. </p>
+<p class="docText">The script could do more cleanup and formatting. For 
+instance, it could make the saved headings into a list with <tt>&lt;ul&gt;</tt> and
+<tt>&lt;li&gt;</tt>. But this example is mostly about the hold space. </p>
+<p class="docText">Here's the result of running the script on the sample file:
+</p>
+<pre>% <b>sed -f sedscr report.html</b>
+   ...
+&lt;body&gt;
+&lt;h1&gt;Introduction&lt;/h1&gt;
+The blah blah blah
+&lt;h1&gt;Background of the Project&lt;/h1&gt;
+   ...
+&lt;h2&gt;The First Year&lt;/h2&gt;
+   ...
+&lt;h2&gt;The Second Year&lt;/h2&gt;
+   ...
+&lt;strong&gt;Summary:&lt;/strong&gt;
+
+Introduction
+Background of the Project
+The First Year
+The Second Year
+&lt;/body&gt;</pre>
+<p class="docText">For other scripts that use the hold space, see
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-18">
+Section 34.18</a>. For a fanciful analogy that makes clear how it works, see
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-17">
+Section 34.17</a>. </p>
+<p class="docText">—<span class="docEmphasis">DD and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-15">34.15 Transforming Part of a Line</h3>
+<p class="docText">The <span class="docEmphBold">transform command, y</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-13">Section 
+34.13</a>), acts on the entire contents of the pattern space. It is something of 
+a chore to do a letter-by-letter transformation of a portion of the line, but it 
+is possible (though convoluted) as the following example demonstrates. [The real 
+importance of this example is probably not the use of the
+<span class="docEmphasis">y</span> command, but the use of the hold space to 
+isolate and preserve part of the line. — <span class="docEmphasis">TOR</span>]
+</p>
+<p class="docText">While working on a programming guide, we found that the names 
+of statements were entered inconsistently. They needed to be uppercase, but some 
+were lowercase while others had an initial capital letter. While the task was 
+simple — to capitalize the name of the statement — there were nearly a hundred 
+statements and it seemed a tedious project to write that many explicit 
+substitutions of the form: </p>
+<pre>s/find the Match statement/find the MATCH statement/g</pre>
+<p class="docText">The transform command could do the lowercase-to-uppercase 
+conversion, but it applies the conversion to the entire line. The hold space 
+makes this task possible because we use it to store a copy of the input line 
+while we isolate and convert the statement name in the pattern space. Look at 
+the script first: </p>
+<pre># capitalize statement names
+/the .* statement/{
+    h
+    s/.*the \(.*\) statement.*/\1/
+    y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/
+    G
+    s/\(.*\)\n\(.*the \).*\( statement.*\)/\2\1\3/
+}</pre>
+<p class="docText">The address limits the procedure to lines that match <tt>the 
+.* statement</tt>. Let's look at what each command does: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">h</span></span> </dt>
+  <dd>
+  <p class="docList">The hold command copies the current input line into the 
+  hold space. Using the sample line <tt>find the Match statement</tt>, we'll 
+  show what the contents of the pattern space and hold space contain. After the
+  <span class="docEmphasis">h</span> command, the pattern space and hold space 
+  are identical. </p>
+  <table cellSpacing="0" cellPadding="1" width="100%" border="1">
+    <colgroup span="2">
+    </colgroup>
+    <tr>
+      <td class="docTableCell">
+      <p class="docText">Pattern space</td>
+      <td class="docTableCell">
+      <pre>find the Match statement</pre>
+      </td>
+    </tr>
+    <tr>
+      <td class="docTableCell">
+      <p class="docText">Hold space</td>
+      <td class="docTableCell">
+      <pre>find the Match statement</pre>
+      </td>
+    </tr>
+  </table>
+  <p>&nbsp;</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">s/.*the \(.*\) 
+  statement.*/\1/</span></span> </dt>
+  <dd>
+  <p class="docList">The substitute command extracts the name of the statement 
+  from the line and replaces the entire line with it. </p>
+  <table cellSpacing="0" cellPadding="1" width="100%" border="1">
+    <colgroup span="2">
+    </colgroup>
+    <tr>
+      <td class="docTableCell">
+      <p class="docText">Pattern space</td>
+      <td class="docTableCell">
+      <pre>Match</pre>
+      </td>
+    </tr>
+    <tr>
+      <td class="docTableCell">
+      <p class="docText">Hold space</td>
+      <td class="docTableCell">
+      <pre>find the Match statement</pre>
+      </td>
+    </tr>
+  </table>
+  <p>&nbsp;</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/</span>
+  </span></dt>
+  <dd>
+  <p class="docList">The transform command changes each lowercase letter to an 
+  uppercase letter. </p>
+  <table cellSpacing="0" cellPadding="1" width="100%" border="1">
+    <colgroup span="2">
+    </colgroup>
+    <tr>
+      <td class="docTableCell">
+      <p class="docText">Pattern space</td>
+      <td class="docTableCell">
+      <pre>MATCH</pre>
+      </td>
+    </tr>
+    <tr>
+      <td class="docTableCell">
+      <p class="docText">Hold space</td>
+      <td class="docTableCell">
+      <pre>find the Match statement</pre>
+      </td>
+    </tr>
+  </table>
+  <p>&nbsp;</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">G</span></span> </dt>
+  <dd>
+  <p class="docList">The Get command appends the line saved in the hold space to 
+  the pattern space. The embedded newline from the Get command is shown as <tt>
+  \n</tt>. </p>
+  <table cellSpacing="0" cellPadding="1" width="100%" border="1">
+    <colgroup span="2">
+    </colgroup>
+    <tr>
+      <td class="docTableCell">
+      <p class="docText">Pattern space</td>
+      <td class="docTableCell">
+      <pre>MATCH\nfind the Match statement</pre>
+      </td>
+    </tr>
+    <tr>
+      <td class="docTableCell">
+      <p class="docText">Hold space</td>
+      <td class="docTableCell">
+      <pre>find the Match statement</pre>
+      </td>
+    </tr>
+  </table>
+  <p>&nbsp;</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">s/\(.*\)\n\(.*the 
+  \).*\( statement.*\)/\2\1\3/</span></span> </dt>
+  <dd>
+  <p class="docList">The substitute command matches three different parts of the 
+  pattern space: (1) all characters up to the embedded newline, (2) all 
+  characters following the embedded newline and up to and including <tt>the</tt> 
+  followed by a space, and (3) all characters beginning with a space and 
+  followed by <tt>statement</tt> up to the end of the pattern space. The name of 
+  the statement as it appeared in the original line is matched but not saved. 
+  The replacement section of this command recalls the saved portions and 
+  reassembles them in a different order, putting the capitalized name of the 
+  command in between <tt>the</tt> and <tt>statement</tt>. </p>
+  <table cellSpacing="0" cellPadding="1" width="100%" border="1">
+    <colgroup span="2">
+    </colgroup>
+    <tr>
+      <td class="docTableCell">
+      <p class="docText">Pattern space</td>
+      <td class="docTableCell">
+      <pre>find the MATCH statement</pre>
+      </td>
+    </tr>
+    <tr>
+      <td class="docTableCell">
+      <p class="docText">Hold space</td>
+      <td class="docTableCell">
+      <pre>find the Match statement</pre>
+      </td>
+    </tr>
+  </table>
+  </dd>
+</dl>
+<p class="docText">Let's look at a test run. Here's our sample file: </p>
+<pre>find the Match statement
+Consult the Get statement.
+using the Read statement to retrieve data</pre>
+<p class="docText">Running the script on the sample file produces:</p>
+<pre>find the MATCH statement
+Consult the GET statement.
+using the READ statement to retrieve data</pre>
+<p class="docText">As you can see from this script, the hold space can be 
+skillfully used to isolate and manipulate portions of the input line. </p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-16">34.16 Making Edits Across Line Boundaries</h3>
+<p class="docText">Most programs that use <span class="docEmphBold">regular 
+expressions</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-4">Section 
+32.4</a>) are able to match a pattern only on a single line of input. This makes 
+it difficult to find or change a phrase, for instance, because it can start near 
+the end of one line and finish near the beginning of the next line. Other 
+patterns might be significant only when repeated on multiple lines. </p>
+<p class="docText"><i>sed</i> has the ability to load more than one line into 
+the pattern space. This allows you to match (and change) patterns that extend 
+over multiple lines. In this article, we show how to create a multiline pattern 
+space and manipulate its contents. </p>
+<p class="docText">The multiline Next command, <span class="docEmphasis">N</span>, 
+creates a multiline pattern space by reading a new line of input and appending 
+it to the contents of the pattern space. The original contents of the pattern 
+space and the new input line are separated by a newline. The embedded newline 
+character can be matched in patterns by the escape sequence <tt>\n</tt>. In a 
+multiline pattern space, only the metacharacter <tt>^</tt> matches the newline 
+at the beginning of the pattern space, and <tt>$</tt> matches the newline at the 
+end. After the Next command is executed, control is then passed to subsequent 
+commands in the script. </p>
+<p class="docText">The Next command differs from the next command,
+<span class="docEmphasis">n</span>, which outputs the contents of the pattern 
+space and then reads a new line of input. The next command does not create a 
+multiline pattern space. </p>
+<p class="docText">For our first example, let's suppose that we wanted to change 
+&quot;Owner and Operator Guide&quot; to &quot;Installation Guide&quot;, but we found that it appears 
+in the file on two lines, splitting between <tt>Operator</tt> and <tt>Guide</tt>. 
+For instance, here are a few lines of sample text: </p>
+<pre>Consult Section 3.1 in the Owner and Operator
+Guide for a description of the tape drives
+available on your system.</pre>
+<p class="docText">The following script looks for <tt>Operator</tt> at the end 
+of a line, reads the next line of input, and then makes the replacement: </p>
+<pre>/Operator$/{
+    N
+    s/Owner and Operator\nGuide/Installation Guide/
+}</pre>
+<p class="docText">In this example, we know where the two lines split and where 
+to specify the embedded newline. When the script is run on the sample file, it 
+produces the two lines of output, one of which combines the first and second 
+lines and is too long to show here. This happens because the substitute command 
+matches the embedded newline but does not replace it. Unfortunately, you cannot 
+use <tt>\n</tt> to insert a newline in the replacement string. You must either 
+use the backslash to escape the newline, as follows: </p>
+<pre>s/Owner and Operator\nGuide /Installation Guide\
+/</pre>
+<p class="docText">or use the <span class="docEmphBold">\(..\) operators</span> 
+(<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-11">Section 
+34.11</a>) to keep the newline: </p>
+<pre>s/Owner and Operator\(\n\)Guide /Installation Guide\1/</pre>
+<p class="docText">This command restores the newline after <tt>Installation 
+Guide</tt>. It is also necessary to match a blank space following <tt>Guide</tt> 
+so the new line won't begin with a space. Now we can show the output: </p>
+<pre>Consult Section 3.1 in the Installation Guide
+for a description of the tape drives
+available on your system.</pre>
+<p class="docText">Remember, you don't have to replace the newline, but if you 
+don't, it can make for some long lines. </p>
+<p class="docText">What if there are other occurrences of &quot;Owner and Operator 
+Guide&quot; that break over multiple lines in different places? You could change the 
+address to match <tt>Owner</tt>, the first word in the pattern instead of the 
+last, and then modify the regular expression to look for a space or a newline 
+between words, as shown below: </p>
+<pre>/Owner/{
+N
+s/Owner *\n*and *\n*Operator *\n*Guide/Installation Guide/
+}</pre>
+<p class="docText">The asterisk (<tt>*</tt>) indicates that the space or newline 
+is optional. This seems like hard work though, and indeed there is a more 
+general way. We can read the newline into the pattern space and then use a 
+substitute command to remove the embedded newline, wherever it is: </p>
+<pre>s/Owner and Operator Guide/Installation Guide/
+/Owner/{
+N
+s/ *\n/ /
+s/Owner and Operator Guide */Installation Guide\
+/
+}</pre>
+<p class="docText">The first line of the script matches <tt>Owner and Operator 
+Guide</tt> when it appears on a line by itself. (See the discussion at the end 
+of the article about why this is necessary.) If we match the string <tt>Owner</tt>, 
+we read the next line into the pattern space and replace the embedded newline 
+with a space. Then we attempt to match the whole pattern and make the 
+replacement followed by a newline. This script will match <tt>Owner and Operator 
+Guide</tt> regardless of how it is broken across two lines. Here's our expanded 
+test file: </p>
+<pre>Consult Section 3.1 in the Owner and Operator
+Guide for a description of the tape drives
+available on your system.
+
+Look in the Owner and Operator Guide shipped with your system.
+
+Two manuals are provided, including the Owner and
+Operator Guide and the User Guide.
+
+The Owner and Operator Guide is shipped with your system.</pre>
+<p class="docText">Running the above script on the sample file produces the 
+following result: </p>
+<pre>% <b>sed -f sedscr sample</b>
+Consult Section 3.1 in the Installation Guide
+for a description of the tape drives
+available on your system.
+
+Look in the Installation Guide shipped with your system.
+
+Two manuals are provided, including the Installation Guide
+and the User Guide.
+
+The Installation Guide is shipped with your system.</pre>
+<p class="docText">In this sample script, it might seem redundant to have two 
+substitute commands that match the pattern. The first command matches it when 
+the pattern is found already on one line, and the second matches the pattern 
+after two lines have been read into the pattern space. Why the first command is 
+necessary is perhaps best demonstrated by removing that command from the script 
+and running it on the sample file: </p>
+<pre>% <b>sed -f sedscr2 sample</b>
+Consult Section 3.1 in the Installation Guide
+for a description of the tape drives
+available on your system.
+
+Look in the Installation Guide
+shipped with your system.
+Two manuals are provided, including the Installation Guide
+and the User Guide.</pre>
+<p class="docText">Do you see the two problems? The most obvious problem is that 
+the last line did not print. The last line matches <tt>Owner</tt>, and when
+<span class="docEmphasis">N</span> is executed, there is not another input line 
+to read, so <i>sed</i> quits. It does not even output the line. If this is the 
+normal behavior, the Next command should be used as follows to be safe: </p>
+<pre>$!N</pre>
+<p class="docText">It excludes the last line (<tt>$</tt>) from the Next command. 
+As it is in our script, by matching <tt>Owner and Operator Guide</tt> on the 
+last line, we avoid matching <tt>Owner</tt> and applying the
+<span class="docEmphasis">N</span> command. However, if the word <tt>Owner</tt> 
+appeared on the last line, we'd have the same problem unless we implement the
+<tt>$!N</tt> syntax. </p>
+<p class="docText">The second problem is a little less conspicuous. It has to do 
+with the occurrence of <tt>Owner and Operator Guide</tt> in the second 
+paragraph. In the input file, it is found on a line by itself: </p>
+<pre>Look in the Owner and Operator Guide shipped with your system.</pre>
+<p class="docText">In the output shown above, the blank line following <tt>
+shipped with your system</tt> is missing. The reason for this is that this line 
+matches <tt>Owner</tt> and the next line, a blank line, is appended to the 
+pattern space. The substitute command removes the embedded newline, and the 
+blank line has in effect vanished. (If the line were not blank, the newline 
+would still be removed but the text would appear on the same line with <tt>
+shipped with your system</tt>.) The best solution seems to be to avoid reading 
+the next line when the pattern can be matched on one line. That is why the first 
+instruction attempts to match the case where the string appears all on one line.
+</p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-17">34.17 The Deliberate Scrivener</h3>
+<p class="docText">The operations of <i>sed</i>'s most difficult commands — hold 
+(<span class="docEmphasis">h</span> or <span class="docEmphasis">H</span>), get 
+(<span class="docEmphasis">g</span> or <span class="docEmphasis">G</span>), and 
+exchange (<span class="docEmphasis">x</span>) — can be explained, somewhat 
+fancifully, in terms of an extremely deliberate medieval scrivener or amanuensis 
+toiling to make a copy of a manuscript. His work is bound by several spatial 
+restrictions: the original manuscript is displayed in one room; the set of 
+instructions for copying the manuscript are stored in a middle room; and the 
+quill, ink, and folio are set up in yet another room. The original manuscript 
+and the set of instructions are written in stone and cannot be moved about. The 
+dutiful scrivener, being sounder of body than mind, is able to make a copy by 
+going from room to room, working on only one line at a time. Entering the room 
+where the original manuscript is, he removes from his robes a scrap of paper to 
+take down the first line of the manuscript. Then he moves to the room containing 
+the list of editing instructions. He reads each instruction to see if it applies 
+to the single line he has scribbled down. </p>
+<p class="docText">Each instruction, written in special notation, consists of 
+two parts: a <span class="docEmphasis">pattern</span> and a
+<span class="docEmphasis">procedure</span>. The scrivener reads the first 
+instruction and checks the pattern against his line. If there is no match, he 
+doesn't have to worry about the procedure, so he goes to the next instruction. 
+If he finds a match, the scrivener follows the action or actions specified in 
+the procedure. </p>
+<p class="docText">He makes the edit on his piece of paper before trying to 
+match the pattern in the next instruction. Remember, the scrivener has to read 
+through a series of instructions, and he reads all of them, not just the first 
+instruction that matches the pattern. Because he makes his edits as he goes, he 
+is always trying to match the latest version against the next pattern; he 
+doesn't remember the original line. </p>
+<p class="docText">When he gets to the bottom of the list of instructions, and 
+has made any edits that were necessary on his piece of paper, he goes into the 
+next room to copy out the line. (He doesn't need to be told to print out the 
+line.) After that is done, he returns to the first room and takes down the next 
+line on a new scrap of paper. When he goes to the second room, once again he 
+reads every instruction from first to last before leaving. </p>
+<p class="docText">This is what he normally does, that is, unless he is told 
+otherwise. For instance, before he starts, he can be told
+<span class="docEmphasis">not</span> to write out every line (the <i>-n</i> 
+option). In this case, he must wait for an instruction that tells him to print (<span class="docEmphasis">p</span> 
+). If he does not get that instruction, he throws away his piece of paper and 
+starts over. By the way, regardless of whether or not he is told to write out 
+the line, he always gets to the last instruction on the list. </p>
+<p class="docText">Let's look at other kinds of instructions the scrivener has 
+to interpret. First of all, an instruction can have zero, one, or two patterns 
+specified: </p>
+<ul>
+  <li>
+  <p class="docList">If no pattern is specified, the same procedure is followed 
+  for each line. </li>
+  <li>
+  <p class="docList">If there is only one pattern, he will follow the procedure 
+  for any line matching the pattern. </li>
+  <li>
+  <p class="docList">If a pattern is followed by a <tt>!</tt>, the procedure is 
+  followed for all lines that do <span class="docEmphasis">not</span> match the 
+  pattern. </li>
+  <li>
+  <p class="docList">If two patterns are specified, the actions described in the 
+  procedure are performed on the first matching line and all succeeding lines 
+  until a line matches the second pattern. </li>
+</ul>
+<p class="docText">The scrivener can work on only one line at a time, so you 
+might wonder how he handles a range of lines. Each time he goes through the 
+instructions, he tries to match only the first of two patterns. Now, after he 
+has found a line that matches the first pattern, each time through with a new 
+line he tries to match the second pattern. He interprets the second pattern as
+<tt><i>pattern</i>!</tt>, so that the procedure is followed only if there is no 
+match. When the second pattern is matched, he starts looking again for the first 
+pattern. </p>
+<p class="docText">Each procedure contains one or more commands or
+<span class="docEmphasis">actions</span>. Remember, if a pattern is specified 
+with a procedure, the pattern must be matched before the procedure is executed. 
+We have already shown many of the usual commands that are similar to other 
+editing commands. However, there are several highly unusual commands. </p>
+<p class="docText">For instance, the <span class="docEmphasis">N</span> command 
+tells the scrivener to go, right now, and get another line, adding it to the 
+same piece of paper. The scrivener can be instructed to &quot;hold&quot; on to a single 
+piece of scrap paper. The <span class="docEmphasis">h</span> command tells him 
+to make a copy of the line on another piece of paper and put it in his pocket. 
+The <span class="docEmphasis">x</span> command tells him to exchange the extra 
+piece of paper in his pocket with the one in his hand. The
+<span class="docEmphasis">g</span> command tells him to throw out the paper in 
+his hand and replace it with the one in his pocket. The
+<span class="docEmphasis">G</span> command tells him to append the line he is 
+holding to the paper in front of him. If he encounters a
+<span class="docEmphasis">d</span> command, he throws out the scrap of paper and 
+begins again at the top of the list of instructions. A <span class="docEmphasis">
+D</span> command has effect when he has been instructed to append two lines on 
+his piece of paper. The <span class="docEmphasis">D</span> command tells him to 
+delete the first of those lines. </p>
+<p class="docText">If you want the analogy converted back to computers, the 
+first and last rooms in this medieval manor are standard input and standard 
+output. Thus, the original file is never changed. The line on the scrivener's 
+piece of scrap paper is in the <span class="docEmphasis">pattern space</span> ; 
+the line on the piece of paper that he holds in his pocket is in the
+<span class="docEmphasis">hold space</span>. The hold space allows you to retain 
+a duplicate of a line while you change the original in the pattern space. </p>
+<p class="docText">
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-18">
+Section 34.18</a> shows a practical application of the scrivener's work, a <i>
+sed</i> program that searches for a particular phrase that might be split across 
+two lines. </p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-18">34.18 Searching for Patterns Split Across Lines</h3>
+<p class="docText">[<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-9">Section 
+13.9</a> introduced a script called <i>cgrep</i> , a general-purpose, <i>grep</i>-like 
+program built with <i>sed</i>. It allows you to look for one or more words that 
+appear on one line or across several lines. This article explains the <i>sed</i> 
+tricks that are necessary to do this kind of thing. It gets into territory that 
+is essential for any advanced applications of this obscure yet wonderful editor.
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-14">
+Section 34.14</a> through
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-17">
+Section 34.17</a> have background information. — <span class="docEmphasis">JP</span>]
+</p>
+<p class="docText">Let's review the two examples from
+<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-9">
+Section 13.9</a>. The first command below finds all lines containing the word
+<span class="docEmphasis">system</span> in the file <span class="docEmphasis">
+main.c</span> and shows 10 additional lines of context above and below each 
+match. The second command finds all occurrences of the word &quot;awk&quot; where it is 
+followed by the word &quot;perl&quot; somewhere within the next 3 lines: </p>
+<pre>cgrep -10 system main.c
+cgrep -3 &quot;awk.*perl&quot;</pre>
+<p class="docText">Now the script, followed by an explanation of how it works:</p>
+<p class="docText"><tt>case</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-11">
+Section 35.11</a>, <tt>expr</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-21">
+Section 36.21</a>, <tt>shift</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-22">
+Section 35.22</a>, <tt>${?}</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+Section 36.7</a>, <tt>\~..~</tt>
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-8">
+Section 34.8</a>, <tt>&quot;$@&quot;</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">
+Section 35.20</a></p>
+<pre>#!/bin/sh
+#  cgrep - multiline context grep using sed
+#  Usage: cgrep [-context] pattern [file...]
+
+n=3
+case $1 in -[1-9]*)
+    n=`expr 1 - &quot;$1&quot;`
+    shift
+esac
+re=${1?}; shift
+
+sed -n &quot;
+    1b start
+    : top
+    \~$re~{
+        h; n; p; H; g
+        b endif
+    }
+        N
+        : start
+        //{ =; p; }
+    : endif
+    $n,\$D
+    b top
+&quot; &quot;$@&quot;</pre>
+<p class="docText">The <i>sed</i> script is embedded in a bare-bones
+<span class="docEmphBold">shell wrapper</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-19">Section 
+35.19</a>) to parse out the initial arguments because, unlike <i>awk</i> and <i>
+perl</i>, <i>sed</i> cannot directly access command-line parameters. If the 
+first argument looks like a <i>-context</i> option, variable
+<span class="docEmphasis">n</span> is reset to one more than the number of lines 
+specified, using a little trick — the argument is treated as a negative number 
+and subtracted from <tt>1</tt>. The pattern argument is then stored in <tt>$re</tt>, 
+with the <tt>${1?}</tt> syntax causing the shell to abort with an error message 
+if no pattern was given. Any remaining arguments are passed as filenames to the
+<i>sed</i> command. </p>
+<p class="docText">So that the <tt>$re</tt> and <tt>$n</tt> parameters can be 
+embedded, the <i>sed</i> script is enclosed in <span class="docEmphBold">double 
+quotes</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>). We use the <i>-n</i> option because we don't want to print out every 
+line by default, and because we need to use the <tt>n</tt> command in the script 
+without its side effect of outputting a line. </p>
+<p class="docText">The <i>sed</i> script itself looks rather unstructured (it 
+was actually designed using a flowchart), but the basic algorithm is easy enough 
+to understand. We keep a &quot;window&quot; of <span class="docEmphasis">n</span> lines in 
+the pattern space and scroll this window through the input stream. If an 
+occurrence of the pattern comes into the window, the entire window is printed 
+(providing <span class="docEmphasis">n</span> lines of previous context), and 
+each subsequent line is printed until the pattern scrolls out of view again 
+(providing <span class="docEmphasis">n</span> lines of following context). The
+<i>sed</i> idiom <tt>N;D</tt> is used to advance the window, with the <tt>D</tt> 
+not kicking in until the first <span class="docEmphasis">n</span> lines of input 
+have been accumulated. </p>
+<p class="docText">The core of the script is basically an if-then-else construct 
+that decides whether we are currently &quot;in context.&quot; (The regular expression here 
+is delimited by tilde (<tt>~</tt>) characters because tildes are less likely to 
+occur in the user-supplied pattern than slashes.) <span class="docEmphBold">If</span> 
+we are still in context, <span class="docEmphBold">then</span> the next line of 
+input is read and output, temporarily using the hold space to save the window 
+(and effectively doing an <tt>N</tt> in the process). <span class="docEmphBold">
+Else</span> we append the next input line (<tt>N</tt>) and search for the 
+pattern again (an empty regular expression means to reuse the last pattern). If 
+it's now found, the pattern must have just come into view — so we print the 
+current line number followed by the contents of the window. Subsequent 
+iterations will take the &quot;then&quot; branch until the pattern scrolls out of the 
+window. </p>
+<p class="docText"><span class="docEmphasis">— GU</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-19">34.19 Multiline Delete</h3>
+<p class="docText">The <i>sed</i> delete command, <span class="docEmphasis">d</span>, 
+deletes the contents of the <span class="docEmphBold">pattern space</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-14">Section 
+34.14</a>) and causes a new line of input to be read, with editing resuming at 
+the top of the script. The Delete command, <span class="docEmphasis">D</span>, 
+works slightly differently: it deletes a portion of the pattern space, up to the 
+first embedded newline. It does not cause a new line of input to be read; 
+instead, it returns to the top of the script, applying these instructions to 
+what remains in the pattern space. We can see the difference by writing a script 
+that looks for a series of blank lines and outputs a single blank line. The 
+version below uses the delete command: </p>
+<pre># reduce multiple blank lines to one; version using d command
+/^$/{
+   N
+   /^\n$/d
+}</pre>
+<p class="docText">When a blank line is encountered, the next line is appended 
+to the pattern space. Then we try to match the embedded newline. Note that the 
+positional metacharacters, <tt>^</tt> and <tt>$</tt>, match the beginning and 
+the end of the pattern space, respectively. Here's a test file: </p>
+<pre>This line is followed by 1 blank line.
+
+This line is followed by 2 blank lines.
+
+
+This line is followed by 3 blank lines.
+
+
+
+This line is followed by 4 blank lines.
+
+
+
+
+This is the end.</pre>
+<p class="docText">Running the script on the test file produces the following 
+result:</p>
+<pre>% <b>sed -f sed.blank test.blank</b>
+This line is followed by 1 blank line.
+
+This line is followed by 2 blank lines.
+This line is followed by 3 blank lines.
+
+This line is followed by 4 blank lines.
+This is the end.</pre>
+<p class="docText">Where there was an even number of blank lines, all the blank 
+lines were removed. Only when there was an odd number of blank lines was a 
+single blank line preserved. That is because the delete command clears the 
+entire pattern space. Once the first blank line is encountered, the next line is 
+read in, and both are deleted. If a third blank line is encountered, and the 
+next line is not blank, the delete command is not applied, and thus a blank line 
+is output. If we use the multiline Delete command, <tt>/^\n$/D</tt>, we get a 
+different result, and the one that we wanted. </p>
+<p class="docText">The reason the multiline Delete command gets the job done is 
+that when we encounter two blank lines, the Delete command removes only the 
+first of the two. The next time through the script, the blank line will cause 
+another line to be read into the pattern space. If that line is not blank, both 
+lines are output, thus ensuring that a single blank line will be output. In 
+other words, when there are two blank lines in the pattern space, only the first 
+is deleted. When a blank line is followed by text, the pattern space is output 
+normally. </p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-20">34.20 Making Edits Everywhere Except...</h3>
+<p class="docText">There are two ways in <i>sed</i> to avoid specified portions 
+of a document while making the edits everywhere else. You can use the <i>!</i> 
+command to specify that the edit applies only to lines that
+<span class="docEmphasis">do not</span> match the pattern. Another approach is 
+to use the <span class="docEmphasis">b</span> (branch) command to skip over 
+portions of the editing script. Let's look at an example. </p>
+<p class="docText">We've used <i>sed</i> to preprocess the input to <i>troff</i> 
+so that double dashes ( -- ) are converted automatically to em-dashes ( — ) and 
+straight quotes are converted to curly quotes. However, program examples in 
+technical books are usually shown in a constant-width font that clearly shows 
+each character as it appears on the computer screen. When typesetting a 
+document, we don't want <i>sed</i> to apply the same editing rules within these 
+examples as it does to the rest of the document. For instance, straight quotes 
+should not be replaced by curly quotes. </p>
+<p class="docText">Because program examples are set off by a pair of macros 
+(something like .ES and .EE, for &quot;Example Start&quot; and &quot;Example End&quot;), we can use 
+those as the basis for exclusion. Here's some sample text that includes an 
+example: </p>
+<pre>.LP
+The \fItrue\fP command returns a zero exit status.
+As Joe says, &quot;this is only useful in programming&quot;:
+.ES
+% \fBtrue\fP
+% \fBecho &quot;the status was $status&quot;\fP
+the status was 0
+.EE</pre>
+<p class="docText">So you can say:</p>
+<pre>/^\.ES/,/^\.EE/!{
+   s/^&quot;/``/
+       ...
+   s/\\(em&quot;/\\(em``/g
+}</pre>
+<p class="docText">All of the commands enclosed in braces (<tt>{}</tt>) will be 
+subject to the initial pattern address. </p>
+<p class="docText">There is another way to accomplish the same thing. The
+<span class="docEmphasis">b</span> command allows you to transfer control to 
+another line in the script that is marked with an optional label. Using this 
+feature, you could write the previous script like this: </p>
+<pre>/^\.ES/,/^\.EE/bend
+s/^&quot;/``/
+   ...
+s/\\(em&quot;/\\(em``/g
+:end</pre>
+<p class="docText">A label consists of a colon (:) followed by up to seven 
+characters. If the label is missing, the <span class="docEmphasis">b</span> 
+command branches to the end of the script. (In the example above, the label <tt>
+end</tt> was included just to show how to use one, but a label is not really 
+necessary here.) </p>
+<p class="docText">The <span class="docEmphasis">b</span> command is designed 
+for flow control within the script. It allows you to create subscripts that will 
+be applied only to lines matching certain patterns and not elsewhere. However, 
+as in this case, it also provides a powerful way to exempt part of the text from 
+the action of a single-level script. </p>
+<p class="docText">The advantage of <span class="docEmphasis">b</span> over
+<span class="docEmphasis">!</span> for this application is that you can more 
+easily specify multiple conditions to avoid. The <span class="docEmphasis">!</span> 
+command can be applied to a single command or to the set of commands, enclosed 
+in braces, that immediately follows. On the other hand,
+<span class="docEmphasis">b</span> gives you almost unlimited control over 
+movement around the script. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-21">34.21 The sed Test Command</h3>
+<p class="docText">The test command, <span class="docEmphasis">t</span>, 
+branches to a label (or the end of the script) if a successful substitution has 
+been made on the currently addressed line. It implies a conditional branch. Its 
+syntax is as follows: </p>
+<blockquote>
+  <p class="docText">[<tt><i>address</i></tt>]<tt>t</tt>[<tt><i>label</i></tt>]
+  </p>
+</blockquote>
+<p class="docText">If no <tt><i>label</i></tt> is supplied, control falls 
+through to the end of the script. If <tt><i>label</i></tt> is supplied, 
+execution resumes at the line following the label. </p>
+<p class="docText">Let's look at a spelling corrector written by Greg Ubben. The 
+script fixes common (in this example, silly) spelling goofs; the
+<span class="docEmphasis">t</span> command tells about corrections that were 
+made: </p>
+<pre>h
+s/seperate/separate/g
+s/compooter/computer/g
+s/said editor/sed editor/g
+s/lable/label/g
+t changed
+b
+: changed
+p
+g
+s/.*/[WAS: &amp;]/
+t</pre>
+<p class="docText">First, <span class="docEmphBold">h</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-14">Section 
+34.14</a>) holds a copy of the current input line. Then, if any of the four 
+substitutions succeed, the command <tt>t changed</tt> branches to the 
+corresponding label (<tt>: changed</tt>) at the end of the script. Otherwise, if 
+no <tt>s</tt> succeeded, the <tt>b</tt> command restarts the script on the next 
+line (as always in <i>sed</i>, the input line is printed before the script 
+restarts). </p>
+<p class="docText">After the label, the script prints the current input line 
+(the line with a spelling error — which, by now, has been corrected). Then
+<span class="docEmphBold">g</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-14">Section 
+34.14</a>) gets the original uncorrected line. An <tt>s</tt> command brackets 
+that line <tt>[WAS:</tt> <tt><i>xxx</i>]</tt>. Here's some sample output: </p>
+<pre>$ <b>sed -f sedscr afile</b>
+This is a separate test.
+[WAS: This is a seperate test.]
+I put a label on my computer!
+[WAS: I put a lable on my compooter!]
+That's all for now.</pre>
+<p class="docText">The final <tt>t</tt> in the script is a work-around for a bug 
+in some versions of <i>sed</i>. Greg says, &quot;The <span class="docEmphasis">t</span> 
+flag is supposed to be reset after either the <span class="docEmphasis">t</span> 
+command is executed or a new line of input is read, but some versions of <i>sed</i> 
+don't reset it on a new line of input. So I added a do-nothing <tt>t</tt> to 
+make sure it's reset after the previous always-true <tt>s///</tt>.&quot; Try the 
+script without the extra <tt>t</tt>; if adding it makes the script work right, 
+your <i>sed</i> has the bug and you might try a new version, like GNU <i>sed</i>.
+</p>
+<p class="docText"><span class="docEmphasis">—JP and DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-22">34.22 Uses of the sed Quit Command</h3>
+<p class="docText">The quit command, <span class="docEmphasis">q</span>, causes
+<i>sed</i> to stop reading new input lines (and stop sending them to the 
+output). Its syntax is: </p>
+<blockquote>
+  <p class="docText">[<tt><i>line-address</i></tt>]<tt>q</tt></p>
+</blockquote>
+<p class="docText">
+<img alt="figs/bomb.gif" src="bomb.gif" border="0" width="24" height="30">
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-23">
+Section 34.23</a></p>
+<p class="docText">It can take only a single-line address. Once the line 
+matching address (<tt><i>line-address</i></tt>) is reached, the script will be 
+terminated. </p>
+<p class="docText">For instance, the following one-liner uses the quit command 
+to print the first ten lines from a file: </p>
+<pre>% <b>sed '10q' myfile</b>
+   ...</pre>
+<p class="docText"><i>sed</i> prints each line until it gets to line 10 and 
+quits. </p>
+<p class="docText">The previous version is much more efficient than its 
+functional equivalent: </p>
+<p class="docText"><tt>-n</tt>
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-3">
+Section 34.3</a></p>
+<pre>% <b>sed -n '1,10p' myfile</b></pre>
+<p class="docText">(especially if <span class="docEmphasis">myfile</span> is a 
+long file) because <i>sed</i> doesn't need to keep reading its input once the 
+patterns in the script are satisfied. </p>
+<p class="docText">One possible use of <span class="docEmphasis">q</span> is to 
+quit a script after you've extracted what you want from a file. There is some 
+inefficiency in continuing to scan through a large file after <i>sed</i> has 
+found what it is looking for. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-23">34.23 Dangers of the sed Quit Command</h3>
+<p class="docText">The <i>sed</i> quit command, <span class="docEmphBold">q</span> 
+(<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-22">Section 
+34.22</a>), is very useful for getting <i>sed</i> to stop processing any more 
+input once you've done what you want. </p>
+<p class="docText">However, you need to be very careful not to use
+<span class="docEmphasis">q</span> in any <i>sed</i> script that writes its 
+edits back to the original file. After <span class="docEmphasis">q</span> is 
+executed, no further output is produced. It should not be used in any case where 
+you want to edit the front of the file and pass the remainder through unchanged. 
+Using <span class="docEmphasis">q</span> in this case is a dangerous beginner's 
+mistake. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-34-SECT-24">34.24 sed Newlines, Quoting, and Backslashes in a 
+Shell Script</h3>
+<p class="docText">Feeding <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) newlines is easy; the real trick is getting them past the C shell and 
+its derivatives (<i>tcsh</i> has the same problem, on the systems where we've 
+tested it). </p>
+<p class="docText">The <i>sed</i> documentation says that in order to insert 
+newlines in substitute commands, you should quote them with backslashes. 
+[Surround the commands with single quotes (<tt>'</tt>), as Chris has. If you use 
+double quotes (<tt>&quot;</tt>), this script will become <tt>s/foo/bar/</tt> because 
+of <span class="docEmphBold">the way quoting works with backslashes and newlines</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>). <span class="docEmphasis">— JP</span>]: </p>
+<pre>+sed -e 's/foo/b\
+a\
+r/'</pre>
+<p class="docText">Indeed, this works quite well in the Bourne shell and 
+derivatives, such as <i>bash</i>, which do what I consider
+<span class="docEmphBold">the proper thing</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) with this input. The C shell, however, thinks it is smarter than you 
+are and <span class="docEmphBold">removes the trailing backslashes</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">Section 
+27.13</a>), and instead you must type: </p>
+<pre>+sed -e 's/foo/b\\
+a\\
+r/'</pre>
+<p class="docText">Probably the best solution is to place your <i>sed</i> 
+commands <span class="docEmphBold">in a separate file</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-3">Section 
+34.3</a>) to keep the shell's sticky fingers off them. </p>
+<p class="docText"><span class="docEmphasis">— CT </span></p>
+<blockquote>
+<p class="docFootnote" id="EN34-1"><a class="docLink" href="#ENB34-1">[1]</a>&nbsp;&nbsp;Note that this can lead to confusion when the same line is matched by several 
+patterns and then printed, once per match!</p></blockquote>
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 33.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 35.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

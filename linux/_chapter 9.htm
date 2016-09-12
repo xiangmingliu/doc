@@ -1,0 +1,1552 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 9</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 8.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 10.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 9. Finding Files with find</h2>
+
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-1">9.1 How to Use find</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-2">9.2 Delving Through a Deep Directory Tree</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-3">9.3 Don't Forget -print</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-4">9.4 Looking for Files with Particular Names</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-5">9.5 Searching for Old Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-6">9.6 Be an Expert on find Search Operators</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-7">9.7 The Times That find Finds</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-8">9.8 Exact File-Time Comparisons</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-9">9.9 Running Commands on What You Find</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-10">9.10 Using<i> </i>-exec to Create Custom Tests</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-11">9.11 Custom -exec Tests Applied</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-12">9.12 Finding Many Things with One Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-13">9.13 Searching for Files by Type</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-14">9.14 Searching for Files by Size</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-15">9.15 Searching for Files by Permission</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-16">9.16 Searching by Owner and Group</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-17">9.17 Duplicating a Directory Tree</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-18">9.18 Using &quot;Fast find&quot; Databases</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-19">9.19 Wildcards with &quot;Fast find&quot; Database</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-20">9.20 Finding Files (Much) Faster with a find Database</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-21">9.21 grepping a Directory Tree</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-22">9.22 lookfor: Which File Has That Word?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-23">9.23 Using Shell Arrays to Browse Directories</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-24">9.24 Finding the (Hard) Links to a File</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-25">9.25 Finding Files with -prune</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-26">9.26 Quick finds in the Current Directory</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-27">9.27 Skipping Parts of a Tree in find</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-9-SECT-28">9.28 Keeping find from Searching Networked Filesystem</a></li>
+</ul>
+
+
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-1">9.1 How to Use find</h3>
+<p class="docText">The utility <i>find</i> is one of the most useful and 
+important of the Unix utilities. It finds files that match a given set of 
+parameters, ranging from the file's name to its modification date. In this 
+chapter, we'll be looking at many of the things it can do. As an introduction, 
+here's a quick summary of its features and basic operators: </p>
+<pre>% <b>find </b> <i>path operators </i></pre>
+<p class="docText">where <tt><i>path</i></tt> is one or more directories in 
+which <i>find</i> will begin to search and <i>operators</i> (or, in more 
+customary jargon, <i>options</i>) tell <i>find</i> which files you're interested 
+in. The <i>operators</i> are as follows: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">-name</span> <tt><i>
+  filename</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Find files with the given <tt><i>filename</i></tt>. This is 
+  the most commonly used operator. <tt><i>filename</i></tt> may include 
+  wildcards, but if it does, they must be quoted to prevent the shell from 
+  interpreting the wildcards. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-perm</span> <tt><i>
+  mode</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Find files with the given access mode. You must give the 
+  access mode in octal. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-type</span> <tt><i>c</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Find the files of the given type, specified by <tt><i>c</i></tt>.
+  <tt><i>c</i></tt> is a one-letter code; for example, <tt>f</tt> for a plain 
+  file, <tt>b</tt> for a block special file, <tt>l</tt> for a symbolic link, and 
+  so forth. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-user</span> <tt><i>
+  name</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Find files belonging to user <tt><i>name</i></tt>. <tt><i>
+  name</i></tt> may also be a user ID number. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-group</span> <tt><i>
+  name</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Find files belonging to group <tt><i>name</i></tt>. <tt><i>
+  name</i></tt> may also be a group ID number. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-size</span> <tt><i>n</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Find files that are <tt><i>n</i></tt> blocks long. A block 
+  usually equals 512 bytes. The notation <tt>+<i>n</i></tt> says &quot;find files 
+  that are over <tt><i>n</i></tt> blocks long.&quot; The notation <tt><i>n</i>c</tt> 
+  says &quot;find files that are <tt><i>n</i></tt> characters long.&quot; Can you guess 
+  what <tt>+<i>n</i>c</tt> means? </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-inum</span> <tt><i>n</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Find files with the inode number <tt><i>n</i></tt>.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-atime</span> <tt><i>n</i></tt>
+  </span></dt>
+  <dd>
+  <p class="docList">Find files that were accessed <tt><i>n</i></tt> days ago.
+  <tt>+<i>n</i></tt> means &quot;find files that were accessed over <tt><i>n</i></tt> 
+  days ago&quot; (i.e., not accessed in the last <tt><i>n</i></tt> days). <tt>-<i>n</i></tt> 
+  means &quot;find files that were accessed less than <tt><i>n</i></tt> days ago&quot; 
+  (i.e., accessed in the last <tt><i>n</i></tt> days). </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-mtime</span> <tt><i>n</i></tt>
+  </span></dt>
+  <dd>
+  <p class="docList">Similar to<i> -atime</i>, except that it checks the time 
+  the file's contents were modified. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-ctime</span> <tt><i>n</i></tt>
+  </span></dt>
+  <dd>
+  <p class="docList">Similar to <i>-atime</i>, except that it checks the time 
+  the inode was last changed. &quot;Changed&quot; means that the file was modified or that 
+  one of its attributes (for example, its owner) was changed. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-newer</span> <tt><i>
+  file</i></tt> </span></dt>
+  <dd>
+  <p class="docList">Find files that have been modified more recently than <tt>
+  <i>file</i></tt>. </dd>
+</dl>
+<p class="docText">You might want to take some action on files that match 
+several criteria. So we need some way to combine several operators: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><tt><i>operator1</i></tt>
+  <span class="docMonofont">-a</span> <tt><i>operator2</i></tt> </span></dt>
+  <dd>
+  <p class="docList">Find files that match both <tt><i>operator1</i></tt> and
+  <tt><i>operator2</i></tt>. The <tt>-a</tt> isn't strictly necessary; when two 
+  search parameters are provided, one after the other, <i>find</i> assumes you 
+  want files that match both conditions. </dd>
+  <dt><span class="docPubcolor"><tt><i>operator1</i></tt>
+  <span class="docMonofont">-o</span> <tt><i>operator2</i></tt> </span></dt>
+  <dd>
+  <p class="docList">Find files that match either <tt><i>operator1</i></tt> or
+  <tt><i>operator2</i></tt>. </dd>
+  <dt><span class="docPubcolor">! <tt><i>operator</i></tt> </span></dt>
+  <dd>
+  <p class="docList">Find all files that do <span class="docEmphasis">not</span> 
+  match the given <tt><i>operator</i></tt>. The <tt>!</tt> performs a logical 
+  NOT operation. </dd>
+  <dt><span class="docPubcolor">\( <tt><i>expression</i></tt> \) </span></dt>
+  <dd>
+  <p class="docList">Logical precedence; in a complex expression, evaluate this 
+  part of the <tt><i>expression</i></tt> before the rest. </dd>
+</dl>
+<p class="docText">Another group of operators tells <i>find</i> what action to 
+take when it locates a file: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">-print</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Print the file's name on standard output. On most modern <i>
+  find</i>s, this is the default action if no action is given. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-ls</span></span> </dt>
+  <dd>
+  <p class="docList">List the file's name on standard output with a format like
+  <tt>ls</tt> <tt>-l</tt>. (Not on older versions.) </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-exec</span> <tt><i>
+  command</i></tt> </span></dt>
+  <dd>
+  <p class="docList">Execute <tt><i>command</i></tt>. To include the pathname of 
+  the file that's just been found in <tt><i>command</i></tt>, use the special 
+  symbol <tt>{}</tt>. <tt><i>command</i></tt> must end with a backslash followed 
+  by a semicolon (<tt>\;</tt>). For example: </p>
+  <pre>% <b>find . -name &quot;*.o&quot; -exec rm -f {} \;</b></pre>
+  <p class="docList">tells <i>find</i> to delete any files whose names end in
+  <tt>.o</tt>. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-ok</span> <tt><i>
+  command</i></tt> </span></dt>
+  <dd>
+  <p class="docList">Same as <tt><b>-exec</b></tt>, except that <i>find</i> 
+  prompts you for permission before executing <tt><i>command</i></tt>. This is a 
+  useful way to test <i>find</i> commands. </dd>
+</dl>
+<p class="docText">A last word: <i>find</i> is one of the tools that vendors 
+frequently fiddle with, adding (or deleting) a few operators that they like (or 
+dislike). The GNU version, in particular, has many more. The operators listed 
+here should be valid on virtually any system. If you check your manual page, you 
+may find others. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-2">9.2 Delving Through a Deep Directory Tree</h3>
+<p class="docText">The first, most obvious, use of this utility is <i>find</i>'s 
+ability to locate old, big, or unused files whose locations you've forgotten. In 
+particular, <i>find</i>'s most fundamentally important characteristic is its 
+ability to travel down subdirectories. </p>
+<p class="docText">Normally the shell provides the argument list to a command. 
+That is, Unix programs are frequently given filenames and not directory names. 
+Only a few programs can be given a directory name and march down the directory 
+searching for subdirectories. The programs <i>find</i>,
+<span class="docEmphBold">tar</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-3">Section 
+38.3</a>), <i>du</i>, and <i>diff</i> do this. Some versions of
+<span class="docEmphBold">chmod</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-5">Section 
+50.5</a>), <i>chgrp</i>, <i>ls</i>, <i>rm</i>, and <i>cp</i> will, but only if a
+<i>-r</i> or <i>-R</i> option is specified. </p>
+<p class="docText">In general, most commands do not understand directory 
+structures and rely on the shell to expand wildcards to directory names. That 
+is, to delete all files whose names end with a <tt>.o</tt> in a group of 
+directories, you could type: </p>
+<pre>% <b>rm *.o */*.o */*/*.o</b></pre>
+<p class="docText">Not only is this tedious to type, it may not find all of the 
+files you are searching for. The shell has certain blind spots. It will not 
+match files in directories whose names start with a dot. And, if any files match
+<tt>*/*/*/*.o</tt>, they would not be deleted. </p>
+<p class="docText">Another problem is typing the previous command and getting 
+the error &quot;Arguments too long.&quot; This means the shell would expand too many 
+arguments from the wildcards you typed. </p>
+<p class="docText"><i>find</i> is the answer to these problems.</p>
+<p class="docText">A simple example of <i>find</i> is using it to print the 
+names of all the files in the directory and all subdirectories. This is done 
+with the simple command: </p>
+<pre>% <b>find . -print</b></pre>
+<p class="docText">The first arguments to <i>find</i> are directory and file 
+pathnames — in the example, a dot (.) is one name for the current directory. The 
+arguments after the pathnames always start with a minus sign (<tt>-</tt>) and 
+tell <i>find</i> what to do once it finds a file; these are the search 
+operators. In this case, the filename is printed. </p>
+<p class="docText">You can use the tilde (<tt>~</tt>), as well as particular 
+paths. For example: </p>
+<pre>% <b>find ~ ~barnett /usr/local -print</b></pre>
+<p class="docText">And if you have a very slow day, you can type:</p>
+<pre>% <b>find / -print</b></pre>
+<p class="docText">This command will list every file on the system. This is okay 
+on single-user workstations with their own disks. However, it can tie up disks 
+on multiuser systems enough to make users think of gruesome crimes! If you 
+really need that list and your system has fast <i>find</i> or<i> locate</i>, try 
+the command <tt>find '/*'</tt> or <tt>locate ' *'</tt> instead. </p>
+<p class="docText"><i>find</i> sends its output to standard output, so once 
+you've &quot;found&quot; a list of filenames, you can pass them to other commands. One way 
+to use this is with command substitution: </p>
+<pre>% <b>ls -l `find . -print</b>`</pre>
+<p class="docText">The <i>find</i> command is executed, and its output replaces 
+the backquoted string. <i>ls</i> sees the output of <i>find</i> and doesn't even 
+know <i>find</i> was used. </p>
+<p class="docText">An alternate method uses the <i>xargs</i> command. <i>xargs</i> 
+and <i>find</i> work together beautifully. <i>xargs</i> executes its arguments 
+as commands and reads standard input to specify arguments to that command. <i>
+xargs</i> knows the maximum number of arguments each command line can handle and 
+does not exceed that limit. While the command: </p>
+<pre>% <b>ls -ld `find / -print`</b></pre>
+<p class="docText">might generate an error when the command line is too large, 
+the equivalent command using <i>xargs</i> will never generate that error: </p>
+<pre>% <b>find / -print | xargs ls -ld</b></pre>
+<p class="docText"><span class="docEmphasis">—BB and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-3">9.3 Don't Forget -print</h3>
+<p class="docText">&quot;Why didn't <i>find</i> find my file?&quot; I wondered sometimes. 
+&quot;I know it's there!&quot; </p>
+<p class="docText">More often than not, I'd forgotten to use <i>-print</i>. 
+Without <i>-print</i> (or <i>-ls</i>, on versions of <i>find</i> that have it),
+<i>find</i> may not print any pathnames. For a long time, this quirk of <i>find</i> 
+confused new users, so most modern versions of <i>find</i> will assume <i>-print</i> 
+if you don't supply an action; some will give you an error message instead. If 
+you don't get the output you expected from <i>find</i>, check to make sure that 
+you specified the action you meant. </p>
+<p class="docText"><span class="docEmphasis">—JP and DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-4">9.4 Looking for Files with Particular Names</h3>
+<p class="docText">You can look for particular files by using an expression with
+<span class="docEmphBold">wildcards</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-3">Section 
+28.3</a>) as an argument to the <i>-name</i> operator. Because the shell also 
+interprets wildcards, it is necessary to quote them so they are passed to <i>
+find</i> unchanged. Any kind of quoting can be used: </p>
+<pre>% <b>find . -name \*.o -print</b>
+% <b>find . -name '*.o' -print</b>
+% <b>find . -name &quot;[a-zA-Z]*.o&quot; -print</b></pre>
+<p class="docText">Any directory along the path to the file is not matched with 
+the <i>-name</i> operator, merely the name at the end of the path. For example, 
+the previous commands would not match the pathname <i>./subdir.o/afile</i> — but 
+they would match <i>./subdir.o</i> and <i>./src/subdir/prog.o</i>. </p>
+<p class="docText">
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-27">
+Section 9.27</a> shows a way to match directories in the middle of a path. 
+Here's a simpler &quot;find file&quot; alias that can come in very handy: </p>
+<pre><b>alias ff &quot;find . -name '*\!{*}*' -ls&quot;</b></pre>
+<p class="docText">Give it a file or directory name; the alias will give a long 
+listing of any file or directory names that contain the argument. For example:
+</p>
+<pre>% <b>ff ch09</b>
+2796156 4 -rw-r--r--  1 deb  deb  628 Feb  2 10:41 ./oreilly/UPT/book/ch09.sgm</pre>
+<p class="docText"><span class="docEmphasis">—BB and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-5">9.5 Searching for Old Files</h3>
+<p class="docText">If you want to find a file that is seven days old, use the <i>
+-mtime</i> operator: </p>
+<pre>% <b>find . -mtime 7 -print</b></pre>
+<p class="docText">An alternate way is to specify a range of times:</p>
+<pre>% <b>find . -mtime +6 -mtime -8 -print</b></pre>
+<p class="docText"><i>mtime</i> is the last modified time of a file. If you want 
+to look for files that have not been used, check the access time with the <i>-atime</i> 
+argument. Here is a command to list all files that have not been read in 30 days 
+or more: </p>
+<pre>% <b>find . -type f -atime +30 -print</b></pre>
+<p class="docText">It is difficult to find directories that have not been 
+accessed because the <i>find</i> command modifies the directory's access time.
+</p>
+<p class="docText">There is another time associated with each file, called the
+<i>ctime</i>, the inode change time. Access it with the <i>-ctime</i> operator. 
+The <i>ctime</i> will have a more recent value if the owner, group, permission, 
+or number of links has changed, while the file itself has not. If you want to 
+search for files with a specific number of links, use the <i>-links</i> 
+operator. </p>
+<p class="docText">
+<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-2">
+Section 8.2</a> has more information about these three times, and
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-7">
+Section 9.7</a> explains how <i>find</i> checks them. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-6">9.6 Be an Expert on find Search Operators</h3>
+<p class="docText"><i>find</i> is admittedly tricky. Once you get a handle on 
+its abilities, you'll learn to appreciate its power. But before thinking about 
+anything remotely tricky, let's look at a simple <i>find</i> command: </p>
+<pre>% <b>find . -name &quot;*.c&quot; -print</b></pre>
+<p class="docText">The . tells <i>find</i> to start its search in the current 
+directory (.) and to search all subdirectories of the current directory. The <tt>
+-name &quot;*.c&quot;</tt> tells <i>find</i> to find files whose names end in <tt>.c</tt>. 
+The <tt>-print</tt> operator tells <i>find</i> how to handle what it finds, 
+i.e., print the names on standard output. </p>
+<p class="docText">All <i>find</i> commands, no matter how complicated, are 
+really just variations on this one. You can specify many different names, look 
+for old files, and so on; no matter how complex, you're really only specifying a 
+starting point, some search parameters, and what to do with the files (or 
+directories or links or . . . ) you find. </p>
+<p class="docText">The key to using <i>find</i> in a more sophisticated way is 
+realizing that search parameters are really &quot;logical expressions&quot; that <i>find</i> 
+evaluates. That is, <i>find</i>: </p>
+<ul>
+  <li>
+  <p class="docList">Looks at every file, one at a time.</li>
+  <li>
+  <p class="docList">Uses the information in the file's inode to evaluate an 
+  expression given by the command-line operators. </li>
+  <li>
+  <p class="docList">Takes the specified action (e.g., printing the file's name) 
+  if the expression's value is &quot;true.&quot; </li>
+</ul>
+<p class="docText">So, <tt>-name &quot;*.c&quot;</tt> is really a logical expression that 
+evaluates to true if the file's name ends in <tt>.c</tt>. </p>
+<p class="docText">Once you've gotten used to thinking this way, it's easy to 
+use the AND, OR, NOT, and grouping operators. So let's think about a more 
+complicated <i>find</i> command. Let's look for files that end in <tt>.o</tt> or
+<tt>.tmp</tt> AND that are more than five days old, AND let's print their 
+pathnames. We want an expression that evaluates true for files whose names match 
+either <tt>*.o</tt> OR <tt>*.tmp</tt>: </p>
+<pre>-name &quot;*.o&quot; -o -name &quot;*.tmp&quot;</pre>
+<p class="docText">If either condition is true, we want to check the access 
+time. So we put the previous expression within parentheses (quoted with 
+backslashes so the shell doesn't treat the parentheses as subshell operators). 
+We also add a <i>-atime</i> operator: </p>
+<pre>-atime +5 \( -name &quot;*.o&quot; -o -name &quot;*.tmp&quot; \)</pre>
+<p class="docText">The parentheses force <i>find</i> to evaluate what's inside 
+as a unit. The expression is true if &quot;the access time is more than five days ago 
+and \( either the name ends with <tt>.o</tt> or the name ends with <tt>.tmp</tt> 
+\).&quot; If you didn't use parentheses, the expression would mean something 
+different: </p>
+<pre>-atime +5 -name &quot;*.o&quot; -o -name &quot;*.tmp&quot;                 <tt><i>Wrong!</i></tt></pre>
+<p class="docText">When <i>find</i> sees two operators next to each other with 
+no <tt>-o</tt> between, that means AND. So the &quot;wrong&quot; expression is true if 
+&quot;either \( the access time is more than five days ago and the name ends with <tt>
+.o</tt> \) or the name ends with <tt>.tmp</tt>.&quot; This incorrect expression would 
+be true for any name ending with <tt>.tmp</tt>, no matter how recently the file 
+was accessed — the <tt>-atime</tt> doesn't apply. (There's nothing really 
+&quot;wrong&quot; or illegal in this second expression — except that it's not what we 
+want. <i>find</i> will accept the expression and do what we asked — it just 
+won't do what we want.) </p>
+<p class="docText">The following command, which is what we want, lists files in 
+the current directory and subdirectories that match our criteria: </p>
+<pre>% <b>find . -atime +5 \( -name &quot;*.o&quot; -o -name &quot;*.tmp&quot; \) -print</b></pre>
+<p class="docText">What if we wanted to list all files that do
+<span class="docEmphasis">not</span> match these criteria? All we want is the 
+logical inverse of this expression. The NOT operator is an exclamation point (<tt>!</tt>). 
+Like the parentheses, in most shells we need to escape <tt>!</tt> with a 
+backslash to keep the shell from interpreting it before <i>find</i> can get to 
+it. The <tt>!</tt> operator applies to the expression on its right. Since we 
+want it to apply to the entire expression, and not just the <i>-atime</i> 
+operator, we'll have to group everything from <tt>-atime</tt> to <tt>&quot;*.tmp&quot;</tt> 
+within another set of parentheses: </p>
+<pre>% <b>find . \! \( -atime +5 \( -name &quot;*.o&quot; -o -name &quot;*.tmp&quot; \) \) -print</b></pre>
+<p class="docText">For that matter, even <i>-print</i> is an expression; it 
+always evaluates to true. So are <i>-exec</i> and <i>-ok</i>; they evaluate to 
+true when the command they execute returns a zero status. (There are a few 
+situations in which this can be used to good effect.) </p>
+<p class="docText">But before you try anything too complicated, you need to 
+realize one thing. <i>find</i> isn't as sophisticated as you might like it to 
+be. You can't squeeze all the spaces out of expressions, as if it were a real 
+programming language. You need spaces before and after operators like <tt>!</tt>,
+<tt>(</tt>, <tt>)</tt>, and <tt>{}</tt>, in addition to spaces before and after 
+every other operator. Therefore, a command line like the following won't work:
+</p>
+<pre>% <b>find . \!\(-atime +5 \(-name &quot;*.o&quot; -o -name &quot;*.tmp&quot;\)\) -print</b></pre>
+<p class="docText">A true power user will realize that <i>find</i> is relying on 
+the shell to separate the command line into meaningful chunks, or <i>tokens</i>. 
+And the shell, in turn, is assuming that tokens are separated by spaces. When 
+the shell gives <i>find</i> a chunk of characters like <tt>*.tmp))</tt> (without 
+the double quotes or backslashes — the shell took them away), <i>find</i> gets 
+confused; it thinks you're talking about a weird filename pattern that includes 
+a couple of parentheses. </p>
+<p class="docText">Once you start thinking about expressions, <i>find</i>'s 
+syntax ceases to be obscure — in some ways, it's even elegant. It certainly 
+allows you to say what you need to say with reasonable efficiency. </p>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-7">9.7 The Times That find Finds</h3>
+<p class="docText">The times that go with the <i>find</i> operators <i>-mtime</i> 
+, <i>-atime</i>, and <i>-ctime</i> often aren't documented very well. The times 
+are in days: </p>
+<ul>
+  <li>
+  <p class="docList">A number with no sign, for example, <tt>3</tt> (as in <i>-mtime 
+  3</i> or <i>-atime 3</i>), means the 24-hour period that
+  <span class="docEmphasis">ended</span> exactly 3 days ago (in other words, 
+  between 96 and 72 hours ago). </li>
+  <li>
+  <p class="docList">A number with a minus sign (-) refers to the period
+  <span class="docEmphasis">since</span> that 24-hour period. For example, <tt>
+  -3</tt> (as in <i>-mtime -3</i>) is any time between now and 3 days ago (in 
+  other words, between 0 and 72 hours ago). </li>
+  <li>
+  <p class="docList">Naturally, a number with a plus sign (<tt>+</tt>) refers to 
+  the period <span class="docEmphasis">before</span> that 24-hour period. For 
+  example, <tt>+3</tt> (as in <i>-mtime +3</i>) is any time more than 3 days ago 
+  (in other words, more than 96 hours ago). </li>
+</ul>
+<p class="docText">Got that? Then you should see that <i>-atime -2</i> and <i>-atime 
+1</i> are both true on files that have been accessed between 48 and 24 hours 
+ago. (<i>-atime -2</i> is also true on files accessed 24 hours ago or less.) </p>
+<p class="docText">For more exact comparisons, <span class="docEmphBold">use 
+find -newer</span> with <span class="docEmphBold">touch</span>
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-8">
+Section 9.8</a>). </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-8">9.8 Exact File-Time Comparisons</h3>
+<p class="docText">One problem with <i>find</i>'s time operators (<i>-atime</i> 
+and its brethren) is that they don't allow very exact comparisons. They only 
+allow you to specify time to within a day, and sometimes that's just not good 
+enough. You think that your system was corrupted at roughly 4 p.m. yesterday 
+(March 20); you want to find any files that were modified after that point, so 
+you can inspect them. Obviously, you'd like something more precise than &quot;give me 
+all the files that were modified in the last 24 hours.&quot; </p>
+<p class="docText">Some versions of <i>touch</i> , and other freely available 
+commands like it, can create a file with an arbitrary timestamp. That is, you 
+can use <i>touch</i> to make a file that's backdated to any point in the past 
+(or, for that matter, postdated to some point in the future). This feature, 
+combined with <i>find</i>'s <i>-newer</i> operator, lets you make comparisons 
+accurate to one minute or less. </p>
+<p class="docText">For example, to create a file dated 4 p.m., March 20, give 
+the command: </p>
+<pre>% <b>touch -t 03201600 /tmp/4PMyesterday</b></pre>
+<p class="docText">Then to find the files created after this, give the command:</p>
+<pre>% <b>find . -newer /tmp/4PMyesterday -print</b></pre>
+<p class="docText">What about &quot;older&quot; files? Older files are &quot;not newer&quot; files, 
+and <i>find</i> has a convenient NOT operator (<tt>!</tt>) for just this 
+purpose. So let's say that you want to find files that were created between 
+10:46 a.m. on July 3, 1999 and 9:37 p.m. on June 4, 2001. You could use the 
+following commands:<span id="ENB9-1"><a class="docLink" href="#EN9-1"><sup>[1]</sup></a></span>
+</p>
+<pre>% <b>touch -t 199907031046 /tmp/file1</b>
+% <b>touch -t 200106042137 /tmp/file2</b>
+% <b>find . -newer /tmp/file1 \! -newer /tmp/file2 -print</b>
+% <b>rm /tmp/file[12]</b></pre>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-9">9.9 Running Commands on What You Find</h3>
+<p class="docText">Often, when you find a file, you don't just want to see its 
+name; you want to do something, like <span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-2">Section 
+13.2</a>) for a text string. To do this, use the <i>-exec</i> operator. This 
+allows you to specify a command that is executed upon each file that is found.
+</p>
+<p class="docText">The syntax is peculiar and in many cases, it is simpler just 
+to pipe the output of <i>find</i> to <span class="docEmphBold">xargs</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-17">Section 
+28.17</a>). However, there are cases where <i>-exec</i> is just the thing, so 
+let's plunge in and explain its peculiarities. </p>
+<p class="docText">The <i>-exec</i> operator allows you to execute any command, 
+including another <i>find</i> command. If you consider that for a moment, you 
+realize that <i>find</i> needs some way to distinguish the command it's 
+executing from its own arguments. The obvious choice is to use the same 
+end-of-command character as the shell (the semicolon). But since the shell uses 
+the semicolon itself, it is necessary to escape the character with a backslash 
+or quotes. </p>
+<p class="docText">Therefore, every <i>-exec</i> operator ends with the 
+characters <tt>\;</tt>. There is one more special argument that <i>find</i> 
+treats differently: <tt>{}</tt>. These two characters are used as the variable 
+whose name is the file <i>find</i> found. Don't bother rereading that last line: 
+an example will clarify the usage. The following is a trivial case and uses the
+<i>-exec</i> operator with <i>echo</i> to mimic the <i>-print</i> operator: </p>
+<pre>% <b>find . -exec echo {} \;</b></pre>
+<p class="docText">The <span class="docEmphBold">C shell</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-1">Section 
+29.1</a>) uses the characters <tt>{</tt> and <tt>}</tt>, but doesn't change <tt>
+{}</tt> together, which is why it is not necessary to quote these characters. 
+The semicolon must be quoted, however. Quotes can be used instead of a 
+backslash: </p>
+<pre>% <b>find . -exec echo {} ';'</b></pre>
+<p class="docText">as both will sneak the semicolon past the shell and get it to 
+the <i>find</i> command. As I said before, <i>find</i> can even call <i>find</i>. 
+If you wanted to list every symbolic link in every directory owned by a group <i>
+staff</i> under the current directory, you could execute: </p>
+<pre>% <b>find `pwd` -type d -group staff -exec find {} -type l -print \;</b></pre>
+<p class="docText">To search for all files with group-write permission under the 
+current directory and to remove the permission, you can use: </p>
+<pre>% <b>find . -perm -20 -exec chmod g-w {} \;</b></pre>
+<p class="docText">or:</p>
+<pre>% <b>find . -perm -20 -print | xargs chmod g-w </b></pre>
+<p class="docText">The difference between <i>-exec</i> and <i>xargs</i> is 
+subtle. The first one will execute the program once per file, while <i>xargs</i> 
+can handle several files with each process. However, <i>xargs</i> may have 
+problems with filenames that contain embedded spaces. (Versions of <i>xargs</i> 
+that support the <i>-0</i> option can avoid this problem; they expect NUL 
+characters as delimiters instead of spaces, and <i>find</i>'s <i>-print0</i> 
+option generates output that way.) </p>
+<p class="docText">Occasionally, people create a strange file that they can't 
+delete. This could be caused by accidentally creating a file with a space or 
+some control character in the name. <i>find</i> and <i>-exec</i> can delete this 
+file, while <i>xargs</i> could not. In this case, use <i>ls -il</i> to list the 
+files and i-numbers, and use the <i>-inum</i> operator with <i>-exec</i> to 
+delete the file: </p>
+<pre>% <b>find . -inum 31246 -exec rm {} ';'</b></pre>
+<p class="docText">If you wish, you can use <i>-ok</i>, which does the same as
+<i>-exec</i>, except the program asks you to confirm the action first before 
+executing the command. It is a good idea to be cautious when using <i>find</i>, 
+because the program can make a mistake into a disaster. When in doubt, use <i>
+echo</i> as the command. Or send the output to a file, and examine the file 
+before using it as input to <i>xargs</i>. This is how I discovered that <i>find</i> 
+requires <tt>{}</tt> to stand alone in the arguments to <i>-exec</i>. I wanted 
+to rename some files using <tt>-exec mv {} {}.orig</tt>, but <i>find</i> 
+wouldn't replace the <tt>{}</tt> in <tt>{}.orig</tt>. I learned that I have to 
+write a shell script that I tell <i>find</i> to execute. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">GNU <i>find</i> will replace the <tt>{}</tt> in <tt>
+        {}.orig</tt> for you. If you don't have GNU <i>find</i>, a little Bourne 
+        shell <i>while</i> loop with redirected input can handle that too: </p>
+        <pre>$ <b>find ... -print |</b>
+&gt; <b>while read file</b>
+&gt; <b>do mv &quot;$file&quot; &quot;$file.orig&quot;</b>
+&gt; <b>done</b></pre>
+        <p class="docText"><i>find</i> writes the filenames to its standard 
+        output. The <i>while</i> loop and its <i>read</i> command read the 
+        filenames from standard input then make them available as <tt>$file</tt>, 
+        one by one. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-12">
+Section 9.12</a> and
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-27">
+Section 9.27</a> have more examples of <i>-exec</i>. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-10">9.10 Using<i> </i>-exec to Create Custom Tests</h3>
+<p class="docText">Here's something that will really make your head spin. 
+Remember that <i>-exec</i> doesn't necessarily evaluate to &quot;true&quot;; it only 
+evaluates to true if the command it executes returns a zero exit status. You can 
+use this to construct custom <i>find</i> tests. </p>
+<p class="docText">Assume that you want to list files that are &quot;beautiful.&quot; You 
+have written a program called <i>beauty</i> that returns zero if a file is 
+beautiful and nonzero otherwise. (This program can be a shell script, a <i>perl</i> 
+script, an executable from a C program, or anything you like.) </p>
+<p class="docText">Here's an example:</p>
+<pre>% <b>find . -exec beauty {} \; -print</b></pre>
+<p class="docText">In this command, <i>-exec</i> is just another <i>find</i> 
+operator. The only difference is that we care about its value; we're not 
+assuming that it will always be &quot;true.&quot; <i>find</i> executes the <i>beauty</i> 
+command for every file. Then <i>-exec</i> evaluates to true when <i>find</i> is 
+looking at a &quot;beautiful&quot; program, causing <i>find</i> to print the filename. 
+(Excuse us, causing <i>find</i> to evaluate the <i>-print</i>. <tt>:-)</tt>) </p>
+<p class="docText">Of course, this ability is capable of infinite variation. If 
+you're interested in finding beautiful C code, you could use the command: </p>
+<pre>% <b>find . -name &quot;*.[ch]&quot; -exec beauty {} \; -print</b></pre>
+<p class="docText">For performance reasons, it's a good idea to put the <i>-exec</i> 
+operator as close to the end as possible. This avoids starting processes 
+unnecessarily; the <i>-exec</i> command will execute only when the previous 
+operators evaluate to true. </p>
+<p class="docText"><span class="docEmphasis">—JP and ML</span></p>
+<ul>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-11">9.11 Custom -exec Tests Applied</h3>
+<p class="docText">My favorite reason to use <i>find</i> 's <i>-exec</i> is for 
+large recursive <i>grep</i>s. Let's say I want to search through a large 
+directory with lots of subdirectories to find all of the <tt>.cc</tt> files that 
+call the method <tt>GetRaw( )</tt>: </p>
+<pre>% <b>find . -name \*.cc -exec grep -n &quot;GetRaw(&quot; {} \; -print</b>
+58:    string Database::GetRaw(const Name &amp;owner) const {
+67:    string Database::GetRaw(const Name &amp;owner,
+./db/Database.cc
+39:            return new Object(owner, _database-&gt;GetRaw(owner));
+51:    string Object::GetRaw(const Property&amp; property) const {
+52:        return _database-&gt;GetRaw(_owner, property);
+86:            Properties properties(_database-&gt;GetRaw(owner));
+103:        return _database-&gt;GetRaw(_owner);
+./db/Object.cc
+71:        return new DatabaseObject(owner, GetDatabase( ).GetRaw(owner));
+89:            return Sexp::Parse(GetRaw(property));
+92:            SexpPtr parent = Sexp::Parse(GetRaw(&quot;_parent&quot;))-&gt;Eval(this);
+./tlisp/Object.cc</pre>
+<p class="docText">This output is from a real source directory for an open 
+source project I'm working on; it shows me each line that matched my <i>grep</i> 
+along with its line number, followed by the name of the file where those lines 
+were found. Most versions of <i>grep</i> can search recursively (using <i>-R</i>), 
+but they search all files; you need <i>find</i> to <i>grep</i> through only 
+certain files in a large directory tree. </p>
+<p class="docText"><span class="docEmphasis">—JP and DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-12">9.12 Finding Many Things with One Command</h3>
+<p class="docText">Running <i>find</i> is fairly time consuming, and for good 
+reason: it has to read every inode in the directory tree that it's searching. 
+Therefore, combine as many things as you can into a single <i>find</i> command. 
+If you're going to walk the entire tree, you may as well accomplish as much as 
+possible in the process. </p>
+<p class="docText">Let's work from an example. Assume that you want to write a 
+command (eventually for inclusion in a
+<a class="docLink" href="_chapter 27.htm">Chapter 
+27</a> shell script) that sets file-access modes correctly. You want to give 771 
+access to all directories, 600 access for all backup files (<i>*.BAK</i>), 755 
+access for all shell scripts (<i>*.sh</i>), and 644 access for all text files (<i>*.txt</i>). 
+You can do all this with one command: </p>
+<pre>$ <b>find . \( -type d       -a -exec chmod 771 {} \; \) -o \</b>
+<b>         \( -name &quot;*.BAK&quot; -a -exec chmod 600 {} \; \) -o \</b>
+<b>         \( -name &quot;*.sh&quot;  -a -exec chmod 755 {} \; \) -o \</b>
+<b>         \( -name &quot;*.txt&quot; -a -exec chmod 644 {} \; \)</b></pre>
+<p class="docText">Why does this work? Remember that <i>-exec</i> is really just 
+another part of the expression; it evaluates to true when the following command 
+is successful. It isn't an independent action that somehow applies to the whole
+<i>find</i> operation. Therefore, <i>-exec</i> can be mixed freely with <i>-type</i>,
+<i>-name</i>, and so on. </p>
+<p class="docText">However, there's another important trick here. Look at the 
+first chunk of the command — the first statement, that is, between the first 
+pair of <tt>\(</tt> and <tt>\)</tt>. It says, &quot;If this file is a directory and 
+the <i>chmod</i> command executes successfully . . . &quot; Wait. Why doesn't the <i>
+-exec</i> execute a <i>chmod</i> on every file in the directory to see whether 
+it's successful? </p>
+<p class="docText">Logical expressions are evaluated from left to right; in any 
+chunk of the expression, evaluation stops once it's clear what the outcome is. 
+Consider the logical expression &quot;`A AND B' is true.&quot; If A is false, you know 
+that the result of &quot;`A AND B' is true&quot; will also be false — so there's no need 
+to look the rest of the statement, B. </p>
+<p class="docText">So in the previous multilayered expression, when <i>find</i> 
+is looking at a file, it checks whether the file is a directory. If it is, <i>
+-type d</i> is true, and <i>find</i> evaluates the <i>-exec</i> (changing the 
+file's mode). If the file is not a directory, <i>find</i> knows that the result 
+of the entire statement will be false, so it doesn't bother wasting time with 
+the <i>-exec</i>. <i>find</i> goes on to the next chunk after the OR operator — 
+because, logically, if one part of an OR expression isn't true, the next part 
+may be — so evaluation of an OR . . . OR . . . OR . . . expression has to 
+continue until either one chunk is found to be true, or they've all been found 
+to be false. In this case having the directory first is important, so that 
+directories named, for example, <i>blah.BAK</i> don't lose their execute 
+permissions. </p>
+<p class="docText">Of course, there's no need for the <i>-exec</i>s to run the 
+same kind of command. Some could delete files, some could change modes, some 
+could move them to another directory, and so on. </p>
+<p class="docText">One final point. Although understanding our multilayered <i>
+find</i> expression was difficult, it really was no different from a &quot;garden 
+variety&quot; command. Think about what the following command means: </p>
+<pre>% <b>find . -name &quot;*.c&quot; -print</b></pre>
+<p class="docText">There are two operators: <i>-name</i> (which evaluates to 
+true if the file's name ends in <span class="docEmphasis">.c</span>) and <i>
+-print</i> (which is always true). The two operators are ANDed together; we 
+could stick a <i>-a</i> between the two without changing the result at all. If
+<i>-name</i> evaluates to false (i.e., if the file's name doesn't end in
+<span class="docEmphasis">.c</span>), <i>find</i> knows that the entire 
+expression will be false. So it doesn't bother with <i>-print</i>. But if <i>
+-name</i> evaluates to true, <i>find</i> evaluates <i>-print</i> — which, as a 
+side effect, prints the name. </p>
+<p class="docText">As we said in
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-6">
+Section 9.6</a>, <i>find</i>'s business is evaluating expressions — not locating 
+files. Yes, <i>find</i> certainly locates files; but that's really just a side 
+effect. For me, understanding this point was the conceptual breakthrough that 
+made <i>find</i> much more useful. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-13">9.13 Searching for Files by Type</h3>
+<p class="docText">If you are only interested in files of a certain type, use 
+the <tt>-type</tt> argument, followed by one of the characters in
+<a class="docLink" href="#upt3-CHP-9-TABLE-1">Table 9-1</a>. Note, though that 
+some versions of <i>find</i> don't have all of these. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-9-TABLE-1" class="docTableTitle">Table 9-1. find <i>-</i>type characters </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Character</th>
+    <th class="docTableHeader">
+    <p class="docText">Meaning</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>c</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Block special file (&quot;device file&quot;)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>c</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Character special file (&quot;device file&quot;) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>d</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Directory</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>f</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Plain file</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>l</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Symbolic link</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>p</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Named pipe file</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>s</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Socket</td>
+  </tr>
+</table>
+<p class="docText">Unless you are a system administrator, the important types 
+are directories, plain files, or symbolic links (i.e., types <tt>d</tt>, <tt>f</tt>, 
+or <tt>l</tt>). </p>
+<p class="docText">Using the <i>-type</i> operator, here is another way to list 
+files recursively: </p>
+<pre>% <b>find . -type f -print | xargs ls -l</b></pre>
+<p class="docText">It can be difficult to keep track of all the symbolic links 
+in a directory. The next command will find all the symbolic links in your home 
+directory and print the files to which your symbolic links point. <tt>$NF</tt> 
+gives the last field of each line, which holds the name to which a symlink 
+points. If your <i>find</i> doesn't have a <i>-ls</i> operator, pipe to <i>xargs 
+ls -l</i> as previously. </p>
+<pre>% <b>find $HOME -type l -ls | awk '{print $NF}'</b></pre>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-14">9.14 Searching for Files by Size</h3>
+<p class="docText"><i>find</i> has several operators that take a decimal 
+integer. One such argument is <i>-size</i>. The number after this argument is 
+the size of the files in disk blocks. Unfortunately, this is a vague number. 
+Earlier versions of Unix used disk blocks of 512 bytes. Newer versions allow 
+larger block sizes, so a &quot;block&quot; of 512 bytes is misleading. </p>
+<p class="docText">This confusion is aggravated when the command <i>ls -s</i> is 
+used. The <i>-s</i> option supposedly lists the size of the file in blocks. But 
+if your system has a different block size than <i>ls -s</i> has been programmed 
+to assume, it can give a misleading answer. You can put a <tt>c</tt> after the 
+number and specify the size in bytes. To find a file with exactly 1,234 bytes 
+(as in an <i>ls -l</i> listing), type: </p>
+<pre>% <b>find . -size 1234c -print</b></pre>
+<p class="docText">To search for files using a range of file sizes, a minus or 
+plus sign can be specified before the number. The minus sign (<i>-</i>) means 
+less than, and the plus sign (<tt>+</tt>) means greater than. This next example 
+lists all files that are greater than 10,000 bytes, but less than 32,000 bytes:
+</p>
+<pre>% <b>find . -size +10000c -size -32000c -print</b></pre>
+<p class="docText">When more than one qualifier is given, both must be true.</p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-15">9.15 Searching for Files by Permission</h3>
+<p class="docText"><i>find</i> can look for files with specific permissions. It 
+uses an octal number for these permissions. If you aren't comfortable with octal 
+numbers and the way Unix uses them in file permissions,
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-17">
+Section 1.17</a> is good background reading. </p>
+<p class="docText">The string <tt>rw-rw-r--</tt> indicates that you and members 
+of your group have read and write permission, while the world has read-only 
+privilege. The same permissions are expressed as an octal number as 664. To find 
+all <tt>*.o</tt> files with these permissions, use the following: </p>
+<pre>% <b>find . -name \*.o -perm 664 -print</b></pre>
+<p class="docText">To see if you have any directories with write permission for 
+everyone, use this: </p>
+<pre>% <b>find . -type d -perm 777 -print</b></pre>
+<p class="docText">The previous examples only match an exact combination of 
+permissions. If you wanted to find all directories with group write permission, 
+you want to match the pattern <tt>----w----</tt>. There are several combinations 
+that can match. You could list each combination, but <i>find</i> allows you to 
+specify a pattern that can be bitwise ANDed with the permissions of the file. 
+Simply put a minus sign (<i>-</i>) before the octal value. The group write 
+permission bit is octal 20, so the following negative value: </p>
+<pre>% <b>find . -perm -20 -print</b></pre>
+<p class="docText">will match the following common permissions:</p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Permission</th>
+    <th class="docTableHeader">
+    <p class="docText">Octal value</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>rwxrwxrwx</tt></td>
+    <td class="docTableCell">
+    <p class="docText">777</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>rwxrwxr-x</tt></td>
+    <td class="docTableCell">
+    <p class="docText">775</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>rw-rw-rw-</tt></td>
+    <td class="docTableCell">
+    <p class="docText">666</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>rw-rw-r--</tt></td>
+    <td class="docTableCell">
+    <p class="docText">664</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>rw-rw----</tt></td>
+    <td class="docTableCell">
+    <p class="docText">660</td>
+  </tr>
+</table>
+<p class="docText">If you wanted to look for files that the owner can execute 
+(i.e., shell scripts or programs), you want to match the pattern <tt>--x------</tt> 
+by typing: </p>
+<pre>% <b>find . -perm -100 -print</b></pre>
+<p class="docText">When the <tt>-perm</tt> argument has a minus sign, all of the 
+permission bits are examined, including the set user ID, set group ID, and 
+sticky bits. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-16">9.16 Searching by Owner and Group</h3>
+<p class="docText">Often you need to look for a file belonging to a certain user 
+or group. This is done with the <i>-user</i> and <i>-group</i> search operators. 
+You often need to combine this with a search for particular permissions. To find 
+all files that are set user ID (<i>setuid</i>) root, use this: </p>
+<pre>% <b>find . -user root -perm -4000 -print</b></pre>
+<p class="docText">To find all files that are set group ID (<i>setgid</i>) 
+staff, use this: </p>
+<pre>% <b>find . -group staff -perm -2000 -print</b></pre>
+<p class="docText">Instead of using a name or group from <i>/etc/passwd</i> or
+<i>/etc/group</i>, you can use the UID or GID number: </p>
+<pre>% <b>find . -user 0 -perm -4000 -print</b>
+% <b>find . -group 10 -perm -2000 -print</b></pre>
+<p class="docText">Often, when a user leaves a site, his account is deleted, but 
+his files are still on the computer. Some versions of <i>find</i> have <i>-nouser</i> 
+or <i>-nogroup</i> operators to find files with an unknown user or group ID. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-17">9.17 Duplicating a Directory Tree</h3>
+<p class="docText">In many versions of <i>find</i>, the operator <tt>{}</tt>, 
+used with the <i>-exec</i> operator, only works when it's separated from other 
+arguments by whitespace. So, for example, the following command will
+<span class="docEmphasis">not</span> do what you thought it would: </p>
+<pre>% <b>find . -type d -exec mkdir /usr/project/{} \;</b></pre>
+<p class="docText">You might have thought this command would make a duplicate 
+set of (empty) directories, from the current directory and down, starting at the 
+directory <i>/usr/project</i>. For instance, when the <i>find</i> command finds 
+the directory <i>./adir</i>, you would have it execute <i>mkdir /usr/project/./adir</i> 
+(<i>mkdir</i> will ignore the dot; the result is <span class="docEmphasis">/usr/project/adir</span>).
+</p>
+<p class="docText">That doesn't work because those versions of <i>find</i> don't 
+recognize the <tt>{}</tt> in the pathname. The GNU version
+<span class="docEmphasis">does</span> expand <tt>{}</tt> in the middle of a 
+string. On versions that don't, though, the trick is to pass the directory names 
+to <i>sed</i> , which substitutes in the leading pathname: </p>
+<pre>% <b>find . -type d -print | sed 's@^@/usr/project/@' | xargs mkdir</b>
+% <b>find . -type d -print | sed 's@^@mkdir @' | (cd /usr/project; sh)</b></pre>
+<p class="docText">Let's start with the first example. Given a list of directory 
+names, <i>sed</i> substitutes the desired path to that directory at the 
+beginning of the line before passing the completed filenames to
+<span class="docEmphasis">xargs</span> and <i>mkdir</i>. An <tt>@</tt> is used 
+as a <i>sed</i> delimiter because slashes (<tt>/</tt>) are needed in the actual 
+text of the substitution. If you don't have <i>xargs</i>, try the second 
+example. It uses <i>sed</i> to insert the <i>mkdir</i> command, then it changes 
+to the target directory in a subshell where the <i>mkdir</i> commands will 
+actually be executed. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-18">9.18 Using &quot;Fast find&quot; Databases</h3>
+<p class="docText">Berkeley added a handy feature to its <i>find</i> command — 
+if you give it a single argument, it will search a database for file or 
+directory names that match. For example, if you know there's a file named <i>
+MH.eps</i> somewhere on the computer but you don't know where, type the 
+following: </p>
+<pre>% <b>find MH.eps</b>
+/nutshell/graphics/cover/MH.eps</pre>
+<p class="docText">That syntax can be confusing to new users: you have to give
+<i>find</i> just one argument. With more arguments, <i>find</i> searches the 
+filesystem directly. Maybe that's one reason that GNU has a &quot;fast <i>find</i>&quot; 
+utility named <i>locate</i> — and its <i>find</i> utility always searches, as 
+described in the rest of this chapter. The GNU <i>slocate</i> command is a 
+security-enhanced version of <i>locate</i>. In the rest of this article, I'll 
+describe <i>locate</i> — but <i>find</i> with a single argument (as shown 
+previously) works about the same way. </p>
+<p class="docText">The &quot;fast <i>find</i>&quot; database is usually rebuilt every 
+night. So, it's not completely up-to-date, but it's usually close enough. If 
+your system administrator has set this up, the database usually lists all files 
+on the filesystem — although it may not list files in directories that don't 
+have world-access permission. If the database isn't set up at all, you'll get an 
+error like <tt>/usr/lib/find/find.codes: No such file or</tt> <tt>directory</tt>. 
+(If that's the case, you can set up a &quot;fast <i>find</i>&quot; database yourself. Set 
+up your own private <i>locate</i> database, or see
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-20">
+Section 9.20</a>.) </p>
+<p class="docText">Unless you use wildcards, <i>locate</i> does a simple string 
+search, like <i>fgrep</i>, through a list of absolute pathnames. Here's an 
+extreme example: </p>
+<pre>% <b>locate bin</b>
+/bin
+/bin/ar
+   ...
+/home/robin
+/home/robin/afile
+/home/sally/bin
+   ...</pre>
+<p class="docText">You can cut down this output by piping it through <i>grep</i>,
+<i>sed</i>, and so on. But <i>locate</i> and &quot;fast <i>find</i>&quot; also can use 
+wildcards to limit searches.
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-19">
+Section 9.19</a> explains this in more detail. </p>
+<p class="docText"><i>locate</i> has an advantage over the &quot;fast <i>find</i>&quot; 
+command: you can have multiple file databases and you can search some or all of 
+them. <i>locate</i> and <i>slocate</i> come with a database-building program.
+</p>
+<p class="docText">Because <i>locate</i> is so fast, it's worth trying to use 
+whenever you can. Pipe the output to <i>xargs</i> and any other Unix command, or 
+run a shell or Perl script to test its output — almost anything will be faster 
+than running a standard <i>find</i>. For example, if you want a long listing of 
+the files, here are two <i>locate</i> commands to do it: </p>
+<pre>% <b>ls -l `locate whatever</b>`
+% <b>locate whatever | xargs ls -ld</b></pre>
+<p class="docText">There's one problem with that trick. The <i>locate</i> list 
+may be built by <span class="docEmphasis">root</span>, which can see all the 
+files on the filesystem; your <i>ls -l</i> command may not be able to access all 
+files in the list. But <i>slocate</i> can be configured not to show you files 
+you don't have permission to see. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">The <i>locate</i> database may need to be updated on 
+        your machine before you can use <i>locate</i>, if it's not already in 
+        the system's normal <i>cron</i> scripts. Use <i>locate.updatedb</i> to 
+        do this, and consider having it run weekly or so if you're going to use
+        <i>locate</i> regularly. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-19">9.19 Wildcards with &quot;Fast find&quot; Database</h3>
+<p class="docText"><i>locate</i> and all the &quot;fast <i>find</i>&quot; commands I've 
+used can match <span class="docEmphBold">shell wildcards</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+1.13</a>) (<tt>*</tt> , <tt>?</tt>, <tt>[ ]</tt>). If you use a wildcard on one 
+end of the pattern, the search pattern is automatically &quot;anchored&quot; to the 
+opposite end of the string (the end where the wildcard isn't). The shell matches 
+filenames in the same way. </p>
+<p class="docText">The difference between the shell's wildcard matching and <i>
+locate</i> matching is that the shell treats slashes (<tt>/</tt>) in a special 
+manner: you have to type them as part of the expression. In <i>locate</i>, a 
+wildcard matches slashes and any other character. When you use a wildcard, be 
+sure to put quotes around the pattern so the shell won't touch it. </p>
+<p class="docText">Here are some examples:</p>
+<ul>
+  <li>
+  <p class="docList">To find any pathname that ends with <i>bin</i>:</p>
+  <pre>% <b>locate '*bin'</b>
+/bin
+/home/robin
+/home/robin/bin
+   ...</pre>
+  </li>
+  <li>
+  <p class="docList">To find any pathname that ends with <i>/bin</i> (a good way 
+  to find a file or directory named exactly <i>bin</i>): </p>
+  <pre>% <b>locate '*/bin'</b>
+/bin
+/home/robin/bin
+/usr/bin
+   ...</pre>
+  </li>
+  <li>
+  <p class="docList">Typing <tt>locate '*bin*'</tt> is the same as typing <tt>
+  locate bin</tt>. </li>
+  <li>
+  <p class="docList">To match the files in a directory named <i>bin</i>, but not 
+  the directory itself, try something like this: </p>
+  <pre>% <b>locate '*/bin/*'</b>
+/bin/ar
+/bin/cat
+   ...
+/home/robin/bin/prog</pre>
+  </li>
+  <li>
+  <p class="docList">To find the files in <i>/home</i> whose names end with a 
+  tilde (<tt>~</tt>) (these are probably backup files from the Emacs editor):
+  </p>
+  <pre>% <b>locate '/home/*~'</b>
+/home/testfile~
+/home/allan/.cshrc~
+/home/allan/.login~
+/home/dave/.profile~
+   ...</pre>
+  <p class="docList">Notice that the <i>locate</i> asterisk matches dot files, 
+  unlike shell wildcards. </li>
+  <li>
+  <p class="docList">The question mark (<tt>?</tt>) and square brackets (<tt>[ ]</tt>) 
+  operators work, too. They're not quite as useful as they are in the shell 
+  because they match the slashes (<tt>/</tt>) in the pathnames. Here are a 
+  couple of quick examples: </p>
+  <pre>% <b>locate '????'</b>
+/bin
+/etc
+/lib
+/src
+/sys
+/usr
+% <b>locate '/[bel]??'</b>
+/bin
+/etc
+/lib</pre>
+  </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-20">9.20 Finding Files (Much) Faster with a find 
+Database</h3>
+<p class="docText">If you use <span class="docEmphasis">find</span> to search 
+for files, you know that it can take a long time to work, especially when there 
+are lots of directories to search. Here are some ideas for speeding up your <i>
+find</i>s. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">By design, setups like these that build a file 
+        database won't have absolutely up-to-date information about all your 
+        files. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">If your system has &quot;fast <i>find</i>&quot; or <i>locate</i>, 
+that's probably all you need. It lets you search a list of all pathnames on the 
+system. </p>
+<p class="docText">Even if you have &quot;fast <i>find</i>&quot; or <i>locate</i>, it 
+still might not do what you need. For example, those utilities only search for 
+pathnames. To find files by the owner's name, the number of links, the size, and 
+so on, you have to use &quot;slow <i>find</i>.&quot; In that case — or, when you don't 
+have &quot;fast <i>find</i>&quot; or <i>locate</i> — you may want to set up your own 
+version. </p>
+<p class="docText"><i>slocate</i> can build and update its own database (with 
+its <i>-u</i> option), as well as search the database. The basic &quot;fast <i>find</i>&quot; 
+has two parts. One part is a command, a shell script usually named <i>updatedb</i> 
+or <i>locate.updatedb</i>, that builds a database of the files on your system — 
+if your system has it, take a look to see a fancy way to build the database. The 
+other part is the <i>find</i> or <i>locate</i> command itself — it searches the 
+database for pathnames that match the name (regular expression) you type. </p>
+<p class="docText">To make your own &quot;fast <i>find</i>&quot;: </p>
+<ul>
+  <li>
+  <p class="docList">Pick a filename for the database. We'll use <i>$HOME/.fastfind</i> 
+  (some systems use <i>$LOGDIR</i> instead of <i>$HOME</i>). </li>
+  <li>
+  <p class="docList">Design the <i>find</i> command you want to use. The command 
+  to build a database of all the files in your home directory might look like 
+  this: </p>
+  <pre>% <b>cd</b>
+% <b>find . -print | sed &quot;s@^./@@&quot; &gt; .fastfind.new</b>
+% <b>mv -f .fastfind.new .fastfind</b></pre>
+  <p class="docList">That doesn't update the database until the new one is 
+  finished. It also doesn't compress the database. If you're short on disk 
+  space, use this instead: </p>
+  <pre>% <b>cd</b>
+% <b>find . -print | sed &quot;s@^./@@&quot; | gzip &gt; .fastfind.gz</b></pre>
+  <p class="docList">The script starts from your home directory, then uses
+  <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-9">Section 
+  13.9</a>) to strip the start of the pathname (like <tt>./</tt>) from every 
+  entry. (If you're building a database of the whole filesystem, don't do that 
+  part!) To save more space, you can compress with
+  <a class="docLink" href="http://safari.oreilly.com/bzip2" target="_blank">
+  bzip2</a> instead; it's slow, but it saved about 25% of the disk space for my 
+  database. </li>
+  <li>
+  <p class="docList">Set up <span class="docEmphBold">cron</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-3">Section 
+  25.3</a>) or
+  <a class="docLink" href="http://safari.oreilly.com/at" target="_blank">at</a> 
+  to run that <i>find</i> as often as you want — usually once a day, early in 
+  the morning morning, is fine. </li>
+  <li>
+  <p class="docList">Finally, make a shell script (I call mine <i>ffind</i>) to 
+  search the database. If you use <span class="docEmphBold">egrep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-4">Section 
+  13.4</a>), you can search with flexible regular expressions: </p>
+  <pre>egrep &quot;$1&quot; $HOME/.fastfind | sed &quot;s@^@$HOME/@&quot;</pre>
+  <p class="docList">or, for a <i>gzip</i>ped database:</p>
+  <pre>gzcat $HOME/.fastfind.gz | egrep &quot;$1&quot; | sed &quot;s@^@$HOME/@&quot;</pre>
+  <p class="docList">The <i>sed</i> expressions add your home directory's 
+  pathname (like <i>/usr/freddie</i>) to each line. </li>
+</ul>
+<p class="docText">To search the database, type:</p>
+<pre>% <b>ffind somefile</b>
+/usr/freddie/lib/somefile
+% <b>ffind '/(sep|oct)[^/]*$'</b>
+/usr/freddie/misc/project/september
+/usr/freddie/misc/project/october</pre>
+<p class="docText">You can do much more: I'll get you started. If you have room 
+to store more information than just pathnames, you can feed your <i>find</i> 
+output to a command like <i>ls -l</i>. For example, if you do a lot of work with 
+links, you might want to keep the files' i-numbers as well as their names. You'd 
+build your database with a command like this: </p>
+<pre>% <b>cd</b>
+% <b>find . -print | xargs ls -id &gt; .fastfind.new</b>
+% <b>mv -f .fastfind.new .fastfind</b></pre>
+<p class="docText">Or, if your version of <i>find</i> has the handy <i>-ls</i> 
+operator, use the next script. Watch out for really large i-numbers; they might 
+shift the columns and make <i>cut</i> give wrong output. The exact column 
+numbers will depend on your system: </p>
+<pre>% <b>cd</b>
+% <b>find . -ls | cut -c1-7,67- &gt; .fastfind.new</b>
+% <b>mv -f .fastfind.new .fastfind</b></pre>
+<p class="docText">Then, your <i>ffind</i> script could search for files by i-number. 
+For instance, if you had a file with i-number 1234 and you wanted to find all 
+its links: </p>
+<pre>% <b>ffind &quot;^1234 &quot;</b></pre>
+<p class="docText">The space at the end of that regular expression prevents 
+matches with i-numbers like 12345. You could search by pathname in the same way. 
+To get a bit fancier, you could make your <i>ffind</i> a little <i>perl</i> or
+<i>awk</i> script that searches your database by field. For instance, here's how 
+to make <i>awk</i> do the previous i-number search; the output is just the 
+matching pathnames: </p>
+<pre>awk '$1 == 1234 {print $2}' $HOME/.fastfind</pre>
+<p class="docText">With some information about Unix shell programming and 
+utilities like <i>awk</i>, the techniques in this article should let you build 
+and search a sophisticated file database — and get information much faster than 
+with plain old <i>find</i>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-21">9.21 grepping a Directory Tree</h3>
+<p class="docText">Want to search every file, in some directory and all its 
+subdirectories, to find the file that has a particular word or string in it? 
+That's a job for <i>find</i> and one of the <i>grep</i> commands. </p>
+<p class="docText">For example, to search all the files for lines starting with 
+a number and containing the words &quot;SALE PRICE,&quot; you could use: </p>
+<pre>% <b>egrep '^[0-9].*SALE PRICE' `find . -type f -print`</b>
+./archive/ad.1290: 1.99 a special SALE PRICE
+./archive/ad.0191: 2.49 a special SALE PRICE</pre>
+<p class="docText">Using the backquotes (<tt>``</tt>) might not work. If <i>find</i> 
+finds too many files, <i>egrep</i>'s command-line arguments can get too long. 
+Using <i>xargs</i> can solve that; it splits long sets of arguments into smaller 
+chunks. There's a problem with that: if the last &quot;chunk&quot; has just one filename 
+and the <i>grep</i> command finds a match there, <i>grep</i> won't print the 
+filename: </p>
+<pre>% <b>find . -type f -print | xargs fgrep '$12.99</b>'
+./old_sales/ad.0489: Get it for only $12.99!
+./old_sales/ad.0589: Last chance at $12.99, this month!
+Get it for only $12.99 today.</pre>
+<p class="docText">The answer is to add the Unix &quot; empty file,&quot; <i>/dev/null</i>. 
+It's a filename that's guaranteed never to match but always to leave <i>fgrep</i> 
+with at least two filenames: </p>
+<pre>% <b>find . -type f -print | xargs fgrep '$12.99' /dev/null</b></pre>
+<p class="docText">Then <i>xargs</i> will run commands like these:</p>
+<pre>fgrep '$12.99' /dev/null ./afile ./bfile ...
+fgrep '$12.99' /dev/null ./archives/ad.0190 ./archives/ad.0290 ...
+fgrep '$12.99' /dev/null ./old_sales/ad.1289</pre>
+<p class="docText">That trick is also good when you use a
+<span class="docEmphBold">wildcard</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-3">Section 
+28.3</a>) and only one file might match it. <i>grep</i> won't always print the 
+file's name unless you add <i>/dev/null</i>: </p>
+<pre>% <b>grep &quot;whatever&quot; /dev/null /x/y/z/a*</b></pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-22">9.22 lookfor: Which File Has That Word?</h3>
+<p class="docText">The following simple shell script, <i>lookfor</i>, uses
+<span class="docEmphasis">find</span> to look for all files in the specified 
+directory hierarchy that have been modified within a certain time, and it passes 
+the resulting names to <span class="docEmphasis">grep</span> to scan for a 
+particular pattern. For example, the command: </p>
+<pre>% <b>lookfor /work -7 tamale enchilada</b></pre>
+<p class="docText">would search through the entire <i>/work</i> filesystem and 
+print the names of all files modified within the past week that contain the 
+words &quot;tamale&quot; or &quot;enchilada.&quot; (For example, if this article is stored in <i>
+/work</i>, <i>lookfor</i> should find it.) </p>
+<p class="docText">The arguments to the script are the pathname of a directory 
+hierarchy to search in (<tt>$1</tt>), a time (<tt>$2</tt>), and one or more text 
+patterns (the other arguments). This simple but slow version will search for an 
+(almost) unlimited number of words: </p>
+<pre>#!/bin/sh
+temp=/tmp/lookfor$$
+trap 'rm -f $temp; exit' 0 1 2 15
+find $1 -mtime $2 -print &gt; $temp
+shift; shift
+for word
+do grep -i &quot;$word&quot; `cat $temp` /dev/null
+done</pre>
+<p class="docText">That version runs <i>grep</i> once to search for each word. 
+The <i>-i</i> option makes the search find either upper- or lowercase letters. 
+Using <i>/dev/null</i> makes sure that <i>grep</i> will print the filename. 
+Watch out, though: the list of filenames may get too long. </p>
+<p class="docText">The next version is more limited but faster. It builds a 
+regular expression for <i>egrep</i> that finds all the words in one pass through 
+the files. If you use too many words, <i>egrep</i> will say <tt>Regular</tt> <tt>
+expression</tt> <tt>too</tt> <tt>long</tt>. Also, your <i>egrep</i> may not have 
+a <i>-i</i> option; you can just omit it. This version also uses <i>xargs</i>; 
+though <i>xargs</i> has its problems. </p>
+<pre>#!/bin/sh
+where=&quot;$1&quot;
+when=&quot;$2&quot;
+shift; shift
+# Build egrep expression like (word1|word2|...) in $expr
+for word
+do
+    case &quot;$expr&quot; in
+    &quot;&quot;) expr=&quot;($word&quot; ;;
+    *) expr=&quot;$expr|$word&quot; ;;
+    esac
+done
+expr=&quot;$expr)&quot;
+  
+find $where -mtime $when -print | xargs egrep -i &quot;$expr&quot; /dev/null</pre>
+<p class="docText"><span class="docEmphasis">—JP and TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-23">9.23 Using Shell Arrays to Browse Directories</h3>
+<p class="docText">Even a graphical file manager might not be enough to help you 
+step through a complicated directory tree with multiple layers of 
+subdirectories. Which directories have you visited so far, and which are left to 
+go? This article shows a simple way, using shell arrays, to step through a tree 
+directory-by-directory. The technique is also good for stepping through lists of 
+files — or almost any collection of things, over a period of time — of which you 
+don't want to miss any. At the end are a couple of related tips on using arrays.
+</p>
+<h4  id="upt3-CHP-9-SECT-23.1" class="docSection2Title">9.23.1 Using the Stored Lists</h4>
+<p class="docText">Let's start with a quick overview of expanding array values; 
+then we'll look at specifics for each shell. A dollar sign (<tt>$</tt>) before 
+the name of a shell variable gives you its value. In the C shells and <i>zsh</i>, 
+that gives all members of an array. But, in the Korn shell and <i>bash2</i>, 
+expanding an array value without the index gives just the first member. To pick 
+out a particular member, put its number in square brackets after the name; in <i>
+ksh</i> and <i>bash2</i>, you also need to use curly braces (<tt>{}</tt>). A 
+hash mark (<tt>#</tt>) gives the number of members. Finally, you can use range 
+operators to choose several members of an array. </p>
+<p class="docText">Here's a practical example that you might use, interactively, 
+at a shell prompt. You're cleaning your home directory tree. You store all the 
+directory names in an array named <tt>d</tt>. When you've cleaned one directory, 
+you go to the next one. This way, you don't miss any directories. (To keep this 
+simple, I'll show an example with just four directories.) </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">If you don't want to use shell commands to browse the 
+        directories, you could use a command to launch a graphical file browser 
+        on each directory in the array. For instance, make the <i>nextdir</i> 
+        alias launch Midnight Commander with <i>mc $d[1]</i>. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Let's start with the C shell: </p>
+<pre>% <b>set d=(`find $home -type d -print`)</b>
+% <b>echo $#d directories to search: $d</b>
+4 directories to search: /u/ann /u/ann/bin /u/ann/src /u/ann/lib
+% <b>alias nextdir 'shift d; cd $d[1]; pwd; ls -l'</b>
+% <b>cd $d[1]</b>
+   ...clean up first directory...
+% <b>nextdir</b>
+/u/ann/bin
+total 1940
+lrwxrwxrwx    1 ann    users      14 Feb  7  2002 ] -&gt; /usr/ucb/reset
+-r-xr-xr-x    1 ann    users    1134 Aug 23  2001 addup
+   ...clean up bin directory...
+% <b>nextdir</b>
+/u/ann/src
+   ...do other directories, one by one...
+% <b>nextdir</b>
+d: Subscript out of range.</pre>
+<p class="docText">You store the array, list the number of directories, and show 
+their names. You then create a <i>nextdir</i> alias that changes to the next 
+directory to clean. First, use the C shell's <i>shift</i> command; it &quot;throws 
+away&quot; the first member of an array so that the second member becomes the first 
+member, and so on. Next, <i>nextdir</i> changes the current directory to the 
+next member of the array and lists it. (Note that members of a C shell array are 
+indexed starting at 1 — unlike the C language, which the C shell emulates, where 
+indexes start at 0. So the alias uses <i>cd $d[1]</i>.) At the end of our 
+example, when there's not another array member to <i>shift</i> away, the command
+<i>cd $d[1]</i> fails; the rest of the <i>nextdir</i> alias isn't executed. </p>
+<p class="docText">Bourne-type shells have a different array syntax than the C 
+shell. They don't have a <i>shift</i> command for arrays, so we'll use a 
+variable named <tt>n</tt> to hold the array index. Instead of aliases, let's use 
+a more powerful shell function. We'll show <i>ksh</i> and <i>bash2</i> arrays, 
+which are indexed starting at 0. (By default, the first <i>zsh</i> array member 
+is number 1.) The first command that follows, to store the array, is different 
+in <i>ksh</i> and <i>bash2</i> — but the rest of the example is the same on both 
+shells. </p>
+<pre>bash2$ <b>d=(`find $HOME -type d -print`)</b>
+ksh$ <b>set -A d `find $HOME -type d -print`</b>
+  
+$ <b>echo ${#d[*]} directories to search: ${d[*]}</b>
+4 directories to search: /u/ann /u/ann/bin /u/ann/src /u/ann/lib
+$ <b>n=0</b>
+$ <b>nextdir( ) {</b>
+&gt;   <b>if [ $((n += 1)) -lt ${#d[*]} ]</b>
+&gt;   <b>then cd ${d[$n]}; pwd; ls -l</b>
+&gt;   <b>else echo no more directories</b>
+&gt;   <b>fi</b>
+&gt; <b>}</b>
+$ <b>cd ${d[0]}</b>
+   ...clean up first directory...
+$ <b>nextdir</b>
+/u/ann/bin
+total 1940
+lrwxrwxrwx    1 ann    users      14 Feb  7  2002 ] -&gt; /usr/ucb/reset
+-r-xr-xr-x    1 ann    users    1134 Aug 23  2001 addup
+   ...do directories, as in C shell example...
+$ <b>nextdir</b>
+no more directories</pre>
+<p class="docText">If you aren't a programmer, this may look intimidating — like 
+something you'd never type interactively at a shell prompt. But this sort of 
+thing starts to happen — without planning, on the spur of the moment — as you 
+learn more about Unix and what the shell can do. </p>
+<h4  id="upt3-CHP-9-SECT-23.2" class="docSection2Title">9.23.2 Expanding Ranges</h4>
+<p class="docText">We don't use quite all the array-expanding operators in the 
+previous examples, so here's a quick overview of the rest. To expand a range of 
+members in <i>ksh</i> and <i>bash2</i>, give the first and last indexes with a 
+dash (<tt>-</tt>) between them. For instance, to expand the second, third, and 
+fourth members of array <tt>arrname</tt>, use <i>${arrname[1-3]}</i>. In <i>zsh</i>, 
+use a comma (,) instead — and remember that the first <i>zsh</i> array member is 
+number 1; so you'd use <i>${arrname[2-4]}</i> in <i>zsh</i>. C shell wants <i>
+$arrname[2-4]</i>. If the last number of a range is omitted (like <i>
+${arrname[2-]}</i> or <i>$arrname[2-]</i>), this gives you all members from 2 
+through the last. </p>
+<p class="docText">Finally, in all shells except <i>zsh</i>, remember that 
+expanded values are split into words at space characters. So if members of an 
+array have spaces in their values, be careful to quote them. For instance, Unix 
+directory names can have spaces in them — so we really should have used <tt>cd 
+&quot;$d[1]&quot;</tt> in the <i>newdir</i> alias and <tt>cd &quot;${d[$n]}&quot;</tt> in the <i>
+newdir</i> function.<span id="ENB9-2"><a class="docLink" href="#EN9-2"><sup>[2]</sup></a></span> 
+If we hadn't done this, the <i>cd</i> command could have gotten multiple 
+argument words. But it would only pay attention to the first argument, so it 
+would probably fail. </p>
+<p class="docText">To expand a range of members safely, such as <tt>${foo[1-3]}</tt> 
+in <i>bash2</i> and <i>ksh</i>, you need ugly expressions without range 
+operators, such as <tt>&quot;${foo[1]}&quot;</tt> <tt>&quot;${foo[2]}&quot; &quot;${foo[3]}&quot;</tt>. The C 
+shell has a <tt>:q</tt> string modifier that says &quot;quote each word,&quot; so in <i>
+csh</i> you can safely use <tt>$foo[1-3]:q</tt>. It's hard to quote array 
+values, though, if you don't know ahead of time how many there are! So, using
+<tt>${foo[*]}</tt> to give all members of the <i>foo</i> array suffers from 
+word-splitting in <i>ksh</i> and <i>bash2</i> (but not in <i>zsh</i>, by 
+default). In <i>ksh</i> and <i>bash2</i>, though, you can use <tt>&quot;${foo[@]}&quot;</tt>, 
+which expands into a quoted list of the members; each member isn't split into 
+separate words. In <i>csh</i>, <tt>$foo[*]:q</tt><i> </i>does the trick. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-24">9.24 Finding the (Hard) Links to a File</h3>
+<p class="docText">Here is how to find hard links, as well as a brief look at 
+the Unix filesystem from the user's viewpoint. Suppose you are given the 
+following: </p>
+<pre>% <b>ls -li /usr/bin/at</b>
+8041 -r-sr-xr-x  4 root  wheel  19540 Apr 21  2001 /usr/bin/at*</pre>
+<p class="docText">In other words, there are four links, and <i>/usr/bin/at</i> 
+is one of four names for inode 8041. You can find the full names of the other 
+three links by using <i>find</i>. However, just knowing the inode number does 
+not tell you everything. In particular, inode numbers are only unique to a given 
+filesystem. If you do a <i>find / -inum 8041 -print</i>, you may find more than 
+four files, if inode 8041 is also on another filesystem. So how do you tell 
+which ones refer to the same file as <i>/usr/bin/at</i>? </p>
+<p class="docText">The simplest way is to figure out the filesystem on which <i>
+/usr/bin/at</i> lives by using <i>df</i>: </p>
+<pre>% <b>df /usr/bin/at</b>
+Filesystem   1K-blocks     Used    Avail Capacity  Mounted on
+/dev/ad0s1f    3360437  1644024  1447579    53%    /usr</pre>
+<p class="docText">Then start your find at the top of that filesystem, and use
+<i>-xdev</i> to tell it not to search into other filesystems: </p>
+<pre>% <b>find /usr -xdev -inum 8041 -print</b>
+/usr/bin/at
+/usr/bin/atq
+/usr/bin/atrm
+/usr/bin/batch</pre>
+<p class="docText">Some manpages list <i>-x</i> as an alternative to <i>-xdev</i>;
+<i>-xdev</i> is generally more portable. </p>
+<p class="docText"><span class="docEmphasis">—DJPH and CT</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-25">9.25 Finding Files with -prune</h3>
+<p class="docText"><i>find</i> has lots of operators for finding some particular 
+kinds of files. But <i>find</i> won't stop at your current directory — if there 
+are subdirectories, it looks there too. How can you tell it &quot;only the current 
+directory&quot;? Use <i>-prune</i>. </p>
+<p class="docText">Most <i>find</i>s also have a <i>-maxdepth</i> option that 
+gives the maximum number of directory levels to descend. For example, <i>find . 
+-maxdepth 0</i> operates only on the current directory. </p>
+<p class="docText"><i>-prune</i> cuts short <i>find</i>'s search at the current 
+pathname. So, if the current pathname is a directory, <i>find</i> won't descend 
+into that directory for any further searches. The command line looks kind of 
+hairy. Here's one to find all files modified in the last 24 hours from the 
+current directory: </p>
+<pre>% <b>date</b>
+Tue Feb 12 19:09:35 MST 2002
+% <b>ls -l</b>
+total 0
+drwxr-xr-x  1 deb  deb  0 Feb 12 12:11 adir
+-rw-r--r--  1 deb  deb  0 Feb 12 19:08 afile
+-rw-r--r--  1 deb  deb  0 Jan 10 10:37 bfile
+-rw-r--r--  1 deb  deb  0 Feb 11 22:43 cfile
+% <b>find . \( -type d ! -name . -prune \) -o \( -mtime -1 -print \)</b>
+./afile
+./cfile</pre>
+<p class="docText">Let's try to understand this command: once you see the 
+pattern, you'll understand some important things about <i>find</i> that many 
+people don't. Let's follow <i>find</i> as it looks at a few pathnames. </p>
+<p class="docText"><i>find</i> looks at each entry, one by one, in the current 
+directory (.). For each entry, <i>find</i> tries to match the expression from 
+left to right. As soon as some parenthesized part matches, it ignores the rest 
+(if any) of the expression.<span id="ENB9-3"><a class="docLink" href="#EN9-3"><sup>[3]</sup></a></span>
+</p>
+<p class="docText">When <i>find</i> is looking at the file named <i>./afile</i>, 
+the first part of the expression, <i>(</i> <i>-type d ! -name . -prune )</i>, 
+doesn't match (<i>./afile</i> isn't a directory). So <i>find</i> doesn't prune. 
+It tries the other part, after the <i>-o</i> (or): </p>
+<p class="docText">Has <i>./afile</i> been modified in the last day? In this 
+(imaginary) case, it has — so the <i>-print</i> (which is always true) prints 
+the pathname. </p>
+<p class="docText">Next, <i>./bfile</i>: like the previous step, the first part 
+of the expression won't match. In the second part, <i>( -mtime -1 -print )</i>, 
+the file's modification time is more than one day ago. So the <i>-mtime -1</i> 
+part of the expression is false; <i>find</i> doesn't bother with the <i>-print</i> 
+operator. </p>
+<p class="docText">Finally, let's look at <i>./adir</i>, a directory: the first 
+part of the expression, <i>( -type d ! -name . -prune )</i>, matches. That's 
+because <i>./adir</i> is a directory (<i>-type d</i> ), its name is not . (<i>! 
+-name .</i>). So <i>-prune</i>, which is always true, makes this part of the 
+expression true. <i>find</i> skips <i>./adir</i> (because <i>-prune</i> prunes 
+the search tree at the current pathname). Note that if we didn't use <i>! -name 
+.,</i> then the current directory would match immediately and not be searched, 
+and we wouldn't find anything at all. </p>
+<p class="docText">
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-27">
+Section 9.27</a> shows handy aliases that use <i>-prune</i>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-26">9.26 Quick finds in the Current Directory</h3>
+<p class="docText"><i>find -prune</i> prunes <i>find</i>'s search tree at the 
+current pathname. Here are a couple of aliases that use <i>-prune</i> to search 
+for files in the current directory. The first one, named <i>find.</i> (with a 
+dot on the end of its name, to remind you of ., the relative pathname for the 
+current directory), simply prints names with <i>-print</i>. The second alias 
+gives a listing like <i>ls -gilds</i>. You can add other <i>find</i> operators 
+to the command lines to narrow your selection of files. The aliases work like 
+this: </p>
+<pre>% <b>find. -mtime -1</b>
+./afile
+./cfile
+% <b>find.ls -mtime -1</b>
+43073   0 -r--------  1 jerry    ora        0 Mar 27 18:16 ./afile
+43139   2 -r--r--r--  1 jerry    ora     1025 Mar 24 02:33 ./cfile</pre>
+<p class="docText">The <i>find.</i> alias is handy inside backquotes, feeding a 
+pipe, and other places you need a list of filenames. The second one, <i>find.ls</i>, 
+uses <i>-ls</i> instead of <i>-print</i>: </p>
+<pre>alias find. 'find . \( -type d ! -name . -prune \) -o \( \!* -print \)'
+alias find.ls 'find . \( -type d ! -name . -prune \) -o \( \!* -ls \)'</pre>
+<p class="docText">If you don't want the <tt>./</tt> at the start of each name, 
+add a pipe through <i>cut -c3-</i> or <i>cut -d'/' -f2-</i> to the end of the 
+alias definition. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-27">9.27 Skipping Parts of a Tree in find</h3>
+<p class="docText"><span class="docEmphBold">Q:</span> <span class="docEmphasis">
+I want to run <i>find</i> across a directory tree, skipping standard directories 
+like <i>/usr/spool</i> and <i>/usr/local/bin</i>. A <i>-name dirname -prune</i> 
+clause won't do it because <i>-name</i> doesn't match the whole pathname — just 
+each part of it, such as <i>spool</i> or <i>local</i>. How can I make <i>find</i> 
+match the whole pathname, like <i>/usr/local/bin/</i>, instead of all 
+directories named <i>bin</i>?</span></p>
+<p class="docText"><span class="docEmphBold">A:</span> It cannot be done 
+directly. You <span class="docEmphasis">can</span> do this:</p>
+<pre>% <b>find /path -exec test {} = /foo/bar -o {} = /foo/baz \; -prune -o pred</b></pre>
+<p class="docText">This will not perform <i>pred</i> on <i>/foo/bar </i>and <i>/foo/baz</i>; 
+if you want them done, but not any files within them, try: </p>
+<pre>% <b>find /path \( -exec test test-exprs \; ! -prune \) -o pred</b></pre>
+<p class="docText">The second version is worth close study, keeping the manual 
+for <i>find</i> at hand for reference. It shows a great deal about how <i>find</i> 
+works. </p>
+<p class="docText">The <i>-prune</i> operator simply says &quot;do not search the 
+current path any deeper&quot; and then succeeds a la <i>-print</i>. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> <span class="docEmphasis">
+I only want a list of pathnames; the <i>pred</i> I use in your earlier answer 
+will be just <i>-print</i>. I think I could solve my particular problem by 
+piping the <i>find</i> output through a <i>sed</i> or <i>egrep -v</i> filter 
+that deletes the pathnames I don't want to see. </span></p>
+<p class="docText"><span class="docEmphBold">A:</span> That would probably be 
+fastest. Using <i>test</i> runs the <i>test</i> program for each file name, 
+which is quite slow. Take a peek at <i>locate</i>, described in
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-18">
+Section 9.18</a>. </p>
+<p class="docText">There's more about complex <i>find</i> expressions in other 
+articles, especially
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-6">
+Section 9.6</a> and
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-12">
+Section 9.12</a>. </p>
+<p class="docText"><span class="docEmphasis">—CT and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-9-SECT-28">9.28 Keeping find from Searching Networked 
+Filesystem</h3>
+<p class="docText">The most painful aspect of a large NFS environment is 
+avoiding the access of files on NFS servers that are down. <i>find</i> is 
+particularly sensitive to this because it is very easy to access dozens of 
+machines with a single command. If <i>find</i> tries to explore a file server 
+that happens to be down, it will time out. It is important to understand how to 
+prevent <i>find</i> from going too far. </p>
+<p class="docText">To do this, use <i>-xdev</i> or <i>-prune</i> with <i>-fstype</i>, 
+though, unfortunately, not all <i>find</i>s have all of these. <i>-fstype</i> 
+tests for filesystem types and expects an argument like <tt>nfs</tt>, <tt>ufs</tt>,
+<tt>cd9660</tt>, or <tt>ext2fs</tt>. To limit <i>find</i> to files only on a 
+local disk or disks, use the clause <i>-fstype nfs -prune</i>, or, if your <i>
+find</i> supports it, <i>-fstype local</i>. </p>
+<p class="docText">To limit the search to one particular disk partition, use <i>
+-xdev</i>. For example, if you need to clear out a congested disk partition, you 
+could look for all files bigger than 10 MB (10*1024*1024) on the disk partition 
+containing <i>/usr</i>, using this command: </p>
+<pre>% <b>find /usr -size +10485760c -xdev -print</b></pre>
+<p class="docText"><span class="docEmphasis">— BB</span> </p>
+
+<blockquote>
+<p class="docFootnote" id="EN9-1"><a class="docLink" href="#ENB9-1">[1]</a>&nbsp;&nbsp;Very old versions of <i>find</i> have trouble with using multiple <i>-newer</i> 
+expressions in one command. If <i>find</i> doesn&#39;t find files that it should, 
+try using multiple explicit <i>-mtime</i> expressions instead. They&#39;re not as 
+precise, but they will work even on <i>find</i>s with buggy <i>-newer</i> 
+handling.</p><p class="docFootnote" id="EN9-2"><a class="docLink" href="#ENB9-2">[2]</a>&nbsp;&nbsp;We didn't do so because the 
+  syntax was already messy enough for people getting started.</p><p class="docFootnote" id="EN9-3"><a class="docLink" href="#ENB9-3">[3]</a>&nbsp;&nbsp;That's because if one part 
+  of an OR expression is true, you don't need to check the rest. This so-called 
+  &quot;short-circuit&quot; logical evaluation by <i>find</i> is important to 
+  understanding its expressions.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 8.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 10.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

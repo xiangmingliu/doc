@@ -1,0 +1,2256 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 24</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 23.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 25.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 24. Starting, Stopping, and Killing 
+Processes</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-1">24.1 What's in This Chapter</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-2">24.2 fork and exec</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-3">24.3 Managing Processes: Overall Concepts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-4">24.4 Subshells</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-5">24.5 The ps Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-6">24.6 The Controlling Terminal</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-7">24.7 Tracking Down Processes</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-8">24.8 Why ps Prints Some Commands in Parentheses</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-9">24.9 The /proc Filesystem</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-10">24.10 What Are Signals?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-11">24.11 Killing Foreground Jobs</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-12">24.12 Destroying Processes with kill</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-13">24.13 Printer Queue Watcher: A Restartable Daemon Shell Script</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-14">24.14 Killing All Your Processes</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-15">24.15 Killing Processes by Name?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-16">24.16 Kill Processes Interactively</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-17">24.17 Processes Out of Control? Just STOP Them</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-18">24.18 Cleaning Up an Unkillable Process</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-19">24.19 Why You Can't Kill a Zombie</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-20">24.20 The Process Chain to Your Window</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-21">24.21 Terminal Windows Without Shells</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-24-SECT-22">24.22 Close a Window by Killing Its Process(es)</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-1">24.1 What's in This Chapter</h3>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 align="center" class="docSection1Title">Summary Box</h2>
+      <p class="docText">We've already talked about so many of the topics in 
+      this chapter, here or there, that it may seem like a real hodgepodge. It's 
+      a grab-bag of important things to know about processes — which you can 
+      think of as programs that are actually running, rather than sitting on the 
+      disk somewhere. </p>
+      <p class="docText">The chapter starts out with a couple of conceptual 
+      articles. They define some important terms that you're likely to encounter 
+      in this chapter. </p>
+      <p class="docText">Then we talk about the <i>ps</i> command, which tells 
+      you what processes you have running and just what they are up to (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+      24.5</a>,
+      <a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-6">
+      Section 24.6</a>,
+      <a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-8">
+      Section 24.8</a>). </p>
+      <p class="docText">The next few articles cover signals, which are one way 
+      processes communicate with one another. We cover topics like: </p>
+      <ul>
+        <li>
+        <p class="docList">What are signals (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-10">Section 
+        24.10</a>)?</li>
+        <li>
+        <p class="docList">How to send signals from the keyboard (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-11">Section 
+        24.11</a> and
+        <a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">
+        Section 24.12</a>; also see
+        <a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-8">
+        Section 5.8</a>). </li>
+        <li>
+        <p class="docList">How shell programs can &quot;handle&quot; signals (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-13">Section 
+        24.13</a> and
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">
+        Section 35.17</a>). </li>
+      </ul>
+      <p class="docText">We go from there to a more general discussion of ways 
+      to kill processes: </p>
+      <ul>
+        <li>
+        <p class="docList">How to kill all your processes (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-14">Section 
+        24.14</a>).</li>
+        <li>
+        <p class="docList">How to kill processes by name rather than by process 
+        ID (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-16">Section 
+        24.16</a>). </li>
+        <li>
+        <p class="docList">How to stop runaway jobs (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-17">Section 
+        24.17</a>).</li>
+        <li>
+        <p class="docList">Why some processes don't seem to go away when you 
+        kill them (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-18">Section 
+        24.18</a>,
+        <a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-19">
+        Section 24.19</a>). </li>
+        <li>
+        <p class="docList">How to get rid of a frozen window (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-22">Section 
+        24.22</a>). </li>
+        <li>
+        <p class="docList">How to make sure processes <span class="docEmphasis">
+        don't</span> die when you log out (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-10">Section 
+        23.10</a>). </li>
+      </ul>
+      <p class="docText"><span class="docEmphasis">— TOR</span></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-2">24.2 fork and exec</h3>
+<p class="docText">We discuss <span class="docEmphasis">fork</span> and
+<span class="docEmphasis">exec</span> in
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-2">
+Section 27.2</a>, but the concept comes up so often in this chapter that we 
+thought we ought to have a closer cross reference. </p>
+<p class="docText">Put simply, <span class="docEmphasis">fork</span> and
+<span class="docEmphasis">exec</span> are the Unix system calls (requests for 
+operating system services) that Unix programs use to create new processes. When 
+you start up a Unix system, it starts with only one process, a program called <i>
+init</i>. </p>
+<p class="docText">How does <i>init</i> magically turn into the hundreds or 
+perhaps even thousands of processes that make up a working Unix system? That's 
+where <span class="docEmphasis">fork</span> and <span class="docEmphasis">exec</span> 
+come in. </p>
+<p class="docText">One process spawns another (&quot;spawn&quot; is another term you 
+should get used to seeing) either by replacing itself when it's done — an
+<span class="docEmphasis">exec</span> — or, if it needs to stay around, by 
+making a copy of itself — a <span class="docEmphasis">fork</span>. In the latter 
+case, the forked copy commits polite suicide by <span class="docEmphasis">exec</span>ing 
+the desired second program. </p>
+<p class="docText">A good example of this whole sequence can be seen in the way 
+a Unix system's login procedure for terminals (non-<span class="docEmphBold">network</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) logins) works. The <i>init</i> process spawns a series of <i>getty</i> 
+processes, each of which monitors a serial port (a <span class="docEmphasis">tty</span>), 
+looking for activity. It's the <i>getty</i> program that actually puts up the 
+first <tt>login</tt>: prompt. </p>
+<p class="docText">Once someone actually types a login name, <i>getty</i>'s job 
+is done; it <span class="docEmphasis">exec</span>s the <i>login</i> command. <i>
+login</i> prompts for a password (if the account has one) and, if the password 
+is okay, <span class="docEmphasis">exec</span>s the login shell. Whenever you 
+start another program, the shell <span class="docEmphasis">fork</span>s itself, 
+and the copy <span class="docEmphasis">exec</span>s whatever program you asked 
+to run. </p>
+<p class="docText">That's why <span class="docEmphBold">some commands are built 
+into the shell</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+1.9</a>). There's overhead involved in starting a new process. What's more, 
+because <span class="docEmphBold">a child process can't affect its parent's 
+environment</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>), some commands don't make sense as separate processes. For example, <i>
+cd</i> must be built in, or it couldn't change the working directory for the 
+current shell. </p>
+<p class="docText">There's an <i>exec</i> command that you can type at a shell 
+prompt; see
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-5">
+Section 36.5</a>. Watch out, though: it will replace your shell with whatever 
+command you <i>exec</i>, with no going back. This is useful only if you want to 
+replace your shell with some other interactive command interpreter with similar 
+powers, or if you'll be ready to log out when the command you <i>exec</i> 
+finishes. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-3">24.3 Managing Processes: Overall Concepts</h3>
+<p class="docText">As you know, when you log into your Unix account and start 
+typing, you're talking to the <span class="docEmphBold">shell</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-1">Section 
+27.1</a>). The shell you use may be a variant of the Bourne shell (such as a 
+standard <i>sh</i>, <i>ksh</i>, or the GNU shell <i>bash</i>), or perhaps it is 
+a variant of the C shell, <i>csh</i> (such as, perhaps, the <i>tcsh</i> shell 
+that includes line- and history-editing features). Alternatively, you may be 
+using a somewhat less common shell such as <i>rc</i>. </p>
+<p class="docText">Your shell is a <span class="docEmphasis">process</span>, one 
+of many individual programs running at the same time on the machine. Every 
+process has certain pieces of information associated with it, including the 
+following: </p>
+<ul>
+  <li>
+  <p class="docList">The <span class="docEmphasis">process ID</span> (PID) is a 
+  number assigned to the process when it is started up. Process IDs are unique 
+  (that is, they cycle and are eventually reused, but no two processes have the 
+  same process ID at the same time). </li>
+  <li>
+  <p class="docList">The <span class="docEmphasis">user ID</span> (UID) tells 
+  who the process belongs to. This determines <span class="docEmphBold">what 
+  files and directories the process is allowed to read from or write to</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-1">Section 
+  50.1</a>), as well as who is allowed to <span class="docEmphBold">kill the 
+  process</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+  24.12</a>) (tell it to stop running). </li>
+  <li>
+  <p class="docList">The <span class="docEmphasis">group ID</span> (GID) is 
+  similar to the user ID but tells which group the process belongs to. On some 
+  systems, this controls the group assigned to files created by the process. See
+  <a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">
+  Section 50.2</a>. </li>
+  <li>
+  <p class="docList">The <span class="docEmphasis">environment</span> contains a 
+  list of variable names and associated values. For example, when you type <tt>
+  echo</tt> <tt>$HOME</tt> at the shell and it prints out the name of your
+  <span class="docEmphBold">home directory</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-15">Section 
+  1.15</a>), it has told you the contents of the <span class="docEmphBold">
+  environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+  35.3</a>) called <span class="docEmphasis">HOME</span>. </li>
+  <li>
+  <p class="docList">The <span class="docEmphBold">current working directory</span> 
+  (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-3">Section 
+  31.3</a>) is the directory that is currently the default. When you specify a 
+  filename to a program but do not say explicitly where to look for it with a
+  <span class="docEmphBold">pathname</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-2">Section 
+  31.2</a>), the program will look in the current working directory — if the
+  <span class="docEmphasis">PATH</span> variable contains the current directory 
+  (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+  35.6</a> explains). </li>
+  <li>
+  <p class="docList"><span class="docEmphasis">File descriptors</span> are a 
+  record of which files a process has opened for reading or writing, as well as 
+  the current position in each file. </li>
+  <li>
+  <p class="docList">Versions of Unix with <span class="docEmphBold">job control</span> 
+  (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-1">Section 
+  23.1</a>) have <span class="docEmphasis">process groups</span>. A process 
+  group is used for <span class="docEmphBold">distribution of signals</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-10">Section 
+  24.10</a>,
+  <a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-11">
+  Section 24.11</a>,
+  <a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-14">
+  Section 24.14</a>). It's also used to control which process can read from a 
+  terminal. A process that has the same process group as the terminal is &quot;in the 
+  foreground&quot; and can read from the terminal. Other processes are stopped when 
+  they try to read from the terminal. </li>
+</ul>
+<p class="docText">When you're typing commands at the shell, it is the
+<span class="docEmphasis">controlling process</span> of your terminal, meaning 
+that it (the shell) is the process that gets the input you type. See
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-6">
+Section 24.6</a>. </p>
+<p class="docText">Normally, when you type a command at the shell prompt, that 
+command runs and is allowed by the shell to take over the terminal for its 
+lifetime. For example, if you type <tt>more</tt> <tt>.login</tt> to view your
+<span class="docEmphasis">.login</span> file, the shell starts up the <i>more</i> 
+program and then sits around waiting for it to finish; while <i>more</i> is 
+running, you can type commands to page through the file and <i>more</i> (not the 
+shell) will see them. The command you run is called a <span class="docEmphasis">
+child</span> or <span class="docEmphasis">subprocess</span> of the shell 
+process, which is its <span class="docEmphasis">parent</span>. All process 
+information (user ID, group ID, etc.) is inherited by the child from its parent, 
+except for the process ID, since the child is assigned a new one.
+<span class="docEmphBold">Built-in shell commands</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+1.9</a>) such as <i>cd</i> don't start a child process. </p>
+<p class="docText">Although the normal behavior is for the shell to wait until 
+any command you run has finished before it becomes active again, there are some 
+situations in which you don't want this to occur. For example, if you're using a 
+window system such as <span class="docEmphBold">X</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-22">Section 
+1.22</a>) and want to start up a new <i>xterm</i> window from your shell, you 
+don't want to type just <tt>xterm</tt>, because then your original shell will 
+wait until the <i>xterm</i> finishes before allowing you to type any more 
+commands. This would mean that you still have only one shell to work in, thus 
+defeating the purpose of starting the new <i>xterm</i>. </p>
+<p class="docText">When you don't want a process to finish before getting back 
+to the shell, you can run it in the <span class="docEmphasis">background</span>. 
+You do this by putting an ampersand (<tt>&amp;</tt>) character at the end of the 
+command, for example, <tt>xterm</tt> <tt>&amp;</tt>. The shell will start the child 
+process and then immediately prompt you for another command. Note that in this 
+situation, the shell retains control of the terminal, and the newly created 
+background process cannot read input. Some shells have additional
+<span class="docEmphBold">job control</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-1">Section 
+23.1</a>) features (processes that are running in the background are often 
+described as <span class="docEmphasis">background jobs</span> or just jobs) that 
+enable you to do things such as kill jobs or bring a job from the background 
+into the <span class="docEmphasis">foreground</span> so that it becomes the 
+controlling process of the terminal and you can type input at it. </p>
+<p class="docText">An important thing to remember is that although process 
+information is inherited by children <span class="docEmphasis">when they are 
+started</span>, it is impossible for the parent to affect its child's process 
+information (or vice versa) after that point. For example, if you
+<span class="docEmphBold">start up the editor vi, suspend it</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-6">Section 
+24.6</a>), and then use the <i>cd</i> command in the shell to change 
+directories, <i>vi</i> will still have the old working directory when you bring 
+it back into the foreground. Similarly, if you write a shell script that changes 
+some environment variables, those variables will contain their old values in the 
+shell when the shell script exits. This sometimes confuses MS-DOS users, since 
+MS-DOS stores information such as the current directory in a global area that is 
+referenced by all programs. If it is necessary to communicate information from a 
+child back to a parent shell, <span class="docEmphBold">other methods are needed</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-10">Section 
+24.10</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">
+Section 35.29</a>). </p>
+<p class="docText">One more useful concept: when a process exits, it returns a 
+numeric <span class="docEmphBold">exit status</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>) to its parent process. By convention, a zero status means success; 
+nonzero means some kind of failure. </p>
+<p class="docText">Just as there are ways to modify the environment and the 
+current working directory of the shell, there are also useful ways to
+<span class="docEmphBold">manipulate file descriptors</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">Section 
+36.16</a>). </p>
+<p class="docText"><span class="docEmphasis">— JIK</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-4">24.4 Subshells</h3>
+<p class="docText">In Unix, when a program starts another program (more exactly, 
+when a process starts another process), the new process runs as a
+<span class="docEmphBold">subprocess</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>) or child process.<span id="ENB24-1"><a class="docLink" href="#EN24-1"><sup>[1]</sup></a></span> 
+When a shell starts another shell, the new shell is called a
+<span class="docEmphasis">subshell</span>.<span id="ENB24-2"><a class="docLink" href="#EN24-2"><sup>[2]</sup></a></span>
+</p>
+<p class="docText">So what? There are some important things to know about it: 
+the child process gets a copy of its parent's environment, and any changes in 
+the environment of the child process aren't passed to its parent. &quot;Still,&quot; I 
+hear you say, &quot;so what??&quot; </p>
+<ul>
+  <li>
+  <p class="docList">Shell scripts are run in a subshell (unless you use the
+  <span class="docEmphBold">source or . commands</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">Section 
+  35.29</a>) to start the script). If the script makes changes to the 
+  environment of its (sub)shell, the parent shell won't see those changes. If 
+  the script uses <i>cd</i>, it doesn't change the current directory in the 
+  parent shell. If the script changes the value of the <span class="docEmphasis">
+  TZ</span> (or any) environment variable, that won't change
+  <span class="docEmphasis">TZ</span> in the parent shell. The script can set a 
+  different <i>umask</i> than the parent shell — no problem. </li>
+  <li>
+  <p class="docList">There are times you might want to start a subshell from 
+  your current shell. Maybe you have a special project where you need to work in 
+  a different current directory, reset environment variables, set a new home 
+  directory, reset some aliases, use a different <span class="docEmphBold">PATH</span> 
+  (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+  35.6</a>), whatever. When you end the subshell, the parent shell's environment 
+  will be the way it was. </p>
+  <p class="docList">If your parent shell has <span class="docEmphBold">job 
+  control</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+  23.3</a>), you can stop the subshell and pop back to your parent shell without 
+  losing the changes in the subshell. If the child shell has job control, too, 
+  the command <span class="docEmphBold">suspend</span> (or
+  <span class="docEmphBold">kill -STOP $$</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-17">Section 
+  27.17</a>)) will stop it. Otherwise, just type CTRL-z at the subshell's 
+  prompt. For example: </p>
+  <p class="docList"><tt>prompt</tt>
+  <a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-1">
+  Section 4.1</a></p>
+  <pre>myprompt% <b>csh </b>
+myprompt% <b>set prompt=&quot;project% &quot; </b>
+project% <b>cd <tt><i>project-directory</i></tt> </b>
+project% <b>setenv PRINTER plotter </b>
+project% <b>set path=($path <tt><i>some-new-directories</i></tt>) </b>
+project% <b>setenv EXINIT &quot;se ts=4 sw=4 aw wm=0&quot; </b>
+   <i> ...do some work...</i>
+project% <b>suspend </b>
+
+Stopped
+   <i> ...back to parent shell...</i>
+myprompt%
+myprompt% <b>fg %csh </b>
+   <i> ...back to subshell...</i>
+project%</pre>
+  <p class="docList">I use <i>suspend</i> so much that I've made a CTRL-z-like 
+  alias named <i>z</i>: </p>
+  <pre>alias z suspend        <i>...csh</i>
+alias z=suspend        <i>...bash, ksh</i></pre>
+  </li>
+  <li>
+  <p class="docList">If you need a different type of shell temporarily, just 
+  type that shell's name at a prompt. When you end the shell by typing <i>exit</i> 
+  or by suspending it (as shown above), you're back to your usual shell. For 
+  example, you might normally use <i>bash</i> but want to use the <i>zsh</i> 
+  multiline editing for a few loops you need to run. As another example, I 
+  started a lot of different shells while I was writing this book — and 
+  suspended them, as above, when I wasn't using them. Very handy. </li>
+  <li>
+  <p class="docList">A <span class="docEmphBold">shell escape</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-21">Section 
+  17.21</a>) starts a subshell. Do whatever you want to the subshell's 
+  environment. When you end the shell escape, the changes go away. </li>
+  <li>
+  <p class="docList">The <i>su</i> command starts a subshell. <i>cd</i> 
+  anywhere, change environment variables, and so on. </li>
+</ul>
+<p class="docText">If you use the <i>exit</i> command, a subshell (or any shell) 
+will terminate. In a script, when the shell reads the end of file, that does an 
+implicit <i>exit</i>. On the command line, an end-of-input character (usually 
+CTRL-d) will do the same thing.
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-16">
+Section 35.16</a> explains how <i>exit</i> sets a shell's exit status. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-5">24.5 The ps Command</h3>
+<p class="docText">The <i>ps</i> command varies from system to system. (The <i>
+ps</i> on one Red Hat Linux system reads a <span class="docEmphasis">
+PS_PERSONALITY</span> environment variable with 21 possible settings!) This 
+article describes several different versions. Yours is probably different in 
+some ways, so check your <i>ps</i> manual page for details. </p>
+<p class="docText">The <i>ps</i> command produces a report summarizing execution 
+statistics for current processes. The bare <i>ps</i> command lists the process 
+ID, the terminal from which the command was started, how much CPU time it has 
+used, and the command itself. The output looks something like this (it differs 
+by system): </p>
+<pre>  PID TT STAT  TIME COMMAND
+ 1803 p5 IW    0:00 -csh (csh)
+ 1883 p5 IW    0:04 vi outline
+ 1811 p6 IW    0:01 -csh (csh)
+ 5353 p6 TW    0:01 vi 4890</pre>
+<p class="docText">By default, <i>ps</i> lists only your own processes. There 
+are many times, though, when it's desirable to have a more complete listing with 
+a lot of data about all of the processes currently running on the system. The 
+options required to do this differ between BSD Unix and System V. Under BSD 
+Unix, the command is <i>ps -aux</i>, which produces a table of all processes, 
+arranged in order of decreasing CPU usage at the moment when the <i>ps</i> 
+command was executed. [The <i>-a</i> option gives processes belonging to all 
+users, <i>-u</i> gives a more detailed listing, and <i>-x</i> includes processes 
+that no longer have a <span class="docEmphBold">controlling terminal</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-6">Section 
+24.6</a>). <span class="docEmphasis">— TOR</span>] It is often useful to pipe 
+this output to <span class="docEmphBold">head</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-12">Section 
+12.12</a>), which will display the most active processes: </p>
+<pre>% <b>ps -aux | head -5</b>
+USER       PID %CPU %MEM   SZ  RSS TTY STAT  TIME COMMAND
+martin   12923 74.2 22.5  223  376 p5  R     2:12 f77 -o foo foo.F
+chavez   16725 10.9 50.8 1146 1826 p6  R N  56:04 g94 HgO.dat
+ng       17026  3.5  1.2  354  240 co  I     0:19 vi benzene.txt
+gull      7997  0.2  0.3  142   46 p3  S     0:04 csh</pre>
+<p class="docText">The meanings of the fields in this output (as well as others 
+displayed by the <i>-l</i> option to <i>ps</i>) are given in
+<a class="docLink" href="#upt3-CHP-24-TABLE-1">Table 24-1</a>. </p>
+<p class="docText">The first line of this output shows that user
+<span class="docEmphasis">martin</span> is running a FORTRAN compilation (<tt>f77</tt>). 
+This process has <span class="docEmphBold">PID</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>) 12923 and is currently either running or runnable. User
+<span class="docEmphasis">chavez</span>'s process (PID 16725), executing the 
+program <i>g94</i>, is also running or runnable, though at a lowered priority. 
+From this display, it's obvious who is using most system resources at this 
+instant: <span class="docEmphasis">martin</span> and <span class="docEmphasis">
+chavez</span> have about 85% of the CPU and 73% of the memory between them. 
+However, although it does display total CPU time, <i>ps</i> does not average the
+<tt>%CPU</tt> or <tt>%MEM</tt> values over time in any way. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-24-TABLE-1" class="docTableTitle">Table 24-1. ps command output fields </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Column<span id="ENB24-3"><a class="docLink" href="#EN24-3"><sup>[3]</sup></a></span>
+    </th>
+    <th class="docTableHeader">
+    <p class="docText">Contents</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">USER (BSD)</td>
+    <td class="docTableCell">
+    <p class="docText">Username of process owner</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">UID (System V)</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">User ID</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+    24.3</a>) of process owner </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">PID</td>
+    <td class="docTableCell">
+    <p class="docText">Process ID</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">%CPU</td>
+    <td class="docTableCell">
+    <p class="docText">Estimated fraction of CPU consumed (BSD)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">%MEM</td>
+    <td class="docTableCell">
+    <p class="docText">Estimated fraction of system memory consumed (BSD)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">SZ</td>
+    <td class="docTableCell">
+    <p class="docText">Virtual memory used in K (BSD) or pages (System V)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">RSS</td>
+    <td class="docTableCell">
+    <p class="docText">Real memory used (in same units as SZ)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">TT, TTY</td>
+    <td class="docTableCell">
+    <p class="docText">Terminal port associated with process</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">STAT (BSD), S (System V)</td>
+    <td class="docTableCell">
+    <p class="docText">Current process state; one (or more under BSD) of:</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">R: Running or runnable</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">S: Sleeping</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">I: Idle (BSD); intermediate state (System V)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">T: <span class="docEmphBold">Stopped</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-1">Section 
+    23.1</a>) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">Z: <span class="docEmphBold">Zombie process</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-19">Section 
+    24.19</a>) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">D (BSD): Disk wait</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">P (BSD): Page wait</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">X (System V): Growing,waiting for memory</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">K (AIX): Available kernel process</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">W (BSD): Swapped out</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">N (BSD): <span class="docEmphBold">Niced</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-5">Section 
+    26.5</a>,
+    <a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-7">
+    Section 26.7</a>), execution priority lowered </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText">&gt; (BSD): Execution priority <span class="docEmphBold">
+    artificially raised</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-7">Section 
+    26.7</a>) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">TIME</td>
+    <td class="docTableCell">
+    <p class="docText">Total CPU time used</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">COMMAND</td>
+    <td class="docTableCell">
+    <p class="docText">Command line being executed (may be truncated)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">STIME (System V)</td>
+    <td class="docTableCell">
+    <p class="docText">Time or date process started</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">C (System V), CP (BSD)</td>
+    <td class="docTableCell">
+    <p class="docText">Short term CPU-use factor; used by scheduler for 
+    computing execution priority (PRI below) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">F</td>
+    <td class="docTableCell">
+    <p class="docText">Flags associated with process (see <i>ps</i> manual page)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">PPID</td>
+    <td class="docTableCell">
+    <p class="docText">Parent's PID</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">PRI</td>
+    <td class="docTableCell">
+    <p class="docText">Actual execution priority (recomputed dynamically)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">NI</td>
+    <td class="docTableCell">
+    <p class="docText">Process <span class="docEmphBold">nice number</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-5">Section 
+    26.5</a>) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">WCHAN</td>
+    <td class="docTableCell">
+    <p class="docText">Event process is waiting for</td>
+  </tr>
+</table>
+<p class="docText">A vaguely similar listing is produced by the System V
+<span class="docEmphasis">ps -ef</span> command: </p>
+<pre>$ <b>ps -ef</b>
+   UID   PID  PPID   C    STIME     TTY  TIME CMD
+  root     0     0   0 09:36:35       ?  0:00 sched
+  root     1     0   0 09:36:35       ?  0:02 /etc/init
+  ...
+  gull  7997     1  10 09:49:32   ttyp3  0:04 csh
+martin 12923 11324   9 10:19:49   ttyp5 56:12 f77 -o foo foo.F
+chavez 16725 16652  15 17:02:43   ttyp6 10:04 g94 HgO.dat
+    ng 17026 17012  14 17:23:12 console  0:19 vi benzene.txt</pre>
+<p class="docText">The columns hold the username, process ID, parent's PID (the 
+PID of the process that created it), the current scheduler value, the time the 
+process started, its associated terminal, its accumulated CPU time, and the 
+command it is running. Note that the ordering is by PID, not resource usage. </p>
+<p class="docText">AIX's version of the <i>ps</i> command supports both BSD and 
+System V options. The BSD options are not preceded by a hyphen (which is a legal 
+syntax variation), and the System V options are. Thus, under AIX, <tt>ps -au</tt> 
+is not the same as <tt>ps au</tt>. The command is the System V version, however, 
+even if its output is displayed with the BSD column headings. Thus,
+<span class="docEmphasis">ps aux</span> output is displayed in <tt>PID</tt> 
+rather than <tt>%CPU</tt> order. </p>
+<p class="docText"><i>ps</i> is also useful in pipes; a common use is: </p>
+<pre>% <b>ps -aux | grep chavez</b></pre>
+<p class="docText">to see what user <span class="docEmphasis">chavez</span> has 
+currently running. Under System V, use <tt>ps -u chavez</tt>. </p>
+<p class="docText">Another way to view the process information is with the <i>
+top</i> command. Unlike <i>ps</i>, <i>top</i> is an interactive screen program 
+that updates its information every few seconds. It's a good way to get a quick 
+pulse of your system. Not only is process information displayed, but memory 
+statistics and the system <i>uptime</i> are also shown. You can find the full 
+range of available interactive commands by typing <tt>h</tt> once <i>top</i> has 
+started. You can sort processes in a variety of ways including CPU and memory 
+usage, as well as by user. You can even kill processes from within <i>top</i>.
+</p>
+<p class="docText">—<span class="docEmphasis">AF, from Essential System 
+Administration (O'Reilly, 2002), and JJ</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-6">24.6 The Controlling Terminal</h3>
+<p class="docText">In
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">
+Section 24.5</a>, we pointed out that the <i>ps</i> command needs special 
+options (<i>-x</i> for BSD-derived versions and <i>-e</i> for System V-type) to 
+list processes without a controlling terminal. </p>
+<p class="docText">But just what is a controlling terminal? Just what it sounds 
+like: the terminal from which the process was started. In the <i>ps</i> listing, 
+this is usually given as a <i>tty</i>, or terminal ID. That <i>ps</i> entry 
+usually corresponds to a serial port, or a <span class="docEmphasis">pty</span>. 
+A <span class="docEmphasis">pty</span> or &quot;pseudo-terminal&quot; is a construct that 
+makes a window or <span class="docEmphBold">network login</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) look to the operating system just like a terminal. </p>
+<p class="docText">In the <i>ps</i> listing, a tty might appear as <tt>t1</tt> 
+for <span class="docEmphasis">/dev/tty1</span>, <tt>p3</tt> for
+<span class="docEmphasis">/dev/ttyp3</span>, or as some other designation, such 
+as <tt>co</tt> for <span class="docEmphasis">/dev/console</span>, the 
+full-screen display of a workstation before any window system is started. 
+Processes without a controlling terminal show a question mark (<tt>?</tt>). </p>
+<p class="docText">How does a process &quot;lose&quot; its controlling terminal? Easy. 
+Some processes, such as system <span class="docEmphBold">&quot;daemons&quot;</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-10">Section 
+1.10</a>) never had one — they were started by system scripts that weren't 
+started from any terminal, or they disconnected themselves from their 
+controlling terminals. But it's also possible that you started a process running 
+in the background, logged out, and logged back on later or on another terminal 
+to find it still running without a controlling terminal.
+<span class="docEmphBold">Disowned processes</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-11">Section 
+23.11</a>) fit this category too. </p>
+<p class="docText">The <i>tty</i> command can be used to report which &quot;terminal&quot; 
+you're currently connected to. For example: </p>
+<pre>% <b>tty</b>
+/dev/ttyp2</pre>
+<p class="docText">Running <i>tty</i> without a controlling terminal gives the 
+message <tt>not</tt> <tt>a</tt> <tt>tty</tt>. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-7">24.7 Tracking Down Processes</h3>
+<p class="docText"><span class="docEmphasis">ps</span> without arguments lists 
+all processes started from the current terminal or pseudo-terminal. But since
+<span class="docEmphasis">ps</span> is not a shell command, it doesn't correlate 
+process IDs with the shell's job numbers. It also doesn't help you find the ID 
+of the runaway process in another shell window. </p>
+<p class="docText">To get this information, use <i>ps</i> -<i>a</i> (for &quot;all&quot;); 
+this lists information on a different set of processes, depending on your Unix 
+version. </p>
+<h4  id="upt3-CHP-24-SECT-7.1" class="docSection2Title">24.7.1 System V</h4>
+<p class="docText">Instead of listing all that were started under a specific 
+terminal, <i>ps</i> -<i>a</i> on System V-derived systems lists all processes 
+associated with any terminal that aren't group leaders. For our purposes, a 
+&quot;group leader&quot; is the parent shell of a terminal or window. Therefore, if you 
+are using a windowing system, <i>ps</i> -<i>a</i> lists all jobs started in all 
+windows (by all users), but not their parent shells. </p>
+<p class="docText">Assume that, in the previous example, you have only one 
+terminal or window. Then <i>ps</i> -<i>a</i> will print the same output as plain
+<i>ps</i> except for the first line, since that's the parent shell. This doesn't 
+seem to be very useful. </p>
+<p class="docText">But consider what happens when you have multiple windows 
+open. Let's say you have three windows, all running terminal emulators such as
+<i>xterm</i> for the X Window System. You start background jobs <i>alice</i>, <i>
+duchess</i>, and <i>hatter</i> in windows with pseudo-terminal numbers 1, 2, and 
+3, respectively. This situation is shown in
+<a class="docLink" href="#upt3-CHP-24-FIG-1">Figure 24-1</a>. </p>
+<center>
+<h5 id="upt3-CHP-24-FIG-1" class="docFigureTitle">Figure 24-1. Background jobs in multiple windows</h5>
+<p>
+<img alt="figs/upt3_2401.gif" src="upt3_2401.gif" border="0" width="338" height="210"></p>
+</center>
+<p class="docText">Assume you are in the uppermost window. If you type <i>ps</i>, 
+you will see something like this: </p>
+<pre>   PID TTY      TIME COMD
+   146 pts/1    0:03 bash
+  2349 pts/1    0:03 alice
+  2390 pts/1    0:00 ps</pre>
+<p class="docText">But if you type <i>ps</i> -<i>a</i>, you will see this: </p>
+<pre>   PID TTY      TIME COMD
+   146 pts/1    0:03 bash
+  2349 pts/1    0:03 alice
+  2367 pts/2    0:17 duchess
+  2389 pts/3    0:09 hatter
+  2390 pts/1    0:00 ps</pre>
+<p class="docText">Now you should see how <i>ps</i> -<i>a</i> can help you track 
+down and <span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+24.12</a>) a runaway process. If it's <i>hatter</i>, you can type <tt>kill 2389</tt>. 
+If that doesn't work, try <tt>kill</tt> <tt>-QUIT 2389</tt>, or in the worst 
+case, <tt>kill -KILL 2389</tt>. </p>
+<h4  id="upt3-CHP-24-SECT-7.2" class="docSection2Title">24.7.2 BSD</h4>
+<p class="docText">On BSD-derived systems, <i>ps</i> -<i>a</i> lists all jobs 
+that were started on any terminal; in other words, it's a bit like concatenating 
+the the results of plain <i>ps</i> for every user on the system. Given the above 
+scenario, <i>ps</i> -<i>a</i> will show you all processes that the System V 
+version shows, plus the group leaders (parent shells). </p>
+<p class="docText">Unfortunately, <i>ps</i> -<i>a</i> (on any version of Unix) 
+will not report processes that are in certain conditions where they &quot;forget&quot; 
+things such as what shell invoked them and what terminal they belong to. Such 
+processes are known as <span class="docEmphBold">zombies or orphans</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-19">Section 
+24.19</a>). If you have a serious runaway process problem, it's possible that 
+the process has entered one of these states. </p>
+<p class="docText">You need another option to <span class="docEmphasis">ps</span> 
+to see it: on System V, it's <i>ps</i> -<i>e</i> (&quot;everything&quot;); on BSD, it's <i>
+ps</i> -<i>ax</i>. </p>
+<p class="docText">These options tell <span class="docEmphasis">ps</span> to 
+list processes that either weren't started from terminals or &quot;forgot&quot; what 
+terminal they were started from. The former category includes lots of basic 
+processes that run the system and <span class="docEmphBold">daemons</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-10">Section 
+1.10</a>) that handle system services like mail, printing, network file systems, 
+etc. </p>
+<p class="docText">In fact, the output of <i>ps</i> -<i>e</i> or <i>ps</i> -<i>ax</i> 
+is an excellent source of education about Unix system internals. Run the command 
+on your system and, for each line of the listing that looks interesting, invoke
+<span class="docEmphBold">man</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+2.1</a>) or <span class="docEmphBold">info</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-9">Section 
+2.9</a>) on the process name. </p>
+<p class="docText">User shells and processes are listed at the very bottom of <i>
+ps</i> -<i>e</i> or <i>ps</i> -<i>ax</i> output; this is where you should look 
+for runaway processes. Notice that many processes in the listing have <tt>?</tt> 
+instead of a terminal. Either these aren't supposed to have a terminal (such as 
+the basic daemons), or they're runaways. Therefore it's likely that if <i>ps</i> 
+-<i>a</i> doesn't find a process you're trying to kill, <i>ps</i> -<i>e</i> or
+<i>ps</i> -<i>ax</i> will list it with <tt>?</tt> in the TTY (or TT) column. You 
+can determine which process you want by looking at the COMD (or COMMAND) column.
+</p>
+<p class="docText">
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-22">
+Section 24.22</a> shows a similar thing: how to close windows by killing their 
+process. </p>
+<p class="docText"><span class="docEmphasis">—CN and BR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-8">24.8 Why ps Prints Some Commands in Parentheses</h3>
+<p class="docText">There is a reason that some versions of <i>ps</i>, and thus 
+derivatives such as <i>w</i>, sometimes print commands in parentheses: </p>
+<pre>% <b>ps -f -u jerry</b>
+     UID   PID  PPID  C    STIME TTY      TIME COMMAND
+   jerry 29240 29235  0 07:56:19 ttyp1    0:01 sh find_mh_dupes
+   jerry 29259 29240 23 07:57:52 ttyp1    0:07 (egrep)</pre>
+<p class="docText">The reason is that whoever wrote <i>ps</i> liked it that way. 
+The parentheses indicate that the command overwrote its name, or <i>ps</i> could 
+not find the name, and that <i>ps</i> is printing instead the &quot;accounting name.&quot; 
+(The accounting name is the last component of the name given to the
+<span class="docEmphBold">exec</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">Section 
+24.2</a>) system call, and is the name used in the system resource usage 
+accounting file.) Basically, <i>ps</i> does this in the C language: </p>
+<pre>if (proc-&gt;argv == NULL || strcmp(proc-&gt;acct_name, proc-&gt;argv[0]) != 0)
+   printf(&quot;(%s)&quot;, proc-&gt;acct_name);</pre>
+<p class="docText">In the case of a large environment, <i>ps</i> is unable to 
+find the argument vector. This is because it reads only the last few stack pages 
+of each process. </p>
+<p class="docText">Other versions of <i>ps</i> use completely different 
+mechanisms for locating the command arguments and may never print parentheses.
+</p>
+<p class="docText"><span class="docEmphasis">— CT, in net.unix-wizards on 
+Usenet, 13 November 1983</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-9">24.9 The /proc Filesystem</h3>
+<p class="docText">In Unix, it seems <span class="docEmphBold">almost everything 
+can be treated like a file</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-19">Section 
+1.19</a>). On many modern Unix systems, even processes are files — well, sort 
+of. A special filesystem named <i>/proc</i> doesn't actually &quot;contain&quot; 
+processes, but it lets you interact with them. Almost all of the &quot;files&quot; in <i>
+/proc</i> are plain text, so you can access them from scripts and programs, as 
+well as from the command line. Of the systems I've checked, my Red Hat Linux 6.2 
+box (kernel version 2.2) seems to have the most in <i>/proc</i>, so I'll cover 
+it. Please check your documentation — a <i>proc</i>(5) manual page, for instance 
+— for the story on your system. </p>
+<p class="docText">All <i>/proc</i> filesystems have one subdirectory for each 
+process currently running on the system. Each of those process subdirectories is 
+named for its <span class="docEmphBold">PID</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>). Some versions of <i>/proc</i> also have other named files and 
+subdirectories — and my system has a lot of them. Here's a partial listing of my
+<i>/proc</i> filesystem at the moment; I've left out a lot of the numbered 
+subdirectories: </p>
+<p class="docText"><tt>-F</tt>
+<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-10">
+Section 8.10</a></p>
+<pre>$ <b>ls -F /proc</b>
+1/        17415/    467/      cmdline      ksyms        pci
+1047/     2/        482/      cpuinfo      loadavg      rtc
+1052/     3/        5/        devices      locks        scsi/
+1057/     345/      553/      dma          mdstat       self@
+1287/     370/      593/      fb           meminfo      slabinfo
+1289/     379/      594/      filesystems  misc         stat
+14288/    393/      595/      fs/          modules      swaps
+14289/    4/        596/      ide/         mounts       sys/
+17409/    4017/     597/      interrupts   mtrr         tty/
+17412/    407/      6/        ioports      net/         uptime
+17413/    425/      apm       kcore        partitions   version
+17414/    439/      bus/      kmsg</pre>
+<p class="docText">Linux system utilities like <i>ps</i> and <i>pidof</i> use 
+information from <i>/proc</i>. Your programs can use it, too; there are some 
+examples below. But it's also useful when you want to know something about your 
+system. The &quot;files&quot; in <i>/proc</i> are most useful there. Let's look at a 
+series of examples. We'll end with the numbered per-process &quot;directories.&quot; </p>
+<h4  id="upt3-CHP-24-SECT-9.1" class="docSection2Title">24.9.1 Memory Information</h4>
+<p class="docText">The Linux <i>free</i>(1) utility shows your memory status. It 
+simply reads the file <i>/proc/meminfo</i> and reformats the information. If you 
+want an <span class="docEmphBold">alias</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>) that simply shows how much memory is free, it's probably simpler to 
+read the <i>meminfo</i> file directly. For example: </p>
+<p class="docText"><tt>grep</tt>
+<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-1">
+Section 13.1</a></p>
+<pre>$ <b>cat /proc/meminfo</b>
+        total:    used:    free:  shared: buffers:  cached:
+Mem:  263929856 253022208 10907648 79675392 30797824 57868288
+Swap: 394784768 14585856 380198912
+MemTotal:    257744 kB
+MemFree:      10652 kB
+MemShared:    77808 kB
+Buffers:      30076 kB
+Cached:       56512 kB
+BigTotal:         0 kB
+BigFree:          0 kB
+SwapTotal:   385532 kB
+SwapFree:    371288 kB
+$ <b>alias memfree='grep Free: /proc/meminfo'</b>
+$ <b>memfree</b>
+MemFree:      10616 kB
+BigFree:          0 kB
+SwapFree:    371288 kB</pre>
+<p class="docText">(The free RAM decreased a bit while I was writing the alias.)
+</p>
+<h4  id="upt3-CHP-24-SECT-9.2" class="docSection2Title">24.9.2 Kernel and System Statistics</h4>
+<p class="docText">The <i>/proc/stat</i> file has statistics on the kernel and 
+system. As with most of the rest of <i>/proc</i>, it's updated constantly. For 
+example, we can <i>grep</i> for the CPU statistics. The four fields on the <tt>
+cpu</tt> line show the number of <span class="docEmphasis">jiffies</span> 
+(hundredths of a second) since the system was last rebooted: time spent in 
+normal-priority user mode, <span class="docEmphBold">niced user mode</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-5">Section 
+26.5</a>), system (kernel) mode, and the idle task, respectively. You might want 
+to use this information from a script that monitors your system's utilization. 
+Here's an example: <i>grep</i>ping for the CPU ststistics, then the start of an
+<span class="docEmphBold">awk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+20.10</a>) script that could watch the CPU usage: </p>
+<p class="docText"><tt>!!</tt>
+<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">
+Section 30.8</a></p>
+<pre>$ <b>grep cpu /proc/stat</b>
+cpu  14693561 48135949 638573 4031301
+$ <b>awk '/^cpu/ { print $5 / 100 &quot; seconds idle&quot; }' /proc/stat</b>
+40318.7 seconds idle
+$ <b>!!</b>
+awk '/^cpu/ { print $5 / 100 &quot; seconds idle&quot; }' /proc/stat
+40323.8 seconds idle</pre>
+<h4  id="upt3-CHP-24-SECT-9.3" class="docSection2Title">24.9.3 Statistics of the Current Process</h4>
+<p class="docText">The sections below describe per-process subdirectories in <i>
+/proc</i>. One special directory is <i>/proc/self</i>. It has the unusual 
+property of giving a different answer for every process that examines it: 
+information about the current process. (This &quot;directory&quot; is actually a
+<span class="docEmphBold">symbolic link</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>) to the directory numbered for the process' PID.) </p>
+<p class="docText">For instance, a process can check its <i>/proc/self/fd</i> 
+directory to see which files its <span class="docEmphBold">file descriptors</span> 
+(<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">Section 
+36.15</a>) are currently pointing to. This isn't just what
+<span class="docEmphasis">type</span> of file (disk file,
+<span class="docEmphBold">tty</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+2.7</a>), pipe, etc.) but the actual full pathname of the file. If you're new to 
+Unix, this may not seem too earth-shaking, but it's actually pretty amazing. </p>
+<p class="docText">For a simple example, here's a shell script that lists its 
+input and outputs. It then redirects its standard input (file descriptor 0) from<span class="docEmphBold"> 
+/dev/null</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">Section 
+43.12</a>) and lists again. </p>
+<pre>$ <b>pwd</b>
+/tmp
+$ <b>tty</b>
+/dev/pts/5
+$ <b>cat showfds</b>
+#!/bin/sh
+cd /proc/self/fd
+ls -l
+exec 0&lt;/dev/null
+ls -l
+$ <b>./showfds &lt; somefile</b>
+total 0
+lr-x------    1 jpeek    jpeek     64 Dec  2 09:03 0 -&gt; /tmp/somefile
+lrwx------    1 jpeek    jpeek     64 Dec  2 09:03 1 -&gt; /dev/pts/5
+lrwx------    1 jpeek    jpeek     64 Dec  2 09:03 2 -&gt; /dev/pts/5
+lr-x------    1 jpeek    jpeek     64 Dec  2 09:03 3 -&gt; /tmp/showfds
+total 0
+lr-x------    1 jpeek    jpeek     64 Dec  2 09:03 0 -&gt; /dev/null
+lrwx------    1 jpeek    jpeek     64 Dec  2 09:03 1 -&gt; /dev/pts/5
+lrwx------    1 jpeek    jpeek     64 Dec  2 09:03 2 -&gt; /dev/pts/5
+lr-x------    1 jpeek    jpeek     64 Dec  2 09:03 3 -&gt; /tmp/showfds</pre>
+<h4  id="upt3-CHP-24-SECT-9.4" class="docSection2Title">24.9.4 Statistics of Processes by PID</h4>
+<p class="docText">All versions of <i>/proc</i> that I've seen have 
+subdirectories named for each process currently running on the system. Each 
+subdirectory is named for the process <span class="docEmphBold">PID</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>). Here are a series of examples of the useful info on my Linux system:
+</p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: showenv</p>
+<ul>
+  <li>
+  <p class="docList">You can use <span class="docEmphBold">printenv or env</span> 
+  (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+  35.3</a>) to find the environment of your current process. How about the 
+  environment of another process? Here's a shell script called <i>showenv</i> 
+  that works like <i>printenv</i>: </p>
+  <pre>#!/bin/sh
+# showenv - show environment of a process, by PID
+# If second argument given, show just that one environment variable.
+
+f=/proc/$1/environ
+
+if [ ! -r &quot;$f&quot; ]; then
+    echo &quot;`basename $0`: can't access process $1&quot; 1&gt;&amp;2
+    exit 1
+fi
+
+case $# in
+1) tr '\000' '\012' &lt; $f | sort ;;
+2) tr '\000' '\012' &lt; $f | grep &quot;^$2=&quot; ;;
+*) echo &quot;Usage: `basename $0` pid [envariable-name]&quot; 1&gt;&amp;2; exit 1 ;;
+esac</pre>
+  <p class="docList">The <span class="docEmphBold">tr</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-11">Section 
+  21.11</a>) command translates the NUL-separated entries from the <i>environ</i> 
+  file into newline-separated lines. With one argument, the whole environment is 
+  shown. With two arguments, the script <i>grep</i>s for the environment 
+  variable named in the second argument. Maybe you'd like to know what the
+  <span class="docEmphBold">EXINIT</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-27">Section 
+  17.27</a>) environment variable was set to in a <i>vi</i> process with PID 
+  8984: </p>
+  <pre>$ <b>showenv 8984</b>
+DISPLAY=:0.0
+ECIINI=/usr/lib/ViaVoiceTTS/eci.ini
+EDITOR=vi
+EXINIT=so ~/.lib/vi/exrc8
+HISTFILESIZE=1000
+  ...
+$ <b>showenv 8984 EXINIT</b>
+EXINIT=so ~/.lib/vi/exrc8</pre>
+  </li>
+  <li>
+  <p class="docList">The <i>status</i> file gives status information about the 
+  process. A lot of this information is available in <span class="docEmphBold">
+  ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+  24.5</a>) output, but it's broken out nicely here. For instance, maybe you're 
+  wondering what group access process 918 has, or what process started it (its
+  <span class="docEmphBold">parent</span> PID (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+  24.3</a>)): </p>
+  <pre>% <b>cd /proc/918</b>
+% <b>grep PPid status</b>
+PPid:   916
+% <b>grep Groups status</b>
+Groups: 1000 501 103</pre>
+  <p class="docList">The PPID is 916. The process has the group numbers (can 
+  access resources with the group permissions of) GIDs 1000, 501, and 103. </li>
+  <li>
+  <p class="docList">The command-line arguments of a process are in the <i>
+  cmdline</i> file, separated by NUL characters. Hmmm, what files is that <i>
+  tail</i> -<i>f</i> job, process 861, watching? Let's see...using
+  <span class="docEmphBold">echo</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-5">Section 
+  27.5</a>) to add a final newline: </li>
+</ul>
+<p class="docText"><tt>;</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-16">
+Section 28.16</a></p>
+<pre>$ tr '\000' ' ' &lt; /proc/861/cmdline; echo
+tail -f /var/log/messages /var/log/maillog /u/jerry/tmp/startx.log</pre>
+<h4  id="upt3-CHP-24-SECT-9.5" class="docSection2Title">24.9.5 A Glimpse at Hardware</h4>
+<p class="docText">If you are curious about your system's hardware, a quick look 
+at <i>/proc/cpuinfo</i>, <i>/proc/interrupts</i>, and <i>/proc/ioports</i> will 
+help you size up the system. All the following examples came from a Red Hat 
+Linux box, but you will find these <span class="docEmphasis">proc</span> files 
+on most Linux and BSD systems. For instance, <i>/proc/cpuinfo</i> looks like 
+this (on my system): </p>
+<pre>processor: 0
+vendor_id: GenuineIntel
+cpu family: 6
+model: 6
+model name: Celeron (Mendocino)
+stepping: 0
+cpu MHz: 400.918
+cache size: 128 KB
+fdiv_bug: no
+hlt_bug: no
+f00f_bug: no
+coma_bug: no
+fpu: yes
+fpu_exception: yes
+cpuid level: 2
+wp: yes
+flags: fpu vme de pse tsc msr pae mce cx8 sep mtrr pat pse36 mmx fxsr
+bogomips: 799.53</pre>
+<p class="docText">The most important fields to notice are <tt>processor</tt>,
+<tt>model name</tt>, and <tt>cpu MHz</tt> since these identify how many CPUs are 
+in the system, the model name (although this isn't always so clear in older 
+Pentium models), and the CPU speed of your machine. </p>
+<p class="docText">The other three <span class="docEmphasis">proc</span> files 
+are important if you are installing hardware or trying to configuring recently 
+installed hardware. <i>/proc/interrupts</i> lists the hardware interrupt numbers 
+and shows which devices are using which interrupt. On my machine, this looks 
+like: </p>
+<pre>           CPU0
+  0:   92887036          XT-PIC  timer
+  1:     910141          XT-PIC  keyboard
+  2:          0          XT-PIC  cascade
+  3:          4          XT-PIC  serial
+  5:    4794267          XT-PIC  eth0
+  8:   11642728          XT-PIC  rtc
+ 10:   65248789          XT-PIC  es1371
+ 11:          0          XT-PIC  usb-uhci
+ 12:    5109157          XT-PIC  PS/2 Mouse
+ 14:     560048          XT-PIC  ide0
+ 15:     408739          XT-PIC  ide1
+NMI:          0
+ERR:          0</pre>
+<p class="docText"><i>/proc/ioports</i> lists the hardware I/O port ranges that 
+all your systems devices use. This is a good file to examine if recently 
+installed hardware can't be found in your drivers. Here's an abbreviated sample 
+of my system's <i>/proc/ioports</i>. </p>
+<pre>03f6-03f6 : ide0
+03f8-03ff : serial(auto)
+0cf8-0cff : PCI conf1
+4000-403f : Intel Corporation 82371AB PIIX4 ACPI
+5000-501f : Intel Corporation 82371AB PIIX4 ACPI
+c000-cfff : PCI Bus #01
+d000-d01f : Intel Corporation 82371AB PIIX4 USB
+d400-d43f : Ensoniq ES1371 [AudioPCI-97]
+d800-d807 : Lucent Microelectronics 56k WinModem
+dc00-dcff : Lucent Microelectronics 56k WinModem
+e000-e0ff : PCI device 1186:1300 (D-Link System Inc)
+f000-f00f : Intel Corporation 82371AB PIIX4 IDE</pre>
+<p class="docText">This file makes it easy to diagnosis hardware conflicts. 
+However, if your system is working well, you probably won't be looking at any of 
+these files much. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-10">24.10 What Are Signals?</h3>
+<p class="docText">Signals are a simple but important means of interprocess 
+communication. Interprocess communication sounds fancy, but it's really a simple 
+concept: it's the means by which one program sends a message to another program. 
+It's common to think of signals as special messages sent by the
+<span class="docEmphBold">Unix kernel</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-10">Section 
+1.10</a>) but, in fact, any program can signal any other program. </p>
+<p class="docText">What kinds of messages can you send with a signal? Relatively 
+few, in reality. Signals aren't &quot;arbitrary&quot; messages, like letters; they are a 
+small group of pre-defined messages, each with its own special meaning. System V 
+Unix supports 16 signals, each of which is assigned a number; BSD-derived Unix 
+implementations and SVR4 have 32 signals.
+<a class="docLink" href="#upt3-CHP-24-TABLE-2">Table 24-2</a> lists some of the 
+more commonly used signals. It also lists keyboard characters that send common 
+signals on BSD systems (these can be changed; see
+<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-8">
+Section 5.8</a>). </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-24-TABLE-2" class="docTableTitle">Table 24-2. Common signals </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Signal name</th>
+    <th class="docTableHeader">
+    <p class="docText">Number</th>
+    <th class="docTableHeader">
+    <p class="docText">Meaning and typical use</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">HUP</td>
+    <td class="docTableCell">
+    <p class="docText">1</td>
+    <td class="docTableCell">
+    <p class="docText">Hangup — stop running. Sent when you log out or 
+    disconnect a modem. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">INT</td>
+    <td class="docTableCell">
+    <p class="docText">2</td>
+    <td class="docTableCell">
+    <p class="docText">Interrupt — stop running. Sent when you type CTRL-c.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">QUIT</td>
+    <td class="docTableCell">
+    <p class="docText">3</td>
+    <td class="docTableCell">
+    <p class="docText">Quit — stop running (and dump core). Sent when you type 
+    CTRL-\.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">KILL</td>
+    <td class="docTableCell">
+    <p class="docText">9</td>
+    <td class="docTableCell">
+    <p class="docText">Kill — stop unconditionally and immediately; a good 
+    &quot;emergency kill.&quot; </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">SEGV</td>
+    <td class="docTableCell">
+    <p class="docText">11</td>
+    <td class="docTableCell">
+    <p class="docText">Segmentation violation — you have tried to access illegal 
+    memory.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">TERM</td>
+    <td class="docTableCell">
+    <p class="docText">15</td>
+    <td class="docTableCell">
+    <p class="docText">Terminate — terminate gracefully, if possible.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">STOP</td>
+    <td class="docTableCell">
+    <p class="docText">17*</td>
+    <td class="docTableCell">
+    <p class="docText">Stop unconditionally and immediately; continue with CONT.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">TSTP</td>
+    <td class="docTableCell">
+    <p class="docText">18*</td>
+    <td class="docTableCell">
+    <p class="docText">Stop — stop executing, ready to continue (in either 
+    background or foreground). Sent when you type CTRL-z.
+    <span class="docEmphBold">stty</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-8">Section 
+    5.8</a>) calls this <span class="docEmphasis">susp</span>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">CONT</td>
+    <td class="docTableCell">
+    <p class="docText">19*</td>
+    <td class="docTableCell">
+    <p class="docText">Continue — continue executing after STOP or TSTP.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">CHLD</td>
+    <td class="docTableCell">
+    <p class="docText">20*</td>
+    <td class="docTableCell">
+    <p class="docText">Child — a child process's status has changed.</td>
+  </tr>
+</table>
+<p class="docText">Note that signal numbers — especially the ones above 15, 
+marked with an asterisk in <a class="docLink" href="#upt3-CHP-24-TABLE-2">Table 
+24-2</a> — vary system-to-system. Use the signal name wherever you can. </p>
+<p class="docText">While the list in
+<a class="docLink" href="#upt3-CHP-24-TABLE-2">Table 24-2</a> isn't definitive, 
+it shows you the types of things signals can do. Many signals, like
+<span class="docEmphasis">SIGSEGV</span>, are warning or error messages. You've 
+probably seen the frustrating &quot;segmentation violation&quot; message. That message 
+came when the kernel detected something wrong and sent your program a
+<span class="docEmphasis">SIGSEGV</span> signal; in response, your program quit. 
+Others signals, like <span class="docEmphasis">SIGTSTP</span>, are generated in 
+response to special characters on the keyboard. And a lot of signals just say, 
+&quot;Your time is up, goodbye!&quot; </p>
+<p class="docText">When a process receives a signal, it can take a number of 
+actions; for example: </p>
+<ul>
+  <li>
+  <p class="docList">It can take whatever default action is specified for the 
+  signal. By default, some signals kill the process that receives them. For some 
+  signals, the default action is to stop running and dump core. (<span class="docEmphasis">SIGQUIT</span> 
+  is an example of this.) Other signals have no effect by default. </li>
+  <li>
+  <p class="docList">It can <span class="docEmphBold">trap</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">Section 
+  35.17</a>) the signal and run a special &quot;signal handling&quot; function — in which 
+  case, it can do whatever it wants. A signal handler often does whatever's 
+  necessary to shut the program down nicely: make sure that files are closed and 
+  left in a consistent state, and so on. </li>
+  <li>
+  <p class="docList">It can ignore the signal, in which case nothing happens.</li>
+</ul>
+<p class="docText">You've probably read that the command
+<span class="docEmphasis">kill -9</span> is guaranteed to kill a process. Why? 
+Two special signals in <a class="docLink" href="#upt3-CHP-24-TABLE-2">Table 24-2</a> 
+can't be caught or ignored: the <span class="docEmphasis">KILL</span> and
+<span class="docEmphasis">STOP</span> signals. </p>
+<p class="docText">The <span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+24.12</a>) command doesn't kill — it really does nothing more than send signals. 
+As you now know, signals often bring death and destruction, but there's no 
+necessary reason for them to do so. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-11">24.11 Killing Foreground Jobs</h3>
+<p class="docText">You probably know that typing <span class="docEmphBold">
+CTRL-c</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-10">Section 
+24.10</a>) will terminate your foreground job. But what actually happens when 
+you type CTRL-c? </p>
+<p class="docText">When you type CTRL-c, you're sending the
+<span class="docEmphBold">INT (interrupt) signal</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-10">Section 
+24.10</a>) to the foreground process. Most well-designed programs &quot;catch&quot; the 
+interrupt signal, which means that the program installs some special function (a 
+&quot;signal handler&quot;) that is called whenever a signal arrives. The signal handler 
+normally closes all open files, resets your terminal properly (if needed), and 
+does anything else necessary so that the program can depart from this world in 
+peace. Then the program terminates. The <span class="docEmphasis">QUIT</span> 
+signal, sent by CTRL-<tt>\</tt>, works similarly but also makes a
+<span class="docEmphasis">core</span> file for debugging. </p>
+<p class="docText">Of course, it's possible for the signal handler to do 
+something else entirely: the program can decide not to quit, or it can implement 
+some truly bizarre feature. In fact, editors such as <i>vi</i> or Emacs almost 
+always ignore most signals. The <span class="docEmphBold">trap</span> (
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">
+Section 35.17</a>) command handles signals in the Bourne shell. </p>
+<p class="docText">Whenever you send a signal from the keyboard, it's sent to 
+all processes in the same <span class="docEmphBold">process group</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>). This may include the program's child processes, but it may not. And, 
+of course, child processes can choose to ignore signals on their own. But more 
+often than not, killing the parent process kills its children. </p>
+<p class="docText">
+<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-8">
+Section 5.8</a> explains how to set the key that sends these and other signals. 
+The <span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+24.12</a>) command also sends signals. </p>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-12">24.12 Destroying Processes with kill</h3>
+<p class="docText">Sometimes it's necessary to eliminate a process entirely or 
+to <span class="docEmphBold">signal a process</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-13">Section 
+24.13</a>); this is the purpose of the <i>kill</i> command. You can use the <i>
+kill</i> command with or without a signal id: </p>
+<pre>% <b>kill</b> <span class="docEmphasis">pid</span>
+% <b>kill</b> <span class="docEmphasis">-signal pid</span></pre>
+<p class="docText">where <span class="docEmphasis">pid</span> is the process' 
+identification number, and <span class="docEmphasis">signal</span> (which is 
+optional) is the signal to send to the process. The default signal is number 15, 
+the <span class="docEmphasis">TERM</span> signal, which tells the process to 
+terminate. On some systems, the signal must be specified numerically; others 
+allow you to use either the signal number or its symbolic name. [Use
+<span class="docEmphasis">kill -l</span> for a list of signal names; 
+unfortunately, the listing doesn't show the correspondence of names and numbers. 
+However, they are in order, so if you can count, you can figure it out.
+<span class="docEmphasis">— TOR</span>] </p>
+<p class="docText">Sometimes, a process may still exist after a <i>kill</i> 
+command. If this happens, execute the <i>kill</i> command with the <i>-KILL</i> 
+or <i>-9</i> option. This almost always guarantees that the process will be 
+destroyed. However, it does not allow the dying process to clean up, and 
+therefore may leave the process' files in an inconsistent state. </p>
+<p class="docText">Occasionally, processes will not die even after being sent 
+the <span class="docEmphasis">KILL</span> signal. The vast majority of such 
+processes fall into one of three categories: </p>
+<ul>
+  <li>
+  <p class="docList">Zombies. A process in the <span class="docEmphBold">zombie 
+  state</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-19">Section 
+  24.19</a>) is displayed as <span class="docEmphasis">Z</span> status in BSD
+  <span class="docEmphBold">ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+  24.5</a>) displays and as <span class="docEmphasis">&lt;defunct&gt;</span> under 
+  System V. When a process is exiting, it informs its parent of its imminent 
+  death; when it receives an acknowledgment, its PID is removed from the process 
+  table. A zombie process is one whose total resources have been freed, but 
+  whose parent process' acknowledgment has not occurred. Usually, <i>init</i> 
+  will step in when the parent is gone, but very occasionally this fails to 
+  happen. Zombies are always cleared the next time the system is booted and do 
+  not adversely affect system performance. </li>
+  <li>
+  <p class="docList">Processes waiting for unavailable <span class="docEmphBold">
+  NFS</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+  1.21</a>) resources (for example, trying to write to a remote file on a system 
+  that has crashed) will not die if sent a <span class="docEmphasis">KILL</span> 
+  signal. Use the <span class="docEmphasis">QUIT</span> signal (3) or the
+  <span class="docEmphasis">INT</span> (interrupt) signal (2) to kill such 
+  processes. </li>
+  <li>
+  <p class="docList">Processes waiting for a device to complete an operation 
+  before exiting. Often this means waiting for a tape to finish rewinding. </li>
+</ul>
+<p class="docText">Killing a process may also kill all of its children. Child 
+processes may not die if they're blocking or &quot;catching&quot; the signal you use — 
+although, as explained above, the <span class="docEmphasis">KILL</span> signal 
+(9) will usually terminate those processes. Killing a shell can therefore kill 
+all the foreground and stopped background processes initiated from that shell 
+(including other shells). Killing a user's login shell is equivalent to logging 
+the user out. This is a useful (if somewhat painful) way to recover from certain 
+kinds of problems. For example, if a user manages to confuse his editor by 
+mistyping control keys and escape sequences, or enters an infinite loop that he 
+can't terminate by normal means, killing his shell will let him regain control 
+of the situation, possibly at the cost of some work. Use the <i>ps</i> command 
+to determine which process is the offending user's shell. Remember that you must 
+be <span class="docEmphBold">superuser</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-18">Section 
+1.18</a>) to kill someone else's process. </p>
+<p class="docText">If you're using the X Window System,
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-20">
+Section 24.20</a> shows how to find which window has the processes you may need 
+to kill. </p>
+<p class="docText"><span class="docEmphasis">—AF, from Essential System 
+Adminstration (O'Reilly, 2002)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-13">24.13 Printer Queue Watcher: A Restartable Daemon 
+Shell Script</h3>
+<p class="docText">[This article may not appear to have a lot to do with the 
+subject of this chapter, but it illustrates the other side of signal handling — 
+what a program or shell script can do when it receives a signal. Jerry's script 
+uses the <span class="docEmphBold">trap</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">Section 
+35.17</a>) command to catch several different signals and act differently 
+depending on whether the signal is a &quot;hangup&quot; (<i>HUP</i> , or signal 1) or a <i>
+TERM</i> (signal 15). — TOR] </p>
+<p class="docText">Unix systems run &quot;daemon&quot; programs such as <i>cron</i>(8) and
+<i>syslogd</i>(8) that wait in the background, looking for work to do. Many 
+daemons read configuration files when they start up. System administrators 
+sometimes change the configuration files and want the daemon to reread the file. 
+One way to do that is by terminating and restarting the program — but that's 
+ugly and also means the daemon won't be running for a few seconds until it's 
+restarted. So many daemons are designed to reread their configuration files 
+and/or restart themselves when they get a signal (usually the HUP signal, signal 
+1). System administrators do this by getting the daemon's process ID number and 
+sending the signal with the <i>kill</i> command. Because the daemon &quot;catches&quot; 
+the signal, the daemon isn't actually killed. </p>
+<p class="docText">You can run a shell script as a daemon by putting it in the 
+background.<span id="ENB24-4"><a class="docLink" href="#EN24-4"><sup>[4]</sup></a></span> 
+Here's a simple example, a shell script named <i>watchq</i>. It reads a file 
+full of printer queue names and stores it in a shell variable. Every 30 seconds, 
+it runs <span class="docEmphBold">lpq</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">Section 
+45.2</a>) on all printer queues listed. If any queues have an error, the script 
+echoes a message and the output of <i>lpq</i> to a particular user with the
+<span class="docEmphBold">write</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) command. (You could change it to write to the system's <i>syslog</i> 
+by calling <i>logger</i>(1) instead of <i>write</i>. Or use
+<span class="docEmphBold">xmessage</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-26">Section 
+36.26</a>) to pop a notice window onto someone's X Window System console. Etc., 
+etc.) </p>
+<p class="docText">The script uses numbers (0, 1, 15) instead of signal names (<span class="docEmphasis">EXIT</span>,
+<span class="docEmphasis">HUP</span>, <span class="docEmphasis">TERM</span>). 
+This is for portability to older Unix shells that don't understand names in <i>
+trap</i> commands. But if you write a script like this on a newer system, use 
+signal names if you can. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: watchq</p>
+<p class="docText"><tt>/dev/null</tt>
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">
+Section 43.12</a></p>
+<pre>#! /bin/sh
+# watchq - &quot;daemon&quot; script that watches printer queue(s) for errors
+temp=/tmp/WATCHQ$$             # Holds output of lpq
+watch=/usr/local/lib/watchqs   # Queue names to watch
+writeto=lisa                   # User who gets notices about printer
+queues=&quot;`cat $watch`&quot;          # Put list of queue names in $queues
+trap 'queues=&quot;`cat $watch`&quot;' 1 # Reset $queues if we get a SIGHUP
+trap 'rm -f $temp; exit' 0 15  # Clean up temp file when killed
+
+# Loop forever (until someone kills script):
+while :
+do
+    for queue in $queues
+    do
+        lpq -P$queue &gt;$temp
+        if egrep '(out of paper|error|warning)' $temp &gt;/dev/null
+        then echo &quot;PRINTER QUEUE $queue:&quot; | cat - $temp | write $writeto
+        fi
+    done
+    sleep 30
+done</pre>
+<p class="docText">Now let's run the script. After the script has run for a 
+while, the printer named <span class="docEmphasis">office</span> goes down. I 
+edit the <span class="docEmphasis">watchqs</span> file and remove that printer 
+so the poor user <span class="docEmphasis">lisa</span> won't keep getting 
+complaints about it. Then I send a signal to have the file reread: </p>
+<p class="docText"><tt>kill</tt>
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">
+Section 24.12</a></p>
+<pre>% <b>echo office main lobby &gt; /usr/local/lib/watchqs</b>
+% <b>watchq &amp;</b>
+[1] 4363
+   ...
+% <b>echo main lobby &gt; /usr/local/lib/watchqs</b>
+%<b> kill -HUP 4363</b>
+   ...
+% <b>kill 4363</b>
+[1]    Exit -48             watchq</pre>
+<p class="docText">In real life, the <i>watchq</i> script might be started from 
+a system file like <span class="docEmphasis">/etc/rc.local</span> when the 
+system reboots. Lisa would probably edit the <span class="docEmphasis">watchqs</span> 
+file herself. The username that's notified by <i>write</i> might also be 
+resettable with a <span class="docEmphasis">kill -HUP</span> (or
+<span class="docEmphasis">kill -1</span>). </p>
+<p class="docText">This isn't foolproof, and you can run into subtle problems. 
+For instance, the <i>write</i> command may not work on some Unixes if it's 
+running from a daemon without a <span class="docEmphBold">controlling tty</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-6">Section 
+24.6</a>). Also, the error messages that <span class="docEmphBold">egrep</span> 
+(<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-4">Section 
+13.4</a>) searches for may not catch all problems, and they are 
+system-dependent. If you use <i>xmessage</i>, a user who's away from his 
+workstation could come back to tens or hundreds of windows; you might want to 
+make the script pause until the user acknowledges a window. But this script is 
+just a demonstration — to show a great way to write a quick-and-dirty daemon.
+</p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-14">24.14 Killing All Your Processes</h3>
+<p class="docText">On many Unix systems, <span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+24.12</a>) interprets the special &quot;process ID&quot; -1 as a command to signal all 
+your processes (all processes with your user ID), <span class="docEmphasis">
+except</span> for the process sending the signal. For example, the following 
+command will terminate all your processes:<span id="ENB24-5"><a class="docLink" href="#EN24-5"><sup>[5]</sup></a></span>
+</p>
+<pre>% <b>kill -TERM -1</b></pre>
+<p class="docText">To see if your system supports this feature, type
+<span class="docEmphBold">man 2 kill</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+2.1</a>) to read the <i>kill</i>(2) manual page. </p>
+<p class="docText">You can use this to prevent background jobs from continuing 
+after you logout; just stick <tt>kill -TERM -1</tt> into your
+<span class="docEmphasis">.logout</span> file. There are some good reasons
+<span class="docEmphasis">not</span> to do this though: if you use several 
+terminals, this will kill <span class="docEmphasis">all</span> your processes 
+when you log out from <span class="docEmphasis">any</span> terminal. </p>
+<p class="docText">This command is also useful in desperate situations. If 
+processes are spawning out of control, or if your terminal is locked, you can 
+log in from another terminal and kill everything, without having to dig through
+<span class="docEmphBold">ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>) to find the right process. The <span class="docEmphBold">zap</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-16">Section 
+24.16</a>) script searches process lists and kills processes automatically. </p>
+<p class="docText">The special -1 process ID is defined differently for the 
+superuser; if you're root, it means &quot;all processes <span class="docEmphasis">
+except</span> system processes.&quot; </p>
+<p class="docText">If you can't use the -1 process ID, and you use the Bourne 
+shell or another shell without job control, you can use a 0 (zero) process ID. 
+That sends the signal to all members of the process group (that is, processes 
+resulting from the current login). A 0 doesn't work on shells, such as the C 
+shell, that have <span class="docEmphBold">job control</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+23.3</a>). </p>
+<p class="docText"><span class="docEmphasis">—ML, JP, and JIK</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-15">24.15 Killing Processes by Name?</h3>
+<p class="docText">This article discusses a particular version of <i>kill</i> 
+that has some problems. Your system may have a different <i>kill</i> and, 
+possibly, a version of <span class="docEmphBold">killall</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-16">Section 
+24.16</a>) that doesn't seem to have as many problems. But this article is worth 
+reading anyway for what it shows you about process names and the <i>ps</i> 
+command. It's good info to keep in mind when you're trying to kill processes in 
+a hurry. </p>
+<p class="docText">On my Linux system, the <i>kill</i>(1) manual page says I can 
+send signals to processes either by PID numbers (as we showed in
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">
+Section 24.12</a>) or by process names. To an old stick-in-the-mud Unix user 
+like me, who's been killing processes by their PIDs for 20 years, this doesn't 
+seem very appealing. But hey, even <span class="docEmphasis">I</span> appreciate 
+some of the new things Unix and Linux can do! <tt>;-)</tt> So we're saying that, 
+if my system is slow and I want to temporarily stop the two <i>gcc</i> compiles 
+I'm running in the background, I can just type: </p>
+<pre>$ <b>kill -STOP gcc</b>
+[2]   Stopped            gcc -c bigprog.c sub1.c sub2.c ...
+[4]-  Stopped            gcc -o something something.c</pre>
+<p class="docText">Not necessarily. This is not always as simple as it seems. 
+For one, before you kill a process by name, you'd better be sure that there are 
+no other processes by that name, owned by you, running at the same time — unless 
+you want to kill them too. That includes processes on other windows and
+<span class="docEmphasis">tty</span>s you're logged onto at the time; it also 
+includes <i>at</i>, <i>cron</i>, or <i>batch</i> jobs that are running somewhere 
+else on the system. Second, the process name may not be what you think it is. 
+Third, even if your <i>kill</i>(1) manpage says that <i>kill</i> can do this, 
+your shell may have a built-in <i>kill</i> that doesn't understand how to kill 
+processes by name. </p>
+<p class="docText">For example, let's say I have a runaway shell script named <i>
+cruncher</i>. I'm running it twice, and I want to kill both instances. Watch:
+</p>
+<p class="docText"><tt>&amp;</tt>
+<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-2">
+Section 23.2</a></p>
+<pre>1$ <b>cruncher &amp; cruncher &amp;</b>
+[1] 21451
+[2] 21456
+2$ <b>kill cruncher</b>
+bash2: kill: cruncher: no such pid
+3$ <b>type -all kill</b>
+kill is a shell builtin
+kill is /bin/kill
+4$ <b>/bin/kill cruncher</b>
+kill: can't find process &quot;cruncher&quot;
+5$ <b>jobs</b>
+[1]-  Running                 cruncher &amp;
+[2]+  Running                 cruncher &amp;
+6$ <b>kill %1</b>
+[1]-  Terminated              cruncher
+7$ <b>ps</b>
+   ...
+21456 pts/1    00:01:25 cruncher
+8$ <b>ps x</b>
+21456 pts/1    S      1:33 sh /u/jerry/.bin/cruncher</pre>
+<p class="docText">In command 1, I put the two jobs in the background. In 
+command 2, I try to kill them by name. But my shell, <i>bash2</i>, is 
+complaining &quot;no such pid.&quot; Hmmm; it's using the shell's built-in <i>kill</i>; 
+the <i>bash2</i> manpage seems to say that its <i>kill</i> only understands PID 
+numbers. So, in command 3, I run <i>type</i> -<i>all</i> and find that the 
+system <i>kill</i> is <i>/bin/kill</i>. In command 4, I give the process name 
+again, but <i>/bin/kill</i> can't find it. Say what? Typing <i>jobs</i>, command 
+5, shows two <i>cruncher</i>s running. And I can kill one of them by using its 
+job number, in command 6. More confusing, running <i>ps</i>, in command 7, also 
+shows <i>cruncher</i> running. </p>
+<p class="docText">The story ends at command 8, where I ran the BSD version of
+<span class="docEmphBold">ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>). It shows me what the default &quot;friendly&quot; System V-style <i>ps</i> (in 
+command 7) didn't: the complete command line is actually <tt>sh 
+/u/jerry/.bin/cruncher</tt>. This is a shell script, so the script filename <i>
+cruncher</i>, with the executable's directory from the <span class="docEmphBold">
+PATH</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+35.6</a>) prepended, is <span class="docEmphBold">passed to a shell as an 
+argument</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-3">Section 
+27.3</a>). So (whew): to kill these shell scripts, I should have typed <tt>kill 
+sh</tt>. But do I really want to kill all running shells? </p>
+<p class="docText">Another problem with killing a process by name is that a 
+process can start a <span class="docEmphBold">subprocess</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>) with a different name. For instance, if your <span class="docEmphBold">
+make</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-10">Section 
+11.10</a>) job starts a <i>gcc</i> compiler, and you type <tt>kill make</tt>, 
+will that kill <i>gcc</i> too? Maybe — if the signal that <i>make</i> gets is 
+passed to its subprocesses (if its subprocesses haven't been
+<span class="docEmphBold">disowned</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-11">Section 
+23.11</a>), for instance). But unless all &quot;smart&quot; versions of <i>kill</i> are 
+smarter than I think they are, they won't kill subprocesses with different 
+names. </p>
+<p class="docText">And don't think that you can just write an
+<span class="docEmphBold">alias</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>) to override your shell's <i>kill</i> with <i>/bin/kill</i>: if you do, 
+you won't be able to use <span class="docEmphBold">job control</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-1">Section 
+23.1</a>) numbers like <tt>%1</tt> because the external <i>kill</i> doesn't have 
+access to your shell's job table. </p>
+<p class="docText">My advice? It might be easier to use the old way — running <i>
+ps</i> to find the process(es) and kill by PID number — or use a script like
+<span class="docEmphBold">zap</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-16">Section 
+24.16</a>) instead. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-16">24.16 Kill Processes Interactively</h3>
+<p class="docText">When you want to kill processes, it's a pain in the neck to 
+run <span class="docEmphBold">ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>), figure out the process ID, and then kill the process — although
+<span class="docEmphBold">sometimes you have to do it that way</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-15">Section 
+24.15</a>). We'll look at two easier ways. </p>
+<h4  id="upt3-CHP-24-SECT-16.1" class="docSection2Title">24.16.1 killall -i</h4>
+<p class="docText">Many systems have a command named <i>killall</i> with a <i>-i</i> 
+(&quot;interactive&quot;) option. <span class="docEmphBold">Be careful</span>, though, 
+because there are several versions, and the most basic does just what it says: 
+kills all processes on the system (when run as the <span class="docEmphBold">
+superuser</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-18">Section 
+1.18</a>)). Check <i>killall</i>'s manual page on your system. </p>
+<p class="docText">The version of <i>killall</i> we're talking about here 
+accepts multiple process-name arguments on its command line. Without its <i>-i</i> 
+option, the command sends a signal (by default, <span class="docEmphasis">TERM</span>) 
+to any process name that matches. The process name you give has to match 
+completely. Unfortunately, <i>killall</i> sends a signal to any process with 
+that name — even processes owned by other users, which you can't kill (unless 
+you're the superuser); you'll get the error <tt>Operation not permitted</tt>. 
+For example: </p>
+<p class="docText"><tt>&amp;</tt>
+<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-2">
+Section 23.2</a>, <tt>[5]</tt>
+<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">
+Section 23.3</a></p>
+<pre>1$ <b>cruncher &amp; sleep 60 &amp;</b>
+[5] 2714
+[6] 2715
+$ <b>killall crunch eep</b>
+crunch: no process killed
+eep: no process killed
+$ <b>killall cruncher sleep</b>
+sleep(2708): Operation not permitted
+sleep(2710): Operation not permitted
+sleep(2712): Operation not permitted
+[5]   Terminated              cruncher
+[6]   Terminated              sleep 60</pre>
+<p class="docText">With <i>-i</i>, <i>cruncher</i> lists the PID number and 
+gives you a choice of typing <span class="docEmphasis">y</span> to kill a 
+process or <span class="docEmphasis">n</span> to leave it alone: </p>
+<pre>$ <b>cruncher &amp; sleep 60 &amp;</b>
+[5] 2732
+[6] 2733
+$ <b>killall -i cruncher sleep</b>
+Kill sleep(2727) ? (y/n) <b>y</b>
+sleep(2727): Operation not permitted
+Kill cruncher(2732) ? (y/n) <b>y</b>
+Kill sleep(2733) ? (y/n) <b>y</b>
+Kill sleep(2734) ? (y/n) <b>n</b>
+[5]   Terminated              cruncher
+[6]   Terminated              sleep 60</pre>
+<h4  id="upt3-CHP-24-SECT-16.2" class="docSection2Title">24.16.2 zap</h4>
+<p class="docText">A more flexible way to kill processes interactively is the <i>
+zap</i> shell script, presented by Brian Kernighan and Rob Pike in their classic 
+book <i>The UNIX Programming Environment</i>. The script uses
+<span class="docEmphBold">egrep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-4">Section 
+13.4</a>) to pick the processes to kill; you can type <span class="docEmphBold">
+extended expressions</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-15">Section 
+32.15</a>) that match more than one process. The expressions can match partial 
+or complete command names, any arguments to the commands, or, actually, any part 
+of the command's line in the <i>ps</i> output. For example: </p>
+<pre>% <b>zap 'troff|fmat'</b>
+   PID TTY TIME CMD
+ 22117  01 0:02 fmat somefile? <b>n</b>
+ 22126  01 0:15 sqtroff -ms somefile? <b>y</b></pre>
+<p class="docText">We reprint the script by permission of the authors:</p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: zap</p>
+<p class="docText"><tt>'...'</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-24">
+Section 36.24</a></p>
+<pre>#! /bin/sh
+# zap pattern:  kill all processes matching pattern
+
+PATH=/bin:/usr/bin
+IFS='
+'                   # just a newline
+case $1 in
+&quot;&quot;)   echo 'Usage: zap [-2] pattern' 1&gt;&amp;2; exit 1 ;;
+-*)   SIG=$1; shift
+esac
+
+echo '   PID TTY TIME CMD'
+kill $SIG `pick \`ps -ag | egrep &quot;$*&quot;\` | awk '{print $1}'`</pre>
+<p class="docText">The <tt>ps -ag</tt> command displays all processes on the 
+system. Leave off the <tt>a</tt> to get just your processes. Your version of <i>
+ps</i> may need <span class="docEmphBold">different options</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>). </p>
+<p class="docText">This shell version of <i>zap</i> calls another script, <i>
+pick</i>, shown below.<span id="ENB24-6"><a class="docLink" href="#EN24-6"><sup>[6]</sup></a></span>
+<i>pick</i> shows each of its command-line arguments and waits for you to type
+<span class="docEmphasis">y</span>, <span class="docEmphasis">q</span>, or 
+anything else. Answering <span class="docEmphasis">y</span> writes the line to 
+standard output, answering <span class="docEmphasis">q</span> aborts <i>pick</i> 
+without showing more lines, and any other answer shows the next input line 
+without printing the current one. <i>zap</i> uses <span class="docEmphBold">awk</span> 
+(<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+20.10</a>) to print the first argument (the process ID number) from any <i>ps</i> 
+line you've selected with <i>pick</i>. The inner set of
+<span class="docEmphBold">nested</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-24">Section 
+36.24</a>) <span class="docEmphBold">backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) in <i>zap</i> pass <i>pick</i> the output of <i>ps</i>, filtered 
+through <i>egrep</i>. Because the <i>zap</i> script has set the
+<span class="docEmphBold">IFS variable</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-23">Section 
+36.23</a>) to just a newline, <i>pick</i> gets and displays each line of <i>ps</i> 
+output as a single argument. The outer set of backquotes passes
+<span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+24.12</a>) the output of <i>pick</i>, filtered through <i>awk</i>. </p>
+<p class="docText">If you're interested in shell programming and that 
+explanation wasn't detailed enough, take a careful look at the scripts — they're 
+really worth studying. (This book's shell programming chapters, 44 through 46, 
+may help, too.) Here's the <i>pick</i> script: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: pick</p>
+<p class="docText"><tt>/dev/tty</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">
+Section 36.15</a></p>
+<pre>#!/bin/sh
+# pick:  select arguments
+
+PATH=/bin:/usr/bin
+
+for i
+do
+    echo -n &quot;$i? &quot; &gt;/dev/tty
+    read response
+    case $response in
+    y*)    echo $i ;;
+    q*)    break
+    esac
+done &lt;/dev/tty</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-17">24.17 Processes Out of Control? Just STOP Them</h3>
+<p class="docText">Especially if you're a programmer, you can run into a 
+situation where you have processes <span class="docEmphBold">forking</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">Section 
+24.2</a>) out of control — more and more of them. By the time you kill one, 
+fifty more fork. </p>
+<ul>
+  <li>
+  <p class="docList">On systems with <span class="docEmphBold">job control</span> 
+  (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+  23.3</a>), there's a good answer: use the <span class="docEmphasis">STOP</span> 
+  signal to stop the processes: </p>
+  <p class="docList"><tt>kill</tt>
+  <a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">
+  Section 24.12</a></p>
+  <pre>kill<b> </b>-STOP ...</pre>
+  <p class="docList">Stop any process you can so that it can't fork more 
+  processes. Stop them all. Then start cleaning up with
+  <span class="docEmphasis">kill -9</span>. </li>
+  <li>
+  <p class="docList">If your system manager has set a per-user process limit on 
+  your computer, the good news is that your processes won't eventually crash the 
+  system. But the bad news is, when you try to run any command that isn't
+  <span class="docEmphBold">built into the shell</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+  1.9</a>) (like <span class="docEmphBold">killall</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-16">Section 
+  24.16</a>), which would be nice to use in this situation, if you have it): </p>
+  <pre>% <b>killall -STOP myprog</b>
+No more processes.</pre>
+  <p class="docList">you can't because you're already at your limit. </p>
+  <p class="docList">If that happens, log on to another account or ask someone 
+  to run a command that will give a list of your processes. Depending on your 
+  system, the command is probably like one of these two: </p>
+  <pre>% <b>ps -u <tt><i>yourname </i></tt> </b>
+           <i> System V</i>
+% <b>ps aux | grep <tt><i>yourname </i></tt> </b>
+   <i> BSD</i></pre>
+  <p class="docList">Then go back to your terminal and start stopping <tt>:-)</tt>. 
+  If you get the <tt>No more</tt> <tt>processes</tt> error, your shell must not 
+  have a built-in <i>kill</i> command. Many shells do — including <i>bash</i> 
+  and <i>csh</i>. <span class="docEmphasis">Carefully</span> type the next 
+  commands to be sure that <i>/bin/bash</i> exists (assuming your shell has a 
+  built-in <i>echo</i>, this trick<span id="ENB24-7"><a class="docLink" href="#EN24-7"><sup>[7]</sup></a></span> 
+  bypasses the external <i>ls</i> command); then, if the shell is there, replace 
+  your shell with <i>bash</i>. Don't make a mistake (if you do, you may not be 
+  able to log in again): </p>
+  <p class="docList"><tt>exec</tt>
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-5">
+  Section 36.5</a></p>
+  <pre>$ <b>echo /bin/bas?</b>
+/bin/bash
+$ <b>exec /bin/bash</b>
+bash$ <b>kill</b> ...</pre>
+  </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-18">24.18 Cleaning Up an Unkillable Process</h3>
+<p class="docText">You or another user might have a process that (according to
+<span class="docEmphBold">ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>)) has been sleeping for several days, waiting for input. If you can't
+<span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-12">Section 
+23.12</a>) the process, even with <span class="docEmphasis">kill -9</span>, 
+there may be a bug or some other problem. </p>
+<ul>
+  <li>
+  <p class="docList">These processes can be unkillable because they've made a 
+  request for a hardware device or network resource. Unix has put them to sleep 
+  at a very high priority and the event that they are waiting on hasn't happened 
+  (because of a network problem, for example). This causes
+  <span class="docEmphasis">all</span> other signals to be held until the 
+  hardware event occurs. The signal sent by <i>kill</i> doesn't do any good.
+  </li>
+  <li>
+  <p class="docList">If the problem is with a terminal and you can get to the 
+  back of the terminal or the back of the computer, try unplugging the line from 
+  the port. Also, try typing CTRL-q on the keyboard — if the user typed CTRL-s 
+  while getting a lot of output, this may free the process. </li>
+  <li>
+  <p class="docList">Ask your vendor if there's a special command to reset the 
+  device driver. If there isn't, you may have to reboot the computer. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-19">24.19 Why You Can't Kill a Zombie</h3>
+<p class="docText">Processes in your <span class="docEmphasis">ps</span> output 
+that are in the &lt;exiting&gt; or Z status are called zombies. </p>
+<p class="docText">You cannot kill zombies; they are already dead. </p>
+<p class="docText">&quot;What is a zombie?&quot; I hear you ask. &quot;Why should a dead 
+process stay around?&quot; </p>
+<p class="docText">Dead processes stick around for two principal reasons. The 
+lesser of these is that they provide a sort of &quot;context&quot; for closing
+<span class="docEmphBold">open file descriptors</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>) and shutting down other resources (memory, swap space, and so forth). 
+This generally happens immediately, and the process remains only for its major 
+purpose: to hold on to its name and <span class="docEmphBold">exit status</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>). </p>
+<p class="docText">A process is named by its <span class="docEmphasis">process 
+ID</span> or PID. Each process also has associated with it a
+<span class="docEmphasis">parent process ID</span>. The parent PID, or PPID, is 
+the PID of the process that created it via <span class="docEmphBold">fork</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">Section 
+24.2</a>); if that particular process has since vanished, the parent PID is 1 
+(the PID of <span class="docEmphBold">init</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">Section 
+24.2</a>)). While the original parent is around, it can remember the PIDs of its 
+children. These PIDs cannot be reused until the parent knows the children are 
+done. The parent can also get a single byte of <span class="docEmphBold">status</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>) from each child. The <span class="docEmphasis">wait</span> system 
+call looks for a zombie child, then &quot;collects&quot; it, making its PID available and 
+returning that status. The <i>init</i>(8) program is always waiting, so that 
+once a parent exits, <i>init</i> will collect all its children as they exit and 
+promptly ignore each status. </p>
+<p class="docText">So, to get rid of a zombie, you must wait for it. If you have 
+already done so or if the process' PPID is 1, the process is almost certainly 
+stuck in a device driver close routine, and if it remains that way forever, the 
+driver has a bug. </p>
+<p class="docText"><span class="docEmphasis">— CT</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-20">24.20 The Process Chain to Your Window</h3>
+<p class="docText">Almost everything we cover in this book works as well from an 
+old-style, full-screen terminal as it does from an terminal window (like <i>
+xterm</i>) under the <span class="docEmphBold">X Window System</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-22">Section 
+1.22</a>). Actually, a lot of it works on an old printing teletype, too! In all 
+of those cases, you're interacting with a Unix shell. This article covers things 
+you should know about using a shell from an X window. We'll talk specifically 
+about the X11R6 <i>xterm</i> client, but this generally applies to any window 
+with a shell inside of it — like GNOME terminal. This is a guided tour, so it 
+helps to be at a workstation or other X display. If you can't take the tour, 
+please scan through and look for the points I make along the way. </p>
+<p class="docText">If you don't have an <i>xterm</i> window open, open one (by 
+clicking on an icon, choosing a menu entry, or however you usually do it). We'll 
+call this the &quot;first window.&quot; Find its <span class="docEmphBold">tty</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+2.7</a>). Next, in this first window, <span class="docEmphBold">set an 
+environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>) with a unique name and any value you want. You might call it
+<span class="docEmphasis">FAVCOLOR</span> and set the value to
+<span class="docEmphasis">purple</span>. Then, in that same window, type <tt>cd 
+/tmp</tt> to change your current directory to <span class="docEmphasis">/tmp</span>. 
+Finally, type <tt>xterm -rv -sb</tt> (with <span class="docEmphasis">no</span>
+<tt>&amp;</tt> after its name); this should open a second <i>xterm</i> window. 
+Here's what that first <i>xterm</i> should look like (we'll show C shell syntax 
+here): </p>
+<pre>% <b>tty </b>
+/dev/pts/1
+% <b>setenv FAVCOLOR purple </b>
+% <b>cd /tmp </b>
+% <b>xterm -rv -sb </b>
+<i>    (cursor sits here; there's no shell prompt)</i></pre>
+<p class="docText">When your new second <i>xterm</i> pops open, it should be in 
+reverse video (swapped foreground/background colors, the <i>-rv</i> option) to 
+make it easy to identify, with a scrollbar too. In it, type <tt>tty</tt> to get 
+its <span class="docEmphasis">tty</span> number, which will be different from 
+the previous <i>xterm</i>'s. Run <span class="docEmphBold">env or printenv</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>), and you should see the special environment variable (like
+<span class="docEmphasis">FAVCOLOR</span>) that you set. Type <tt>pwd</tt>; the 
+current directory should be <span class="docEmphasis">/tmp</span>.<span id="ENB24-8"><a class="docLink" href="#EN24-8"><sup>[8]</sup></a></span>
+</p>
+<p class="docText">If you've managed to follow this twisty series of steps, 
+you've started a chain of <span class="docEmphBold">processes</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>). </p>
+<p class="docText">You can see that chain of processes by typing the command
+<span class="docEmphBold">ps aux or ps -ef</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>). You should get lines something like these: </p>
+<pre>% <b>tty</b>
+/dev/pts/3
+% <b>ps -ef</b>
+UID        PID  PPID  C STIME TTY          TIME CMD
+jpeek      675     1  0 May13 ?        00:00:14 xterm
+jpeek      681   675  0 May13 pts/1    00:00:00 zsh
+jpeek    14850   681  0 15:58 pts/1    00:00:00 xterm -rv -sb
+jpeek    14852 14850  0 15:58 pts/3    00:00:00 zsh
+jpeek    14992 14852  0 16:07 pts/3    00:00:00 ps -ef</pre>
+<p class="docText">This is the chain of processes that led to the second window. 
+Let's start from the bottom and work up. From the <tt>ps -ef</tt> command,<span id="ENB24-9"><a class="docLink" href="#EN24-9"><sup>[9]</sup></a></span> 
+you'll see that the <i>ps</i> command itself had PID (process ID) 14992; its 
+parent's PID (PPID) was 14852. So the process that started the <i>ps</i> process 
+is the shell running in that window: in my case, a Z shell, <tt>zsh</tt>, with 
+PID 14852. Notice that both of these processes are running on the same
+<span class="docEmphBold">tty</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+2.7</a>) named <tt>pts/3</tt>. That's a way to find all the processes in a 
+particular window: check the tty name. This <i>zsh</i> is the shell running in 
+this particular <i>xterm</i>. When you exit the shell (by typing CTRL-d or <i>
+exit</i>), the window will close too — but don't try that yet! Instead, find the 
+parent of the shell; it's the <i>xterm</i> process, which is running on — are 
+you surprised? — another tty, <tt>pts/1</tt>. This makes sense, because you 
+started <span class="docEmphasis">xterm</span> from another window, the first 
+window. There's a shell running in the first window too; it's the <i>zsh</i> 
+with PID 681. The parent of the first window's shell is, yes, another <i>xterm</i>, 
+PID 675. And its parent has PID 1; this is <span class="docEmphBold">init</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">Section 
+24.2</a>), the &quot;grandparent&quot; of all processes on your system. </p>
+<p class="docText">Your window system may not work quite this way. The parent of 
+the top-level <i>xterm</i> might not be <i>init</i>. Also, an <i>xterm</i> could 
+be owned by <span class="docEmphasis">root</span> instead of by you. Still, you 
+should have a &quot;chain&quot; of processes, something like the one I described, on your 
+system. </p>
+<p class="docText">Why did we go through all this? One reason is so you'll know 
+how to track the processes that lead to an <i>xterm</i> — and to know what to 
+look for if you have to <span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+24.12</a>) a hung window or a process in a window. It's also to show that the 
+environment from a parent window (here, the first window) — the current 
+directory, environment variables, and so on — is passed to the child window 
+(here, the second window). Finally, it's to show what happens when you close a 
+window by exiting the shell: the shell terminates, so its parent <i>xterm</i> 
+process terminates too. </p>
+<p class="docText">So what happens to a shell running in a window if you close 
+the window by clicking the &quot;X&quot; box on the window frame or by choosing the
+<span class="docEmphasis">close</span> or <span class="docEmphasis">destroy</span> 
+commands in the window manager? The <i>xterm</i> gets a
+<span class="docEmphBold">signal</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-10">Section 
+24.10</a>), and the system hopes that it dies. But it may
+<span class="docEmphasis">not</span> die, and the process may stay around. 
+Instead of trusting the window manager to kill a window and the processes in it, 
+I tend to use <i>ps</i> so I know for sure that all the processes are gone. 
+Knowing the stuff we've looked at here lets me identify a window and its 
+processes. </p>
+<p class="docText">But let's not kill things! Instead, in the second window, 
+type <i>exit</i> at the prompt. The window should go away. And, in the first 
+window, you should have a new prompt. (If you had started the second <i>xterm</i> 
+in the <span class="docEmphBold">background</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-2">Section 
+23.2</a>), you could have kept working in the first window while the second 
+window ran, too. But watch out for the <i>zsh</i> and <i>ksh</i> options named
+<span class="docEmphasis">bg_nice</span> and <span class="docEmphasis">bgnice</span>, 
+respectively, which run background commands at lower priority. You probably 
+don't want your new windows to run at low priority, so be sure that option isn't 
+set.) </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-21">24.21 Terminal Windows Without Shells</h3>
+<p class="docText"><i>xterm</i> is an X client that runs a Unix process on a
+<span class="docEmphasis">pty</span> &quot;inside&quot; a window. By default, this process 
+is a shell: an instance of the same shell you log into the system with. But it 
+can be basically any Unix process. As you saw in
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-20">
+Section 24.20</a>, when the process exits, the <i>xterm</i> window closes 
+because its child process has gone. </p>
+<p class="docText">To override the default shell process in an <i>xterm</i> 
+window, use the <span class="docEmphBold">-e option</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-22">Section 
+5.22</a>), followed by the command line to run the process. This must be the 
+last thing on the <i>xterm</i> command line. If you want to open an <i>xterm</i> 
+window with no scrollbar (the <i>+sb</i> option) and with the <i>vi</i> editor 
+in it, to edit the log file named <span class="docEmphasis">logfile</span>, run 
+the command below: </p>
+<pre>% <b>xterm +sb -e vi logfile</b>
+%</pre>
+<p class="docText">An <i>xterm</i> window should open with <i>vi</i> running 
+inside it. If you don't know how to use <span class="docEmphasis">vi</span>, the 
+best thing to do is to leave it alone until you've finished this example — then 
+press the ESC key, type <tt>:q</tt>, and press ENTER to exit <i>vi</i>. When <i>
+vi</i> exits, its window should close too, and you'll get another shell prompt.
+</p>
+<p class="docText">I chose to have you run <i>vi</i> in a window because the <i>
+vi</i> process keeps running until you tell it to quit, and then the window 
+closes. Other Unix processes that don't wait for a &quot;quit&quot; command will terminate 
+as soon as they're done, and the window closes before you can see the process 
+output. For example, let's say you want to display a file in an <i>xterm</i> 
+window with a scrollbar. Start by choosing a file and using
+<span class="docEmphBold">wc -l</span> (<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-6">Section 
+16.6</a>) to count the number of lines. Then open an <i>xterm</i> and a 
+scrollbar, with the scrolling buffer length set to just the right number of 
+lines: </p>
+<p class="docText"><tt>cat</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">
+Section 12.2</a></p>
+<pre>% <b>wc -l somefile</b>
+     74 somefile
+% <b>xterm -sl 74 -sb -e cat somefile</b>
+%</pre>
+<p class="docText">What happened? Unless your window manager holds it there, the
+<i>xterm</i> window closes just after it opens. Why? Its child <i>cat</i> 
+process exited, so the parent <i>xterm</i> did too. One easy answer is to use a 
+shell that runs three commands. First is the command you want to run (here, <i>
+cat</i>). Next, echo a prompt. Finally, run the <span class="docEmphBold">read 
+command</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-18">Section 
+35.18</a>) to pause until you give a dummy value — just pressing ENTER will be 
+enough to satisfy <i>read</i>, and then the shell will exit. Here's how: </p>
+<pre>% <b>xterm -sl 76 -sb -e \</b>
+    <b>sh -c 'cat somefile; echo &quot;Press RETURN to exit...&quot;; read dummy'</b></pre>
+<p class="docText">(First, two notes. The backslash (<tt>\</tt>) isn't needed if 
+you type the entire command on one line. And we've increased the scroll length 
+to 76 because the <i>echo</i> and the newline after it add two lines of text.) 
+Here, <i>xterm</i> starts a shell, but it's not the default shell (whatever that 
+happens to be): it's the <i>sh</i> shell you specify after the <i>xterm</i> -<i>e</i> 
+option. The <i>sh</i> option <i>-c</i> tells the Bourne shell to run the single 
+command line from the following argument and then exit. The command line is in 
+quotes to be sure the shell <span class="docEmphasis">inside</span> the <i>xterm</i> 
+interprets it. The three commands are separated by <span class="docEmphBold">
+semicolons (;)</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-16">Section 
+28.16</a>). If your command line is really complicated, you might want to change 
+the <tt>sh -c '...'</tt> to run a little <span class="docEmphBold">shell script</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-1">Section 
+35.1</a>) instead, like <tt>sh $HOME/lib/catter</tt>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-24-SECT-22">24.22 Close a Window by Killing Its Process(es)</h3>
+<p class="docText">In the X Window System, there's a process controlling every 
+window. If the window (or its process) is frozen and you can't get rid of it, 
+the easier way is usually to <span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+24.12</a>) the process. As
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-20">
+Section 24.20</a> explains, there may be a chain of processes running; the 
+window could come from the parent process (as in the case of an <i>xterm</i> 
+with a shell running inside of it) or it could be the child (such as when a 
+shell script runs an X client like <i>xmessage</i> — as in the <i>nup</i> script 
+below). Your job is to use <span class="docEmphBold">ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>) to track down the process(es) behind the window and kill the right 
+one(s). We'll look at two different examples, then look at a shell script that 
+opens a window and, later, closes the window by killing its process. </p>
+<h4  id="upt3-CHP-24-SECT-22.1" class="docSection2Title">24.22.1 Example #1: An xterm Window</h4>
+<p class="docText">Let's say you're running <i>vi</i> in an <i>xterm</i> window, 
+and the window seems to be frozen. Start with some detective work: open up 
+another <i>xterm</i> window and run <tt>ps</tt> <tt>alwx</tt> or <tt>ps -ef</tt>. 
+(If you're sure that all the processes in the window are owned by you — and none 
+were <span class="docEmphBold">set user ID</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-17">Section 
+1.17</a>) — you can use run <tt>ps lwx</tt>, for example.) You want a listing 
+that shows the chain of process IDs, parent-to-child, in that window. The
+<span class="docEmphBold">tty</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+2.7</a>) of the shell inside the <i>xterm</i> will help you find the right one, 
+if you know it. For example, I found <tt>vi 0568.sgm</tt> running on the tty <tt>
+pts/5</tt>, so the shell I want (the parent of <i>vi</i>) must also be on <tt>
+pts/5</tt>. From the shell's parent ID, I can find the PID of the <i>xterm</i> 
+that started the shell. (I'll cut some of the columns in this listing to make it 
+easier to read.) </p>
+<pre>% <b>ps alwx</b>
+ UID   PID  PPID  STAT TTY    TIME  COMMAND
+1000 11287     1  S    tty2   0:44  xterm -sb -sl 2000
+   ...
+1000 11289 11287  S    pts/5  0:04  bash2
+   ...
+1000  2621 11289  S    pts/5  0:00  vi 0568.sgm</pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">A Unix system cycles its PIDs. A child process may 
+        have a <span class="docEmphasis">lower</span> PID than its parent! 
+        (Here, <tt>vi</tt>'s PID is 2621, but its parent's PID is 11289.) </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Now you need to decide what process to kill. You could simply 
+kill them all, assuming you own them (on some systems, the <i>xterm</i> process 
+may be owned by <span class="docEmphasis">root</span>, so you can't kill it 
+unless you can become superuser). But a little detective work can save trouble. 
+For instance, see whether the <i>xterm</i> is still alive by trying to open its
+<span class="docEmphBold">menus</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-17">Section 
+5.17</a>). If a menu pops up, the problem is likely with the shell (here, <tt>
+bash2</tt>) or its child process (here, <tt>vi</tt>). Try killing the most 
+junior process (here, <tt>vi</tt>) first: </p>
+<p class="docText"><tt>-9</tt>
+<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">
+Section 23.3</a></p>
+<pre>% <b>kill 2671</b>
+% <b>ps 2671</b>
+  PID TTY      STAT   TIME COMMAND
+ 2671 pts/5    S      0:00 vi 0568.sgm
+% <b>kill -9 2671</b>
+%</pre>
+<p class="docText">In this case, killing the process with a plain
+<span class="docEmphasis">TERM</span> signal didn't do the job; <i>ps</i> showed 
+it was still running. So I had to use <tt>kill -9</tt>. After this, if there's a 
+shell prompt in the formerly frozen window, you're probably okay — although you 
+may need to reset the terminal modes if it's still acting weird. On the other 
+hand, if the window is still frozen, kill the next-higher process — here, <tt>
+bash2</tt>. Continue killing from the bottom up until the window is unfrozen or 
+until the window closes. </p>
+<h4  id="upt3-CHP-24-SECT-22.2" class="docSection2Title">24.22.2 Example #2: A Web Browser</h4>
+<p class="docText">The rule I gave in the previous section — killing the lowest 
+child process first — is usually right for <i>xterm</i> windows, but not always 
+right. For example, I'm using a development version of the Mozilla browser. It 
+starts a series of child processes. But all the processes are designed to run as 
+a unit, so killing the lowest child may just leave the browser in an unstable 
+state. In cases like this, it's better to kill the top-level process (or one of 
+the top, as I'll explain) and then check to be sure all the children have died.
+</p>
+<p class="docText">Start with the long listing of processes. Find the parent and 
+its children. Note that, depending on how they were started, they may not have a 
+tty of their own — in general, a window doesn't need a tty unless it's running a 
+shell-oriented utility. I've cut some lines and columns from the example to make 
+it more readable: </p>
+<pre>% <b>ps lwx</b>
+ UID   PID  PPID STAT TTY     TIME COMMAND
+1000  9526   752 S    tty2    0:00 sh /usr/local/mozilla/...
+1000  9536  9526 S    tty2   11:49 /usr/local/mozilla/...
+1000  9538  9536 S    tty2    0:00 /usr/local/mozilla/...
+1000  9539  9538 S    tty2    0:03 /usr/local/mozilla/...
+1000 19843     1 S    tty2    0:00 ./psm
+1000 19846 19843 S    tty2    0:00 ./psm
+1000 19847 19846 S    tty2    0:00 ./psm
+1000 19858  9538 S    tty2    0:00 /usr/local/mozilla/...
+1000 19859 19846 S    tty2    0:00 ./psm
+1000 19866 19846 S    tty2    0:00 ./psm
+1000 32316  9538 S    tty2    0:00 /usr/local/mozilla/...
+1000  5705  9538 S    tty2    0:00 /usr/local/mozilla/...</pre>
+<p class="docText">I started Mozilla from a menu on the window system. The 
+window system was started from <span class="docEmphasis">tty2</span> (by typing
+<i>startx</i> in the second <span class="docEmphBold">virtual console</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-12">Section 
+23.12</a>)). So the processes are &quot;on&quot; <span class="docEmphasis">tty2</span>, 
+too. I happen to know that the <tt>./psm</tt> processes are started by Mozilla. 
+Although the parent <i>psm</i> is owned by the <span class="docEmphBold">init</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">Section 
+24.2</a>) process (PID 1), these were either <span class="docEmphBold">disowned</span> 
+(<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-11">Section 
+23.11</a>) by Mozilla, or somehow the top-level <i>psm</i> process &quot;lost&quot; its 
+parent. Finding this sort of disconnected process can be hard. One clue is that 
+its PID is close to other Mozilla processes. Another clue may come when you use 
+an output format like <tt>ps ux</tt>, which shows the starting time (&quot;wall 
+clock&quot; time — not the CPU <tt>TIME</tt> column above): you may see that the 
+processes all started near the same time of day. </p>
+<p class="docText">The first process in the list, the shell script (starting 
+with <tt>sh</tt>), is what probably started the chain of processes running. 
+Often, on Unix systems, a shell script sets the environment correctly, then 
+starts another library program running. All the other processes here seem to 
+have been started from the process with PID 9536, which has used 11 minutes 49 
+seconds of CPU time. Just to be safe, I'll kill both top processes at once: </p>
+<pre>% <b>kill 9526 9536</b></pre>
+<p class="docText">The browser window closed, to I'm close to done. I also need 
+to do another <i>ps</i> to be sure the other processes have vanished; note that 
+they may need a few seconds to die gracefully on their own. Sometimes you'll get 
+a <span class="docEmphBold">zombie process</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-19">Section 
+24.19</a>) that can't be killed, but it usually doesn't hurt anything — unless 
+your window's processes have been doing some hardware accesses and the zombie is 
+tying up the hardware.
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-18">
+Section 24.18</a> has some ways to clean up in that case. </p>
+<h4  id="upt3-CHP-24-SECT-22.3" class="docSection2Title">24.22.3 Closing a Window from a Shell Script</h4>
+<p class="docText">A shell script that opens windows also may need a way to 
+close them. The simplest way is by killing the window's process. You should be 
+sure that whatever this process does, killing it won't cause it to leave old 
+lock files and other &quot;e-debris&quot; around; it should exit cleanly when it gets a 
+signal. </p>
+<p class="docText">The <i>xmessage</i> client works well in a case like this. It 
+opens a little window with a text message in it. If the user clicks a button in 
+the window, <i>xmessage</i> terminates. But, in the example below, I want the 
+shell script to close the window instead. Here's how it works: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: nupndown</p>
+<p class="docText">The shell script has two <span class="docEmphBold">links</span> 
+(<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>), or names: <i>nup</i> and <i>ndown</i>. I use them on my workstation, 
+which no one else (usually) shares. When I run <i>nup</i>, the script brings the 
+network up by dialing the modem and making a PPP connection. It also opens a red
+<i>xmessage</i> window with the message &quot;network up&quot; to remind me that my phone 
+line is being tied up. When I'm done online, I run <i>ndown</i>. <i>ndown</i> 
+disconnects the modem and closes the <i>xmessage</i> window by killing its 
+process. Here's the basic script: </p>
+<p class="docText"><tt>$!</tt>
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-17">
+Section 27.17</a>, <tt>'...'</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a></p>
+<pre>#!/bin/sh
+pidfile=/tmp/.nup-pid
+
+case &quot;$0&quot; in
+*nup)
+    xmessage -geometry 86x51+645+72 -fg white -bg red 'network up' &amp;
+    echo $! &gt; $pidfile
+    /sbin/ifup ppp0
+    ;;
+*ndown)
+    pid=`cat $pidfile`
+    case &quot;`ps $pid`&quot; in
+    *xmessage*)
+        kill $pid
+        rm -f $pidfile
+        ;;
+    esac
+    /sbin/ifdown ppp0
+    ;;
+esac</pre>
+<p class="docText">When the script is invoked as <i>nup</i>, it starts <i>
+xmessage</i> in the background (that is, <span class="docEmphBold">disowned</span> 
+(<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-11">Section 
+23.11</a>)) and saves its PID in the temporary file. So <i>xmessage</i> will 
+keep running after <i>nup</i> exits; its PID will be stored in the temporary 
+file. Later, when the same script is invoked as <i>ndown</i>, it reads the 
+temporary file to get the PID into a shell variable, runs <i>ps</i> to be sure 
+that the process still exists and that its name still contains <i>xmessage</i> 
+(in case another process has replaced <i>xmessage</i> in the meantime). If all's 
+well, it kills that process to close the <i>xmessage</i> window, then removes 
+the temporary file. Finally it shuts down the network. </p>
+<p class="docText">The actual script (on the CD-ROM [see
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>]) does more error checking: verifying 
+you're running the X window system before starting <i>xmessage</i>, ensuring the 
+temporary file exists, and more. And, of course, this isn't foolproof by any 
+means. For instance, if I click the &quot;OK&quot; button on the <i>xmessage</i> window, 
+it will close while the modem is still on. But none of that is the point of this 
+simple example script. It's to demonstrate how to close a window by killing its 
+process. For instance, maybe your script opens an <i>xclipboard</i> window and 
+wants to close it later if the user doesn't do so first. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<blockquote>
+<p class="docFootnote" id="EN24-1"><a class="docLink" href="#ENB24-1">[1]</a>&nbsp;&nbsp;This isn&#39;t true when the subprocess is <span class="docEmphasis">exec</span>d 
+from the parent process without a <span class="docEmphasis">fork</span> first.
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">
+Section 24.2</a> explains.</p><p class="docFootnote" id="EN24-2"><a class="docLink" href="#ENB24-2">[2]</a>&nbsp;&nbsp;When you use the shell's
+  <span class="docEmphBold">exec</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">Section 
+  35.5</a>) command, it does not start a subprocess.</p><p class="docFootnote" id="EN24-3"><a class="docLink" href="#ENB24-3">[3]</a>&nbsp;&nbsp;Some vendors add other 
+  fields, such as the processor number for multiprocessors and additional or 
+  different process states (as in the AIX K field). These codes may differ from 
+  vendor to vendor: for example, the 0 code under Stardent Unix means a process 
+  that is actually running (and R means runnable), while 0 under AIX means a 
+  nonexistent process.</p><p class="docFootnote" id="EN24-4"><a class="docLink" href="#ENB24-4">[4]</a>&nbsp;&nbsp;It's usually also a good 
+  idea to be sure that <span class="docEmphBold">the input and outputs are 
+  redirected</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+  43.1</a>,
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+  Section 36.16</a>) away from the terminal, maybe to the system console 
+  instead. On systems and shells that kill background jobs when you log out, use
+  <span class="docEmphBold">nohup</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-10">Section 
+  23.10</a>).</p><p class="docFootnote" id="EN24-5"><a class="docLink" href="#ENB24-5">[5]</a>&nbsp;&nbsp;Signal 15 is
+  <span class="docEmphasis">SIGTERM</span>, which is the signal <i>kill</i> 
+  sends by default. In this command, you need to specify it explicitly, for 
+  obvious syntactic reasons.</p><p class="docFootnote" id="EN24-6"><a class="docLink" href="#ENB24-6">[6]</a>&nbsp;&nbsp;The MH email system also has 
+  a command named <i>pick</i>. If you use MH, or frontends like <i>exmh</i> or 
+  mh-e, you could rename this script to something like <i>choose</i>.</p><p class="docFootnote" id="EN24-7"><a class="docLink" href="#ENB24-7">[7]</a>&nbsp;&nbsp;This trick uses the 
+    shell's built-in <span class="docEmphBold">wildcard matching</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+    1.13</a>) to show you the shell's name — we hope. If you get an answer like
+    <tt>/bin/bas?</tt>, or multiple answers that don't include <tt>/bin/bash</tt>, 
+    try another shell name. (Maybe your <i>bash</i> is in <i>/usr/local/bin</i>, 
+    for instance.) If you get an answer like <tt>No more processes</tt>, though, 
+    your <i>echo</i> command probably isn't built in.</p><p class="docFootnote" id="EN24-8"><a class="docLink" href="#ENB24-8">[8]</a>&nbsp;&nbsp;If your
+  <span class="docEmphBold">setup files assume you're in your home directory</span> 
+  (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-7">Section 
+  3.7</a>), you may have some problems.</p><p class="docFootnote" id="EN24-9"><a class="docLink" href="#ENB24-9">[9]</a>&nbsp;&nbsp;Note that, if your system's 
+  process ID numbers have &quot;recycled&quot; and started over from 1, the <i>ps</i> 
+  command may not have the highest number.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 23.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 25.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

@@ -1,0 +1,307 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 7</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 6.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 8.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 7. Directory Organization</h2>
+
+
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-7-SECT-1">7.1 What? Me, Organized?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-7-SECT-2">7.2 Many Homes</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-7-SECT-3">7.3 Access to Directories</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-7-SECT-4">7.4 A bin Directory for Your Programs and Scripts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-7-SECT-5">7.5 Private (Personal) Directories</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-7-SECT-6">7.6 Naming Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-7-SECT-7">7.7 Make More Directories!</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-7-SECT-8">7.8 Making Directories Made Easier</a></li>
+</ul>
+
+<h3 class="docSection1Title" id="upt3-CHP-7-SECT-1">7.1 What? Me, Organized?</h3>
+<p class="docText">Computers and offices have one thing in common: you lose 
+things in them. If you walk into my office, you'll see stacks of paper on top of 
+other stacks of paper, with a few magazines and business cards in the mix. I can 
+often find things, but I'd be lying if I said that I could
+<span class="docEmphasis">always</span> find that article I was reading the 
+other day! </p>
+<p class="docText">When you look at a new computer user's
+<span class="docEmphBold">home directory</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">Section 
+31.11</a>) , you often see something similar to my office. You see a huge number 
+of unrelated files with obscure names. He hasn't created any subdirectories, 
+aside from those the system administrator told him they needed; and those 
+probably aren't even being used. His home directory probably contains programs 
+for several different projects, personal mail, notes from meetings, a few data 
+files, some half-finished documentation, a spreadsheet for something he started 
+last month but has now forgotten, and so on. </p>
+<p class="docText">Remember that a computer's filesystem isn't that much 
+different from any other filing system. If you threw all of your papers into one 
+giant filing cabinet without sorting them into different topics and subtopics, 
+the filing cabinet wouldn't do you much good at all: it would just be a mess. On 
+a computer, the solution to this problem is to sort your files into <i>
+directories</i>, which are analogous to the filing cabinets and drawers. </p>
+<p class="docText">The <i>Unix filesystem</i> can help you keep all of your 
+material neatly sorted. Your directories are like filing cabinets, with dividers 
+and folders inside them. In this chapter, we'll give some hints for organizing 
+your computer &quot;office.&quot; Of course, things occasionally get misplaced even in the 
+most efficient offices. Later we'll show some scripts that use the
+<span class="docEmphBold">find</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-3">Section 
+8.3</a>) and <span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-21">Section 
+9.21</a>) commands to help you find files that are misplaced. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-7-SECT-2">7.2 Many Homes</h3>
+<p class="docText">Various operating systems store users' home directories in 
+many places, and you've probably already noticed evidence of this throughout 
+this book. Home directories may be in <i>/home/</i><tt><i>username</i></tt>, <i>
+/u/</i><tt><i>username</i></tt>, <i>/Users/</i><tt><i>username</i></tt>, or some 
+other, more esoteric location. </p>
+<p class="docText">The simplest way to find out where your system believes your 
+home directory to be is to take advantage of the fact that <i>cd</i> with no 
+arguments changes to your home directory: </p>
+<pre>% <b>cd</b>
+% <b>pwd</b>
+/home/users/deb</pre>
+<p class="docText">Generally, the <tt>$HOME</tt> environment variable will point 
+to your home directory: </p>
+<pre>% <b>echo $HOME</b>
+/home/users/deb</pre>
+<p class="docText">Most shells also expand tilde (<tt>~</tt>) to a user's home 
+directory as well, so <i>~/archive</i> on my machine becomes <i>/home/users/deb/archive</i> 
+and <i>~joel/tmp</i> expands to <i>/home/users/joel/tmp</i>. </p>
+<p class="docText">Your home directory is set in your <i>/etc/passwd</i> entry 
+(or equivalent — Netinfo on Darwin and NIS on Solaris store the same 
+information, for example). There is no actual requirement that all users' home 
+directories be in the same directory. In fact, I've seen systems that have lots 
+of users organize home directories by the first few letters of the username (so 
+my home directory there was <i>/home/d/de/deb</i>). </p>
+<p class="docText">If you add user accounts using a tool rather than by using <i>
+vipw</i> and adding them by hand, take a peek at the documentation for your 
+tool. It should tell you both where it wants to put home directories by default 
+and how to change that default should you want to. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-7-SECT-3">7.3 Access to Directories</h3>
+<p class="docText">Unix uses the <span class="docEmphBold">same mode bits</span> 
+(<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+50.2</a>) for directories as for files, but they are interpreted differently. 
+This interpretation will make sense if you remember that a directory is nothing 
+more than a list of files. Creating a file, renaming a file, or deleting a file 
+from a directory requires changing this list: therefore, you need write access 
+to the directory to create or delete a file. Modifying a file's contents does 
+not require you to change the directory; therefore, you can modify files even if 
+you don't have write access to the directory (provided that you have write 
+access to the file). </p>
+<p class="docText">Reading a directory is relatively straightforward: you need 
+read access to list the contents of a directory (find out what files it 
+contains, etc.). If you don't have read access, you can't list the contents of 
+the directory. However (surprise!), you may still be able to access files in the 
+directory, provided that you already know their names. </p>
+<p class="docText">Execute access for a directory has no meaning per se, so the 
+designers of Unix have reassigned this. It is called the <i>search bit</i>. 
+Search access is needed to perform any operation within a directory and its 
+subdirectories. In other words, if you deny execute access to a directory, you 
+are effectively denying access to the directory and everything beneath it in the 
+directory tree. Note that providing search access to a directory without read 
+access prevents people from listing the directory, but allows them to access 
+files if they know their names. This is particularly useful in situations where 
+you want to allow public access to areas, but only to people who know exactly 
+what files to access; files available via a web server are a good example. </p>
+<p class="docText">The <span class="docEmphBold">SUID bit</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-4">Section 
+50.4</a>) is meaningless for directories, but the SGID bit set on a directory 
+affects group ownership of files created in that directory, and the sticky bit 
+prohibits users with write access to the directory from deleting or renaming 
+files that they don't own. </p>
+<p class="docText">The exception is, of course, that the superuser can do 
+absolutely anything at any time. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-7-SECT-4">7.4 A bin Directory for Your Programs and Scripts</h3>
+<p class="docText">If you compile programs or write shell scripts, it's good to 
+put them in one directory. This can be a subdirectory of your home directory. 
+Or, if several people want to use these programs, you could pick any other 
+directory — as long as you have write access to it. Usually, the directory's 
+name is something like <i>bin</i> — though I name mine <i>.bin</i> (with a 
+leading dot) to keep it from cluttering my <i>ls</i> listings. </p>
+<p class="docText">For instance, to make a<i> bin</i> under your home directory, 
+type: </p>
+<pre>% <b>cd</b>
+% <b>mkdir bin</b></pre>
+<p class="docText">Once you have a directory for storing programs, be sure that 
+the shell can find the programs in it. Type the command <i>echo $PATH</i> and 
+look for the directory's pathname. For instance, if your directory is called <i>
+/u/walt/bin</i>, you should see: </p>
+<pre>% <b>echo $PATH</b>
+...:/u/walt/bin:...</pre>
+<p class="docText">If the directory isn't in your <i>PATH</i>, add it in your <i>
+.profile</i> or <i>.cshrc</i>. </p>
+<p class="docText">If other people are using your <i>bin</i> directory, use a 
+command like <i>chmod go+rx bin</i> to give them access. If you're concerned 
+about security, prevent unauthorized users from adding, removing, or renaming 
+files in your directory by making sure that only you have write access; you can 
+do this with a command like <i>chmod go-w bin</i>. Also be sure that individual 
+files can't be edited by people who shouldn't have access to the files. </p>
+<p class="docText">When you add a new program to your <i>bin </i>directory, if 
+you use the C shell or a C-shell derivative, you need to use the shell's <i>
+rehash</i> command to update its command search path. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-7-SECT-5">7.5 Private (Personal) Directories</h3>
+<p class="docText">You might want to create a private directory for your 
+personal files: love letters, financial data, complaints about your boss, 
+off-color jokes, or whatever you want to keep there. While you can set any 
+directory you own to be private, having one in your home directory is convenient 
+to organize all of your private directories together. For simplicity, you can 
+just name it <i>private</i>; giving it a less obvious name, however, can make it 
+more difficult for prying eyes to discover. </p>
+<p class="docText">Once you've created a private directory, you should set its
+<span class="docEmphBold">file access mode</span> (
+<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">
+Section 50.2</a>) to <tt>700</tt>; this means that you're the only person 
+allowed to read, write, or even list the files that are in the directory. Here's 
+how: </p>
+<pre>% <b>mkdir private</b>
+% <b>chmod 700 private</b></pre>
+<p class="docText">On any Unix system, anyone who knows the root password can 
+become <span class="docEmphBold">superuser</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-9">Section 
+49.9</a>) and read any files he wants. So a private personal directory doesn't 
+give you complete protection by any means — especially on systems where most 
+users know the root password. If you really need security, you can always 
+encrypt your files. </p>
+<p class="docText"><span class="docEmphasis">—ML and DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-7-SECT-6">7.6 Naming Files</h3>
+<p class="docText">Let's think about a filing cabinet again. If the files in 
+your filing cabinet were called <i>letter1</i>, <i>letter2</i>, <i>letter3</i>, 
+and so on, you'd never be able to find anything — the names aren't descriptive 
+enough. The same is true on your computer — you should come up with a 
+descriptive name for each file that you create. Unix systems let you have very 
+long filenames. A few older systems have a 14-character limit, but most allow 
+names that are 256 characters long — hopefully, longer than you will ever need.
+</p>
+<p class="docText">Generally, a descriptive filename summarizes the contents 
+with a few useful words. <i>letter</i> is not a terribly useful summary, unless 
+perhaps you've only ever written one letter and don't expect to write another. 
+The recipient's name (<i>JohnShmoe</i>, for example) would only be a useful 
+summary if you expect to send only one letter to that person. Even if you only 
+plan to send one letter, the name doesn't tell you anything about what you sent 
+Mr. Shmoe. </p>
+<p class="docText"><i>OctoberGoldPriceTrends</i> is a pretty good summary; it's 
+obvious what the contents of that file are, though you might want to know to 
+which year it referred, looking back two years from now. I often start 
+time-specific files with the date, so that <i>ls</i> sorts the files in date 
+order. If you do this, I recommend a <i>YYYYMMDD</i> format to get proper 
+sorting, so files look like <i>20021004-GoldPrices</i>. If you're going to have 
+regular updates to something, you might want to make a directory to hold those 
+things (e.g., <i>GoldPrices/20021004</i>, <i>GoldPrices/20021108</i>, <i>
+GoldPrices/20021206,</i> and so forth). Note that in this specific example, a 
+filename of nothing but a date makes sense, because you don't have anything else 
+in that directory but information on gold prices. </p>
+<p class="docText">Bruce Barnett has suggested that, by using long filenames, 
+you can create a simple &quot;relational database.&quot; For example, you could find out 
+everything you've recorded about the price of gold with a command like <i>more 
+*Gold*Price*</i>. Of course, if this starts to get very complex, using an actual 
+database is much simpler. </p>
+<p class="docText">Similarly, if you're a programmer, the name of each file in 
+your program should describe what the code does. If the code diagonalizes 
+matrices, the file should be called something like <i>MatrixDiagonalizer.cpp</i>. 
+If the code reads input from bank tellers, it should be called something like <i>
+teller_input.c</i>. Some programming languages even enforce this by requiring a 
+particular file-naming convention; Java requires files to have only one object 
+per file, and the name of the file and the object within it must be the same. 
+(Of course, if your object names aren't very good, you're right back where you 
+started.) </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-7-SECT-7">7.7 Make More Directories!</h3>
+<p class="docText">Creating many directories has several advantages: </p>
+<ul>
+  <li>
+  <p class="docList">First, it is easier to find any particular file if your 
+  home directory is well sorted. Imagine a rack of filing cabinets that isn't 
+  sorted; people just insert files wherever they fit. You may as well throw your 
+  data out; when you need something, you'll never be able to find it. </li>
+  <li>
+  <p class="docList">Second, Unix can access files much faster when directories 
+  are relatively small. Ideally, directories should have at most 60 files in 
+  them. </li>
+  <li>
+  <p class="docList">Third, directories are an important part of Unix file 
+  protections. By setting the permissions on the directories themselves, you can 
+  use directories to help protect certain groups of files against access by 
+  others. </li>
+</ul>
+<p class="docText">Create new directories liberally! Make a new directory for 
+every new project you start; make subdirectories within these directories for 
+subtopics. Your home directory should ideally contain <span class="docEmphasis">
+nothing</span> but subdirectories. Following are some recommended conventions.
+</p>
+<p class="docText">If you're a programmer, create a new directory for each 
+project. In the project directory, create a directory called <i>src</i> for 
+source files, a directory called <i>doc</i> or <i>man</i> for documentation, a 
+directory called <i>obj</i> for object files, a directory called <i>rel</i> for 
+the current working version (or almost-working version) of the program, a 
+directory called <i>test</i> for test files and results, and so on. If the 
+program is large, your <i>src</i> and <i>obj</i> directories should also be 
+split into different subdirectories, each containing different parts of the 
+project (or perhaps the subdirectory for each part of the project should have 
+its own <i>src</i> and <i>obj</i> directories). </p>
+<p class="docText">Many users save all of their mail in one directory (often 
+called <i>Mail</i> or <i>Maildir</i>, depending on your mail system), which is 
+then divided into subdirectories by topic. I use a variation of this scheme; I 
+keep general mail in my <i>Mail</i> directory, but I save correspondence about 
+particular projects with the project itself. For example, my Power Tools mail is 
+shelved with the source code for this article. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-7-SECT-8">7.8 Making Directories Made Easier</h3>
+<p class="docText">Earlier we told you that you should have lots of directories. 
+Experienced Unix users are creating new directories all the time. How do you 
+make a directory? </p>
+<p class="docText">It's easy. Use the <i>mkdir</i> command, followed by the name 
+of your new directory: </p>
+<pre>% <b>mkdir </b> <i>directory </i></pre>
+<p class="docText">This creates the new directory you want. It doesn't 
+necessarily have to be in your current directory. For example: </p>
+<pre>% <b>cd /home/los/mikel</b>
+% <b>mkdir /src/books/power/articles/files</b></pre>
+<p class="docText">The only requirements are:</p>
+<ul>
+  <li>
+  <p class="docList">The parent of the directory you want to create must exist 
+  (in this case, <i>/src/books/power/articles</i>). </li>
+  <li>
+  <p class="docList">You must have write access to the parent directory.</li>
+</ul>
+<p class="docText">What if the parent directory doesn't already exist? Assume, 
+for example, that <i>/src/books</i> already exists, but the <i>power</i> and <i>
+articles</i> directories do not. You can make these &quot;by hand,&quot; or on many Unix 
+systems you can add the <i>-p</i> (parents) option: </p>
+<pre>% <b>mkdir -p /src/books/power/articles/files</b></pre>
+<p class="docText">This tells <i>mkdir</i> to create all the intermediate 
+directories that are needed. So the previous command creates three directories:
+</p>
+<pre>/src/books/power
+/src/books/power/articles
+/src/books/power/articles/files</pre>
+<p class="docText">If your <i>mkdir</i> doesn't have <i>-p</i>, you can use
+<span class="docEmphasis">history substitution</span> : </p>
+<pre>% <b>mkdir /src/books/power</b>
+% <b>!!/articles</b>
+mkdir /src/books/power/articles
+% <b>!!/files</b>
+mkdir /src/books/power/articles/files</pre>
+<p class="docText">On some <i>mkdirs</i>, you can also supply the <i>file 
+protection mode</i> to be assigned to the directory. (By default, the file 
+protection mode is derived from your umask.) To do so, use the <i>-m</i> option. 
+For example: </p>
+<pre>% <b>mkdir -m 755 /src/books/power/articles/files</b></pre>
+<p class="docText">This creates the directory with access mode 755, which allows 
+the owner to do anything with the directory. Note that this must be a
+<span class="docEmphasis">numeric</span> mode. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 6.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 8.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

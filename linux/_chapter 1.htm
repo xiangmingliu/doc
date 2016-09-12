@@ -1,0 +1,1584 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 1</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="Front matter.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 2.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 1. Introduction</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-1">1.1 What's Special About Unix?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-2">1.2 Power Grows on You</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-3">1.3 The Core of Unix</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-4">1.4 Communication with Unix</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-5">1.5 Programs Are Designed to Work Together</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-6">1.6 There Are Many Shells</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-7">1.7 Which Shell Am I Running?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-8">1.8 Anyone Can Program the Shell</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-9">1.9 Internal and External Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-10">1.10 The Kernel and Daemons</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-11">1.11 Filenames</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-12">1.12 Filename Extensions</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-13">1.13 Wildcards</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-14">1.14 The Tree Structure of the Filesystem</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-15">1.15 Your Home Directory</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-16">1.16 Making Pathnames</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-17">1.17 File Access Permissions</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-18">1.18 The Superuser (Root)</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-19">1.19 When Is a File Not a File?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-20">1.20 Scripting</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-21">1.21 Unix Networking and Communications</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-1-SECT-22">1.22 The X Window System</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-1">1.1 What's Special About Unix?</h3>
+<p class="docText">If we were writing about any other operating system, &quot;power 
+tools&quot; might mean &quot;nifty add-on utilities to extend the power of your operating 
+system.&quot; That sounds suspiciously like a definition of Unix: an operating system 
+loaded with decades' worth of nifty add-on utilities. </p>
+<p class="docText">Unix is unique in that it wasn't designed as a commercial 
+operating system meant to run application programs, but as a hacker's toolset, 
+by and for programmers. In fact, an early release of the operating system went 
+by the name PWB (Programmer's Work Bench). </p>
+<p class="docText">When Ken Thompson and Dennis Ritchie first wrote Unix at AT&amp;T 
+Bell Labs, it was for their own use and for their friends and coworkers. Utility 
+programs were added by various people as they had problems to solve. Because 
+Bell Labs wasn't in the computer business, source code was given out to 
+universities for a nominal fee. Brilliant researchers wrote their own software 
+and added it to Unix in a spree of creative anarchy, which has been equaled only 
+with Linux, in the introduction of the <span class="docEmphBold">X Window System</span> 
+(<a class="docLink" href="#upt3-CHP-1-SECT-22">Section 
+1.22</a>), and especially the blend of Mac and Unix with Darwin included in the 
+Mac OS X. </p>
+<p class="docText">Unlike most other operating systems, where free software 
+remains an unsupported add-on, Unix has taken as its own the work of thousands 
+of independent programmers. During the commercialization of Unix within the past 
+several years, this incorporation of outside software has slowed down for larger 
+Unix installations, such as Sun's Solaris and HP's hp-ux, but not stopped 
+entirely. This is especially true with the newer lighter versions of Unix, such 
+as the various flavors of Linux and Darwin. </p>
+<p class="docText">Therefore, a book on Unix inevitably
+<span class="docEmphasis">has</span> to focus not just on add-on utilities 
+(though we do include many of those), but on how to use clever features of the 
+many utilities that have been made part of Unix over the years. </p>
+<p class="docText">Unix is also important to power users because it's one of the 
+last popular operating systems that doesn't force you to work behind an 
+interface of menus, windows, and mouse with a &quot;one-size(-doesn't)-fit-all&quot; 
+programming interface. Yes, you can use Unix interfaces with windows and menus — 
+and they can be great time savers in a lot of cases. But Unix also gives you 
+building blocks that, with some training and practice, will give you many more 
+choices than any software designer can cram onto a set of menus. If you learn to 
+use Unix and its utilities from the command line, you don't have to be a 
+programmer to do very powerful things with a few keystrokes. </p>
+<p class="docText">So, it's also essential that this book teach you some of the 
+underlying principles that make Unix such a tinkerer's paradise. </p>
+<p class="docText">In the body of this book, we assume that you are already 
+moderately familiar with Unix — a journeyman hacker wanting to become a master. 
+But at the same time, we don't want to leave beginners entirely at sea; so in 
+this chapter, we include some fundamental concepts. We've tried to intersperse 
+some simple tips and tricks to keep things interesting, but the ratio of concept 
+articles to tips is much higher than in any other part of the book. The concepts 
+covered are also much more basic. If you aren't a beginner, you can safely skip 
+this chapter, though we may bounce you back here if you don't understand 
+something later in the book. </p>
+<p class="docText">Don't expect a complete introduction to Unix — if you need 
+that, buy an introductory book. What you'll find here is a selection of key 
+concepts that you'll need to understand to progress beyond the beginner stage, 
+as well as answers to frequently asked questions and problems. In some ways, 
+consider this introduction a teaser. If you are a beginner, we want to show you 
+enough of Unix to whet your appetite for more. </p>
+<p class="docText">Also, don't expect everything to be in order. Because we 
+don't want you to get in the habit of reading through each chapter from 
+beginning to end, as in most books, the articles in this chapter are in loose 
+order. We've tried not to make you jump around too much, but we've also avoided 
+a lot of the transitional material that makes reading most books a chore. </p>
+<p class="docText"><span class="docEmphasis">—TOR, JP, and SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-2">1.2 Power Grows on You</h3>
+<p class="docText">It has been said that Unix is not an operating system as much 
+as it is a way of thinking. In <span class="docEmphasis">The UNIX Programming 
+Environment</span>, Kernighan and Pike write that at the heart of the Unix 
+philosophy &quot;is the idea that the power of a system comes more from the 
+relationships among programs than from the programs themselves.&quot; </p>
+<p class="docText">Most of the nongraphical utility programs that have run under 
+Unix since the beginning, some 30 years ago, share the same user interface. It's 
+a minimal interface, to be sure — but one that allows programs to be strung 
+together in pipelines to do jobs that no single program could do alone. </p>
+<p class="docText">Most operating systems — including modern Unix and Linux 
+systems — have graphical interfaces that are powerful and a pleasure to use. But 
+none of them are so powerful or exciting to use as classic Unix pipes and 
+filters, and the programming power of the shell. </p>
+<p class="docText">A new user starts by stringing together simple pipelines and, 
+when they get long enough, saving them for later execution in a
+<span class="docEmphBold">file</span> (<a class="docLink" href="#upt3-CHP-1-SECT-8">Section 
+1.8</a>), <span class="docEmphBold">alias</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>), or <span class="docEmphBold">function</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>). Gradually, if the user has the right temperament, he gets the idea 
+that the computer can do more of the boring part of many jobs. Perhaps he starts 
+out with a <span class="docEmphBold">for</span> <span class="docEmphBold">loop</span> 
+(<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">Section 
+28.9</a>) to apply the same editing script to a series of files. Conditions and 
+cases soon follow and before long, he finds himself programming. </p>
+<p class="docText">On most systems, you need to learn consciously how to 
+program. You must take up the study of one or more programming languages and 
+expend a fair amount of concentrated effort before you can do anything 
+productive. Unix, on the other hand, teaches programming imperceptibly — it is a 
+slow but steady extension of the work you do simply by interacting with the 
+computer. </p>
+<p class="docText">Before long, you can step outside the bounds of the tools 
+that have already been provided by the designers of the system and solve 
+problems that don't quite fit the mold. This is sometimes called hacking; in 
+other contexts, it is called &quot;engineering.&quot; In essence, it is the ability to 
+build a tool when the right one is not already on hand. </p>
+<p class="docText">No single program, however well thought out, will solve every 
+problem. There is always a special case, a special need, a situation that runs 
+counter to the expected. But Unix is not a single program. It is a collection of 
+hundreds of them, and with these basic tools, a clever or dedicated person can 
+meet just about any computing problem. </p>
+<p class="docText">Like the fruits of any advanced system, these capabilities 
+don't fall unbidden into the hands of new users. But they are there for the 
+reaching. And over time, even those users who want a system they don't have to 
+think about will gradually reach out for these capabilities. Faced with a choice 
+between an hour spent on a boring, repetitive task and an hour putting together 
+a tool that will do the task in a flash, most of us will choose the latter. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-3">1.3 The Core of Unix</h3>
+<p class="docText">In recent times, more attention has been paid on the newer 
+and more lightweight varieties of Unix: FreeBSD, Linux, and now Darwin — the 
+version of BSD Unix that Apple used as the platform for the new Mac OS X. If 
+you've worked with the larger Unix versions, you might be curious to see how it 
+differs within these new environments. </p>
+<p class="docText">For the most part, basic Unix functionality differs very 
+little between implementations. For instance, I've not worked with a Unix box 
+that doesn't have <span class="docEmphBold">vi</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-7">Section 
+21.7</a>) installed. Additionally, I've also not found any Unix system that 
+doesn't have basic functionality, such as traversing directories with
+<span class="docEmphBold">cd</span> (<a class="docLink" href="#upt3-CHP-1-SECT-16">Section 
+1.16</a>) or getting additional help with <span class="docEmphBold">man</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+2.1</a>). </p>
+<p class="docText">However, what can differ between flavors of Unix is the 
+behavior of some of the utilities and built-in commands, as well as the options. 
+Even within a specific Unix flavor, such as FreeBSD, installations can differ 
+because one installation uses the built-in version of a utility such as
+<span class="docEmphBold">make</span> (<a class="docLink" href="_chapter 40.htm#upt3-CHP-40-SECT-3">Section 
+40.3</a>) and another installation has a GNU version of the same application.
+</p>
+<p class="docText">An attempt was made to create some form of standardization 
+with the POSIX effort. POSIX, which stands for <span class="docEmphasis">
+Portable Operating System Interface</span>, is an IEEE standard to work towards 
+application interoperability. With this, C programs written on one flavor of 
+Unix should work, with minimum modification, on another flavor of Unix. </p>
+<p class="docText">Unfortunately, though the POSIX effort has had some impact on 
+interoperability, there still are significant differences between Unix versions. 
+In particular, something such as System V Unix can differ considerably from 
+something such as Darwin. </p>
+<p class="docText">However, there is stability in this seeming chaos: for the 
+most part, the basic Unix utilities and commands behave the same in all Unix 
+flavors, and aside from some optional differences, how a command works within 
+one environment is exactly the same as in another environment. And if there are 
+differences, using the facilities described in
+<a class="docLink" href="_chapter 2.htm">Chapter 2</a> 
+should help you resolve these quickly. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-4">1.4 Communication with Unix</h3>
+<p class="docText">Probably the single most important concept for would-be power 
+users to grasp is that you don't &quot;talk&quot; directly to the Unix operating system. 
+Instead, you talk to a <span class="docEmphasis">program</span> — and that 
+program either talks to Unix itself or it talks to <span class="docEmphasis">
+another</span> program that talks to Unix. (When we say &quot;talk&quot; here, we mean 
+communication using a keyboard and a mouse.) </p>
+<p class="docText">There are three general kinds of programs you'll probably 
+&quot;talk&quot; to: </p>
+<ul>
+  <li>
+  <p class="docList">The program called the <span class="docEmphBold">shell</span> 
+  (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-1">Section 
+  27.1</a>). A shell is a <span class="docEmphasis">command interpreter</span>. 
+  Its main job is to interpret the commands you type and to run the programs you 
+  specify in your command lines. By default, the shell reads commands from your
+  <span class="docEmphasis">tty</span> and arranges for other programs to write 
+  their results there. The shell protects Unix from the user (and the user from 
+  Unix). It's the main focus of this book (and the rest of this article). </li>
+  <li>
+  <p class="docList">An <span class="docEmphasis">interactive command</span>, 
+  running &quot;inside&quot; a <span class="docEmphasis">tty</span>, that reads what you 
+  type directly. These take input directly from the user, without intervention 
+  from the shell. The shell's only job is to start them up. A text editor, a 
+  mail program, or almost any application program (such as word processing) 
+  includes its own command interpreter with its own rules. This book covers a 
+  few interactive commands — such as the <i>vi</i> editor — but its main focus 
+  is the shell and &quot;noninteractive&quot; utilities that the shell coordinates to do 
+  what needs doing. </li>
+  <li>
+  <p class="docList">A Graphical User Interface (GUI) with a desktop, windows, 
+  and so on. On Unix, a GUI is implemented with a set of running programs (all 
+  of which talk to Unix for you). </p>
+  <p class="docList">Unix was around long before GUIs were common, and there's 
+  no need to use a GUI to use Unix. In fact, Unix started in the days of 
+  teletypes, those clattering printing devices used to send telegrams. Unix 
+  terminals are still referred to as teletypes or <span class="docEmphBold">ttys</span> 
+  (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+  2.7</a>). </li>
+</ul>
+<p class="docText">The core of the Unix operating system is referred to as
+<span class="docEmphBold">the kernel</span> (<a class="docLink" href="#upt3-CHP-1-SECT-10">Section 
+1.10</a>). Usually, only programs talk to the kernel (through system calls). 
+Users talk to one of the three previous types of programs, which interprets 
+their commands and either executes them directly or passes them on to other 
+programs. These programs may, in turn, request lower-level services from the 
+kernel. </p>
+<p class="docText">Let's look at a specific example of using the shell. When you 
+type a command to display files whose four-character filenames start with the 
+letter &quot;m&quot;: </p>
+<p class="docText"><tt>???</tt>
+<a class="docLink" href="#upt3-CHP-1-SECT-13">
+Section 1.13</a></p>
+<pre>% <b>cat m???</b></pre>
+<p class="docText">it is the shell that finds the filenames, makes a complete 
+list of them, and calls the <span class="docEmphBold">cat</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">Section 
+12.2</a>) command to print the expanded list. The <i>cat</i> command calls on 
+the kernel to find each file on the disk and print its contents as a stream of 
+characters on the display. </p>
+<p class="docText">Why is this important? First of all, you can choose between
+<span class="docEmphBold">several different shells</span> (<a class="docLink" href="#upt3-CHP-1-SECT-6">Section 
+1.6</a>), each of which may have different rules for interpreting command lines.
+</p>
+<p class="docText">Second, the shell has to interpret the command line you type 
+and package it up for the command you are calling. Because the shell reads the 
+command line first, it's important to understand just how the shell changes what 
+it reads. </p>
+<p class="docText">For example, one basic rule is that the shell uses &quot;whitespace&quot; 
+(spaces or tabs) to separate each &quot;argument&quot; of a command. But sometimes, you 
+want the shell to interpret its arguments differently. For example, if you are 
+calling <span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-1">Section 
+13.1</a>), a program for searching through files for a matching line of text, 
+you might want to supply an entire phrase as a single argument. The shell lets 
+you do this by <span class="docEmphBold">quoting</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) arguments. For example: </p>
+<pre>% <b>grep &quot;Power Tools&quot; articles/*</b></pre>
+<p class="docText">Understanding how the shell interprets the command line, and 
+when to keep it from doing so, can be very important in a lot of special cases, 
+especially when dealing with <span class="docEmphBold">wildcards</span> (<a class="docLink" href="#upt3-CHP-1-SECT-13">Section 
+1.13</a>), like the <tt>*</tt> (asterisk) in the previous example. </p>
+<p class="docText">You can think of the relationship of the kernel, the shell, 
+and various Unix utilities and applications as looking like
+<a class="docLink" href="#upt3-CHP-1-FIG-1">Figure 1-1</a>. </p>
+<center>
+<h5 id="upt3-CHP-1-FIG-1" class="docFigureTitle">Figure 1-1. Relationship of kernel, shell, utilities, 
+and applications</h5>
+<p>
+<img alt="figs/upt3_0101.gif" src="upt3_0101.gif" border="0" width="428" height="228"></p>
+</center>
+<p class="docText"><a class="docLink" href="#upt3-CHP-1-FIG-1">Figure 1-1</a> 
+shows that a user can interact with the shell, as well as directly with 
+interactive commands like <i>cat</i> and <i>ls</i>. The shell transfers control 
+to the commands it starts for you — then those commands may write the output you 
+see. The shell also has some <span class="docEmphBold">built-in commands</span> 
+(<a class="docLink" href="#upt3-CHP-1-SECT-9">Section 
+1.9</a>) that run directly within the shell itself. All of the commands shown in
+<a class="docLink" href="#upt3-CHP-1-FIG-1">Figure 1-1</a> interact directly 
+with Unix itself. </p>
+<p class="docText"><span class="docEmphasis">—TOR and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-5">1.5 Programs Are Designed to Work Together</h3>
+<p class="docText">As pointed out by Kernighan and Pike in
+<span class="docEmphasis">The UNIX Programming Environment</span>, there are a 
+number of principles that distinguish the Unix environment. One key concept is 
+that programs are tools. Like all good tools, they should be specific in 
+function, but usable for many different purposes. </p>
+<p class="docText">In order for programs to become general-purpose tools, they 
+must be data independent. This means three things: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Within limits, the output of any program should be usable 
+  as the input to another. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">All of the information needed by a program should be either 
+  contained in the data stream passed to it or specified on the command line. A 
+  program should not prompt for input or do unnecessary formatting of output. In 
+  most cases, this means that Unix programs work with plain text files that 
+  don't contain &quot;nonprintable&quot; or &quot;control&quot; characters. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">If no arguments are given, a program should read the 
+  standard input (usually the terminal keyboard) and write the standard output 
+  (usually the terminal screen). </span></li>
+</ol>
+</span>
+<p class="docText">Programs that can be used in this way are often called
+<span class="docEmphasis">filters</span>. </p>
+<p class="docText">One of the most important consequences of these guidelines is 
+that programs can be strung together in &quot;pipelines&quot; in which the output of one 
+program is used as the input of another. A vertical bar (<tt>|</tt>) represents
+<span class="docEmphasis">pipe</span> and means &quot;take the output of the program 
+on the left and feed it into the program on the right.&quot; </p>
+<p class="docText">For example, you can pipe the output of a search program to 
+another program that sorts the output, and then pipe the result to the printer 
+program or <span class="docEmphBold">redirect it to a file</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>). </p>
+<p class="docText">Not all Unix programs work together in this way. An 
+interactive program like the <span class="docEmphBold">Emacs editor</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-1">Section 
+19.1</a>) generally doesn't read from or write to pipes you'd create on the 
+command line. Instead, once the shell has started Emacs, the editor
+<span class="docEmphBold">works independently of the shell</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-4">Section 
+1.4</a>), reading its input and output directly from the terminal. And there are 
+even exceptions to this exception. A program like <span class="docEmphBold">less</span> 
+(<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>) can read its standard input from a pipe and still interact with you at 
+the keyboard. It does that by reading directly from your
+<span class="docEmphBold">tty</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+2.7</a>). </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-6">1.6 There Are Many Shells</h3>
+<p class="docText">With most operating systems, the command intepreter is built 
+in; it is an integral part of the operating system. With Unix, your command 
+interpreter is just another program. Traditionally, a command interpreter is 
+called a &quot;shell,&quot; perhaps because it protects you from the underlying kernel — 
+or because it protects the kernel from you! </p>
+<p class="docText">In the early 1980s, the most common shells were the Bourne 
+shell (<i>sh</i>) and the C shell (<i>csh</i>). The <span class="docEmphBold">
+Bourne shell</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) (named after its creator, Steve Bourne) came first. It was excellent 
+for <span class="docEmphBold">shell programming</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-8">Section 
+1.8</a>). But many Unix users (who were also writing programs in the C language) 
+wanted a more familiar programming syntax — as well as more features for 
+interactive use. So the C shell came from Berkeley as part of their Unix 
+implementation. Soon (on systems that gave you the choice, at least) <i>csh</i> 
+was much more popular for interactive use than <i>sh</i>. The C shell had a lot 
+of nice features that weren't available in the original Bourne shell, including
+<span class="docEmphBold">job control</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-1">Section 
+23.1</a>) and <span class="docEmphBold">history</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-2">Section 
+30.2</a>). However, it wasn't hard for a shell programmer or an advanced user to 
+push the C shell to its limits. </p>
+<p class="docText">The Korn shell (also named after its creator, David Korn) 
+arrived in the mid-1980s. The <i>ksh</i> is compatible with the Bourne shell, 
+but has most of the C shell's features plus features like
+<span class="docEmphBold">history editing</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-14">Section 
+30.14</a>), often called <span class="docEmphasis">command-line editing</span>. 
+The Korn shell was available only with a proprietary version of Unix, System V — 
+but now a public-domain version named <i>pdksh</i> is widely available. </p>
+<p class="docText">These days, most original C shell users have probably 
+switched to <i>tcsh</i> (pronounced &quot;T-shell&quot;). It has all the features of <i>
+csh</i> and more — as well as fewer mis-features and outright bugs. </p>
+<p class="docText">The &quot;Bourne-again&quot; shell, <i>bash</i>, is from the Free 
+Software Foundation. It's fairly similar to the Korn shell. It has most of the C 
+shell's features, plus command-line editing and a built-in help command. The 
+programming syntax, though, is much more like the original Bourne shell — and 
+many systems (including Linux) use <i>bash</i> in place of the original Bourne 
+shell (but still call it <i>sh</i>). </p>
+<p class="docText">The Z shell, <i>zsh</i>, is an interesting hybrid. It tries 
+to be compatible with most features of all the other shells, with compatibility 
+modes and a slew of options that turn off conflicting features. In its soul, 
+though, <i>zsh</i> has a different way of doing some things. It's been accused 
+of feature creep. But <i>zsh</i> users love its flexibility. </p>
+<p class="docText">There are other shells. If you're a fan of the Bell Labs 
+research operating system named <span class="docEmphasis">Plan 9</span> 
+(actually, <span class="docEmphasis">Plan 9 from Outer Space</span>), you'll be 
+happy to know that its shell, <i>rc</i>, has been ported to Unix. If you program 
+in Tcl, you'll probably be familiar with <i>tclsh</i>, which lets you intermix 
+Unix commands with Tcl commands. (And we can't forget <i>wish</i> , the shell 
+that's a superset of <i>tclsh</i>: it uses Tcl/Tk commands to let you build 
+graphical interfaces as you go.) Least — but certainly not last — if you're a 
+minimalist who needs the original <i>sh</i>, a newer shell named <i>ash</i> 
+emulates the late-1980s Bourne shell. </p>
+<p class="docText">In this book, we try to be as generic as we can. Where we 
+need to get specific, many examples are shown in the style of both the Bourne 
+shell and the C shell — for instance, we'll often show Bourne-shell functions 
+side-by-side with C-shell aliases. Because <i>bash</i> and <i>ksh</i> can read 
+scripts written for the original Bourne shell, we use original <i>sh</i> syntax 
+to make our shell programming as portable as possible. </p>
+<p class="docText">Where we talk about &quot;the Bourne shell&quot; or <i>sh</i>, it's 
+usually a safe bet that the information applies to <i>bash</i> and <i>ksh</i> 
+too. In the same way, &quot;the C shell&quot; generally also means <i>tcsh</i>. </p>
+<p class="docText"><span class="docEmphasis">—JP and ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-7">1.7 Which Shell Am I Running?</h3>
+<p class="docText">You can usually tell which family your shell belongs to by a 
+character in the prompt it displays. Bourne-type shells, such as
+<span class="docEmphasis">bash</span> , usually have <tt>$</tt> in the prompt. 
+The C shell uses <tt>%</tt> (but <i>tcsh</i> users often use <tt>&gt;</tt>). </p>
+<p class="docText">If your shell has <span class="docEmphBold">superuser</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-18">Section 
+1.18</a>) privileges, though, the prompt typically ends with a hash, <tt>#</tt>.
+</p>
+<p class="docText">To check the shell that runs automatically when you log in to 
+Unix, type one of these commands (the second is for systems that use NIS, Sun's 
+Network Information Service, to manage network-wide files): </p>
+<pre>% <b>grep </b><i>yourloginname </i> /etc/passwd
+% <b>ypmatch  </b><i>yourloginname </i> passwd</pre>
+<p class="docText">You should get back the contents of your entry in the system 
+password file. For example: </p>
+<pre>shelleyp*:1006:1006:Shelley Powers:/usr/home/shelleyp:/usr/local/bin/bash</pre>
+<p class="docText">The fields are separated by colons, and the default shell is 
+usually specified in the last field. </p>
+<p class="docText">Note that in Mac OS X, passwords are managed and stored in 
+Netinfo by default. To store the passwords in <i>/etc/passwd</i>, you'll need to 
+configure this using Netinfo. </p>
+<p class="docText"><span class="docEmphasis">—TOR and SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-8">1.8 Anyone Can Program the Shell</h3>
+<p class="docText">One of the really wonderful things about the shell is that it 
+doesn't just read and execute the commands you type at a prompt. The shell is a 
+complete programming language. </p>
+<p class="docText">The ease of shell programming is one of the real highlights 
+of Unix for novices. A shell program need be no more than a single complex 
+command line saved in a file — or a series of commands. </p>
+<p class="docText">For example, let's say that you occasionally need to convert 
+a Macintosh Microsoft Word file for use on your Unix system. Word lets you save 
+the file in ASCII format. But there's a catch: the Mac uses a carriage return 
+ASCII character 015 to mark the end of each line, while Unix uses a linefeed 
+(ASCII 012). As a result, with Unix, the file looks like one long paragraph, 
+with no end in sight. </p>
+<p class="docText">That's easy to fix: the Unix <span class="docEmphBold">tr</span> 
+(<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-11">Section 
+21.11</a>) command can convert every occurrence of one character in a file to 
+another: </p>
+<pre>bash-2.04$ <b>tr '\015' '\012' &lt; </b> <i>file.mac </i><b> &gt;  </b><i>file.unix </i></pre>
+<p class="docText">But you're a novice, and you don't want to remember this 
+particular piece of magic. Fine. Save the first part of this command line in a 
+file called <i>mac2unix</i> in your <span class="docEmphBold">personal</span>
+<span class="docEmphBold">bin</span> <span class="docEmphBold">directory</span> 
+(<a class="docLink" href="_chapter 7.htm#upt3-CHP-7-SECT-4">Section 
+7.4</a>): </p>
+<pre>tr '\015' '\012'</pre>
+<p class="docText">Make the file executable with <span class="docEmphBold">chmod</span> 
+(<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-5">Section 
+50.5</a>): </p>
+<pre>bash-2.04$ <b>chmod +x mac2unix</b></pre>
+<p class="docText">Now you can say:</p>
+<pre>bash-2.04$ <b>mac2unix &lt;  </b><i>file.mac </i><b> &gt;  </b><i>file.unix </i></pre>
+<p class="docText">But why settle for that? What if you want to convert a bunch 
+of files at once? Easy. The shell includes a general way of referring to 
+arguments passed to a script and a number of looping constructs. The script: </p>
+<p class="docText"><tt>for</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">
+Section 35.21</a>, <tt>$x</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+Section 35.9</a></p>
+<pre>for x
+do
+    echo &quot;Converting $x&quot;
+    tr '\015' '\012' &lt; &quot;$x&quot; &gt; &quot;tmp.$x&quot;
+    mv &quot;tmp.$x&quot; &quot;$x&quot;
+done</pre>
+<p class="docText">will convert any number of files with one command, replacing 
+each original with the converted version: </p>
+<pre>bash-2.04$ <b>mac2unix </b> <i>file1 file2 file3 ... </i></pre>
+<p class="docText">As you become more familiar with Unix, it quickly becomes 
+apparent that doing just a little homework can save hours of tedium. This script 
+incorporates only two simple programming constructs: the <i>for</i> loop and
+<span class="docEmphBold">variable substitution</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">
+Section 35.3</a>).<span id="ENB1-1"><a class="docLink" href="#EN1-1"><sup>[1]</sup></a></span> 
+As a new user with no programming experience, I learned these two constructs by 
+example: I saved a skeleton <i>for</i> loop in a file and simply filled in the 
+blanks with whatever commands I wanted to repeat.
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-2">
+Section 35.2</a> has more about shell programming. </p>
+<p class="docText">In short, Unix is sometimes difficult because it is so rich 
+and complex. The user who doesn't want to learn the complexity doesn't have to — 
+the basic housekeeping commands are simple and straightforward. But the user who 
+wants to take the time to investigate the possibilities can uncover a wealth of 
+useful tools. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-9">1.9 Internal and External Commands</h3>
+<p class="docText">Some commands that you type are <span class="docEmphasis">
+internal</span>, which means they are built into the shell, and it's the shell 
+that performs the action. For example, the <i>cd</i> command is built-in. The <i>
+ls</i> command, on the other hand, is an <span class="docEmphasis">external</span> 
+program stored in the file <i>/bin/ls</i>. </p>
+<p class="docText">The shell doesn't start a separate process to run internal 
+commands. External commands require the shell to <span class="docEmphasis">fork</span> 
+and <span class="docEmphBold">exec</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-2">Section 
+27.2</a>) a new <span class="docEmphBold">subprocess</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>); this takes some time, especially on a busy system. </p>
+<p class="docText">When you type the name of a command, the shell first checks 
+to see if it is a built-in command and, if so, executes it. If the command name 
+is an <span class="docEmphBold">absolute pathname</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>) beginning with <span class="docEmphasis">/</span>, like <i>/bin/ls</i>, 
+there is no problem: the command is likewise executed. If the command is neither 
+built-in nor specified with an absolute pathname, most shells (except the 
+original Bourne shell) will check for <span class="docEmphBold">aliases</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>) or <span class="docEmphBold">shell functions</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>), which may have been defined by the user — often in a
+<span class="docEmphBold">shell setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) that was read when the shell started. Most shells also &quot;remember&quot; the 
+location of <span class="docEmphBold">external commands</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-6">Section 
+27.6</a>); this saves a long hunt down the search path. Finally, all shells look 
+in the search path for an executable program or script with the given name. </p>
+<p class="docText">The search path is exactly what its name implies: a list of 
+directories that the shell should look through for a command whose name matches 
+what is typed. </p>
+<p class="docText">The search path isn't built into the shell; it's something 
+you specify in your shell setup files. </p>
+<p class="docText">By tradition, Unix system programs are kept in directories 
+called <span class="docEmphasis">/bin</span> and <span class="docEmphasis">/usr/bin</span>, 
+with additional programs usually used only by system administrators in either
+<span class="docEmphasis">/etc</span> and <span class="docEmphasis">/usr/etc</span> 
+or <span class="docEmphasis">/sbin</span> and <span class="docEmphasis">/usr/sbin</span>. 
+Many versions of Unix also have programs stored in <span class="docEmphasis">/usr/ucb</span> 
+(named after the University of California at Berkeley, where many Unix programs 
+were written). There may be other directories containing programs. For example, 
+the programs that make up the <span class="docEmphBold">X Window System</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-22">Section 
+1.22</a>) are stored in <span class="docEmphasis">/usr/bin/X11</span>. Users or 
+sites often also have their own directories where custom commands and scripts 
+are kept, such as <span class="docEmphasis">/usr/local/bin</span> or
+<span class="docEmphasis">/opt</span>. </p>
+<p class="docText">The search path is stored in an <span class="docEmphBold">
+environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>) called <span class="docEmphBold">PATH</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+35.6</a>). A typical <span class="docEmphasis">PATH</span> setting might look 
+something like this: </p>
+<pre>PATH=/bin:/usr/bin:/usr/bin/X11:/usr/ucb:/home/tim/bin:</pre>
+<p class="docText">The path is searched in order, so if there are two commands 
+with the same name, the one that is found first in the path will be executed. 
+For example, your system certainly has the <i>ls</i> command we mentioned 
+earlier — and it's probably in <i>/bin/ls</i>. </p>
+<p class="docText">You can add new directories to your search path on the fly, 
+but the path is usually set in shell setup files. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-10">1.10 The Kernel and Daemons</h3>
+<p class="docText">If you have arrived at Unix via Windows 2000 or some other 
+personal computer operating system, you will notice some big differences. Unix 
+was, is, and always will be a multiuser operating system. It is a multiuser 
+operating system even when you're the only person using it; it is a multiuser 
+operating system even when it is running on a PC with a single keyboard; and 
+this fact has important ramifications for everything that you do. </p>
+<p class="docText">Why does this make a difference? Well, for one thing, you're 
+never the only one using the system, even when you think you are. Don't bother 
+to look under your desk to see if there's an extra terminal hidden down there. 
+There isn't. But Unix is always doing things &quot;behind your back,&quot; running 
+programs of its own, whether you are aware of it or not. The most important of 
+these programs, the <span class="docEmphasis">kernel</span>, is the heart of the 
+Unix operating system itself. The kernel assigns memory to each of the programs 
+that are running, partitions time fairly so that each program can get its job 
+done, handles all I/O (input/output) operations, and so on. Another important 
+group of programs, called <span class="docEmphasis">daemons</span>, are the 
+system's &quot;helpers.&quot; They run continuously — or from time to time — performing 
+small but important tasks like handling mail, running network communications, 
+feeding data to your printer, keeping track of the time, and so on. </p>
+<p class="docText">Not only are you sharing the computer with the kernel and 
+some mysterious daemons, you're also sharing it with yourself. You can issue the
+<span class="docEmphBold">ps x</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>) command to get a list of all processes running on your system. For 
+example: </p>
+<pre>  PID TTY    STAT  TIME COMMAND
+18034 tty2   S     0:00 -zsh
+18059 ?      S     0:01 ssh-agent
+18088 tty2   S     0:00 sh /usr/X11R6/bin/startx
+18096 tty2   S     0:00 xinit /etc/X11/xinit/xinitrc -- :0 -auth /home/jpeek/
+18101 tty2   S     0:00 /usr/bin/gnome-session
+18123 tty2   S     0:33 enlightenment -clientId default2
+18127 tty2   S     0:01 magicdev --sm-client-id=default12
+18141 tty2   S     0:03 panel --sm-client-id default8
+18145 tty2   S     0:01 gmc --sm-client-id default10
+18166 ?      S     1:20 gnomepager_applet --activate-goad-server gnomepager_a
+18172 tty2   S     0:01 gnome-terminal
+18174 tty2   S     0:00 gnome-pty-helper
+18175 pts/0  S     0:00 zsh
+18202 tty2   S     0:49 gnome-terminal
+18203 tty2   S     0:00 gnome-pty-helper
+18204 pts/1  S     0:01 zsh
+18427 pts/1  T     0:00 man zshjp
+18428 pts/1  T     0:00 sh -c /bin/gunzip -c /home/jpeek/.man/cat1/zshjp.1.gz
+18430 pts/1  T     0:03 /usr/bin/less -is
+18914 pts/1  T     0:02 vi upt3_changes.html
+ 1263 pts/1  T     0:00 vi urls.html
+ 1511 pts/1  T     0:00 less coding
+ 3363 pts/1  S     0:00 vi 1007.sgm
+ 4844 tty2   S     0:24 /usr/lib/netscape/netscape-communicator -irix-session
+ 4860 tty2   S     0:00 (dns helper)
+ 5055 pts/1  R     0:00 ps x</pre>
+<p class="docText">This output tells us that the user has only three windows 
+open. You may think that they're only running four or five programs, but the 
+computer is actually doing a lot more. (And, to keep this brief, we aren't 
+showing all the lines of output!) The user logged into his Linux system on
+<span class="docEmphBold">virtual console</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-12">Section 
+23.12</a>) 2, which shows as <tt>tty2</tt> in the <tt>TTY</tt> column; a lot of 
+programs are running there, including the <span class="docEmphBold">X Window 
+System</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-22">Section 
+1.22</a>) (which actually runs itself as another user —
+<span class="docEmphasis">root</span> — so its process isn't listed here). The 
+user is also running Gnome and Enlightenment, which keep track of the 
+workstation's display. Two of the windows are Gnome terminals, which are windows 
+that act like separate terminals; each has its own <span class="docEmphasis">tty</span>,
+<tt>pts/0</tt> and <tt>pts/1</tt>. And the list continues. </p>
+<p class="docText">If you are running a different window system (or no window 
+system at all) or different utility programs, you will see something different. 
+But we guarantee that you're running at least two programs, and quite likely 
+many more. If you want to see everything that's running, including the daemons, 
+type the command <tt>ps aux</tt> (Berkeley-style <i>ps</i>) or <tt>ps -el</tt> 
+(for many other flavors of <i>ps</i>). You'll be impressed. </p>
+<p class="docText">Because there is so much going on at once, Unix requires a 
+different way of thinking. The Unix kernel is a traffic cop that mediates 
+different demands for time, memory, disks, and so on. Not only does the kernel 
+need to run your programs, but it also needs to run the daemons, any programs 
+that other users might want to start, or any programs that you may have 
+scheduled to run automatically, as discussed in
+<a class="docLink" href="_chapter 23.htm">Chapter 
+23</a>. When it runs a program, the kernel allocates a small slice of time — up 
+to a second — and lets the program run until that slice is used up or until the 
+program decides to take a rest of its own accord (this is called &quot;sleeping&quot;). At 
+this point, regardless of whether the program is finished, the kernel finds some 
+other program to run. The Unix kernel never takes a vacation: it is always 
+watching over the system. </p>
+<p class="docText">Once you understand that the kernel is a manager that 
+schedules many different kinds of activity, you understand a lot about how Unix 
+works. For example, if you have used any computer system previously, you know 
+that it's a bad idea to turn the computer off while it is writing something to 
+disk. You will probably destroy the disk, and you could conceivably damage the 
+disk drive. The same is true for Unix — but with an important complication. Any 
+of the programs that are running can start doing something to the disk at any 
+time. One of the daemons makes a point of accessing the disk drive every 30 
+seconds or so, just to stay in touch. Therefore, you can't just turn a Unix 
+computer off. You might do all sorts of damage to the system's files — and not 
+just your own, but conceivably files belonging to many other users. To turn a 
+Unix system off, you must first run a program called <i>shutdown</i>, which 
+kicks everyone off the system, makes sure that a daemon won't try to play with a 
+disk drive when you aren't looking, and runs a program named <i>sync</i> to make 
+sure that the disks have the latest version of everything. Only then is it safe 
+to pull the switch. When you start up a Unix system, it automatically runs a 
+program called <i>fsck</i>, which stands for &quot;filesystem check&quot;; its job is to 
+find out if you shut down the system correctly and try to fix any damage that 
+might have happened if you didn't. </p>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-11">1.11 Filenames</h3>
+<p class="docText">Like all operating systems, Unix files have names. (Unix 
+directories, devices, and so on also have filenames — and are
+<span class="docEmphBold">treated like files</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-19">Section 
+1.19</a>).) The names are words (sequences of characters) that let you identify 
+a file. Older versions of Unix had some restrictions on the length of a filename 
+(14 characters), but modern versions have removed these restrictions for all 
+practical purposes. Sooner or later you will run into a limit, but if so, you 
+are probably being unnecessarily verbose. </p>
+<p class="docText">Technically, a filename can be made from almost any group of 
+characters (including nonprinting characters and numbers) except a slash (<tt>/</tt>). 
+However, you should avoid filenames containing most punctuation marks and all 
+nonprinting characters. To be safe, limit your filenames to the following 
+characters: </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Upper- and lowercase characters</span></i>
+  </dt>
+  <dd>
+  <p class="docList">Unix filenames are <span class="docEmphasis">always</span> 
+  case sensitive. That is, upper- and lowercase letters are always different 
+  (unlike Microsoft Windows and others that consider upper- and lowercase 
+  letters the same). Therefore, <span class="docEmphasis">myfile</span> and
+  <span class="docEmphasis">Myfile</span> are different files. It is usually a 
+  bad idea to have files whose names differ only in their capitalization, but 
+  that's your decision. </dd>
+  <dt><i><span class="docPubcolor">Underscores (_)</span></i> </dt>
+  <dd>
+  <p class="docList">Underscores are handy for separating &quot;words&quot; in a filename 
+  to make them more readable. For example, <span class="docEmphasis">
+  my_long_filename</span> is easier to read than <span class="docEmphasis">
+  mylongfilename</span>. </dd>
+  <dt><i><span class="docPubcolor">Periods (.)</span></i> </dt>
+  <dd>
+  <p class="docList">Periods are used by some programs (such as the C compiler) 
+  to separate filenames from <span class="docEmphBold">filename extensions</span> 
+  (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-12">Section 
+  1.12</a>). Extensions are used by these programs to recognize the type of file 
+  to be processed, but they are not treated specially by the shell, the kernel, 
+  or other Unix programs. </p>
+  <p class="docList">Filenames that begin with a period are treated specially by 
+  the shell: <span class="docEmphBold">wildcards won't match</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+  1.13</a>) them unless you include the period (like <tt>.*</tt>). The <i>ls</i> 
+  command, which lists your files, ignores files whose names begin with a period 
+  unless you give it a special option (<span class="docEmphBold">ls -a</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-9">Section 
+  8.9</a>)). Special configuration files are often &quot;hidden&quot; in directories by 
+  beginning their names with a period. </dd>
+  <dt><i><span class="docPubcolor">Certain other punctuation</span></i> </dt>
+  <dd>
+  <p class="docList">About the only other punctuation mark that is always safe 
+  is the comma (,), although it isn't part of the POSIX-portable character set.
+  </dd>
+</dl>
+<p class="docText">I'm so dead-set against using weird, nonprinting characters 
+in filenames that I won't even tell you how to do it. I will give you some
+<span class="docEmphBold">special techniques for deleting files with weird names</span> 
+(<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-11">Section 
+14.11</a>), though, in case you create some by accident. </p>
+<p class="docText">Some things to be aware of:</p>
+<ul>
+  <li>
+  <p class="docList">Unix does not have any concept of a file
+  <span class="docEmphasis">version</span>. There are some
+  <span class="docEmphBold">revision control programs</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-4">Section 
+  39.4</a>) that implement their own notion of a version, but there is nothing 
+  built into the operating system that handles this for you. If you are editing 
+  a file, don't count on Unix to save your previous versions — you can
+  <span class="docEmphBold">program this</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-16">Section 
+  35.16</a>,
+  <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-14">
+  Section 18.14</a>) though, if you want to; the GNU Emacs editor also
+  <span class="docEmphBold">makes backups</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-4">Section 
+  19.4</a>). </li>
+  <li>
+  <p class="docList">Once you delete a file in Unix, <span class="docEmphBold">
+  it is gone forever</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-3">Section 
+  14.3</a>). You can't get it back without restoring it from a backup. So be 
+  careful when you delete files. Later, we'll show you programs that will give 
+  you a &quot;grace period&quot; between the time you delete a file and the time it 
+  actually disappears. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-12">1.12 Filename Extensions</h3>
+<p class="docText">In Microsoft Windows and some other operating systems, 
+filenames often have the form <tt><i>name</i></tt>.<tt><i>extension</i></tt>. 
+For example, plain text files have extensions such as <span class="docEmphasis">
+.txt</span>. The operating system treats the extension as separate from the 
+filename and has rules about how long it must be, and so forth. </p>
+<p class="docText">Unix doesn't have any special rules about extensions. The dot 
+has no special meaning as a separator, and extensions can be any length. 
+However, a number of programs (especially compilers) make use of extensions to 
+recognize the different types of files they work with. In addition, there are a 
+number of conventions that users have adopted to make clear the contents of 
+their files. For example, you might name a text file containing some design 
+notes <span class="docEmphasis">notes.txt</span>. </p>
+<p class="docText"><a class="docLink" href="#upt3-CHP-1-TABLE-1">Table 1-1</a> 
+lists some of the filename extensions you might see and a brief description of 
+the programs that recognize them. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-1-TABLE-1" class="docTableTitle">Table 1-1. Filename extensions that programs expect
+  </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Extension</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.a</td>
+    <td class="docTableCell">
+    <p class="docText">Archive file (library)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.c</td>
+    <td class="docTableCell">
+    <p class="docText">C program source file</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.f</td>
+    <td class="docTableCell">
+    <p class="docText">FORTRAN program source file</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.F</td>
+    <td class="docTableCell">
+    <p class="docText">FORTRAN program source file to preprocess</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.gz</td>
+    <td class="docTableCell">
+    <p class="docText"><i>gzip</i><span class="docEmphBold"> ped file</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-6">Section 
+    15.6</a>) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.h</td>
+    <td class="docTableCell">
+    <p class="docText">C program header file </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.html or .htm</td>
+    <td class="docTableCell">
+    <p class="docText">HTML file for web servers</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.xhtml </td>
+    <td class="docTableCell">
+    <p class="docText">XHTML file for web servers</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.o</td>
+    <td class="docTableCell">
+    <p class="docText">Object file (compiled and assembled code)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.s</td>
+    <td class="docTableCell">
+    <p class="docText">Assembly language code</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.z</td>
+    <td class="docTableCell">
+    <p class="docText">Packed file</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.Z</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Compressed file</span>
+    <a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-6">
+    Section 15.6</a>) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.1 to .8</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Online manual</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+    2.1</a>) source file </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>~</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Emacs editor backup file</span> 
+    (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-4">Section 
+    19.4</a>) </td>
+  </tr>
+</table>
+<p class="docText">In <a class="docLink" href="#upt3-CHP-1-TABLE-2">Table 1-2</a> 
+are some extensions often used by users to signal the contents of a file, but 
+are not actually recognized by the programs themselves. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-1-TABLE-2" class="docTableTitle">Table 1-2. Filename extensions for user's benefit
+  </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Extension</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.tar</td>
+    <td class="docTableCell">
+    <p class="docText"><i>tar</i> <span class="docEmphBold">archive</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-2">Section 
+    39.2</a>) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.tar.gz or .tgz</td>
+    <td class="docTableCell">
+    <p class="docText"><i>gzip</i> <span class="docEmphBold">ped</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-6">Section 
+    15.6</a>) <i>tar</i> <span class="docEmphBold">archive</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-2">Section 
+    39.2</a>) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.shar</td>
+    <td class="docTableCell">
+    <p class="docText">Shell archive</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.sh</td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Bourne shell script</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-8">Section 
+    1.8</a>) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.csh</td>
+    <td class="docTableCell">
+    <p class="docText">C shell script</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.mm</td>
+    <td class="docTableCell">
+    <p class="docText">Text file containing <i>troff</i>'s
+    <span class="docEmphasis">mm</span> macros </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.ms</td>
+    <td class="docTableCell">
+    <p class="docText">Text file containing <i>troff</i>'s
+    <span class="docEmphasis">ms</span> macros </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.ps</td>
+    <td class="docTableCell">
+    <p class="docText">PostScript source file</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.pdf</td>
+    <td class="docTableCell">
+    <p class="docText">Adobe Portable Document Format</td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">—ML and TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-13">1.13 Wildcards</h3>
+<p class="docText">The shells provide a number of <span class="docEmphasis">
+wildcards</span> that you can use to abbreviate filenames or refer to groups of 
+files. For example, let's say you want to delete all filenames ending in
+<span class="docEmphasis">.txt</span> in the <span class="docEmphBold">current 
+directory</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>). You could delete these files one by one, but that would be boring if 
+there were only 5 and <span class="docEmphasis">very</span> boring if there were 
+100. Instead, you can use a wildcarded name to say, &quot;I want all files whose 
+names end with <span class="docEmphasis">.txt</span>, regardless of what the 
+first part is.&quot; The wildcard is the &quot;regardless&quot; part. Like a wildcard in a 
+poker game, a wildcard in a filename can have any value. </p>
+<p class="docText">The wildcard you see most often is <tt>*</tt> (an asterisk), 
+but we'll start with something simpler: <tt>?</tt> (a question mark). When it 
+appears in a filename, the <tt>?</tt> matches any single character. For example,
+<tt>letter?</tt> refers to any filename that begins with
+<span class="docEmphasis">letter</span> and has exactly one character after 
+that. This would include <span class="docEmphasis">letterA</span>,
+<span class="docEmphasis">letter1</span>, as well as filenames with a 
+nonprinting character as their last letter, such as <span class="docEmphasis">
+letter</span>^C. </p>
+<p class="docText">The <tt>*</tt> wildcard matches any character or group of 
+zero or more characters. For example, <tt>*.txt</tt> matches all files whose 
+names end with <span class="docEmphasis">.txt</span>; <tt>c*</tt> matches all 
+files whose names start with <span class="docEmphasis">c</span>; <tt>c*b*</tt> 
+matches names starting with <span class="docEmphasis">c</span> and containing at 
+least one <span class="docEmphasis">b</span>; and so on. </p>
+<p class="docText">The <tt>*</tt> and <tt>?</tt> wildcards are sufficient for 90 
+percent of the situations that you will find. However, there are some situations 
+that they can't handle. For example, you may want to list files whose names end 
+with <span class="docEmphasis">.txt</span>, <span class="docEmphasis">mail</span>, 
+or <span class="docEmphasis">let</span>. There's no way to do this with a single
+<tt>*</tt>; it won't let you exclude the files you don't want. In this 
+situation, use a separate <tt>*</tt> with each filename ending: </p>
+<pre>*.txt *mail *let</pre>
+<p class="docText">Sometimes you need to match a particular group of characters. 
+For example, you may want to list all filenames that begin with digits or all 
+filenames that begin with uppercase letters. Let's assume that you want to work 
+with the files <tt>program</tt>.<tt><i>n</i></tt>, where <tt><i>n</i></tt> is a 
+single-digit number. Use the filename: </p>
+<pre>program.[0123456789]</pre>
+<p class="docText">In other words, the wildcard <tt>[<i>character-list</i>]</tt> 
+matches any single character that appears in the list. The character list can be 
+any group of ASCII characters; however, if they are consecutive (e.g., A-Z, a-z, 
+0-9, or 3-5, for that matter), you can use a hyphen as shorthand for the range. 
+For example, <tt>[a-zA-Z]</tt> means any alphabetic English character. </p>
+<p class="docText">There is one exception to these wildcarding rules. Wildcards 
+never match <tt>/</tt>, which is both the name of the <span class="docEmphBold">
+filesystem root</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-14">Section 
+1.14</a>) and the character used to separate directory names in a
+<span class="docEmphBold">path</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>). The only way to match on this character is to
+<span class="docEmphasis">escape it</span> using the backslash character ( <tt>
+\)</tt>. However, you'll find it difficult to use the forward slash within a 
+filename anyway (the system will keep trying to use it as a directory command).
+</p>
+<p class="docText">If you are new to computers, you probably will catch on to 
+Unix wildcarding quickly. If you have used any other computer system, you have 
+to watch out for one important detail. Virtually all computer systems except for 
+Unix consider a period (.) a special character within a filename. Many operating 
+systems even require a filename to have a period in it. With these operating 
+systems, a <tt>*</tt> does not match a period; you have to say <tt>*.*</tt>. 
+Therefore, the equivalent of <tt>rm *</tt> does virtually nothing on some 
+operating systems. Under Unix, it is dangerous: it means &quot;delete all the files 
+in the current directory, regardless of their name.&quot; You only want to give this 
+command when you really mean it. </p>
+<p class="docText">But here's the exception to the exception. The shells and the
+<span class="docEmphasis">ls</span> command consider a . special if it is the 
+first character of a filename. This is often used to hide initialization files 
+and other files with which you aren't normally concerned; the <i>ls</i> command 
+doesn't show these files unless you <span class="docEmphBold">ask</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-9">Section 
+8.9</a>) for them. If a file's name begins with ., you always have to type the . 
+explicitly. For example, <tt>.*rc</tt> matches all files whose names begin with 
+. and end with <span class="docEmphasis">rc</span>. This is a common convention 
+for the names of Unix initialization files. </p>
+<p class="docText"><a class="docLink" href="#upt3-CHP-1-TABLE-3">Table 1-3</a> 
+has a summary of common wildcards.</p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-1-TABLE-3" class="docTableTitle">Table 1-3. Common shell wildcards </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Wildcard</th>
+    <th class="docTableHeader">
+    <p class="docText">Matches</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">?</td>
+    <td class="docTableCell">
+    <p class="docText">Any single character</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">*</td>
+    <td class="docTableCell">
+    <p class="docText">Any group of zero or more characters</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">[ab]</td>
+    <td class="docTableCell">
+    <p class="docText">Either a or b</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">[a-z]</td>
+    <td class="docTableCell">
+    <p class="docText">Any character between a and z, inclusive</td>
+  </tr>
+</table>
+<p class="docText">Wildcards can be used at any point or points within a path. 
+Remember, wildcards only match names that already exist. You can't use them to
+<span class="docEmphBold">create new files</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-3">Section 
+28.3</a>) — though many shells have curly braces (<tt>{}</tt>) for doing that.
+<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-3">
+Section 33.3</a> explains how wildcards are handled, and
+<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">
+Section 33.2</a> has more about wildcards, including specialized wildcards in 
+each of the shells. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-14">1.14 The Tree Structure of the Filesystem</h3>
+<p class="docText">A multiuser system needs a way to let different users have 
+different files with the same name. It also needs a way to keep files in logical 
+groups. With thousands of system files and hundreds of files per user, it would 
+be disastrous to have all of the files in one big heap. Even single-user 
+operating systems have found it necessary to go beyond &quot;flat&quot; filesystem 
+structures. </p>
+<p class="docText">Almost every operating system solved this problem by 
+implementing a tree-structured, or <span class="docEmphasis">hierarchical</span>, 
+filesystem. Unix is no exception. A hierarchical filesystem is not much 
+different from a set of filing cabinets at the office. Your set of cabinets 
+consists of many individual cabinets. Each individual cabinet has several 
+drawers; each drawer may have several partitions in it; each partition may have 
+several hanging (Pendaflex) folders; and each hanging folder may have several 
+files. You can specify an individual file by naming the filing cabinet, the 
+drawer, the partition, the group of folders, and the individual folder. For 
+example, you might say to someone: &quot;Get me the `meeting of July 9' file from the 
+Kaiser folder in the Medical Insurance Plans partition in the Benefits drawer of 
+the Personnel file cabinet.&quot; This is backwards from the way you'd specify a 
+filename, because it starts with the mfost specific part, but the idea is 
+essentially the same. </p>
+<p class="docText">You could give a complete path like this to any file in any 
+of your cabinets, as shown in <a class="docLink" href="#upt3-CHP-1-FIG-2">Figure 
+1-2</a>. The concept of a &quot;path&quot; lets you distinguish your July 9 meeting with 
+Kaiser from your July 9 interview with a job applicant or your July 9 
+policy-planning meeting. It also lets you keep related topics together: it's 
+easy to browse through the &quot;Medical Insurance&quot; section of one drawer or to scan 
+all your literature and notes about the Kaiser plan. The Unix filesystem works 
+in exactly the same way (as do most other hierarchical filesystems). Rather than 
+having a heap of assorted files, files are organized into
+<span class="docEmphasis">directories</span>. A directory is really nothing more 
+than a special kind of file that lists a bunch of other files (see
+<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-2">
+Section 10.2</a>). A directory can contain any number of files (although for 
+performance reasons, it's a good idea to keep the number of files in one 
+directory relatively small — under 100, when you can). A directory can also 
+contain other directories. Because a directory is nothing more than a special 
+kind of file, directories also have names. At the top (the filesystem &quot;tree&quot; is 
+really upside down) is a directory called the &quot;root,&quot; which has the special name
+<tt>/</tt> (pronounced &quot;slash,&quot; but never spelled out). </p>
+<center>
+<h5 id="upt3-CHP-1-FIG-2" class="docFigureTitle">Figure 1-2. A hierarchical filesystem</h5>
+<p>
+<img alt="figs/upt3_0102.gif" src="upt3_0102.gif" border="0" width="310" height="334"></p>
+</center>
+<p class="docText">To locate any file, we can give a sequence of names, starting 
+from the filesystem's root, that shows the file's exact position in the 
+filesystem: we start with the root and then list the directories you go through 
+to find the file, separating them by slashes. This is called a
+<span class="docEmphasis">path</span>. For examples, let's look at the simple 
+filesystem represented by <a class="docLink" href="#upt3-CHP-1-FIG-3">Figure 1-3</a>. 
+The names <span class="docEmphasis">/home/mkl/mystuff/stuff</span> and
+<span class="docEmphasis">/home/hun/publick/stuff</span> both refer to files 
+named <span class="docEmphasis">stuff</span>. However, these files are in 
+different directories, so they are different files. The names
+<span class="docEmphasis">home</span>, <span class="docEmphasis">hun</span>, and 
+so on are all names of directories. Complete paths like these are called 
+&quot;absolute paths.&quot; There are shorter ways to refer to a file:
+<span class="docEmphBold">relative paths</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>). </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<center>
+<h5 id="upt3-CHP-1-FIG-3" class="docFigureTitle">Figure 1-3. A Unix filesystem tree</h5>
+<p>
+<img alt="figs/upt3_0103.gif" src="upt3_0103.gif" border="0" width="410" height="286"></p>
+</center>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-15">1.15 Your Home Directory</h3>
+<p class="docText">Microsoft Windows and the Mac OS have
+<span class="docEmphBold">hierarchical filesystems</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-14">Section 
+1.14</a>), much like those in Unix and other large systems. But there is an 
+important difference. On many Windows and Mac systems, you start right at the 
+&quot;root&quot; of the filesystem tree. In effect, you start with a blank slate and 
+create subdirectories to organize your files. </p>
+<p class="docText">A Unix system comes with an enormous filesystem tree already 
+developed. When you log in, you start somewhere down in that tree, in a 
+directory created for you by the system administrator (who may even be yourself, 
+if you are administering your own system). </p>
+<p class="docText">This directory — the one place in the filesystem that is your 
+very own, to store your files (especially the <span class="docEmphBold">shell 
+setup files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) and <span class="docEmphBold">rc files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-20">Section 
+3.20</a>) that you use to customize the rest of your environment) — is called 
+your <span class="docEmphasis">home directory</span>. </p>
+<p class="docText">Home directories were originally stored in a directory called
+<span class="docEmphasis">/usr</span> (and still are on some systems), but are 
+now often stored in other directories, such as <span class="docEmphasis">/home</span>. 
+Within the Linux Filesystem Hierarchy Standard (FHS), the home directory is 
+always at <span class="docEmphasis">/home</span>, as configuration files are 
+always in <span class="docEmphasis">/etc</span> and so on. </p>
+<p class="docText">To change your <span class="docEmphBold">current directory</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>) to your home, type <tt>cd</tt> with no pathname; the shell will assume 
+you mean your home directory. </p>
+<p class="docText">Within the Mac OS X environment, <span class="docEmphasis">
+home</span> is in the <i>/Users/username</i> directory by default. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-16">1.16 Making Pathnames</h3>
+<p class="docText">Pathnames locate a file (or directory, or any other object) 
+in the Unix filesystem. As you read this article, refer to
+<a class="docLink" href="#upt3-CHP-1-FIG-4">Figure 1-4</a>. It's a diagram of a 
+(very) small part of a Unix filesystem. </p>
+<center>
+<h5 id="upt3-CHP-1-FIG-4" class="docFigureTitle">Figure 1-4. Part of a Unix filesystem tree</h5>
+<p>
+<img alt="figs/upt3_0104.gif" src="upt3_0104.gif" border="0" width="436" height="288"></p>
+</center>
+<p class="docText">Whenever you are using Unix, you have a
+<span class="docEmphasis">current directory</span>. By default, Unix looks for 
+any mentioned files or directories within the current directory. That is, if you 
+don't give an <span class="docEmphBold">absolute pathname</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-14">Section 
+1.14</a>) (starting from the root, <span class="docEmphasis">/</span> ), Unix 
+tries to look up files <span class="docEmphasis">relative</span> to the current 
+directory. When you first log in, your current directory is your
+<span class="docEmphBold">home directory</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-15">Section 
+1.15</a>), which the system administrator will assign to you. It typically has a 
+name like <span class="docEmphasis">/u/mike</span> or <span class="docEmphasis">
+/home/mike</span>. You can change your current directory by giving the <i>cd</i> 
+command, followed by the name of a new directory (for example, <tt>cd /usr/bin</tt>). 
+You can find out your current directory by giving the <i>pwd</i> (&quot;print working 
+directory&quot;) command. </p>
+<p class="docText">If your current directory is <span class="docEmphasis">
+/home/mike</span> and you give the command <tt>cat textfile</tt>, you are asking 
+Unix to locate the file <span class="docEmphasis">textfile</span> within the 
+directory <span class="docEmphasis">/home/mike</span>. This is equivalent to the 
+absolute path <span class="docEmphasis">/home/mike/textfile</span>. If you give 
+the command <tt>cat notes/textfile</tt>, you are asking Unix to locate the file
+<span class="docEmphasis">textfile</span> within the directory
+<span class="docEmphasis">notes</span>, within the current directory
+<span class="docEmphasis">/home/mike</span>. </p>
+<p class="docText">A number of abbreviations help you to form relative pathnames 
+more conveniently. You can use the abbreviation . (dot) to refer to the current 
+working directory. You can use <tt>..</tt> (dot dot) to refer to the parent of 
+the current working directory. For example, if your current directory is
+<span class="docEmphasis">/home/mike</span>, <span class="docEmphasis">./textfile</span> 
+is the same as <span class="docEmphasis">textfile</span>, which is the same as
+<span class="docEmphasis">/home/mike/textfile</span>. The relative path
+<span class="docEmphasis">../gina/textfile</span> is the same as
+<span class="docEmphasis">/home/gina/textfile</span>; <tt>..</tt> moves up one 
+level from <span class="docEmphasis">/home/mike</span> (to
+<span class="docEmphasis">/home</span>) and then searches for the directory
+<span class="docEmphasis">gina</span> and the file <span class="docEmphasis">
+textfile</span>. </p>
+<p class="docText">You can use either the abbreviation <tt>~</tt> (tilde) or the 
+environment variables <tt>$HOME</tt> or <tt>$LOGDIR</tt>, to refer to your home 
+directory. In most shells, <tt>~<i>name</i></tt> refers to the home directory of 
+the user <span class="docEmphasis">name</span>. See
+<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">
+Section 31.11</a>. </p>
+<p class="docText">Here's a summary of the rules that Unix uses to interpret 
+paths: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docEmphasis">If the pathname begins 
+  with</span> <span class="docMonofont">/</span></span> </dt>
+  <dd>
+  <p class="docList">It is an absolute path, starting from the root. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">If the pathname begins 
+  with</span> <span class="docMonofont">~</span> <span class="docEmphasis">or 
+  with</span> <span class="docMonofont">~</span> <tt><i>name</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Most shells turn it into an absolute pathname starting at 
+  your home directory (<tt>~</tt>) or at the home directory of the user
+  <span class="docEmphasis">name</span> (<tt>~<i>name</i></tt>). </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">If the pathname does 
+  not begin with a</span> <span class="docMonofont">/</span></span> </dt>
+  <dd>
+  <p class="docList">The pathname is relative to the current directory. Two 
+  relative special cases use entries that are in every Unix directory:
+  <span style="FONT-WEIGHT: bold">
+  <ol class="docList" type="a">
+    <li><span style="FONT-WEIGHT: normal">
+    <p class="docList">If the pathname begins with <tt>./</tt>, the path is 
+    relative to the current directory, e.g., <span class="docEmphasis">./textfile</span>, 
+    though this can also execute the file if it is given executable file 
+    permissions. </span></li>
+    <li><span style="FONT-WEIGHT: normal">
+    <p class="docList">If the pathname begins with <tt>../</tt>, the path is 
+    relative to the parent of the current directory. For example, if your 
+    current directory is <span class="docEmphasis">/home/mike/work</span>, then
+    <span class="docEmphasis">../src</span> means <span class="docEmphasis">
+    /home/mike/src</span>. </span></li>
+  </ol>
+  </span></dd>
+</dl>
+<p class="docText">
+<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-2">
+Section 10.2</a> explains where <tt>.</tt> and <tt>..</tt> come from. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">The <tt>.</tt> and <tt>..</tt> may appear at any 
+        point within a path. They mean &quot;the current directory at this point in 
+        the path&quot; and &quot;the parent of the current directory at this point in the 
+        path.&quot; You commonly see paths starting with <tt>../../</tt> (or more) to 
+        refer to the grandparent or great-grandparent of the current directory. 
+        However, they can appear at other places in a pathname as well. For 
+        example, <span class="docEmphasis">/usr/ucb/./bin</span> is the same as
+        <span class="docEmphasis">/usr/ucb/bin</span>, and
+        <span class="docEmphasis">/usr/ucb/bin/../lib</span> is the same as
+        <span class="docEmphasis">/usr/ucb/lib</span>. Placing <tt>.</tt> or <tt>
+        ..</tt> in the middle of a path may be helpful in building paths within 
+        shell scripts, but I have never seen them used in any other useful way.
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-17">1.17 File Access Permissions</h3>
+<p class="docText">Under Unix, access to files is based on the concept of users 
+and groups. </p>
+<p class="docText">Every &quot;user&quot; on a system has a unique account with a unique 
+login name and a unique <span class="docEmphBold">UID</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>) (user ID number). It is possible, and sometimes convenient, to create 
+accounts that are shared by groups of people. For example, in a 
+transaction-processing application, all of the order-entry personnel might be 
+assigned a common login name (as far as Unix is concerned, they only count as 
+one user). In a research and development environment, certain administrative 
+operations might be easier if members of a team shared the same account, in 
+addition to having their own accounts. However, in most situations each person 
+using the system has one and only one user ID, and vice versa. </p>
+<p class="docText">Every user may be a member of one or more &quot;groups.&quot;<span id="ENB1-2"><a class="docLink" href="#EN1-2"><sup>[2]</sup></a></span> 
+The user's entry in the master password file (<span class="docEmphBold">/etc/passwd</span> 
+(<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-3">Section 
+22.3</a>)) defines his &quot;primary group membership.&quot; The <span class="docEmphBold">
+/etc/group</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-6">Section 
+49.6</a>) file defines the groups that are available and can also assign other 
+users to these groups as needed. For example, I am a member of three groups:
+<span class="docEmphasis">staff</span>, <span class="docEmphasis">editors</span>, 
+and <span class="docEmphasis">research</span>. My primary group is
+<span class="docEmphasis">staff</span>; the <span class="docEmphasis">group</span> 
+file says that I am also a member of the <span class="docEmphasis">editors</span> 
+and <span class="docEmphasis">research</span> groups. We call
+<span class="docEmphasis">editors</span> and <span class="docEmphasis">research</span> 
+my &quot;secondary groups.&quot; The system administrator is responsible for maintaining 
+the <span class="docEmphasis">group</span> and <span class="docEmphasis">passwd</span> 
+files. You don't need to worry about them unless you're administering your own 
+system. </p>
+<p class="docText">Every file belongs to one user and one group. When a file is 
+first created, its owner is the user who created it; its group is the user's 
+primary group or the group of the directory in which it's created. For example, 
+all files I create are owned by the user <span class="docEmphasis">mikel</span> 
+and the group <span class="docEmphasis">staff</span>. As the file's owner, I am 
+allowed to use the <i>chgrp</i> command to change the file's group. On 
+filesystems that don't have <span class="docEmphBold">quotas</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-11">Section 
+15.11</a>), I can also use the <i>chown</i> command to change the file's owner. 
+(To change ownership on systems with quotas, see
+<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-15">
+Section 50.15</a>.) For example, to change the file <span class="docEmphasis">
+data</span> so that it is owned by the user <span class="docEmphasis">george</span> 
+and the group <span class="docEmphasis">others</span>, I give the commands: </p>
+<pre>% <b>chgrp others data</b>
+% <b>chown george data</b></pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="50" src="screw.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">If you need to change both owner and group, change 
+        the group first! You won't have permission to change the group after you 
+        aren't the owner. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Some versions of <i>chown</i> can change both owner and group 
+at the same time: </p>
+<pre>% <b>chown george.others data</b></pre>
+<p class="docText">File access is based on a file's user and group ownership and 
+a set of access bits (commonly called the <span class="docEmphasis">mode bits</span>). 
+When you try to access a file, you are put into one of three classes. You are 
+either the file's owner, a member of the file's group, or an &quot;other.&quot; Three bits 
+then determine whether you are allowed to read, write, or execute the file. So, 
+as
+<a class="docLink" href="#upt3-CHP-1-FIG-1">
+Figure 1-1</a> shows, there are a total of nine mode bits (three for each class) 
+that set the basic access permissions. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-18">1.18 The Superuser (Root)</h3>
+<p class="docText">In general, a <span class="docEmphBold">process</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-1">Section 
+24.1</a>) is a program that's running: a shell, the <i>ls</i> command, the <i>vi</i> 
+editor, and so on. In order to <span class="docEmphBold">kill a process</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+24.12</a>), <span class="docEmphBold">change its priority</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-5">Section 
+26.5</a>), or manipulate it in any other way, you have to be the process' owner 
+(i.e., the user who started it). In order to delete a job from a
+<span class="docEmphBold">print queue</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-1">Section 
+45.1</a>), you must be the user who started it. </p>
+<p class="docText">As you might guess, there needs to be a way to circumvent all 
+of this security. Someone has to be able to kill runaway programs, modify the 
+system's files, and so on. Under Unix, a special user known as
+<span class="docEmphasis">root</span> (and commonly called the &quot;superuser&quot;) is 
+allowed to do anything. </p>
+<p class="docText">To become the superuser, you can either log in as
+<span class="docEmphasis">root</span> or use the <span class="docEmphBold">su</span> 
+(<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-9">Section 
+49.9</a>) command. In this book, though, we'll assume that you don't have the 
+superuser password. Almost all of what we describe can be done without becoming 
+superuser. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-19">1.19 When Is a File Not a File?</h3>
+<p class="docText">Unix differs from most operating systems in that it is file 
+oriented. The designers of Unix decided that they could make the operating 
+system much simpler if they treated everything as if it were a file. As far as 
+Unix is concerned, disk drives, terminals, modems, network connections, etc. are 
+all just files. Recent versions of Unix (such as Linux) have gone further:
+<span class="docEmphBold">files can be pipes</span> (FIFOs) (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-11">Section 
+43.11</a>) and <span class="docEmphBold">processes are files</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-9">Section 
+24.9</a>). Like waves and particles in quantum physics, the boundary between 
+files and the rest of the world can be extremely fine: whether you consider a 
+disk a piece of hardware or a special kind of file depends primarily on your 
+perspective and what you want to do with it. </p>
+<p class="docText">Therefore, to understand Unix, you have to understand what 
+files are. A file is nothing more than a stream of bytes — that is, an 
+arbitrarily long string of bytes with no special structure. There are no special 
+file structures and only a few special file types (for keeping track of disks 
+and a few other purposes). The structure of any file is defined by the programs 
+that use it, not by the Unix operating system.<span id="ENB1-3"><a class="docLink" href="#EN1-3"><sup>[3]</sup></a></span> 
+You may hear users talk about file headers and so on, but these are defined by 
+the applications that use the files, not by the Unix filesystem itself. </p>
+<p class="docText">Unix programs do abide by one convention, however. Text files 
+use a single newline character (linefeed) between lines of text, rather than the 
+carriage return-linefeed combination used in Microsoft Windows or the carriage 
+returns used in the Macintosh. This difference may cause problems when you bring 
+files from other operating systems over to Unix. Windows files will often be 
+littered with carriage returns (Ctrl-M), which are necessary for that operating 
+system but superfluous for Unix. These carriage returns will look ugly if you 
+try to edit or print the file and may confuse some Unix programs. Mac text files 
+will appear to be one long line with no breaks. Of course, you can use Unix 
+utilities to convert Mac and Windows files for Unix. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-20">1.20 Scripting</h3>
+<p class="docText">Scripting languages and scripting applications differ from 
+compiled languages and applications in that the application is interpreted as 
+run rather than compiled into a machine-understandable format. You can use shell 
+scripting for many of your scripting needs, but there are times when you'll want 
+to use something more sophisticated. Though not directly a part of a Unix 
+system, most Unix installations come with the tools you need for this more 
+complex scripting — Perl (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41">Chapter 
+41</a>), Python (<a class="docLink" href="_chapter 42.htm">Chapter 
+42</a>), and Tcl. </p>
+<p class="docText">These three scripting languages seem so prevelant within the 
+Unix world that I think of them as the Unix Scripting language triumvirate. </p>
+<p class="docText">Perl is probably the granddaddy of scripting. Created by 
+Larry Wall, this language is probably used more than any other for creating 
+complex scripts to perform sophisticated functionality with Unix and other 
+operating systems. The language is particularly noted for its ability to handle 
+regular expressions, as well as working with files and other forms of I/O. </p>
+<p class="docText">Python isn't as widespread as Perl, but its popularity is 
+growing. One reason it's gaining popularity is that as a language, Python is 
+more structured and a little more verbose than Perl, and therefore a little 
+easier to read. In addition, according to its fans, Python has more 
+object-oriented and data-manipulation features than the file-manipulation and 
+regular-expression manipulation of Perl. </p>
+<p class="docText">Tcl is particularly prevelant within Linux systems, though 
+it's use is widespread throughout all Unix systems. It's popular because it's 
+simpler to learn than Perl and allows scripters to get up to speed more quickly 
+than you can with Perl or Python. In addition, the language also has access to a 
+very popular graphical user interface library called the Tk toolkit. You'll 
+rarely hear about Tcl without the associated Tk. </p>
+<p class="docText"><span class="docEmphasis">—TOR and SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-21">1.21 Unix Networking and Communications</h3>
+<p class="docText">Generally speaking, a network lets two or more computers 
+communicate and work together. Partly because of the open design of Unix, a lot 
+of networking development has been done in this operating system. Just as there 
+are different versions of Unix, there are different ways and programs to use 
+networks from Unix. </p>
+<p class="docText">There's an entire chapter devoted to Connectivity (<a class="docLink" href="_chapter 46.htm">Chapter 
+46</a>), but for now, here's a quick review of the major networking components.
+</p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">The Internet</span></i> </dt>
+  <dd>
+  <p class="docList">The Internet is a worldwide network of computers. Internet 
+  users can transfer files, log into other computers, and use a wide range of 
+  programs and services. </dd>
+  <dt><i><span class="docPubcolor">WWW</span></i> </dt>
+  <dd>
+  <p class="docList">The World Wide Web is a set of information servers on the 
+  Internet. The servers are linked into a hypertext web of documents, graphics, 
+  sound, and more. Point-and-click <span class="docEmphasis">browser</span> 
+  programs turn that hypertext into an easy-to-use Internet interface. (For many 
+  people, the Web <span class="docEmphasis">is</span> the Internet. But Unix 
+  lets you do much more.) </dd>
+  <dt><i><span class="docPubcolor">mail</span></i> </dt>
+  <dd>
+  <p class="docList">A Unix facility that's been around for years, long before 
+  networking was common, is electronic mail. Users can send electronic memos, 
+  usually called <span class="docEmphasis">email messages</span>, between 
+  themselves. When you send email, your message waits for the other user to 
+  start his own mail program. System programs can send you mail to tell you 
+  about problems or give you information. You can send mail to programs, asking 
+  them for information. Worldwide mailing lists connect users into discussion 
+  groups. </dd>
+  <dt><span class="docPubcolor"><i>ftp</i></span> </dt>
+  <dd>
+  <p class="docList">The <i>ftp</i> program is one way to transfer files between 
+  your computer and another computer with TCP/IP, often over the Internet 
+  network, using the File Transfer Protocol (FTP). </dd>
+  <dt><i><span class="docPubcolor">UUCP</span></i> </dt>
+  <dd>
+  <p class="docList">Unix-to-Unix Copy is a family of programs (<i>uucp</i>, <i>
+  uux</i>, <i>uulog</i>, and others) for transferring files and email between 
+  computers. UUCP is usually used with modems over telephone lines and has been 
+  mostly superceded by Internet-type connections. </dd>
+  <dt><i><span class="docPubcolor">Usenet</span></i> </dt>
+  <dd>
+  <p class="docList">Usenet isn't exactly a network. It's a collection of 
+  hundreds of thousands (millions?) of computers worldwide that exchange files 
+  called <span class="docEmphasis">news articles</span>. This &quot;net news&quot; system 
+  has thousands of interactive discussion groups — electronic bulletin boards — 
+  for discussing everything from technical topics to erotic art. </dd>
+  <dt><i><span class="docPubcolor">telnet</span></i> </dt>
+  <dd>
+  <p class="docList">This utility logs you into a remote computer over a network 
+  (such as the Internet) using TCP/IP. You can work on the remote computer as if 
+  it were your local computer. The <i>telnet</i> program is available on many 
+  operating systems; <i>telnet</i> can log you into other operating systems from 
+  your Unix host and vice versa. </dd>
+  <dt><i><span class="docPubcolor">rsh</span></i> </dt>
+  <dd>
+  <p class="docList">This starts a &quot;<span class="docEmphasis">r</span>emote
+  <span class="docEmphasis">sh</span>ell&quot; to run a command on a remote system 
+  without needing to log in interactively. If you don't give a command, <i>rsh</i> 
+  acts like <i>rlogin</i>. This is often used to start remote
+  <span class="docEmphBold">X Window System</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-22">Section 
+  1.22</a>) programs whose display opens on your local system.
+  <a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-10">
+  Section 6.10</a> has examples — as well as details on problems you can have 
+  running <i>rsh</i> for <span class="docEmphasis">any</span> application. </dd>
+  <dt><i><span class="docPubcolor">ssh</span></i> </dt>
+  <dd>
+  <p class="docList"><i>ssh</i> acts like <i>rsh</i> (and <i>rlogin</i>), but it 
+  makes a secure encrypted connection to the remote computer. It also can 
+  encrypt <span class="docEmphBold">X Window System</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-22">Section 
+  1.22</a>) connections, as well as other types of connections, between hosts. 
+  The utility <i>ssh-agent</i> allows remote logins without typing a passphrase. 
+  We've included an entire chapter on <i>ssh</i> (<a class="docLink" href="_chapter 51.htm">Chapter 
+  51</a>). </dd>
+  <dt><i><span class="docPubcolor">rcp</span></i> </dt>
+  <dd>
+  <p class="docList">This is a &quot;<span class="docEmphasis">r</span>emote
+  <span class="docEmphasis">cp</span>&quot; program for copying files between 
+  computers. It has the same command-line syntax as <i>cp</i> except that 
+  hostnames are added to the remote pathnames. </dd>
+  <dt><i><span class="docPubcolor">scp</span></i> </dt>
+  <dd>
+  <p class="docList">This is a secure version of <i>rcp</i> that uses the ssh 
+  protocol. <i>ssh-agent</i> works here, too. </dd>
+  <dt><i><span class="docPubcolor">NFS</span></i> </dt>
+  <dd>
+  <p class="docList">NFS isn't a user utility. The Network FileSystem and 
+  related packages like NIS (the Network Information Service) let your system 
+  administrator mount remote computers' filesystems onto your local computer. 
+  You can use the remote filesystem as easily as if it were on your local 
+  computer. </dd>
+  <dt><i><span class="docPubcolor">write</span></i> </dt>
+  <dd>
+  <p class="docList">This sends messsages to another user's screen. Two users 
+  can have a discussion with <i>write</i>. </dd>
+  <dt><i><span class="docPubcolor">talk</span></i> </dt>
+  <dd>
+  <p class="docList">A more sophisticated program than <i>write</i>, <i>talk</i> 
+  splits the screen into two pieces and lets users type at the same time if they 
+  wish. <i>talk</i> can be used over networks, though not all versions of <i>
+  talk</i> can talk to one another. </dd>
+  <dt><i><span class="docPubcolor">irc</span></i> </dt>
+  <dd>
+  <p class="docList">Internet Relay Chat allows multiple users to carry on 
+  multiple discussions across the Internet and other networks. One popular IRC 
+  client is <i>irc</i>. </dd>
+</dl>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-1-SECT-22">1.22 The X Window System</h3>
+<p class="docText">In 1988, an organization called the MIT (Massachusetts 
+Institute of Technology) X Consortium was formed to promote and develop a 
+vendor-neutral windowing system called the X Window System. (It was called &quot;X&quot; 
+because it was a follow-on to a window system called &quot;W&quot; that was developed at 
+Stanford University.) The organization eventually moved away from MIT and became 
+known as the X Consortium. The XFree86 Project, Inc. is another major group 
+developing X; they produce a freely redistributable version that's used on Linux 
+and other Unix-like systems such as Darwin. </p>
+<p class="docText">A window system is a way of dividing up the large screen of a 
+workstation into multiple virtual terminals, or windows. Each window can 
+interact with a separate application program — or a single application can have 
+many windows. While the &quot;big win&quot; is to have applications with point-and-click 
+mouse-driven user interfaces, one of the most common applications is still a 
+simple terminal emulator (<span class="docEmphBold">xterm</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-9">Section 
+5.9</a>)). X thus allows a workstation to display multiple simultaneous terminal 
+sessions — which makes many of the standard Unix multitasking features such as 
+job control less important because programs can all be running in the foreground 
+in separate windows. X also runs on many kinds of hardware, and it lets you run 
+a program on a remote computer (across a network) while the program's windows 
+are displayed on your local system. Because Unix systems also run on many kinds 
+of hardware, this makes X a good match for Unix. </p>
+<p class="docText">Unix boxes are, by default, characters-based systems. GUI 
+systems are added to facilitate ease of use, as well as to provide access to a 
+great number of sophisticated applications. The Mac OS X, though, is already a 
+GUI, built on the BSD-based Unix environment, Darwin. </p>
+<p class="docText">Though Darwin doesn't come with X Windows, you can download 
+and install this, as well as X Windows-based GUIs, such as XDarwin (accessible 
+at <a class="docLink" href="http://www.xdarwin.org" target="_blank">
+http://www.xdarwin.org</a>) and OroborOSX (available at the Apple web site at
+<a class="docLink" href="http://www.apple.com" target="_blank">
+http://www.apple.com</a>). </p>
+<p class="docText"><span class="docEmphasis">—TOR and JP</span></p>
+
+<blockquote><p class="docFootnote" id="EN1-1"><a class="docLink" href="#ENB1-1">[1]</a>&nbsp;&nbsp;[Tim is keeping this article simple, as an illustration of how easy writing a 
+shell program can be. If you&#39;re writing this little script for general use, you 
+can make it work like a <span class="docEmphBold">filter</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-5">Section 
+1.5</a>) by adding four or five more lines of code: a <i>case</i> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">Section 
+35.10</a>) or <i>if</i> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">Section 
+35.13</a>) statement that tests the number of command-line arguments. With no 
+filename arguments, the script would simply run <tt>tr &#39;\015&#39; &#39;\012&#39;</tt>. —
+<span class="docEmphasis">JP</span>]</p><p class="docFootnote" id="EN1-2"><a class="docLink" href="#ENB1-2">[2]</a>&nbsp;&nbsp;In most newer Unix systems, users have the access privileges of all groups to 
+which they belong, all at the same time. In other Unix systems, you use a 
+command like <i>newgrp</i> (<a class="docLink" href="_chapter 48.htm#upt3-CHP-48-SECT-6">Section 
+48.6</a>) to change the group to which you currently belong. Your system may 
+even support both methods.</p><p class="docFootnote" id="EN1-3"><a class="docLink" href="#ENB1-3">[3]</a>&nbsp;&nbsp;Many executable files — 
+  programs — begin with a <span class="docEmphasis">magic number</span>. This is 
+  a special two-byte-long sequence that tells the kernel how to execute the 
+  file.</p></blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="Front matter.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 2.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

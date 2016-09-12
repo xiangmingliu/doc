@@ -1,0 +1,1882 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 21</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 20.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 22.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 21. You Can't Quite Call This Editing</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-1">21.1 And Why Not?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-2">21.2 Neatening Text with fmt</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-3">21.3 Alternatives to fmt</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-4">21.4 Clean Up Program Comment Blocks</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-5">21.5 Remove Mail/News Headers with behead</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-6">21.6 Low-Level File Butchery with dd</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-7">21.7 offset: Indent Text</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-8">21.8 Centering Lines in a File</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-9">21.9 Splitting Files at Fixed Points: split</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-10">21.10 Splitting Files by Context: csplit</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-11">21.11 Hacking on Characters with tr</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-12">21.12 Encoding &quot;Binary&quot; Files into ASCII</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-13">21.13 Text Conversion with dd</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-14">21.14 Cutting Columns or Fields</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-15">21.15 Making Text in Columns with pr</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-16">21.16 Make Columns Automatically with column</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-17">21.17 Straightening Jagged Columns</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-18">21.18 Pasting Things in Columns</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-19">21.19 Joining Lines with join</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-20">21.20 What Is (or Isn't) Unique?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-21-SECT-21">21.21 Rotating Text</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-1">21.1 And Why Not?</h3>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 class="docSidebarTitle">Summary Box</h2>
+      <p class="docText">There are many specialized forms of editing that happen 
+      frequently enough that they sometimes want to be saved into a script. 
+      Examples of this kind of thing include: </p>
+      <ul>
+        <li>
+        <p class="docList"><span class="docEmphBold">fmt</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-2">Section 
+        21.2</a>) and <span class="docEmphBold">related scripts</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-3">Section 
+        21.3</a>) for reformatting jagged lines into neat paragraphs </li>
+        <li>
+        <p class="docList"><span class="docEmphBold">recomment</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-4">Section 
+        21.4</a>), a script for reformatting comment blocks within programs and 
+        scripts </li>
+        <li>
+        <p class="docList"><span class="docEmphBold">behead</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-5">Section 
+        21.5</a>), a script for removing the headers from mail and news messages
+        </li>
+        <li>
+        <p class="docList"><span class="docEmphBold">center</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-8">Section 
+        21.8</a>), a script for centering lines of text in a file </li>
+      </ul>
+      <p class="docText">In addition, there are a number of programs that 
+      provide some useful ways of modifying files but that you don't normally 
+      think of as editors: </p>
+      <ul>
+        <li>
+        <p class="docList"><span class="docEmphBold">split</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-9">Section 
+        21.9</a>) and <span class="docEmphBold">csplit</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-10">Section 
+        21.10</a>) let you split a big file into smaller pieces. </li>
+        <li>
+        <p class="docList"><span class="docEmphBold">tr</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-11">Section 
+        21.11</a>) lets you substitute one character for another — including 
+        non-printing characters that you specify by their octal values. </li>
+        <li>
+        <p class="docList"><span class="docEmphBold">dd</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-6">Section 
+        21.6</a>,
+        <a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-13">
+        Section 21.13</a>) lets you perform various data conversions on a file.
+        </li>
+        <li>
+        <p class="docList"><span class="docEmphBold">cut</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-14">Section 
+        21.14</a>) lets you cut columns or fields out of a file, and
+        <span class="docEmphBold">paste</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-18">Section 
+        21.18</a>) lets you put them back, perhaps in a different order. </li>
+      </ul>
+      <p class="docText">This chapter covers all that and more.</p>
+      <p class="docText"><span class="docEmphasis">— TOR</span></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-2">21.2 Neatening Text with fmt</h3>
+<p class="docText">One of the problems with <i>fold</i> is that it breaks text 
+at an arbitrary column position — even if that position happens to be in the 
+middle of a word. It's a pretty primitive utility, designed to keep long lines 
+from printing off the edge of a line printer page, and not much more. </p>
+<p class="docText"><i>fmt</i> can do a better job because it thinks in terms of 
+language constructs like paragraphs. <i>fmt</i> wraps lines continuously, rather 
+than just folding the long ones. It assumes that paragraphs end at blank lines.
+</p>
+<p class="docText">You can use <i>fmt</i> for things like neatening lines of a 
+mail message or a file that you're editing <span class="docEmphBold">with</span>
+<span class="docEmphBold">vi</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-28">Section 
+17.28</a>). (Emacs has its own built-in line-neatener.) It's also great for 
+shell programming and almost any place you have lines that are too long or too 
+short for your screen. </p>
+<p class="docText">To make this discussion more concrete, let's imagine that you 
+have the following paragraph: </p>
+<pre>    Most people take their  Emo Phillips  for granted.  They figure, and not
+without some truth, that he is a God-given right and any government that
+considers   itself a democracy would naturally provide
+its citizens with this
+sort of access.  But what too many of this  Gap-wearing,
+Real World-watching generation  fail to realize
+is that our American
+forefathers, under  the  tutelage of Zog, the wizened master sage from
+Zeta-Reticuli, had to fight  not only   the godless and   effete British
+for our system of  self-determined government, but also  avoid the  terrors
+of hynpo-death  from the dark and
+unclean Draco-Repitilians.</pre>
+<p class="docText">To prepare this text for printing, you'd like to have all the 
+lines be about 60 characters wide and remove the extra space in the lines. 
+Although you could format this text by hand, GNU <i>fmt</i> can do this for you 
+with the following command line: </p>
+<pre>% fmt -tuw 60 my_file</pre>
+<p class="docText">The <tt>-t</tt> option, short for <tt>--tagged-paragraph</tt> 
+mode, tells <i>fmt</i> to preserve the paragraph's initial indent but align the 
+rest of the lines with the left margin of the second line. The <tt>-u</tt> 
+option, short for <tt>--uniform-spacing</tt>, squashes all the inappropriate 
+whitespace in the lines. The final option, <tt>-w</tt>, sets the width of the 
+output in characters. Like most UNIX commands, <i>fmt</i> sends its output to
+<span class="docEmphasis">stdout</span>. For our test paragraph, <i>fmt</i> did 
+this: </p>
+<pre>    Most people take their Emo Phillips for granted.
+They figure, and not without some truth, that he is a
+God-given right and any government that considers itself a
+democracy would naturally provide its citizens with this
+sort of access.  But what too many of this Gap-wearing,
+Real World-watching generation fail to realize is that
+our American forefathers, under the tutelage of Zog,
+the wizened master sage from Zeta-Reticuli, had to fight
+not only the godless and effete British for our system of
+self-determined government, but also avoid the terrors of
+hynpo-death from the dark and unclean Draco-Repitilians.</pre>
+<p class="docText">There is one subtlety to <i>fmt</i> to be aware of: <i>fmt</i> 
+expects sentences to end with a period, question mark, or exclamation point 
+followed by two spaces. If your document isn't marked up according to this 
+convention, <i>fmt</i> can't differentiate between sentences and abbreviations. 
+This is a common &quot;gotcha&quot; that appears frequently on Usenet. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="50" src="screw.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">On at least one version of Unix, <i>fmt</i> is a disk 
+        initializer (disk formatter) command. Don't run
+        <span class="docEmphasis">that</span> command accidentally! Check your 
+        online manual page and see the <i>fmt</i> equivalents that follow. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">There are a few different versions of <i>fmt</i>, some 
+fancier than others. In general, the program assumes the following: </p>
+<ul>
+  <li>
+  <p class="docList">Paragraphs have blank lines between them.</li>
+  <li>
+  <p class="docList">If a line is indented, the indentation should be preserved.</li>
+  <li>
+  <p class="docList">The output lines should be about 70 characters wide. Some 
+  have a command-line option to let you set this. For example, <tt>fmt -132</tt> 
+  (or on some versions, <tt>fmt -l 132</tt>) would reformat your file to have 
+  lines with no more than 132 characters on each. </li>
+  <li>
+  <p class="docList">It reads files or standard input. Lines will be written to 
+  standard output. </li>
+</ul>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: fmt</p>
+<p class="docText">The GNU <i>fmt</i> is on the CD-ROM [see
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>]. There are also a couple of free versions 
+available. Many versions of <i>fmt</i> have options for other structured data. 
+The <i>-p</i><span class="docEmphBold"> option</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-4">Section 
+21.4</a>) reformats program source code. (If your <i>fmt</i> doesn't have <i>-p</i>, 
+the <span class="docEmphBold">recomment</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-4">Section 
+21.4</a>) script uses standard <i>fmt</i> with <i>sed</i> to do the same thing.) 
+The <i>-s</i> option breaks long lines at whitespace but doesn't join short 
+lines to form longer ones. </p>
+<p class="docText">Alternatively, you can <span class="docEmphBold">make your 
+own</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-3">Section 
+21.3</a>) simple (and a little slower) version with <i>sed</i> and <i>nroff</i>. 
+If you want to get fancy (and use some <i>nroff</i> and/or <i>tbl</i> coding), 
+this will let you do automatically formatted text tables, bulleted lists, and 
+much more. </p>
+<p class="docText"><span class="docEmphasis">—JP, TOR, and JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-3">21.3 Alternatives to fmt</h3>
+<p class="docText"><span class="docEmphBold">fmt</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-2">Section 
+21.2</a>) is hard to do without once you've learned about it. Unfortunately, 
+it's not available in some versions of Unix. You can get the GNU version from 
+the CD-ROM [see
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>], but it's also relatively easy to emulate 
+with <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-4">Section 
+37.4</a>) and <i>nroff</i>. Using those two utilities also lets you take 
+advantage of the more sophisticated formatting and flexibility that <i>sed</i> 
+and <i>nroff</i> macros can give you. (If you're doing anything really fancy, 
+like tables with <i>tbl</i>,<span id="ENB21-1"><a class="docLink" href="#EN21-1"><sup>[1]</sup></a></span> 
+you might need <i>col</i> or <i>colcrt</i> to clean up <i>nroff</i>'s output.)
+</p>
+<p class="docText">Here's the script:</p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: fmt.sh</p>
+<pre>#!/bin/sh
+sed '1i\
+.ll 72\
+.na\
+.hy 0\
+.pl 1' $* | nroff</pre>
+<p class="docText">The reason this is so complicated is that, by default, <i>
+nroff</i> makes some assumptions you need to change. For example, it assumes an 
+11-inch page (66 lines) and will add blank lines to a short file (or the end of 
+a long file). The quick-and-dirty workaround to this is to manually put the <i>
+nroff</i> request <span class="docEmphasis">.pl 1</span> (page length 1 line) at 
+the top of the text you want to reformat. <i>nroff</i> also tends to justify 
+lines; you want to turn this off with the <tt>.na</tt> request. You also want to 
+turn off hyphenation (<tt>.hy 0</tt>), and you may want to set the line length 
+to 72 instead of <i>nroff</i>'s default 65, if only for consistency with the 
+real <i>fmt</i> program. All these <i>nroff</i> requests get inserted before the 
+first line of input by the <i>sed</i> <tt>1i</tt> command. </p>
+<p class="docText">A fancier script would take a <i>-nn</i> line-length option 
+and turn it into a <span class="docEmphasis">.ll</span> request for <i>nroff</i>, 
+etc. </p>
+<p class="docText">Another solution to consider is Damian Conway's <tt>
+Text::Autoformat</tt> Perl module. It has some very sophisticated heurestics to 
+try to figure out how text should be formatted, including bulleted and numbered 
+lists. In its simplest form, it can be used to read from
+<span class="docEmphasis">stdin</span> and write to <span class="docEmphasis">
+stdout</span>, just as a standard Unix utility would do. You can invoke this 
+module from the command line like this: </p>
+<pre>% perl -MText::Autoformat -e 'autoformat' &lt; your_file_here</pre>
+<p class="docText">By default, <i>autoformat</i> formats only one paragraph at a 
+time. This behavior can be changed by altering the invocation slightly: </p>
+<pre>% perl -MText::Autoformat -e 'autoformat({all =&gt;1})'</pre>
+<p class="docText">The manpage for this module even suggests a way into 
+integrate this into <i>vi</i>: </p>
+<pre>map f !Gperl -MText::Autoformat -e'autoformat'</pre>
+<p class="docText"><span class="docEmphasis">—TOR and JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-4">21.4 Clean Up Program Comment Blocks</h3>
+<p class="docText">Lines in a program's comment block usually start with one or 
+more special characters, like this: </p>
+<pre># <tt><i>line 1 of the comment</i></tt>
+# <tt><i>line 2 of the comment</i></tt>
+# <tt><i>line 3 of the comment</i></tt>
+    ...</pre>
+<p class="docText">It can be a hassle to add more text to one of the comment 
+lines in a block, because the line can get too long, which requires you to fold 
+that line onto the next line, which means you have to work around the leading 
+comment character(s). </p>
+<p class="docText">The <span class="docEmphBold">fmt</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-2">Section 
+21.2</a>) program neatens lines of a text file. But the standard <i>fmt</i> 
+won't help you &quot;neaten&quot; blocks of comments in a program: it mixes the comment 
+characters from the starts of lines with the words. (If your <i>fmt</i> has the
+<i>-p</i> option, it handles this problem; there's an example below.) The <i>
+recomment</i> script is <i>fmt</i> for comment blocks. It's for people who write 
+shell, <i>awk</i>, C, or almost any other kind of program with comment blocks 
+several lines long. </p>
+<h4  id="upt3-CHP-21-SECT-4.1" class="docSection2Title">21.4.1 The recomment Script</h4>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: recomment</p>
+<p class="docText"><i>recomment</i> reads the lines that you feed its standard 
+input. It looks at the first line and figures out what characters you're using 
+to comment the line (see the <tt>$cchars</tt> variable for a list — typically 
+SPACEs, TABs, <tt>#</tt>, or <tt>*</tt>). <i>recomment</i> then strips those 
+comment characters off each line, feeds the remaining block of text to the <i>
+fmt</i> utility, and uses <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) to add the comment characters again. </p>
+<p class="docText">I usually use <i>recomment</i> from inside <i>vi</i>, with
+<span class="docEmphBold">filter-through</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-18">Section 
+17.18</a>) commands like: </p>
+<pre>!}recomment  <i>reformat to the next blank line</i>
+5!!recomment <i>reformat this line and the next 4</i></pre>
+<p class="docText">Normally, <i>recomment</i> lets <i>fmt</i> choose the width 
+of the comment block (72 characters, typically). To get another width, you can 
+do one of the following: </p>
+<ul>
+  <li>
+  <p class="docList">Give the width on the command line, like this:</p>
+  <pre>recomment -50</pre>
+  </li>
+  <li>
+  <p class="docList">Set an environment variable named <span class="docEmphasis">
+  CBLKWID</span>. Give the maximum width, in characters, for the comment text. 
+  For example, in the C shell, use: </p>
+  <pre>% <b>setenv CBLKWID 50</b></pre>
+  </li>
+</ul>
+<p class="docText"><i>recomment</i> isn't perfect, but it's usually much better 
+than nothing! Here's the part of the script that does the work. The first two 
+commands get the comment character(s) and count their length. The next three 
+commands strip the comment characters, clean up the remaining comment text, and 
+add the same comment characters to the start of all reformatted lines: </p>
+<p class="docText"><tt>-n</tt>
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-3">
+Section 34.3</a>, <tt>expr</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-22">
+Section 36.22</a>, <tt>cut</tt>
+<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-14">
+Section 21.14</a></p>
+<pre># Get comment characters used on first line; store in $comment:
+comment=`sed -n &quot;1s/^\([$cchars]*\).*/\1/p&quot; $temp`
+# Count number of characters in comment character string:
+cwidth=`expr &quot;$comment&quot; : '.*'`
+
+# Re-format the comment block.  If $widopt set, use it:
+cut -c`expr $cwidth + 1`- &lt; $temp |     # Strip off comment leader
+fmt $widopt |                           # Re-format the text, and
+sed &quot;s/^/$comment/&quot;                     # put back comment characters</pre>
+<p class="docText">When the <i>expr</i> command in <span class="docEmphBold">
+backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) is expanded, it makes a command like <tt>cut -c4-</tt>. </p>
+<h4  id="upt3-CHP-21-SECT-4.2" class="docSection2Title">21.4.2 fmt -p</h4>
+<p class="docText">Some versions of <i>fmt</i> (like the one on the CD-ROM [see
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>]) have a <i>-p</i> option that does the 
+same thing. Unlike the automatic system in <i>recomment</i>, you have to tell
+<span class="docEmphasis">fmt -p</span> what the prefix characters are — but 
+then it will only reformat lines with that prefix character For example, here's 
+the start of a C++ program. The prefix character is <tt>*</tt>: </p>
+<pre>% <b>cat load.cc</b>
+/*
+ * This file, load.cc, reads an input
+ * data file.
+ * Each input line is added to a new node
+ * of type struct Node.
+ */
+    ...
+% <b>fmt -p '*' load.cc</b>
+/*
+ * This file, load.cc, reads an input data file.  Each input line is
+ * added to a new node of type struct Node.
+ */
+    ...</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-5">21.5 Remove Mail/News Headers with behead</h3>
+<p class="docText">When you're saving or resending a Usenet article or mail 
+message, you might want to the remove header lines (<span class="docEmphasis">Subject</span>:,
+<span class="docEmphasis">Received</span>:, and so on). This little script will 
+handle standard input, one or many files. It writes to standard output. Here are 
+a few examples: </p>
+<ul>
+  <li>
+  <p class="docList">With saved messages, at a shell prompt:</li>
+</ul>
+<p class="docText"><tt>mail</tt>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">
+Section 1.21</a></p>
+<pre>% <b>behead <tt><i>msg*</i></tt> | mail -s &quot;Did you see these?&quot; fredf</b></pre>
+<ul>
+  <li>
+  <p class="docList">To save an article from a pipe without a header, from a 
+  program (here, the old <i>readnews</i>) that can't cut off headers itself: </p>
+  <pre>What now? [ynq] <b>s- | behead &gt; <tt><i>filename</i></tt></b> </pre>
+  </li>
+</ul>
+<p class="docText">Here's the script, adapted a little from the original by 
+Arthur David Olson: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: behead</p>
+<pre>#! /bin/sh
+case $# in
+0)  exec sed '1,/^$/d' ;;
+*)  for i
+    do sed '1,/^$/d' &quot;$i&quot;
+    done
+    ;;
+esac</pre>
+<p class="docText">The script relies on the fact that news articles and mail 
+messages use a blank line to separate the header from the body of the message. 
+As a result, the script simply deletes the text from the beginning up to the 
+first blank line. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-6">21.6 Low-Level File Butchery with dd</h3>
+<p class="docText">Want to strip off some arbitrary number of characters from 
+the front of a file? </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: dd</p>
+<p class="docText"><i>dd</i> provides an unexpectedly easy answer. Let's say you 
+wanted to delete the first 100 characters in a file. Here's the command that 
+will do the trick (assuming of course that you give <i>dd</i> a filename with 
+the <span class="docEmphasis">if=</span> option or data from a pipe): </p>
+<pre>% <b>dd bs=100 skip=1</b></pre>
+<p class="docText">Or you could try:</p>
+<pre>% <b>dd bs=1 skip=100</b></pre>
+<p class="docText"><i>dd</i> normally reads and writes data in 512-byte blocks; 
+the input block size can be changed with the <span class="docEmphasis">ibs=</span> 
+option, and the output block size with <span class="docEmphasis">obs=</span>. 
+Use <span class="docEmphasis">bs=</span> to set both. <span class="docEmphasis">
+skip=</span> sets the number of blocks to skip at the start of the file. </p>
+<p class="docText">Why would you want to do this?
+<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-9">
+Section 21.9</a> gives an interesting example of reading text from standard 
+input and writing it to a series of smaller files.
+<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-13">
+Section 21.13</a> shows even more uses for <i>dd</i>. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-7">21.7 offset: Indent Text</h3>
+<p class="docText">Do you have a printer that starts each line too close to the 
+left margin? You might want to indent text to make it look better on the screen 
+or a printed page. Here's a Perl script that does that. It reads from files or 
+standard input and writes to standard output. The default indentation is 5 
+spaces. For example, to send a copy of a file named <span class="docEmphasis">
+graph</span> to the <i>lp</i> printer, indented 12 spaces: </p>
+<pre>% <b>offset -12 graph | lp</b></pre>
+<p class="docText">Here's the Perl script that does the job:</p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: offset</p>
+<pre>#!/usr/local/bin/perl
+
+if ($ARGV[0] =~ /-[0-9]+/) {
+    ($indent = $ARGV[0]) =~ s/-//;
+    shift @ARGV;
+} else {
+    $indent = 5;
+}
+
+while (&lt;&gt;) {
+    print &quot; &quot; x $indent, $_;
+}</pre>
+<p class="docText">If there's an indentation amount in the first command-line 
+argument, the dash is stripped and the value stored, then that argument is 
+shifted away. Then a loop steps through the remaining arguments, if any 
+(otherwise standard input is read) and outputs their text preceded by spaces. 
+The script uses the Perl operator <tt>&quot;string&quot;</tt> <tt>x</tt> <tt><i>n</i></tt>, 
+which outputs the string (in this case, a single space) <tt><i>n</i></tt> times. 
+The Perl <tt>$_</tt> operator contains the current input line. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-8">21.8 Centering Lines in a File</h3>
+<p class="docText">Here's an <i>awk</i> script, written by Greg Ubben, that 
+centers text across an 80-character line. If your system understands
+<span class="docEmphBold">#!</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-3">Section 
+36.3</a>), this script will be passed directly to <i>awk</i> without a shell. 
+Otherwise, <span class="docEmphBold">put this into a Bourne shell wrapper</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-19">Section 
+35.19</a>). </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: center</p>
+<pre>#!/usr/bin/awk -f
+{
+    printf &quot;%&quot; int(40+length($0)/2) &quot;s\n&quot;, $0
+}</pre>
+<p class="docText">For each input line, the script builds a <i>printf</i> 
+command with a width specification just wide enough to center the line (which <i>
+awk</i> holds in <tt>$0</tt>). For instance, a line 60 characters wide would 
+give a value of <tt>int(40+60/2)</tt>, which is 70. That makes the following <i>
+printf</i> command: </p>
+<pre>printf %70s\n, $0</pre>
+<p class="docText">Because <tt>%s</tt> prints a string right-justified, that 
+command gives a 10-character indentation (70 minus 60) on an 80-character line. 
+The right end of the line is also 10 characters (80 minus 70) from the right 
+edge of the screen. </p>
+<p class="docText">In <i>vi</i>, you can use a <span class="docEmphBold">
+filter-through</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-18">Section 
+17.18</a>) command to center lines while you're editing. Or just use <i>center</i> 
+from the command line. For example: </p>
+<pre>% <b>center afile &gt; afile.centered</b>
+% <b>sort party_list | center | lp</b></pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-9">21.9 Splitting Files at Fixed Points: split</h3>
+<p class="docText">Most versions of Unix come with a program called <i>split</i> 
+whose purpose is to split large files into smaller files for tasks such as 
+editing them in an editor that cannot handle large files, or mailing them if 
+they are so big that some mailers will refuse to deal with them. For example, 
+let's say you have a really big text file that you want to mail to someone:</p>
+<pre>% <b>ls -l bigfile</b>
+-r--r--r--  1 jik        139070 Oct 15 21:02 bigfile</pre>
+<p class="docText">Running <i>split</i> on that file will (by default, with most 
+versions of <i>split</i>) break it up into pieces that are each no more than 
+1000 lines long: </p>
+<p class="docText"><tt>wc</tt>
+<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-6">
+Section 16.6</a></p>
+<pre>% <b>split bigfile</b>
+% <b>ls -l</b>
+total 283
+-r--r--r--  1 jik        139070 Oct 15 21:02 bigfile
+-rw-rw-r--  1 jik         46444 Oct 15 21:04 xaa
+-rw-rw-r--  1 jik         51619 Oct 15 21:04 xab
+-rw-rw-r--  1 jik         41007 Oct 15 21:04 xac
+% <b>wc -l x*</b>
+    1000 xaa
+    1000 xab
+     932 xac
+    2932 total</pre>
+<p class="docText">Note the default naming scheme, which is to append &quot;aa&quot;, &quot;ab&quot;, 
+&quot;ac&quot;, etc., to the letter &quot;x&quot; for each subsequent filename. It is possible to 
+modify the default behavior. For example, you can make <i>split</i> create files 
+that are 1500 lines long instead of 1000: </p>
+<pre>% <b>rm x??</b>
+% <b>split -1500 bigfile</b>
+% <b>ls -l</b>
+total 288
+-r--r--r--  1 jik        139070 Oct 15 21:02 bigfile
+-rw-rw-r--  1 jik         74016 Oct 15 21:06 xaa
+-rw-rw-r--  1 jik         65054 Oct 15 21:06 xab</pre>
+<p class="docText">You can also get it to use a name prefix other than &quot;x&quot;: </p>
+<pre>% <b>rm x??</b>
+% <b>split -1500 bigfile bigfile.split.</b>
+% <b>ls -l</b>
+total 288
+-r--r--r--  1 jik        139070 Oct 15 21:02 bigfile
+-rw-rw-r--  1 jik         74016 Oct 15 21:07 bigfile.split.aa
+-rw-rw-r--  1 jik         65054 Oct 15 21:07 bigfile.split.ab</pre>
+<p class="docText">Although the simple behavior described above tends to be 
+relatively universal, there are differences in the functionality of <i>split</i> 
+on different Unix systems. There are four basic variants of <i>split</i> as 
+shipped with various implementations of Unix: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">A <i>split</i> that understands only how to deal with 
+  splitting text files into chunks of <span class="docEmphasis">n</span> lines 
+  or less each. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">A <i>split</i>, usually called <i>bsplit</i>, that 
+  understands only how to deal with splitting nontext files into
+  <span class="docEmphasis">n</span>-character chunks. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">A <i>split</i> that splits text files into
+  <span class="docEmphasis">n</span>-line chunks, or nontext files into
+  <span class="docEmphasis">n</span>-character chunks, and tries to figure out 
+  automatically whether it's working on a text file or a nontext file. </span>
+  </li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">A <i>split</i> that does either text files or nontext files 
+  but needs to be told explicitly when it is working on a nontext file. </span>
+  </li>
+</ol>
+</span>
+<p class="docText">The only way to tell which version you've got is to read the 
+manual page for it on your system, which will also tell you the exact syntax for 
+using it. </p>
+<p class="docText">The problem with the third variant is that although it tries 
+to be smart and automatically do the right thing with both text and nontext 
+files, it sometimes guesses wrong and splits a text file as a nontext file or 
+vice versa, with completely unsatisfactory results. Therefore, if the variant on 
+your system is (3), you probably want to get your hands on one of the many <i>
+split</i> clones out there that is closer to one of the other variants (see 
+below). </p>
+<p class="docText">Variants (1) and (2) listed above are OK as far as they go, 
+but they aren't adequate if your environment provides only one of them rather 
+than both. If you find yourself needing to split a nontext file when you have 
+only a text <i>split</i>, or needing to split a text file when you have only <i>
+bsplit</i>, you need to get one of the clones that will perform the function you 
+need. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: split</p>
+<p class="docText">Variant (4) is the most reliable and versatile of the four 
+listed, and it is therefore what you should go with if you find it necessary to 
+get a clone and install it on your system. There are several such clones in the 
+various source archives, including the free BSD Unix version. GNU <i>split</i> 
+is on the CD-ROM [see
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>]. Alternatively, if you have installed
+<span class="docEmphBold">perl</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-1">Section 
+41.1</a>), it is quite easy to write a simple <i>split</i> clone in <i>perl</i>, 
+and you don't have to worry about compiling a C program to do it; this is an 
+especially significant advantage if you need to run your <i>split</i> on 
+multiple architectures that would need separate binaries. The Perl code for a 
+binary split program follows: </p>
+<pre>#!/usr/bin/perl -w --
+# Split text or binary files; jjohn 2/2002
+use strict;
+use Getopt::Std;
+
+my %opts;
+getopts(&quot;?b:f:hp:ts:&quot;, \%opts);
+
+if( $opts{'?'} || $opts{'h'} || !-e $opts{'f'}){
+  print &lt;&lt;USAGE;
+$0 - split files in smaller ones
+
+USAGE:
+    $0 -b 1500 -f big_file -p part.
+
+OPTIONS:
+
+    -?       print this screen
+    -h       print this screen
+    -b &lt;INT&gt; split file into given byte size parts
+    -f &lt;TXT&gt; the file to be split
+    -p &lt;TXT&gt; each new file to begin with given text
+    -s &lt;INT&gt; split file into given number of parts
+USAGE
+   exit;
+}
+
+my $infile;
+open($infile, $opts{'f'}) or die &quot;No file given to split\n&quot;;
+binmode($infile);
+my $infile_size = (stat $opts{'f'})[7];
+
+my $block_size = 1;
+if( $block_size = $opts{'b'} ){
+  # chunk file into blocks
+
+}elsif( my $total_parts = $opts{'s'} ){
+  # chunk file into N parts
+  $block_size = int ( $infile_size / $total_parts) + 1;
+
+}else{
+  die &quot;Please indicate how to split file with -b or -s\n&quot;;
+}
+
+my $outfile_base = $opts{'p'} || 'part.';
+my $outfile_ext = &quot;aa&quot;;
+
+my $offset = 0;
+while( $offset &lt; $infile_size ){
+  my $buf;
+  $offset += read $infile, $buf, $block_size;
+  write_file($outfile_base, $outfile_ext++, \$buf);
+}
+
+#--- subs ---#
+sub write_file {
+  my($fname, $ext, $buf) = @_;
+
+  my $outfile;
+  open($outfile, &quot;&gt;$fname$ext&quot;) or die &quot;can't open $fname$ext\n&quot;;
+  binmode($outfile);
+  my $wrote = syswrite $outfile, $$buf;
+  my $size  = length($$buf);
+  warn &quot;WARN: wrote $wrote bytes instead of $size to $fname$ext\n&quot;
+    unless $wrote == $size;
+}</pre>
+<p class="docText">Although it may seem somewhat complex at first glance, this 
+small Perl script is cross-platform and has its own small help screen to 
+describe its options. Briefly, it can split files into N-sized blocks (given the
+<tt>-b</tt> option) or, with <tt>-s</tt>, create N new segments of the original 
+file. For a better introduction to Perl, see
+<a class="docLink" href="_chapter 42.htm">Chapter 
+42</a>.</p>
+<p class="docText">If you need to split a nontext file and don't feel like going 
+to all of the trouble of finding a <i>split</i> clone to handle it, one standard 
+Unix tool you can use to do the splitting is <span class="docEmphBold">dd</span> 
+(<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-6">Section 
+21.6</a>). For example, if <span class="docEmphasis">bigfile</span> above were a 
+nontext file and you wanted to split it into 20,000-byte pieces, you could do 
+something like this: </p>
+<p class="docText"><tt>for</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">
+Section 35.21</a>, <tt>&gt;</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-12">
+Section 28.12</a></p>
+<pre>$ <b>ls -l bigfile</b>
+-r--r--r--  1 jik        139070 Oct 23 08:58 bigfile
+$ for<b> i in 1 2 3 4 5 6 7</b>   #<span id="ENB21-2"><a class="docLink" href="#EN21-2"><sup>[2]</sup></a></span>
+&gt; <b>do</b>
+&gt;       <b>dd of=x$i bs=20000 count=1 2&gt;/dev/null</b>  #<span id="ENB21-3"><a class="docLink" href="#EN21-3"><sup>[3]</sup></a></span>
+&gt; <b>done &lt; bigfile</b>
+$ <b>ls -l</b>
+total 279
+-r--r--r--  1 jik        139070 Oct 23 08:58 bigfile
+-rw-rw-r--  1 jik         20000 Oct 23 09:00 x1
+-rw-rw-r--  1 jik         20000 Oct 23 09:00 x2
+-rw-rw-r--  1 jik         20000 Oct 23 09:00 x3
+-rw-rw-r--  1 jik         20000 Oct 23 09:00 x4
+-rw-rw-r--  1 jik         20000 Oct 23 09:00 x5
+-rw-rw-r--  1 jik         20000 Oct 23 09:00 x6
+-rw-rw-r--  1 jik         19070 Oct 23 09:00 x7</pre>
+<p class="docText"><span class="docEmphasis">—JIK and JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-10">21.10 Splitting Files by Context: csplit</h3>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: csplit</p>
+<p class="docText">Like <span class="docEmphBold">split</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-9">Section 
+21.9</a>), <i>csplit</i> lets you break a file into smaller pieces, but <i>
+csplit</i> (context split) also allows the file to be broken into 
+different-sized pieces, according to context. With <i>csplit</i>, you give the 
+locations (line numbers or search patterns) at which to break each section. <i>
+csplit</i> comes with System V, but there are also free versions available. </p>
+<p class="docText">Let's look at search patterns first. Suppose you have an 
+outline consisting of three main sections that start on lines with the Roman 
+numerals <tt>I</tt>., <tt>II</tt>., and <tt>III</tt>.. You could create a 
+separate file for each section by typing: </p>
+<pre>% <b>csplit outline /I./ /II./ /III./ </b>
+28      <i> number of characters in each file</i>
+415                   .
+372                   .
+554                   .
+% <b>ls </b>
+outline
+xx00   <i>   outline title, etc.</i>
+xx01   <i>   Section I</i>
+xx02   <i>   Section II</i>
+xx03   <i>   Section III</i></pre>
+<p class="docText">This command creates four new files (<span class="docEmphasis">outline</span> 
+remains intact). <i>csplit</i> displays the character counts for each file. Note 
+that the first file (<span class="docEmphasis">xx00</span>) contains any text up 
+to <span class="docEmphasis">but not including</span> the first pattern, and
+<span class="docEmphasis">xx01</span> contains the first section, as you'd 
+expect. This is why the naming scheme begins with <span class="docEmphasis">00</span>. 
+(If <span class="docEmphasis">outline</span> had begun immediately with a <tt>I</tt>.,
+<span class="docEmphasis">xx01</span> would still contain Section I, but in this 
+case <span class="docEmphasis">xx00</span> would be empty.) </p>
+<p class="docText">If you don't want to save the text that occurs before a 
+specified pattern, use a percent sign as the pattern delimiter: </p>
+<pre>% <b>csplit outline %I.% /II./ /III./ </b>
+415
+372
+554
+% <b>ls </b>
+outline
+xx00 <i>         Section I</i>
+xx01 <i>         Section II</i>
+xx02 <i>         Section III</i></pre>
+<p class="docText">The preliminary text file has been suppressed, and the 
+created files now begin where the actual outline starts (the file numbering is 
+off, however). </p>
+<p class="docText">Let's make some further refinements. We'll use the <i>-s</i> 
+option to suppress the display of the character counts, and we'll use the <i>-f</i> 
+option to specify a file prefix other than the conventional
+<span class="docEmphasis">xx</span>: </p>
+<pre>% <b>csplit -s -f part. outline /I./ /II./ /III./</b>
+% <b>ls</b>
+outline
+part.00
+part.01
+part.02
+part.03</pre>
+<p class="docText">There's still a slight problem, though. In search patterns, a 
+period is a <span class="docEmphBold">metacharacter</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-21">Section 
+32.21</a>) that matches any single character, so the pattern <tt>/I./</tt> may 
+inadvertently match words like <span class="docEmphasis">Introduction</span>. We 
+need to escape the period with a backslash; however, the backslash has meaning 
+both to the pattern and to the shell, so in fact, we need either to use a double 
+backslash or to surround the pattern in <span class="docEmphBold">quotes</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>). A subtlety, yes, but one that can drive you crazy if you don't 
+remember it. Our command line becomes: </p>
+<pre>% <b>csplit -s -f part. outline &quot;/I\./&quot; /II./ /III./</b></pre>
+<p class="docText">You can also break a file at repeated occurrences of the same 
+pattern. Let's say you have a file that describes 50 ways to cook a chicken, and 
+you want each method stored in a separate file. The sections begin with headings
+<span class="docEmphasis">WAY #1</span>, <span class="docEmphasis">WAY #2</span>, 
+and so on. To divide the file, use <i>csplit</i>'s repeat argument: </p>
+<pre>% <b>csplit -s -f cook. fifty_ways /^WAY/ &quot;{49}&quot;</b></pre>
+<p class="docText">This command splits the file at the first occurrence of
+<span class="docEmphasis">WAY</span>, and the number in braces tells <i>csplit</i> 
+to repeat the split 49 more times. Note that a <span class="docEmphBold">caret</span> 
+(<tt>^</tt>) (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-5">Section 
+32.5</a>) is used to match the beginning of the line and the C shell requires 
+quotes around the <span class="docEmphBold">braces</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">Section 
+28.4</a>). The command has created 50 files: </p>
+<pre>% <b>ls cook.*</b>
+cook.00
+cook.01
+  ...
+cook.48
+cook.49</pre>
+<p class="docText">Quite often, when you want to split a file repeatedly, you 
+don't know or don't care how many files will be created; you just want to make 
+sure that the necessary number of splits takes place. In this case, it makes 
+sense to specify a repeat count that is slightly higher than what you need (the 
+maximum is 99). Unfortunately, if you tell <i>csplit</i> to create more files 
+than it's able to, this produces an &quot;out of range&quot; error. Furthermore, when <i>
+csplit</i> encounters an error, it exits by removing any files it created along 
+the way. (A bug, if you ask me.) This is where the <i>-k</i> option comes in. 
+Specify <i>-k</i> to <span class="docEmphasis">k</span>eep the files around, 
+even when the &quot;out of range&quot; message occurs. </p>
+<p class="docText"><i>csplit</i> allows you to break a file at some number of 
+lines above or below a given search pattern. For example, to break a file at the 
+line that is five lines below the one containing <span class="docEmphasis">
+Sincerely</span>, you could type: </p>
+<pre>% <b>csplit -s -f letter. all_letters /Sincerely/+5</b></pre>
+<p class="docText">This situation might arise if you have a series of business 
+letters strung together in one file. Each letter begins differently, but each 
+one begins five lines after the previous letter's <span class="docEmphasis">
+Sincerely</span> line. Here's another example, adapted from AT&amp;T's
+<span class="docEmphasis">Unix User's Reference Manual</span>: </p>
+<pre>% <b>csplit -s -k -f routine. prog.c '%main(%' '/^}/+1' '{99}'</b></pre>
+<p class="docText">The idea is that the file <span class="docEmphasis">prog.c</span> 
+contains a group of C routines, and we want to place each one in a separate file 
+(<span class="docEmphasis">routine.00</span>, <span class="docEmphasis">
+routine.01</span>, etc.). The first pattern uses <tt>%</tt> because we want to 
+discard anything before <span class="docEmphasis">main</span>. The next argument 
+says, &quot;Look for a closing brace at the beginning of a line (the conventional end 
+of a routine) and split on the following line (the assumed beginning of the next 
+routine).&quot; Repeat this split up to 99 times, using <i>-k</i> to preserve the 
+created files.<span id="ENB21-4"><a class="docLink" href="#EN21-4"><sup>[4]</sup></a></span>
+</p>
+<p class="docText">The <i>csplit</i> command takes line-number arguments in 
+addition to patterns. You can say: </p>
+<pre>% <b>csplit stuff 50 373 955</b></pre>
+<p class="docText">to create files split at some arbitrary line numbers. In that 
+example, the new file <span class="docEmphasis">xx00</span> will have lines 1-49 
+(49 lines total), <span class="docEmphasis">xx01</span> will have lines 50-372 
+(323 lines total), <span class="docEmphasis">xx02</span> will have lines 373-954 
+(582 lines total), and <span class="docEmphasis">xx03</span> will hold the rest 
+of <span class="docEmphasis">stuff</span>. </p>
+<p class="docText"><i>csplit</i> works like <i>split</i> if you repeat the 
+argument. The command: </p>
+<pre>% <b>csplit top_ten_list 10 &quot;{18}&quot;</b></pre>
+<p class="docText">breaks the list into 19 segments of 10 lines each.<span id="ENB21-5"><a class="docLink" href="#EN21-5"><sup>[5]</sup></a></span>
+</p>
+<p class="docText"><span class="docEmphasis">— DG</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-11">21.11 Hacking on Characters with tr</h3>
+<p class="docText">The <i>tr</i> command is a character translation filter, 
+reading <span class="docEmphBold">standard input</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>) and either deleting specific characters or substituting one character 
+for another. </p>
+<p class="docText">The most common use of <i>tr</i> is to change each character 
+in one string to the corresponding character in a second string. (A string of 
+consecutive ASCII characters can be represented as a hyphen-separated range.)
+</p>
+<p class="docText">For example, the command:</p>
+<p class="docText"><tt>&lt;</tt>
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">
+Section 43.1</a></p>
+<pre>$ <b>tr 'A-Z' 'a-z' &lt; </b><i> file </i>        <i> Berkeley version</i></pre>
+<p class="docText">will convert all uppercase characters in
+<span class="docEmphasis">file</span> to the equivalent lowercase characters. 
+The result is printed on standard output. </p>
+<p class="docText">In fact, a frequent trick I use <tt>tr</tt> for is to convert 
+filenames from all uppercase to all lowercase. This comes up when you're dealing 
+with files from MS-DOS or VMS that you are copying on to a Unix filesystem. To 
+change all the files in the current directory to uppercase, try this from a Bash 
+or Bourne shell prompt: </p>
+<pre>$ for i in `ls`; do mv $i `echo $i | tr [A-Z] [a-z]`; done</pre>
+<p class="docText">Of course, you need to be careful that there are no files 
+that have the same name regardless of case. The GNU <i>mv</i> can be passed the
+<tt>-i</tt> flag that will make the program prompt you before overwriting an 
+existing file. If you want to uppercase filenames, simply flip the arguments to
+<i>tr</i>. You can even apply this to an entire branch of a file system by 
+sticking this in a <i>find</i> command. First, create a small shell script that 
+can downcase a file and call it <tt>downcase</tt>: </p>
+<pre>#!/bin/sh
+mv $1 `echo $1 | tr [A-Z] [a-z]`</pre>
+<p class="docText">Now you can really do some damage with <i>find</i>:</p>
+<pre>$ find /<tt><i>directory</i></tt>/<tt><i>to</i></tt>/<tt><i>be</i></tt>/<tt><i>affected</i></tt> -exec 'downcase' '{}' ';'</pre>
+<p class="docText">Obviously, running this programming on random directories as
+<tt>root</tt> is not recomended, unless you're looking to test your backup 
+system. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: tr</p>
+<p class="docText">In the System V version of <i>tr</i>, square brackets must 
+surround any range of characters. That is, you have to say <tt>[a-z]</tt> 
+instead of simply <tt>a-z</tt>. And of course, because square brackets are 
+meaningful to the shell, you must protect them from interpretation by putting 
+the string in quotes. The GNU <i>tr</i>, on the web site, is basically the 
+System V version. </p>
+<p class="docText">If you aren't sure which version you have, here's a test. 
+Both <i>tr</i> examples below will convert the lowercase letters <tt>a</tt> 
+through <tt>z</tt> to an uppercase <tt>A</tt>, but that's not what we're testing 
+here. The Berkeley version also converts the input <tt>[ ]</tt> to <tt>A</tt> 
+characters because <tt>[ ]</tt> aren't treated as range operators: </p>
+<pre>% <b>echo '[ ]' | tr '[a-z]' A </b>
+AA                               <i> Berkeley version</i>
+% <b>echo '[ ]' | tr '[a-z]' A </b>
+[ ]                               <i> System V version</i></pre>
+<p class="docText">There's one place you don't have to worry about the 
+difference between the two versions: when you're converting one range to another 
+range, and both ranges have the same number of characters. For example, this 
+command works in both versions: </p>
+<pre>$ <b>tr '[A-Z]' '[a-z]' &lt; <tt><i>file</i></tt> </b>
+       <i> both versions</i></pre>
+<p class="docText">The Berkeley <i>tr</i> will convert a <tt>[</tt> from the 
+first string into the same character <tt>[</tt> in the second string, and the 
+same for the <tt>]</tt> characters. The System V version uses the <tt>[ ]</tt> 
+characters as range operators. In both versions, you get what you want: the 
+range <tt>A-Z</tt> is converted to the corresponding range <tt>a-z</tt>. Again, 
+this trick works only when both ranges have the same number of characters. </p>
+<p class="docText">The System V version also has a nice feature: the syntax <tt>
+[a*<i>n</i>]</tt>, where <tt><i>n</i></tt> is some digit, means that the string 
+should consist of <tt><i>n</i></tt> repetitions of character &quot;a.&quot; If <tt><i>n</i></tt> 
+isn't specified or is 0, it is taken to be some indefinitely large number. This 
+is useful if you don't know how many characters might be included in the first 
+string. </p>
+<p class="docText">As described in
+<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-18">
+Section 17.18</a>, this translation (and the reverse) can be useful from within
+<i>vi</i> for translating a string. You can also delete specific characters. The
+<i>-d</i> option deletes from the input each occurrence of one or more 
+characters specified in a string (special characters should be placed within 
+quotation marks to protect them from the shell). For instance, the following 
+command passes to standard output the contents of <span class="docEmphasis">file</span> 
+with all punctuation deleted (and is a great exercise in
+<span class="docEmphBold">shell quoting</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>)): </p>
+<pre>$ <b>tr -d &quot;,.\!?;:\&quot;\'`&quot; &lt; <tt><i>file</i></tt></b></pre>
+<p class="docText">The <i>-s</i> (<span class="docEmphasis">squeeze</span>) 
+option of <i>tr</i> removes multiple consecutive occurrences of the same 
+character in the second argument. For example, the command: </p>
+<pre>$ <b>tr -s &quot; &quot; &quot; &quot; &lt; <tt><i>file</i></tt></b> </pre>
+<p class="docText">will print on standard output a copy of
+<span class="docEmphasis">file</span> in which multiple spaces in sequence have 
+been replaced with a single space. </p>
+<p class="docText">We've also found <i>tr</i> useful when converting documents 
+created on other systems for use under Unix. For example, as described in
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-8">
+Section 1.8</a>, <i>tr</i> can be used to change the carriage returns at the end 
+of each line in a Macintosh text file into the newline Unix expects. <i>tr</i> 
+allows you to specify characters as octal values by preceding the value with a 
+backslash, so the following command does the trick: </p>
+<pre>$ <b>tr '\015' '\012' &lt; file.mac &gt; file.unix</b></pre>
+<p class="docText">The command: </p>
+<pre>$ <b> tr -d '\015' &lt; pc.file</b></pre>
+<p class="docText">will remove the carriage return from the carriage return/newline 
+pair that a PC file uses as a line terminator. (This command is also handy for 
+removing the excess carriage returns from a file created with
+<span class="docEmphBold">script</span> (<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-7">Section 
+37.7</a>).) </p>
+<p class="docText"><span class="docEmphasis">—TOR, JP, and JJ </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-12">21.12 Encoding &quot;Binary&quot; Files into ASCII</h3>
+<p class="docText">Email transport systems were originally designed to transmit 
+characters with a seven-bit encoding — like ASCII. This meant they could send 
+messages with plain English text but not &quot;binary&quot; text, such as program files or 
+graphics (or non-English text!), that used all of an eight-bit byte.
+<span class="docEmphBold">Usenet</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), the newsgroup system, was transmitted like email and had its same 
+seven-bit limitations. The solution — which is still used today — is to
+<span class="docEmphasis">encode</span> eight-bit text into characters that use 
+only the seven low bits. </p>
+<p class="docText">The first popular solution on Unix-type systems was
+<span class="docEmphasis">uuencoding</span>. That method is mostly obsolete now 
+(though you'll still find it used sometimes); it's been replaced by MIME 
+encoding. The next two sections cover both of those — though we recommend 
+avoiding <span class="docEmphasis">uuencode</span> like the plague. </p>
+<h4  id="upt3-CHP-21-SECT-12.1" class="docSection2Title">21.12.1 uuencoding</h4>
+<p class="docText">The <i>uuencode</i> utility encodes eight-bit data into a 
+seven-bit representation for sending via email or on Usenet. The recipient can 
+use <i>uudecode</i> to restore the original data. Unfortunately, there are 
+several different and incompatible versions of these two utilities. Also, 
+uuencoded data doesn't travel well through all mail gateways — partly because 
+uuencoding is sensitive to changes in whitespace (space and TAB) characters, and 
+some gateways munge (change or corrupt) whitespace. So if you're encoding text 
+for transmission, use MIME instead of <span class="docEmphasis">uuencode</span> 
+whenever you can. </p>
+<p class="docText">To create an ASCII version of a binary file, use the <i>
+uuencode</i> utility. For instance, a <span class="docEmphBold">compressed file</span> 
+(<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-6">Section 
+15.6</a>) is definitely eight-bit; it needs encoding. </p>
+<p class="docText">A uuencoded file (there's an example later in this article) 
+starts with a <tt>begin</tt> line that gives the file's name; this name comes 
+from the first argument you give the <i>uuencode</i> utility as it encodes a 
+file. To make <i>uuencode</i> read a file directly, give the filename as the 
+second argument. <i>uuencode</i> writes the encoded file to its standard output. 
+For example, to encode the file <i>emacs.tar.gz</i> from your <i>~/tarfiles</i> 
+directory and store it in a file named <i>emacs.tar.gz.uu</i>: </p>
+<pre>% <b>uuencode emacs.tar.gz ~/tarfiles/emacs.tar.gz &gt; emacs.tar.gz.uu</b></pre>
+<p class="docText">You can then insert <span class="docEmphasis">emacs.tar.gz.uu</span> 
+into a mail message and send it to someone. Of course, the ASCII-only encoding 
+takes more space than the original binary format. The encoded file will be about 
+one-third larger.<span id="ENB21-6"><a class="docLink" href="#EN21-6"><sup>[6]</sup></a></span>
+</p>
+<p class="docText">If you'd rather, you can combine the steps above into one 
+pipeline. Given only one command-line argument (the name of the file for the <tt>
+begin</tt> line), <i>uuencode</i> will read its standard input. Instead of 
+creating the <i>~/tarfiles/emacs.tar.gz</i>, making a second uuencoded file, 
+then mailing that file, you can give <i>tar</i> the &quot;filename&quot; so it writes to 
+its standard output. That feeds the archive down the pipe:<span id="ENB21-7"><a class="docLink" href="#EN21-7"><sup>[7]</sup></a></span>
+</p>
+<p class="docText"><tt>mail</tt>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">
+Section 1.21</a></p>
+<pre>% <b>tar cf - emacs | gzip | uuencode emacs.tar.gz | \</b>
+    <b>mail -s &quot;uuencoded emacs file&quot; whoever@wherever.com</b></pre>
+<p class="docText">What happens when you receive a uuencoded, compressed <i>tar</i> 
+file? The same thing, in reverse. You'll get a mail message that looks something 
+like this: </p>
+<pre>From: you@whichever.ie
+To: whoever@wherever.com
+Subject: uuencoded emacs file
+
+begin 644 emacs.tar.gz
+M+DQ0&quot;D%L;&quot;!O9B!T:&amp;5S92!P&lt;F]B;&amp;5M&lt;R!C86X@8F4@&lt;V]L=F5D(&amp;)Y(&quot;)L
+M:6YK&lt;RPB(&amp;$@;65C:&amp;%N:7-M('=H:6-H&quot;F%L;&amp;]W&lt;R!A(&amp;9I;&amp;4@=&amp;\@:&amp;%V
+M92!T=V\@;W(@;6]R92!N86UE&lt;RX@(%5.25@@&lt;')O=FED97,@='=O(&amp;1I9F9E
+M&lt;F5N= IK:6YD&lt;R!O9B!L:6YK&lt;SH*+DQS($(*+DQI&quot;EQF0DAA&lt;F0@;&amp;EN:W-&lt;
+   ...
+end</pre>
+<p class="docText">So you save the message in a file, complete with headers. 
+Let's say you call this file <span class="docEmphasis">mailstuff</span>. How do 
+you get the original files back? Use the following sequence of commands: </p>
+<pre>% <b>uudecode mailstuff</b>
+% <b>gunzip emacs.tar.gz</b>
+% <b>tar xf emacs.tar</b></pre>
+<p class="docText">The <i>uudecode</i> command searches through the file, 
+skipping <tt>From</tt>:, etc., until it sees its special <tt>begin</tt> line; it 
+decodes the rest of the file (until the corresponding <tt>end</tt> line) and 
+creates the file <span class="docEmphasis">emacs.tar.gz</span>. Then <i>gunzip</i> 
+recreates your original <i>tar</i> file, and <span class="docEmphasis">tar xf</span> 
+extracts the individual files from the archive. </p>
+<p class="docText">Again, though, you'll be better off using MIME encoding 
+whenever you can. </p>
+<h4  id="upt3-CHP-21-SECT-12.2" class="docSection2Title">21.12.2 MIME Encoding</h4>
+<p class="docText">When MIME (Multipurpose Internet Mail Extensions) was 
+designed in the early 1990s, one main goal was robust email communications. That 
+meant coming up with a mail encoding scheme that would work on all platforms and 
+get through all mail transmission paths. </p>
+<p class="docText">Some text is &quot;mostly ASCII&quot;: for instance, it's in a language 
+like German or French that uses many ASCII characters plus some eight-bit 
+characters (characters with a octal value greater than 177). The MIME standard 
+allows that text to be minimally encoded in a way that it can be read fairly 
+well without decoding: the <span class="docEmphasis">quoted-printable</span> 
+encoding. Other text is full binary — either not designed for humans to read, or 
+so far from ASCII that an ASCII representation would be pointless. In that case, 
+you'll want to use the <span class="docEmphasis">base64</span> encoding. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: mimencode, mailto</p>
+<p class="docText">Most modern email programs automatically MIME-encode files. 
+Unfortunately, some aren't too smart about it. The Metamail utilities come with 
+a utility called <i>mimencode</i> (also named <i>mmencode</i>) for encoding and 
+decoding MIME formats. Another Metamail utility, <i>mailto</i>, encodes and 
+sends MIME messages directly — but let's use <i>mimencode</i>, partly because of 
+the extra control it gives you. </p>
+<p class="docText">By default, <i>mimencode</i> reads text from standard input, 
+uses a base64 encoding, and writes the encoded text to standard output. If you 
+add the <i>-q</i> option, <i>mimencode</i> uses quoted-printable encoding 
+instead. </p>
+<p class="docText">Unlike uuencoded messages, which contain the filename in the 
+message body, MIME-encoded messages need information in the message header (the 
+lines &quot;To:&quot;, &quot;From:&quot;, etc.). The <i>mail</i> utility (except an older version) 
+doesn't let you make a message header. So let's do it directly: create a mail 
+header with <span class="docEmphBold">cat &gt;</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-2">Section 
+11.2</a>), create a mail body with <i>mimencode</i>, and send it using a common 
+system mail transfer agent, <i>sendmail</i>. (You could automate this with a 
+script, of course, but we're just demonstrating.) The MIME standard header 
+formats are still evolving; we'll use a simple set of header fields that should 
+do the job. Here's the setup. Let's do it first in three steps, using temporary 
+files: </p>
+<pre>$ <b>cat &gt; header</b>
+From: jpeek@oreilly.com
+To: jpeek@jpeek.com
+Subject: base64-encoded smallfile
+MIME-Version: 1.0
+Content-Type: application/octet-stream; name=&quot;smallfile.tar.gz&quot;
+Content-Transfer-Encoding: base64
+
+CTRL-d
+$ <b>tar cf - smallfile | gzip | mimencode &gt; body</b>
+$ <b>cat header body | /usr/lib/sendmail -t</b></pre>
+<p class="docText">The <tt>cat &gt;</tt> command lets me create the <i>header</i> 
+file by typing it in at the terminal; I could have used a text editor instead. 
+One important note: <span class="docEmphasis">the header must end with a blank 
+line</span>. The second command creates the <i>body</i> file. The third command 
+uses <i>cat</i> to output the header, then the body; the message we've built is 
+piped to <i>sendmail</i>, whose <i>-t</i> option tells it to read the addresses 
+from the message header. You should get a message something like this: </p>
+<pre>Date: Wed, 22 Nov 2000 11:46:53 -0700
+Message-Id: &lt;200011221846.LAA18155@oreilly.com&gt;
+From: jpeek@oreilly.com
+To: jpeek@jpeek.com
+Subject: base64-encoded smallfile
+MIME-Version: 1.0
+Content-Type: application/octet-stream; name=&quot;smallfile.tar.gz&quot;
+Content-Transfer-Encoding: base64
+
+H4sIACj6GzoAA+1Z21YbRxb1c39FWcvBMIMu3A0IBWxDzMTYDuBgrxU/lKSSVHF3V6erGiGv
+rPn22edU3wRIecrMPLgfEGpVV53LPvtcOktcW6au3dnZ2mrZcfTkb7g6G53O7vb2k06ns7G3
+06HPzt7uDn/Sra1N/L+32dnd29ve3tjD+s3Nna0novN3CHP/yqyTqRBPfk+U+rpknUnlf0Oc
+  ...</pre>
+<p class="docText">Your mail client may be able to extract that file directly. 
+You also can use <i>mimencode</i> -<i>u</i>. But <i>mimencode</i> doesn't know 
+about mail headers, so you should strip off the header first. The
+<span class="docEmphBold">behead</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-5">Section 
+21.5</a>) script can do that. For instance, if you've saved the mail message in 
+a file <i>msg</i>: </p>
+<pre>$ <b>behead msg | mimencode -u &gt; smallfile.tar.gz</b></pre>
+<p class="docText"><span class="docEmphBold">Extract</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-2">Section 
+39.2</a>) <i>smallfile.tar.gz</i> and compare it to your original <i>smallfile</i> 
+(maybe with <i>cmp</i>). They should be identical. </p>
+<p class="docText">If you're planning to do this often, it's important to 
+understand how to form an email header and body properly. For more information, 
+see relevant Internet RFCs (standards documents) and O'Reilly's <i>Programming 
+Internet Email</i> by David Wood. </p>
+<p class="docText"><span class="docEmphasis">—JP and ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-13">21.13 Text Conversion with dd</h3>
+<p class="docText">Besides the <span class="docEmphBold">other uses of</span>
+<span class="docEmphBold">dd</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-6">Section 
+21.6</a>) we've covered, you also can use this versatile utility to convert: </p>
+<ul>
+  <li>
+  <p class="docList">fixed length to variable-length records (<span class="docEmphasis">conv=unblock</span>), 
+  and the reverse (<span class="docEmphasis">conv=block</span>) </li>
+  <li>
+  <p class="docList">uppercase to lowercase (<span class="docEmphasis">conv=lcase</span>), 
+  and the reverse (<span class="docEmphasis">conv=ucase</span>) </li>
+  <li>
+  <p class="docList">the byte order of every pair of bytes (<span class="docEmphasis">conv=swab</span>)
+  </li>
+  <li>
+  <p class="docList">ASCII to EBCDIC and the reverse (<span class="docEmphasis">conv=ebcdic</span>,
+  <span class="docEmphasis">conv=ibm</span>). If you're converting old IBM 
+  tapes, you'll need to know the tape's blocking factor. And if the tape has 
+  multiple files on it, you'll have to use the tape device name that allows
+  <span class="docEmphBold">&quot;no rewind on close&quot;</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-5">Section 
+  38.5</a>) to read past the first file. </li>
+</ul>
+<p class="docText">The <tt>cbs=</tt> option must be used to specify a conversion 
+buffer size when using <span class="docEmphasis">block</span> and
+<span class="docEmphasis">unblock</span> and when converting between ASCII and 
+EBCDIC. The specified number of characters are put into the conversion buffer. 
+For <span class="docEmphasis">ascii</span> and <span class="docEmphasis">unblock</span> 
+conversion, trailing blanks are trimmed and a newline is added to each buffer 
+before it is output. For <span class="docEmphasis">ebcdic</span>,
+<span class="docEmphasis">ibm</span>, and <span class="docEmphasis">block</span>, 
+the input is padded with blanks up to the specified conversion buffer size. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-14">21.14 Cutting Columns or Fields</h3>
+<p class="docText">A nifty command called <i>cut</i> lets you select a list of 
+columns or fields from one or more files. </p>
+<p class="docText">You must specify either the <i>-c</i> option to cut by column 
+or <i>-f</i> to cut by fields. (Fields are separated by tabs unless you specify 
+a different field separator with <i>-d</i>. Use <span class="docEmphBold">quotes</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) if you want a space or other special character as the delimiter.) </p>
+<p class="docText">In some versions of <i>cut</i>, the column(s) or field(s) to 
+cut must follow the option immediately, without any space. Use a comma between 
+separate values and a hyphen to specify a range (e.g., <tt>1-10,15</tt> or <tt>
+20,23</tt> or <tt>50-</tt>). </p>
+<p class="docText">The order of the columns and fields is ignored; the 
+characters in each line are always output from first to last, in the order 
+they're read from the input. For example, <tt>cut -f1,2,4</tt> produces exactly 
+the same output as <tt>cut -f4,2,1</tt>. If this isn't what you want, try
+<span class="docEmphBold">perl</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-1">Section 
+41.1</a>) or <span class="docEmphBold">awk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+20.10</a>), which let you output fields in any order. </p>
+<p class="docText"><i>cut</i> is incredibly handy. Here are some examples:</p>
+<ul>
+  <li>
+  <p class="docList">Find out who is logged in, but list only login names:</p>
+  <p class="docList"><tt>who</tt>
+  <a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-8">
+  Section 2.8</a></p>
+  <pre>% <b>who | cut -d&quot; &quot; -f1</b></pre>
+  </li>
+  <li>
+  <p class="docList">Extract usernames and real names from
+  <span class="docEmphBold">/etc/passwd</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-3">Section 
+  22.3</a>): </p>
+  <pre>% <b>cut -d: -f1,5 /etc/passwd</b></pre>
+  </li>
+  <li>
+  <p class="docList">Cut characters in the fourth column of
+  <span class="docEmphasis">file</span>, and paste them back as the first column 
+  in the same file: </p>
+  <pre>% <b>cut -c4 <tt><i>file | paste - file</i></tt></b></pre>
+  </li>
+</ul>
+<p class="docText">
+<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-18">
+Section 21.18</a> covers the <i>cut</i> counterpart, <i>paste</i>. </p>
+<p class="docText">As was mentioned, you can use <i>awk</i> or <i>perl</i> to 
+extract columns of text. Given the above task to extract the fifth and first 
+fields fields of <tt>/etc/passwd</tt>, you can use <i>awk</i>: </p>
+<pre>% <b>awk -F: '{print $5, &quot;=&gt;&quot;, $1}' /etc/passwd</b></pre>
+<p class="docText">An often forgotten command-line option for <i>perl</i> is <tt>
+-a</tt>, which puts <i>perl</i> in <i>awk</i> compatibility mode. In other 
+words, you can get the same field-splitting behavior right from the command 
+line: </p>
+<pre>% <b>perl -F: -lane 'print $F[4], &quot;=&gt;&quot;, &quot;$F[0]&quot;' /etc/passwd</b></pre>
+<p class="docText">In the line above, <i>perl</i> is told about the field 
+separator in the same way <i>awk</i> is, with the <tt>-F</tt> flag. The next 
+four options are fairly common. The <tt>-l</tt> option removes newlines from 
+input and adds a newline to all <tt>print</tt> statements. This is a real space 
+saver for &quot;one-line wonders,&quot; like the one above. The <tt>-a</tt> flag tells <i>
+perl</i> to split each line on the indicated field separator. If no field 
+separator is indicated, the line is split on a <tt>space</tt> character. Each 
+field is stored in the global array <tt>@F</tt>. Remember that the first index 
+in a Perl array is zero. The <tt>-n</tt> option encloses the Perl code indicated 
+by the <tt>-e</tt> to be wrapped in a loop that reads one line at a time from
+<span class="docEmphasis">stdin</span>. This little Perl snippet is useful if 
+you need to do some additional processing with the contents of each field. </p>
+<p class="docText"><span class="docEmphasis">—TOR, DG, and JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-15">21.15 Making Text in Columns with pr</h3>
+<p class="docText">The <span class="docEmphBold">pr command</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-6">Section 
+45.6</a>) is famous for printing a file neatly on a page — with margins at top 
+and bottom, filename, date, and page numbers. It can also print text in columns: 
+one file per column or many columns for each file. </p>
+<p class="docText">The <i>-t</i> option takes away the heading and margins at 
+the top and bottom of each page. That's useful when &quot;pasting&quot; data into columns 
+with no interruptions. </p>
+<h4  id="upt3-CHP-21-SECT-15.1" class="docSection2Title">21.15.1 One File per Column: -m</h4>
+<p class="docText">The <i>-m</i> option reads all files on the command line 
+simultaneously and prints each in its own column, like this: </p>
+<pre>% <b>pr -m -t <span class="docEmphasis">file1 file2 file3</span></b>
+
+The lines              The lines              The lines
+of file1               of file2               of file3
+are here               are here               are here
+  ...                    ...                    ...</pre>
+<p class="docText"><i>pr</i> may use TAB characters between columns. If that 
+would be bad, you can pipe <i>pr</i>'s output through <i>expand</i>. Many 
+versions of <i>pr</i> have a <tt>-s<i>X</i></tt> option that sets the column 
+separator to the single character <span class="docEmphasis">X</span>. </p>
+<p class="docText">By default, <i>pr</i> -<i>m</i> doesn't put filenames in the 
+heading. If you want that, use the <i>-h</i> option to make your own heading. Or 
+maybe you'd like to make a more descriptive heading. Here's an example using 
+process substitution to compare a directory with its <span class="docEmphBold">
+RCS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+39.5</a>) subdirectory: </p>
+<pre>% <b>pr -m -h &quot;working directory compared to RCS directory&quot; &lt;(ls) &lt;(ls RCS)</b>
+
+2000-11-22 23:57  working directory compared to RCS directory  Page    1
+
+0001.sgm                            0001.sgm,v
+0002.sgm                            0002.sgm,v
+0007.sgm                            0007.sgm,v
+0008.sgm                            0008.sgm,v
+             ...</pre>
+<p class="docText">(The heading comes from the GNU version of <i>pr</i>. Later 
+examples in this article use a different version with a different heading 
+format.) </p>
+<h4  id="upt3-CHP-21-SECT-15.2" class="docSection2Title">21.15.2 One File, Several Columns: -number</h4>
+<p class="docText">An option that's a number will print a file in that number of 
+columns. For instance, the <i>-3</i> option prints a file in three columns. The 
+file is read, line by line, until the first column is full (by default, that 
+takes 56 lines). Next, the second column is filled. Then, the third column is 
+filled. If there's more of the file, the first column of page 2 is filled — and 
+the cycle repeats: </p>
+<pre>% <b>pr -3 file1</b>
+
+Nov  1 19:44 1992  file1  Page 1
+
+Line 1 here            Line 57 here           Line 115 here
+Line 2 here            Line 58 here           Line 116 here
+Line 3 here            Line 59 here           Line 117 here
+  ...                    ...                    ...</pre>
+<p class="docText">The columns aren't balanced — if the file will fit into one 
+column, the other columns aren't used. You can change that by adjusting <i>-l</i>, 
+the page length option; see the section below. </p>
+<h4  id="upt3-CHP-21-SECT-15.3" class="docSection2Title">21.15.3 Order Lines Across Columns: -l</h4>
+<p class="docText">Do you want to arrange your data across the columns, so that 
+the first three lines print across the top of each column, the next three lines 
+are the second in each column, and so on, like this? </p>
+<pre>% <b>pr -l1 -t -3 file1</b>
+Line 1 here            Line 2 here            Line 3 here
+Line 4 here            Line 5 here            Line 6 here
+Line 7 here            Line 8 here            Line 9 here
+  ...                    ...                    ...</pre>
+<p class="docText">Use the <i>-l1</i> (page length 1 line) and <i>-t</i> (no 
+title) options. Each &quot;page&quot; will be filled by three lines (or however many 
+columns you set). You have to use <i>-t</i>; otherwise, <i>pr</i> will silently 
+ignore any page lengths that don't leave room for the header and footer. That's 
+just what you want if you want data in columns with no headings. </p>
+<p class="docText">If you want headings too, pipe the output of <i>pr</i> 
+through another <i>pr</i>: </p>
+<pre>% <b>pr -l1 -t -3 file1 | pr -h file1</b>
+
+Nov  1 19:48 1992  file1  Page 1
+
+Line 1 here            Line 2 here            Line 3 here
+Line 4 here            Line 5 here            Line 6 here
+Line 7 here            Line 8 here            Line 9 here
+  ...                    ...                    ...</pre>
+<p class="docText">The <tt>-h file1</tt> puts the filename into the heading.</p>
+<p class="docText">Also see <span class="docEmphBold">paste</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-18">Section 
+21.18</a>). Of course, programming languages like <span class="docEmphBold">awk</span> 
+(<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+20.10</a>) and <span class="docEmphBold">perl</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-1">Section 
+41.1</a>) can also make text into columns. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-16">21.16 Make Columns Automatically with column</h3>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: column</p>
+<p class="docText">Another column-making program, besides <i>cols</i> and
+<span class="docEmphBold">pr</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-15">Section 
+21.15</a>), is the creatively named utility <i>column</i>. It tries to determine 
+the terminal width, which you can override with the <i>-c</i> option (<tt>-c 132</tt>, 
+for example, gives 132 columns: handy for printing on wide line-printer paper.) 
+The <i>-x</i> option fills columns before rows — similar to <i>pr</i> with its
+<tt>-</tt><span class="docEmphasis">n</span> option and <i>cols</i> -<i>d</i>.
+</p>
+<p class="docText">What makes <i>column</i> different from the others is its <i>
+-t</i> option. This reads input data that's already in columns and rebalances 
+the columns into a table with variable-width columns. Say what? This is easiest 
+to see with an example, and the <i>column</i>(1) manual page has a good one. </p>
+<p class="docText">If you'd like to add column headings to <i>ls</i> -<i>l</i> 
+output, it can be a pain to try to make headings that each take the same number 
+of characters as the data below them. For instance, the first field on each 
+line, the permissions, takes 10 characters, but if you want to use the heading 
+&quot;PERM&quot;, which takes only 4 characters, you need to balance it by adding 6 spaces 
+after. Using <tt>column -t</tt>, you can balance these automatically. Here's an 
+example. The first command is plain <i>ls -l</i>. In the second and third 
+examples, I use <span class="docEmphBold">sed 1d</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) to delete the <tt>total</tt> <tt><i>n</i></tt> line from <i>ls</i>, 
+and <span class="docEmphBold">subshells</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>) to make both commands use the same standard output; this is important 
+only in the third command, where I pipe the combined <span class="docEmphasis">
+stdout</span> to <i>column</i> for balancing: </p>
+<p class="docText"><tt>;</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-16">
+Section 28.16</a>, <tt>&gt;</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-12">
+Section 28.12</a></p>
+<pre>$ <b>ls -lo</b>
+total 1644
+-r--r--r--    1 jpeek     1559177 Sep 19  1999 ORA_tifs.tgz
+-rw-rw-r--    1 jpeek        4106 Oct 21  1999 UPT_Russian.jpg
+-rw-rw-r--    1 jpeek      101944 Nov 19 09:30 london_dusk-livesights.xwd.gz
+dr-xr-xr-x    2 jpeek        4096 Dec 12  1999 me
+$ <b>(echo &quot;PERM      LINKS OWNER        SIZE MON DY TM/YR NAME&quot;; \</b>
+&gt; <b>ls -lo | sed 1d)</b>
+PERM      LINKS OWNER        SIZE MON DY TM/YR NAME
+-r--r--r--    1 jpeek     1559177 Sep 19  1999 ORA_tifs.tgz
+-rw-rw-r--    1 jpeek        4106 Oct 21  1999 UPT_Russian.jpg
+-rw-rw-r--    1 jpeek      101944 Nov 19 09:30 london_dusk-livesights.xwd.gz
+dr-xr-xr-x    2 jpeek        4096 Dec 12  1999 me
+
+$ <b>(echo PERM LINKS OWNER SIZE MONTH DAY HH:MM/YEAR NAME; \</b>
+&gt; <b>ls -lo | sed 1d) | column -t</b>
+PERM        LINKS  OWNER  SIZE     MONTH  DAY  HH:MM/YEAR  NAME
+-r--r--r--  1      jpeek  1559177  Sep    19   1999        ORA_tifs.tgz
+-rw-rw-r--  1      jpeek  4106     Oct    21   1999        UPT_Russian.jpg
+-rw-rw-r--  1      jpeek  101944   Nov    19   09:30       london_dusk-livesights.xwd.gz
+dr-xr-xr-x  2      jpeek  4096     Dec    12   1999        me</pre>
+<p class="docText">My feeble attempt in the second example took a lot of 
+trial-and-error to get the right spacing, and I still had to cram <tt>DY</tt> 
+over the tiny sixth column and <tt>TM/YR</tt> over the seventh. In the third 
+example, <i>column</i> automatically adjusted the column width to compensate for 
+the <tt>HH:MM/YEAR</tt> heading. Unfortunately, the long filename
+<span class="docEmphasis">london_dusk-livesights.xwd.gz</span> ran off the right 
+edge (past column 80, my window width) — but there was nothing <i>column</i> 
+could do in this case because the combined header+columns were just too wide.
+</p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-17">21.17 Straightening Jagged Columns</h3>
+<p class="docText">As we were writing this book, I decided to make a list of all 
+the articles and the numbers of lines and characters in each, then combine that 
+with the description, a status code, and the article's title. After a few 
+minutes with <span class="docEmphBold">wc -l -c</span> (<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-6">Section 
+16.6</a>), <span class="docEmphBold">cut</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-14">Section 
+21.14</a>), <span class="docEmphBold">sort</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-1">Section 
+22.1</a>), and <span class="docEmphBold">join</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-19">Section 
+21.19</a>), I had a file that looked like this: </p>
+<pre>% <b>cat messfile </b>
+2850 2095 51441 ~BB A sed tutorial
+3120 868 21259 +BB mail - lots of basics
+6480 732 31034 + How to find sources - JIK's periodic posting
+    <i> ...900 lines...</i>
+5630 14 453 +JP Running Commands on Directory Stacks
+1600 12 420 !JP With find, Don't Forget -print
+0495 9 399 + Make 'xargs -i' use more than one filename</pre>
+<p class="docText">Yuck. It was tough to read: the columns needed to be 
+straightened. The <span class="docEmphBold">column</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-16">Section 
+21.16</a>) command could do it automatically, but I wanted more control over the 
+alignment of each column. A little <span class="docEmphBold">awk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+20.10</a>) script turned the mess into this: </p>
+<pre>% <b>cat cleanfile </b>
+2850 2095  51441 ~BB  A sed tutorial
+3120  868  21259 +BB  mail - lots of basics
+6480  732  31034 +    How to find sources - JIK's periodic posting
+    <i> ...900 lines...</i>
+5630   14    453 +JP  Running Commands on Directory Stacks
+1600   12    420 !JP  With find, Don't Forget -print
+0495    9    399 +    Make 'xargs -i' use more than one filename</pre>
+<p class="docText">Here's the simple script I used and the command I typed to 
+run it: </p>
+<pre>% <b>cat neatcols</b>
+{
+printf &quot;%4s %4s %6s %-4s %s\n&quot;, \
+     $1, $2, $3, $4, substr($0, index($0,$5))
+}
+% <b>awk -f neatcols messfile &gt; cleanfile</b></pre>
+<p class="docText">You can adapt that script for whatever kinds of columns you 
+need to clean up. In case you don't know <i>awk</i>, here's a quick summary: </p>
+<ul>
+  <li>
+  <p class="docList">The first line of the <span class="docEmphasis">printf</span>, 
+  between double quotes (<tt>&quot;</tt>), specifies the field widths and alignments. 
+  For example, the first column should be right-aligned in 4 characters (<tt>%4s</tt>). 
+  The fourth column should be 4 characters wide left-adjusted (<tt>%-4s</tt>). 
+  The fifth column is big enough to just fit (<tt>%s</tt>). I used string (<tt>%s</tt>) 
+  instead of decimal (<tt>%d</tt>) so <i>awk</i> wouldn't strip off the leading 
+  zeros in the columns. </li>
+  <li>
+  <p class="docList">The second line arranges the input data fields onto the 
+  output line. Here, input and output are in the same order, but I could have 
+  reordered them. The first four columns get the first four fields (<tt>$1, $2, 
+  $3, $4</tt>). The fifth column is a catch-all; it gets everything else. <tt>
+  substr($0,</tt> <tt>index($0,$5))</tt> means &quot;find the fifth input column; 
+  print it and everything after it.&quot; </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-18">21.18 Pasting Things in Columns</h3>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: cut+paste</p>
+<p class="docText">Do you ever wish you could paste two (or even three) files 
+side by side? You can, if you have the <i>paste</i> program (or the 
+public-domain implementation on the disc). </p>
+<p class="docText">For example, to create a three-column
+<span class="docEmphasis">file</span> from files <span class="docEmphasis">x</span>,
+<span class="docEmphasis">y</span>, and <span class="docEmphasis">z</span>: </p>
+<pre>$ <b>paste x y z &gt; file</b></pre>
+<p class="docText">To make <i>paste</i> read standard input, use the <i>-</i> 
+option, and repeat <tt>-</tt> for every column you want. For example, to make an 
+old <span class="docEmphasis">ls</span> (which lists files in a single column) 
+list files in four columns: </p>
+<pre>$ <b>ls | paste - - - -</b></pre>
+<p class="docText">The &quot;standard input&quot; option is also handy when used with
+<span class="docEmphBold">cut</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-14">Section 
+21.14</a>). You can cut data from one position on a line and paste it back on 
+another. </p>
+<p class="docText">The separate data streams being merged are separated by 
+default with a tab, but you can change this with the <i>-d</i> option. Unlike 
+the <i>-d</i> option to <i>cut</i>, you need not specify a single character; 
+instead, you can specify a list of characters, which will be used in a circular 
+fashion. </p>
+<p class="docText">The characters in the list can be any regular character or 
+the following escape sequences: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">\n</span></span> </dt>
+  <dd>
+  <p class="docList">newline</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">\t</span></span> </dt>
+  <dd>
+  <p class="docList">tab</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">\\</span></span> </dt>
+  <dd>
+  <p class="docList">backslash</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">\0</span></span> </dt>
+  <dd>
+  <p class="docList">empty string</dd>
+</dl>
+<p class="docText">Use <span class="docEmphBold">quoting</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>), if necessary, to protect characters from the shell. </p>
+<p class="docText">There's also a <i>-s</i> option that lets you merge 
+subsequent lines from one file. For example, to merge each pair of lines onto a 
+single line: </p>
+<pre>$ <b>paste -s -d&quot;\t\n&quot; list</b></pre>
+<p class="docText">Let's finish with one nice place to use process substitution, 
+if your shell has it. You can use <i>cut</i> to grab certain columns from 
+certain files, then use process substitution to make &quot;files&quot; that
+<span class="docEmphasis">paste</span> will read. Output those &quot;files&quot; into 
+columns in any order you want. For example, to paste column 1 from <i>file1</i> 
+in the first output column, and column 3 from <i>file2</i> in the second output 
+column: </p>
+<pre>paste &lt;(cut -f1 file1) &lt;(cut -f3 file2)</pre>
+<p class="docText">If none of the shells on your system have process 
+substitution, you can always use a bunch of temporary files, one file per 
+column. </p>
+<p class="docText"><span class="docEmphasis">—TOR, DG, and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-19">21.19 Joining Lines with join</h3>
+<p class="docText">If you've worked with databases, you'll probably know what to 
+do with the Unix <i>join</i> command; see your online manual page. If you don't 
+have a database (as far as you know!), you still probably have a use for <i>join</i>: 
+combining or &quot;joining&quot; two column-format files. <i>join</i> searches certain 
+columns in the files; when it finds columns that match one another, it &quot;glues 
+the lines together&quot; at that column. This is easiest to show with an example. </p>
+<p class="docText">I needed to summarize the information in thousands of email 
+messages under the MH mail system. MH made that easy: it has one command (<i>scan</i>) 
+that gave me almost all the information I wanted about each message and also let 
+me specify the format I needed. But I also had to use <span class="docEmphBold">
+wc -l</span> (<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-6">Section 
+16.6</a>) to count the number of lines in each message. I ended up with two 
+files, one with <i>scan</i> output and the other with <i>wc</i> output. One 
+field in both lines was the message number; I used <span class="docEmphBold">
+sort</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-1">Section 
+22.1</a>) to sort the files on that field. I used <tt>awk '{print $1 &quot;,&quot; $2}'</tt> 
+to massage <i>wc</i> output into comma-separated fields. Then I used <i>join</i> 
+to &quot;glue&quot; the two lines together on the message-number field. (Next I fed the 
+file to a PC running dBASE, but that's another story.) </p>
+<p class="docText">Here's the file that I told <i>scan</i> to output. The 
+columns (message number, email address, comment, name, and date sent) are 
+separated with commas (,): </p>
+<pre>0001,andrewe@isc.uci.edu,,Andy Ernbaum,19901219
+0002,bc3170x@cornell.bitnet,,Zoe Doan,19910104
+0003,zcode!postman@uunet.uu.net,,Head Honcho,19910105
+   ...</pre>
+<p class="docText">Here's the file from <i>wc</i> and <i>awk</i> with the 
+message number and number of lines: </p>
+<pre>0001,11
+0002,5
+0003,187
+   ...</pre>
+<p class="docText">The following <i>join</i> command then joined the two files 
+at their first columns (<tt>-t,</tt> tells <i>join</i> that the fields are 
+comma-separated): </p>
+<pre>% <b>join -t, scanfile wcfile</b></pre>
+<p class="docText">The output file looked like this:</p>
+<pre>0001,andrewe@isc.uci.edu,,Andy Ernbaum,19901219,11
+0002,bc3170x@cornell.bitnet,,Zoe Doan,19910104,5
+0003,zcode!postman@uunet.uu.net,,Head Honcho,19910105,187
+   ...</pre>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: join</p>
+<p class="docText"><i>join</i> can do a lot more than this simple example shows. 
+See your online manual page. The GNU version of <i>join</i> is on the CD-ROM 
+[see <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>]. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-20">21.20 What Is (or Isn't) Unique?</h3>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: uniq</p>
+<p class="docText"><i>uniq</i> reads a file and compares adjacent lines (which 
+means you'll usually want to sort the file first to be sure identical lines 
+appear next to each other). Here's what <i>uniq</i> can do as it watches the 
+input lines stream by: </p>
+<ul>
+  <li>
+  <p class="docList">With the <i>-u</i> option, the output gets only the lines 
+  that occur just once (and weren't repeated). </li>
+  <li>
+  <p class="docList">The <i>-d</i> option does the opposite: the output gets a
+  <span class="docEmphasis">single</span> copy of each line that was repeated 
+  (no matter how many times it was repeated). </p>
+  <p class="docList">(The GNU version also has a <i>-D</i> option. It's like <i>
+  -d</i> except that <span class="docEmphasis">all</span> duplicate lines are 
+  output.) </li>
+  <li>
+  <p class="docList">The default output (with no options) is the union of <i>-u</i> 
+  and <i>-d</i>: only the first occurrence of a line is written to the output 
+  file; any adjacent copies of a line (second, third, etc.) are ignored. </li>
+  <li>
+  <p class="docList">The output with <i>-c</i> is like the default, but each 
+  line is preceded by a count of how many times it occurred. </li>
+</ul>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60"><img height="50" src="screw.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Be warned:</p>
+        <pre>% <b>uniq file1 file2</b></pre>
+        <p class="docText">will <span class="docEmphasis">not</span> print the 
+        unique lines from both <span class="docEmphasis">file1</span> and
+        <span class="docEmphasis">file2</span> to standard output. It will
+        <span class="docEmphasis">replace</span> the contents of
+        <span class="docEmphasis">file2</span> with the unique lines from
+        <span class="docEmphasis">file1</span>! </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Three more options control how comparisons are done:</p>
+<ul>
+  <li>
+  <p class="docList"><tt>-<i>n</i></tt> ignores the first <tt><i>n</i></tt> 
+  fields of a line and all whitespace before each. A field is defined as a 
+  string of nonwhitespace characters (separated from its neighbors by whitespace).
+  </li>
+  <li>
+  <p class="docList"><tt>+<i>n</i></tt> ignores the first <tt><i>n</i></tt> 
+  characters. Fields are skipped before characters. </li>
+  <li>
+  <p class="docList"><tt>-w</tt> <tt><i>n</i></tt> in the GNU version compares 
+  no more than <tt><i>n</i></tt> characters in each line. </li>
+  <li>
+  <p class="docList">GNU <i>uniq</i> also has <i>-i</i> to make comparisons 
+  case-insensitive. (Upper- and lowercase letters compare equal.) </li>
+</ul>
+<p class="docText"><i>uniq</i> is often used as a filter. See also
+<span class="docEmphBold">comm</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-8">Section 
+11.8</a>), <span class="docEmphBold">sort</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-1">Section 
+22.1</a>), and especially <span class="docEmphBold">sort -u</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-6">Section 
+22.6</a>). </p>
+<p class="docText">So what can you do with all of this?</p>
+<p class="docText">To send only one copy of each line from
+<span class="docEmphasis">list</span> (which is typically sorted) to output file
+<i>list.new</i>: </p>
+<pre>uniq list list.new</pre>
+<p class="docText">To show which names appear more than once:</p>
+<pre>sort names | uniq -d</pre>
+<p class="docText">To show which lines appear exactly three times, search the 
+output of <i>uniq</i> -<i>c</i> for lines that start with spaces before the 
+digit <span class="docEmphasis">3</span> and have a tab after. (This is the way 
+GNU <i>uniq</i> -<i>c</i> makes its output lines, at least.) In the example 
+below, the space is marked by <tt>Ë?</tt>; the TAB is marked by <tt><i>tab</i></tt>:
+</p>
+<p class="docText"><tt>grep</tt>
+<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-1">
+Section 13.1</a></p>
+<pre>sort names | uniq -c | grep &quot;^Ë?*3<tt><i>tab</i></tt>&quot;</pre>
+<p class="docText">The lines don't have to be sorted; they simply have to be 
+adjacent. For example, if you have a log file where the last few fields are 
+repeated, you can have <i>uniq</i> &quot;watch&quot; those fields and tell you how many 
+times they were repeated. Here we'll skip the first four fields and get a count 
+of how many times the rest of each line was repeated: </p>
+<pre>$ <b>cat log</b>
+Nov 21 17:20:19 powerd: down 2 volts
+Nov 21 17:20:27 powerd: down 2 volts
+Nov 21 17:21:15 powerd: down 2 volts
+Nov 21 17:22:48 powerd: down 2 volts
+Nov 21 18:18:02 powerd: up 3 volts
+Nov 21 19:55:03 powerd: down 2 volts
+Nov 21 19:58:41 powerd: down 2 volts
+$ <b>uniq -4 -c log</b>
+      4 Nov 21 17:20:19 powerd: down 2 volts
+      1 Nov 21 18:18:02 powerd: up 3 volts
+      2 Nov 21 19:55:03 powerd: down 2 volts</pre>
+<p class="docText"><span class="docEmphasis">—JP and DG</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-21-SECT-21">21.21 Rotating Text</h3>
+<p class="docText">Every now and then you come across something and say, &quot;Gee, 
+that might come in handy someday, but I have no idea for what.&quot; This might 
+happen to you when you're browsing at a flea market or garage sale; if you're 
+like us, it might happen when you're browsing through public domain software.
+</p>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: rot</p>
+<p class="docText">Which brings us to the <i>rot</i> program. <i>rot</i> 
+basically just rotates text columns and rows. For example, the first column 
+below shows an input file. The other three columns show the same file fed 
+through <i>rot</i> once, twice, and three times: </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="4">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">$ cat file</th>
+    <th class="docTableHeader">
+    <p class="docText">$ rot file</th>
+    <th class="docTableHeader">
+    <p class="docText">$ rot file | rot</th>
+    <th class="docTableHeader">
+    <p class="docText">$ rot file | rot | rot</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>abcde</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>54321</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>5</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>e</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>1</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>a</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>4</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>d</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>2</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>b</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>3</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>c</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>3</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>c</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>2</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>b</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>4</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>d</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>1</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>a</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>5</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>e</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>edcba</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>12345</pre>
+    </td>
+  </tr>
+</table>
+<p class="docText">Now let's compare combinations of <i>rot</i> and
+<span class="docEmphBold">tail -r</span> (<a class="docLink" href="_chapter 42.htm#upt3-CHP-42-SECT-1">Section 
+42.1</a>): </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="4">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">$ cat file</th>
+    <th class="docTableHeader">
+    <p class="docText">$ rot file</th>
+    <th class="docTableHeader">
+    <p class="docText">$ rot file | tail -r</th>
+    <th class="docTableHeader">
+    <p class="docText">$ tail -r file | rot</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>abcde</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>54321</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>e</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>12345</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>1</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>a</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>d</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>a</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>2</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>b</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>c</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>b</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>3</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>c</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>b</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>c</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>4</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>d</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>a</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>d</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>5</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>e</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>54321</pre>
+    </td>
+    <td class="docTableCell">
+    <pre>e</pre>
+    </td>
+  </tr>
+</table>
+<p class="docText"><i>rot</i> rotates the text 90 degrees.
+<span class="docEmphasis">tail -r</span> turns the text &quot;upside down&quot; (last line 
+in becomes the first line out, and so forth). </p>
+<p class="docText"><i>rot</i> can also rotate the output of <i>banner</i> to 
+print down a page instead of across. By now, we hope you have an idea of what <i>
+rot</i> can do! </p>
+<p class="docText"><span class="docEmphasis">—JP and LM</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN21-1"><a class="docLink" href="#ENB21-1">[1]</a>&nbsp;&nbsp;[The combination of <i>tbl</i>, <i>nroff</i>, and <i>col</i> can make ASCII 
+tables in a few quick steps. The tables aren&#39;t sexy, but they can be quite 
+complex. They can be emailed or printed anywhere and, because they&#39;re plain 
+text, don&#39;t require sophisticated viewing software or equipment. <i>tbl</i> is a 
+powerful way to describe tables without worrying about balancing columns or 
+wrapping text in them. And if you want nicer-looking output, you can feed the 
+same <i>tbl</i> file to <i>groff</i>. — <span class="docEmphasis">JP</span>]</p><p class="docFootnote" id="EN21-2"><a class="docLink" href="#ENB21-2">[2]</a>&nbsp;&nbsp;To figure out how many 
+  numbers to count up to, divide the total size of the file by the block size 
+  you want and add one if there's a remainder. The <i>jot</i> program can help 
+  here.</p><p class="docFootnote" id="EN21-3"><a class="docLink" href="#ENB21-3">[3]</a>&nbsp;&nbsp;The output file size I want 
+  is denoted by the <span class="docEmphasis">bs</span> or &quot;block size&quot; 
+  parameter to <i>dd</i>. The 2&gt;/dev/null (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">Section 
+  36.16</a>,
+  <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">
+  Section 43.12</a>) gets rid of <i>dd</i>'s diagnostic output, which isn't 
+  useful here and takes up space.</p><p class="docFootnote" id="EN21-4"><a class="docLink" href="#ENB21-4">[4]</a>&nbsp;&nbsp;In this case, the repeat can 
+  actually occur only 98 times, since we've already specified two arguments and 
+  the maximum number is 100.</p><p class="docFootnote" id="EN21-5"><a class="docLink" href="#ENB21-5">[5]</a>&nbsp;&nbsp;Not really. The first file 
+  contains only nine lines (1-9); the rest contain 10. In this case, you're 
+  better off saying <tt>split -10 top_ten_list</tt>.</p><p class="docFootnote" id="EN21-6"><a class="docLink" href="#ENB21-6">[6]</a>&nbsp;&nbsp;If so, why bother <i>gzip</i>ping? 
+  Why not forget about both <i>gzip</i> and <i>uuencode</i>? Well, you can't. 
+  Remember that <i>tar</i> files are binary files to start with, even if every 
+  file in the archive is an ASCII text file. You'd need to <i>uuencode</i> a 
+  file before mailing it, anyway, so you'd still pay the 33 percent size penalty 
+  that <i>uuencode</i> incurs. Using <i>gzip</i> minimizes the damage.</p><p class="docFootnote" id="EN21-7"><a class="docLink" href="#ENB21-7">[7]</a>&nbsp;&nbsp;With GNU <i>tar</i>, you can 
+  use <tt>tar czf - emacs | uuencode ...</tt>. That's not the point of this 
+  example, though. We're just showing how to uuencode some arbitrary data.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 20.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 22.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

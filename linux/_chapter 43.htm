@@ -1,0 +1,897 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 43</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 42.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 44.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 43. Redirecting Input and Output</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-43-SECT-1">43.1 Using Standard Input and Output</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-43-SECT-2">43.2 One Argument with a cat Isn't Enough</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-43-SECT-3">43.3 Send (Only) Standard Error Down a Pipe</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-43-SECT-4">43.4 Problems Piping to a Pager</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-43-SECT-5">43.5 Redirection in C Shell: Capture Errors, Too?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-43-SECT-6">43.6 Safe I/O Redirection with noclobber</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-43-SECT-7">43.7 The ( ) Subshell Operators</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-43-SECT-8">43.8 Send Output Two or More Places</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-43-SECT-9">43.9 How to tee Several Commands into One Place</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-43-SECT-10">43.10 Redirecting Output to More Than One Place</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-43-SECT-11">43.11 Named Pipes: FIFOs</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-43-SECT-12">43.12 What Can You Do with an Empty File?</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-43-SECT-1">43.1 Using Standard Input and Output</h3>
+<p class="docText">There is basically no difference between reading data from a 
+file and reading data from a terminal.<span id="ENB43-1"><a class="docLink" href="#EN43-1"><sup>[1]</sup></a></span> 
+Likewise, if a program's output consists entirely of alphanumeric characters and 
+punctuation, there is no difference between writing to a file, writing to a 
+terminal, and writing to the input of another program (as in a pipe). </p>
+<p class="docText">The <span class="docEmphasis">standard I/O</span> facility 
+provides some simple defaults for managing input/output. There are three default 
+I/O streams: standard input, standard output, and standard error. By convention, 
+standard output (abbreviated <span class="docEmphasis">stdout</span>) consists 
+of all &quot;normal&quot; output from your program, while standard error (<span class="docEmphasis">stderr</span>) 
+consists of error messages. It is often a convenience to be able to handle error 
+messages and standard output separately. If you don't do anything special, 
+programs will read standard input from your keyboard, and they will send 
+standard output and standard error to your terminal's display. </p>
+<p class="docText">Standard input (<span class="docEmphasis">stdin</span>) 
+normally comes from your keyboard. Many programs ignore
+<span class="docEmphasis">stdin</span>; you name files directly on their command 
+line — for instance, the command <span class="docEmphasis">cat file1 file2</span> 
+never reads its standard input; it reads the files directly. But without 
+filenames on the command line, Unix commands that need input will usually read
+<span class="docEmphasis">stdin</span>. Standard input normally comes from your 
+keyboard, but the shell can redirect <span class="docEmphasis">stdin</span> from 
+a file. This is handy for Unix commands that can't open files directly — for 
+instance, <span class="docEmphBold">mail</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>). To mail a file to <span class="docEmphasis">joan</span>, use <tt>&lt;</tt>
+<tt><i>filename</i></tt> — to tell the shell to attach the file, instead of your 
+keyboard, to <i>mail</i>'s standard input: </p>
+<pre>% <b>mail joan &lt; myfile</b></pre>
+<p class="docText">The real virtue of standard I/O is that it allows you to
+<span class="docEmphasis">redirect</span> input or output away from your 
+terminal to a file. As we said, Unix is <span class="docEmphBold">file-based</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-19">Section 
+1.19</a>). Because terminals and other I/O devices are treated as files, a 
+program doesn't even need to know<span id="ENB43-2"><a class="docLink" href="#EN43-2"><sup>[2]</sup></a></span> 
+if it is sending its output to a terminal or to a file. For example, if you want 
+to run the command <span class="docEmphasis">cat file1 file2</span>, but you 
+want to place the output in <span class="docEmphasis">file3</span> rather than 
+sending it to your terminal, give the command: </p>
+<pre>% <b>cat file1 file2 &gt; file3</b></pre>
+<p class="docText">This is called <span class="docEmphasis">redirecting</span> 
+standard output to <span class="docEmphasis">file3</span>. If you give this 
+command and look at <span class="docEmphasis">file3</span> afterward, you will 
+find the contents of <span class="docEmphasis">file1</span>, followed by the 
+contents of <span class="docEmphasis">file2</span> — exactly what you would have 
+seen on your screen if you omitted the <tt>&gt; file3</tt> modifier. (The Z shell 
+takes this further with multiple-file redirection.) </p>
+<p class="docText">One of the best-known forms of redirection in Unix is the
+<span class="docEmphasis">pipe</span>. The shell's vertical bar (<tt>|</tt>) 
+operator makes a pipe. For example, to send both <span class="docEmphasis">file1</span> 
+and <span class="docEmphasis">file2</span> together in a mail message for
+<span class="docEmphasis">joan</span>, type: </p>
+<pre>% <b>cat file1 file2 | mail joan</b></pre>
+<p class="docText">The pipe says, &quot;Connect the standard output of the process at 
+the left (<tt>cat</tt>) to the standard input of the process at the right (<tt>mail</tt>).&quot;
+</p>
+<p class="docText">
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">
+Section 36.15</a> has diagrams and more information about standard I/O and 
+redirection. <a class="docLink" href="#upt3-CHP-43-TABLE-1">Table 43-1</a> shows 
+the most common ways of redirecting standard I/O, for both the C shell and the 
+Bourne shell, which also apply to derivatives like <i>tcsh</i> and <i>bash</i>.
+</p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-43-TABLE-1" class="docTableTitle">Table 43-1. Common standard I/O redirections </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Function</th>
+    <th class="docTableHeader">
+    <p class="docText">csh</th>
+    <th class="docTableHeader">
+    <p class="docText">sh</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Send <span class="docEmphasis">stdout</span> to
+    <span class="docEmphasis">file</span></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog &gt;</tt> <tt><i>file</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog &gt;</tt> <tt><i>file</i></tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Send <span class="docEmphasis">stderr</span> to
+    <span class="docEmphasis">file</span></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog 2 &gt;</tt> <tt><i>file</i></tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Send <span class="docEmphasis">stdout</span> and
+    <span class="docEmphasis">stderr</span> to <span class="docEmphasis">file</span>
+    </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog &gt;&amp;</tt> <tt><i>file</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog &gt;</tt> <tt><i>file</i></tt> <tt>2&gt;&amp;1</tt> </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Take <span class="docEmphasis">stdin</span> from
+    <span class="docEmphasis">file</span></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog &lt;</tt> <tt><i>file</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog &lt;</tt> <tt><i>file</i></tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Send <span class="docEmphasis">stdout</span> to end of
+    <span class="docEmphasis">file</span></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog &gt;&gt;</tt> <tt><i>file</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog &gt;&gt;</tt> <tt><i>file</i></tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Send <span class="docEmphasis">stderr</span> to end of
+    <span class="docEmphasis">file</span></td>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog 2 &gt;&gt;</tt> <tt><i>file</i></tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Send <span class="docEmphasis">stdout</span> and
+    <span class="docEmphasis">stderr</span> to end of <span class="docEmphasis">
+    file</span> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog &gt;&gt;&amp;</tt> <tt><i>file</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog &gt;&gt;</tt> <tt><i>file</i></tt> <tt>2&gt;&amp;1</tt> </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Read <span class="docEmphasis">stdin</span> from keyboard 
+    until <span class="docEmphasis">c</span> (see
+    <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-16">
+    Section 27.16</a>) </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog &lt;&lt;</tt> <tt><i>c</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog &lt;&lt;</tt> <tt><i>c</i></tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Pipe <span class="docEmphasis">stdout</span> to
+    <span class="docEmphasis">prog2</span></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog | prog2</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog | prog2</tt></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Pipe <span class="docEmphasis">stdout</span> and
+    <span class="docEmphasis">stderr</span> to <span class="docEmphasis">prog2</span>
+    </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog |&amp; prog2</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>prog 2&gt;&amp;1 | prog2</tt></td>
+  </tr>
+</table>
+<p class="docText">Be aware that:</p>
+<ul>
+  <li>
+  <p class="docList">While standard I/O is a basic feature of Unix, the syntax 
+  used to redirect standard I/O depends on the shell you are using. Bourne shell 
+  syntax and C shell syntax differ, particularly when you get into the less 
+  commonly used features. The Korn shell and <i>bash</i> are the same as the 
+  Bourne shell, but with a few twists of their own. The Z shell generally 
+  understands both syntaxes (and, in its usual manner, adds even more). </li>
+  <li>
+  <p class="docList">You can redirect standard input and standard output in the 
+  same command line. For example, to read from the file
+  <span class="docEmphasis">input</span> and write to the file
+  <span class="docEmphasis">output</span>, give the command: </p>
+  <pre>% <b>prog &lt; input &gt; output</b></pre>
+  </li>
+  <li>
+  <p class="docList">The Bourne shell will let you go further and write
+  <span class="docEmphasis">stderr</span> to a third file: </p>
+  <pre>$ <b>prog &lt; input &gt; output 2&gt; errors</b></pre>
+  </li>
+  <li>
+  <p class="docList">The C shell doesn't give you an easy way to redirect 
+  standard output without redirecting standard error. A simple trick will help 
+  you do this. To put standard output and standard error in different files, 
+  give a command like: </p>
+  <pre>% <b>( prog &gt; output ) &gt;&amp; errors</b></pre>
+  </li>
+  <li>
+  <p class="docList">We'll discuss commands like this in
+  <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-3">
+  Section 43.3</a> and
+  <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-5">
+  Section 43.5</a>. </li>
+  <li>
+  <p class="docList">Many implementations of both shells don't care what order 
+  the redirections appear in, or even where they appear on the command line. For 
+  example, SunOS lets you type <tt>&lt;</tt> <tt>input</tt> <tt>&gt;</tt> <tt>output</tt>
+  <tt>prog</tt>. However, clarity is a virtue that computer users have never 
+  appreciated enough. It will be easiest to understand what you are doing if you 
+  type the command name first — then redirect standard input, followed by 
+  standard output, followed by standard error. </li>
+</ul>
+<p class="docText">There are some more complex forms of standard<span class="docEmphBold"> 
+I/O redirection, particularly for the Bourne shell</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">Section 
+36.16</a>). </p>
+<p class="docText">Of course, programs aren't restricted to standard I/O. They 
+can open other files, define their own special-purpose pipes, and write directly 
+to the terminal. But standard I/O is the glue that allows you to make big 
+programs out of smaller ones, and it is therefore a crucial part of the 
+operating system. Most Unix utilities read their data from standard input and 
+write their output to standard output, allowing you to combine them easily. A 
+program that creates its own special-purpose pipe may be very useful, but it 
+cannot be used in combination with standard utilities. </p>
+<p class="docText">Many Unix systems, and utilities such as
+<span class="docEmphBold">gawk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-11">Section 
+20.11</a>), support special filenames like <span class="docEmphasis">/dev/stdin</span>,
+<span class="docEmphasis">/dev/stdout</span>, and <span class="docEmphasis">
+/dev/stderr</span>.<span id="ENB43-3"><a class="docLink" href="#EN43-3"><sup>[3]</sup></a></span> 
+You can use these just as you'd use other files. For instance, to have any 
+ordinary command read from the file <span class="docEmphasis">afile</span>, then 
+standard input (from the keyboard, for example), then the file
+<span class="docEmphasis">bfile</span>: </p>
+<pre>% <i>somecmd </i><b> afile /dev/stdin bfile </b></pre>
+<p class="docText">In the same way, a process can write to its standard output 
+through <span class="docEmphasis">/dev/stdout</span> and the standard error via
+<span class="docEmphasis">/dev/stderr</span>. </p>
+<p class="docText">Because reading from standard input and standard output is so 
+common, there is a more general convention for redirecting to these two devices: 
+using <tt>-</tt> where a program expects a filename. If the program was 
+expecting the name of an input file, it will read from standard input instead. 
+If it was expecting an output file, it will write to standard output. A very 
+common place this is seen is in the unpacking of tar gzipped archives: </p>
+<pre>$ gzip -dc <tt><i>filename</i></tt>.tar.gz | tar -xvf -</pre>
+<p class="docText">Here, the <tt>-c</tt> flag tells <i>gzip</i> to stream the 
+uncompressed file to standard output, which is then piped to <i>tar</i>. The <tt>
+-f</tt> flag of tar is used to specify the source tar file, which, because of 
+the <tt>-</tt>, is standard input. </p>
+<p class="docText"><span class="docEmphasis">—ML and JP</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-43-SECT-2">43.2 One Argument with a cat Isn't Enough</h3>
+<p class="docText">What's wrong with this command line? </p>
+<p class="docText"><tt>cat</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">
+Section 12.2</a></p>
+<pre>% <b>cat filename | tr -d '\015' &gt; newfile</b></pre>
+<p class="docText">As Tom Christiansen wrote in a Usenet article: </p>
+<blockquote>
+  <p class="docText">A wise man once said: if you find yourself calling <i>cat</i> 
+  with just one argument, then you're probably doing something you shouldn't.
+  </p>
+</blockquote>
+<p class="docText">The command line above only uses <i>cat</i> to feed the file 
+to the standard input of <i>tr</i>. It's a lot more efficient to have the shell 
+do the redirection for you with its <span class="docEmphBold">&lt; character</span> 
+(<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>): </p>
+<pre>% <b>tr -d '\015' &lt; filename &gt; newfile</b></pre>
+<p class="docText"><span class="docEmphasis">—JP and TC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-43-SECT-3">43.3 Send (Only) Standard Error Down a Pipe</h3>
+<p class="docText">A vertical bar character (<tt>|</tt>) on a command line pipes 
+the standard output of a process to another process. How can you pipe the 
+standard error but not the standard output? You might want to put a long-running
+<i>cruncher</i> command in the background, save the output to a file, and mail 
+yourself a copy of the errors. In the C shell, run the command in a
+<span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">Section 
+43.7</a>). The standard output of the command is redirected inside the subshell. 
+All that's left outside the subshell is the standard error; the
+<span class="docEmphBold">|&amp; operator</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-5">Section 
+43.5</a>) redirects it (along with the empty standard output) to the
+<span class="docEmphBold">mail</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) program: </p>
+<pre>% <b>(cruncher &gt;  </b><i>outputfile </i><b>) |&amp; mail  </b> <i>yourname </i> &amp;
+[1] 12345</pre>
+<p class="docText">Of course, you don't need to put that job in the background. 
+If you want the standard output to go to your terminal instead of a text file, 
+use <span class="docEmphBold">/dev/tty</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">Section 
+36.15</a>) as the <tt><i>outputfile</i></tt>. </p>
+<p class="docText">The Bourne shell gives you a lot more flexibility and lets 
+you do just what you need. The disadvantage is the <span class="docEmphBold">
+more complicated syntax</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">Section 
+36.16</a>). Here's how to run your <i>cruncher</i> program, route the
+<span class="docEmphasis">stderr</span> through a pipe to the <i>mail</i> 
+program, and leave <span class="docEmphasis">stdout</span> going to your screen:
+</p>
+<pre>$ <b>(cruncher 3&gt;&amp;1 1&gt;&amp;2 2&gt;&amp;3 3&gt;&amp;-) | mail  </b><i>yourname </i><b> &amp; </b>
+12345</pre>
+<p class="docText">If this example makes your head hurt a little, you're not 
+alone. The key to understanding this arcana is to know that programs don't refer 
+to files by name like users do. Instead, when a program wants to read or write 
+to a file, it must ask the operating system for a file stream that has an 
+integer <span class="docEmphasis">file descriptor</span> associated with it. 
+Every program has three file streams opened by default: standard input, standard 
+output, and standard error. The file descriptors associated with standard input 
+and standard error are 1 and 2, respectively. These file streams may be 
+duplicated; that is, the data stream pointed by the file descriptor on the left 
+will now go to data stream pointed to by the file descriptor on the right. If 
+you wanted to redirect both standard error and standard output to <i>more</i>, 
+you might do this: </p>
+<pre>$ <i>command </i> <b>2&gt;&amp;1 | more </b></pre>
+<p class="docText">To redirect <span class="docEmphasis">stdout</span> to an 
+output file and send <span class="docEmphasis">stderr</span> down a pipe, try 
+this: </p>
+<pre>$ <b>(cruncher 3&gt;&amp;1 &gt; </b><i>outputfile </i><b> 2&gt;&amp;3 3&gt;&amp;-) | mail  </b><i>yourname </i><b> &amp; </b>
+12345</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+
+<h3 class="docSection1Title" id="upt3-CHP-43-SECT-4">43.4 Problems Piping to a Pager</h3>
+<p class="docText">If your window onto Unix (terminal, X window, communications 
+program, whatever) doesn't have a way to show you the previous screenful, using 
+a pager program like <i>more</i> , <i>pg</i>, or <span class="docEmphBold">less</span> 
+(<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>) can be mighty handy. But piping to a pager doesn't always work the way 
+you want it to. </p>
+<p class="docText">Here's a <i>grep</i> command line that searches several 
+files. What's wrong with it? </p>
+<pre>% <b>grep &quot;^set&quot; */.cshrc | more</b></pre>
+<p class="docText">That wasn't a fair question because you can't tell what's 
+wrong. The problem (it turns out) is that the files named
+<span class="docEmphasis">barney/.cshrc</span>, <span class="docEmphasis">edie/.cshrc</span>, 
+and <span class="docEmphasis">gail/.cshrc</span> are <span class="docEmphBold">
+read-protected</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+50.2</a>). But as the first part of <a class="docLink" href="#upt3-CHP-43-FIG-1">
+Figure 43-1</a> shows, the error messages scroll off your screen and the pager 
+doesn't stop them. </p>
+<center>
+<h5 id="upt3-CHP-43-FIG-1" class="docFigureTitle">Figure 43-1. Standard error bypassing pipe, going 
+through pipe</h5>
+<p>
+<img alt="figs/upt3_4301.gif" src="upt3_4301.gif" border="0" width="428" height="374"></p>
+</center>
+<p class="docText">Unless your display is reallllly sloooowww, the error 
+messages are lost, and you never know they were there, or the errors are jumbled 
+up with the &quot;good&quot; <i>grep</i> output. That's because you've told the shell to 
+send only the standard output of <i>grep</i> to the pager program.
+<span class="docEmphBold">And</span> <i>grep</i> writes its errors to the
+<span class="docEmphBold">standard error</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">Section 
+36.15</a>)! But both <span class="docEmphasis">stdout</span> and
+<span class="docEmphasis">stderr</span> go to the screen at once. The errors on
+<span class="docEmphasis">stderr</span> scroll away with the output from the 
+pager. The pager can't count the lines of errors, so it outputs a complete 
+screenful of <span class="docEmphasis">stdout</span> (the &quot;good stuff&quot;). If <i>
+grep</i>'s standard output (from the files it could read) is at least a 
+screenful, as it is here, there are too many lines to fit on the screen — and 
+some lines will scroll off. </p>
+<p class="docText">The better way to do this is to combine <i>grep</i>'s
+<span class="docEmphasis">stdout</span> and <span class="docEmphasis">stderr</span> 
+and give them both to the pager. These command lines (in <i>csh</i> and <i>sh</i>) 
+both do that: </p>
+<pre>% <b>grep &quot;^set&quot; */.cshrc |&amp; more</b>
+$ <b>grep &quot;^set&quot; */.cshrc 2&gt;&amp;1 | more</b></pre>
+<p class="docText">(The Z shell understands both.) The second part of
+<a class="docLink" href="#upt3-CHP-43-FIG-1">Figure 43-1</a> shows how this 
+works. Any time I pipe a command's output to a pager, I usually combine the
+<span class="docEmphasis">stdout</span> and <span class="docEmphasis">stderr</span> 
+this way. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-43-SECT-5">43.5 Redirection in C Shell: Capture Errors, Too?</h3>
+<p class="docText">The <tt>&gt;</tt> (right angle bracket) operator redirects the 
+standard output of a process to a file. It doesn't affect the standard error. If 
+you're logged in and can see any messages written to standard error, that's 
+okay: </p>
+<pre>% <b>nroff -ms report.ms &gt; report.out &amp; </b>
+[1] 10316
+   <i> ...Later...</i>
+nroff: can't open file /hoem/jpeek/report.data</pre>
+<p class="docText">But if you log out and leave the job running, you'll never 
+see those errors unless you use the <i>csh</i> operator <tt>&gt;&amp;</tt>. It 
+redirects both standard output and standard error to a file. For example: </p>
+<p class="docText"><tt>make</tt>
+<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-10">
+Section 11.10</a></p>
+<pre>% <b>make &gt;&amp; make.output &amp; </b>
+[1] 10329
+% <b>logout </b>
+   <i> ...Later...</i>
+% <b>cat make.output </b>
+        cc -O -c random.c
+        cc -O -c output.c
+&quot;output.c&quot;, line 46: syntax error
+&quot;output.c&quot;, line 50: time_e undefined
+&quot;output.c&quot;, line 50: syntax error
+   ...</pre>
+<p class="docText">You might also use the <tt>&gt;&amp;</tt> operator while you're 
+logged in and watch the output file with <span class="docEmphBold">tail -f</span> 
+(<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-10">Section 
+12.10</a>). If you don't want the errors mixed with other output, you can split 
+them to two files; see
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">
+Section 43.1</a>. </p>
+<p class="docText">The C shell also has a pipe operator, <tt>|&amp;</tt>, that 
+redirects both standard output and standard error. It's great for running a job 
+in the background or on another computer and <span class="docEmphBold">mailing</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) any output to me: </p>
+<pre>% <b>make |&amp; mailx -s &quot;'make bigprog' output&quot; jpeek@jpeek.com &amp;</b>
+[1] 29182 29183</pre>
+<p class="docText">If I'd used plain <tt>|</tt> instead of <tt>|&amp;</tt>, any text 
+on the standard error wouldn't go into the mail message. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-43-SECT-6">43.6 Safe I/O Redirection with noclobber</h3>
+<p class="docText">Have you ever destroyed a file accidentally? If you set the
+<span class="docEmphasis">noclobber</span> C shell variable or the
+<span class="docEmphasis">noclobber</span> option in <i>bash</i>, <i>zsh</i>, 
+and <i>ksh</i>, it can help you avoid these mistakes. Setting
+<span class="docEmphasis">noclobber</span> prevents you from destroying a file 
+when you are <span class="docEmphBold">redirecting standard output</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>). </p>
+<p class="docText">Consider the following situation:</p>
+<pre>% <i>anycommand </i> <b>&gt; outputfile </b></pre>
+<p class="docText">The command above overwrites the old
+<span class="docEmphasis">outputfile</span>. If you have misspelled the name of 
+your output file, or if you have forgotten that the file already exists and 
+contains important data, or (most common) if you really meant to type <tt>&gt;&gt;</tt> 
+instead of <tt>&gt;</tt> (i.e., if you really meant to append to the end of
+<span class="docEmphasis">outputfile</span>, rather than start a new one), tough 
+luck; your old data is gone. </p>
+<p class="docText">Setting <span class="docEmphasis">noclobber</span> prevents 
+this problem. If <span class="docEmphasis">noclobber</span> is set, the shell 
+will not allow I/O redirection to destroy an existing file, unless you 
+explicitly tell it to by adding an exclamation point (<tt>!</tt>) after the C 
+shell redirect symbol or by adding a vertical bar (<tt>|</tt>) in <i>ksh</i> and
+<i>bash</i>. (The Z shell understands both.) Here are examples. The left column 
+shows <i>csh</i> and <i>tcsh</i>; the right column is for <i>bash</i> (<i>ksh</i> 
+is similar): </p>
+<pre>% <b>set noclobber</b>              $ <b>set -o noclobber</b>
+% <b>ls</b>                         $ <b>ls</b>
+filea fileb                  filea fileb
+% <b>anyprogram &gt; fileb</b>         $ <b>anyprogram &gt; fileb</b>
+fileb: File exists.          bash: fileb: Cannot clobber existing file
+% <b>anyprogram &gt;! fileb</b>        $ <b>anyprogram &gt;| fileb</b>
+%                            $</pre>
+<p class="docText">Be sure to put space after the <tt>!</tt>. If you don't, the 
+C shell thinks you're making a history reference and it (usually) prints an 
+error like <tt>fileb: Event not found</tt>. </p>
+<p class="docText">Remember that <span class="docEmphasis">noclobber</span> is 
+not an environment variable, so any new shells you create
+<span class="docEmphBold">won't inherit it</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>). Therefore, if you want this feature, put the <i>set</i> command 
+(above) in your shell's <span class="docEmphBold">setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>). </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">In some shells, <span class="docEmphasis">noclobber</span> 
+        will prevent you from redirecting standard output to
+        <span class="docEmphBold">/dev/null</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">Section 
+        43.12</a>) or to a terminal unless you add the <tt>!</tt>. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">The <span class="docEmphasis">noclobber</span> variable has 
+one other feature that's worth noting. Normally, shells let you append to a file 
+that doesn't exist. If <span class="docEmphasis">noclobber</span> is set under
+<i>csh</i>, <i>tcsh</i>, and <i>zsh</i>, it won't; you can append only to files 
+that already exist unless you use an exclamation point: </p>
+<pre>% <b>ls </b>
+filea fileb
+% <i>anyprogram  </i><b>&gt;&gt; filec </b>
+filec: No such file or directory
+% <i>anyprogram  </i><b>&gt;&gt;! filec </b>
+%</pre>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-43-SECT-7">43.7 The ( ) Subshell Operators</h3>
+<p class="docText">A useful shell trick is to use parentheses, <tt>( )</tt>, to 
+group commands. </p>
+<h4  id="upt3-CHP-43-SECT-7.1" class="docSection2Title">43.7.1 Combining Several Commands</h4>
+<p class="docText">The parentheses start a <span class="docEmphBold">subshell</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>) that, in effect, &quot;collects&quot; the output of all the commands inside. (It 
+does the same thing for the standard input and standard error.) The output of 
+the entire group can be passed together into a single pipeline. For example: </p>
+<p class="docText"><tt>echo</tt>
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-5">
+Section 27.5</a></p>
+<pre>$ <b>(cat file1; echo .bp; cat file2) | nroff</b></pre>
+<p class="docText">This will interpose the <i>nroff</i> <tt>.bp</tt> (break 
+page) request between two files to be formatted.<span id="ENB43-4"><a class="docLink" href="#EN43-4"><sup>[4]</sup></a></span>
+</p>
+<p class="docText">Parentheses are also useful in the Bourne shell if you want 
+to put an entire sequence of commands separated by <span class="docEmphBold">
+semicolons (;)</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-16">Section 
+28.16</a>) into the background. In the C shell, the command line below will go 
+immediately into the background. </p>
+<pre>% <b>nroff -ms file1; nroff -ms file2 &amp;</b></pre>
+<p class="docText">But in the Bourne shell, the background request (<tt>&amp;</tt>) 
+will apply only to the second command, forcing you to wait for completion of the 
+first job before you get back the system prompt. To get right back to work, you 
+can type: </p>
+<pre>$ <b>(nroff -ms file1; nroff -ms file2) &amp;</b></pre>
+<h4  id="upt3-CHP-43-SECT-7.2" class="docSection2Title">43.7.2 Temporary Change of Directory and 
+Environment</h4>
+<p class="docText">Commands that run between the parentheses won't affect the 
+parent shell's environment. For instance, to run a command in another directory
+<span class="docEmphBold">without changing your active shell's current directory</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>): </p>
+<pre>% <b>pwd </b>
+/home/trent
+% <b>(cd </b> <i>somewhere-else </i><b>; nroff -ms file1 &gt; file.out) &amp; </b>
+[1] 22670
+% <b>pwd </b>
+/home/trent</pre>
+<p class="docText">The file <span class="docEmphasis">file.out</span> will be 
+created in the <span class="docEmphasis">somewhere-else</span> directory. </p>
+<p class="docText"><span class="docEmphasis">—TOR and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-43-SECT-8">43.8 Send Output Two or More Places</h3>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: tee</p>
+<p class="docText">If you're running a program and you want to send its output 
+to a file — but you want to see the output on your screen, too, so you can stop 
+the program if something goes wrong — you can use <i>tee</i>. The <i>tee</i> 
+program reads its standard input and writes it to one or more files. (The web 
+site has the GNU version.) </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">A pipe may <span class="docEmphasis">buffer</span> 
+        the output of a program, collecting it in chunks and spitting it out 
+        every so often. If the program's output comes slowly and feeds <i>tee</i> 
+        through a pipe, there might be long delays before you see any output. In 
+        that case, it's better to use <tt>&gt;</tt> to redirect output to a file, 
+        put the program into the background, and watch the output with
+        <span class="docEmphBold">tail -f</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-10">Section 
+        12.10</a>). Or use a program like <span class="docEmphBold">script</span> 
+        (<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-7">Section 
+        37.7</a>). </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Use <i>tee</i> for saving results in the middle of a long 
+pipeline of commands. That's especially good for debugging. For example, you 
+could type: </p>
+<pre>% <i>prog </i> <b>| tee prog.out | sed -f sedscr | tee sed.out |  </b>...</pre>
+<p class="docText">to save the output of <i>prog</i> in the file
+<span class="docEmphasis">prog.out</span> and also pipe it to the <i>sed</i> 
+command, save <i>sed</i>'s output in <span class="docEmphasis">sed.out</span> 
+and also pipe it, and so on. </p>
+<p class="docText">Here are two other notes about <i>tee</i>. If you want to add 
+to a file that already exists, use the <i>-a</i> option. <i>tee</i> can write to 
+more than one file if you give all of the filenames as arguments </p>
+<p class="docText">Z shell users usually don't need <i>tee</i> because they have 
+the <i>zsh</i> MULTIOS option. For instance, here's how to write the pipeline 
+above: </p>
+<pre>zsh% <b>setopt multios </b>
+zsh% <i>prog   </i><b>&gt; prog.out | sed -f sedscr &gt; sed.out |  </b>...</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-43-SECT-9">43.9 How to tee Several Commands into One Place</h3>
+<p class="docText">The <span class="docEmphBold">tee</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-8">Section 
+43.8</a>) command writes its standard input to a file and writes the same text 
+to its standard output. You might want to collect several commands' output and
+<i>tee</i> them all to the same file, one after another. The obvious way to do 
+that is with the <i>-a</i> option: </p>
+<pre>$ <i>some-command </i> <b>| tee teefile </b>
+$ <i>another-command </i> <b>| tee -a teefile </b>
+$ <i>a-third--command </i> <b>| tee -a teefile </b></pre>
+<p class="docText">A more efficient way is:</p>
+<p class="docText"><tt>&gt;</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-12">
+Section 28.12</a></p>
+<pre>$ <b>( </b><i>some-command </i>
+&gt; <i>another-command </i>
+&gt; <i>a-third-command </i><b>) | tee teefile </b></pre>
+<p class="docText">The <span class="docEmphBold">subshell operators</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">Section 
+43.7</a>) collect the standard output of the three commands. The output all goes 
+to one <i>tee</i> command. This has two differences from the first method. 
+First, you need two fewer pipes, two fewer <i>tee</i>s, and one more subshell. 
+Second, you can pipe the output of the single <i>tee</i> command to another 
+process — for example, to print it. </p>
+<p class="docText">Unfortunately, the C shell doesn't make this quite as easy. 
+If you can type all the commands on one line, you can do it this way (the same 
+thing works in the Bourne shell): </p>
+<pre>% <b>( </b><i>command1; command2; command3 </i><b>) | tee teefile </b></pre>
+<p class="docText">Otherwise, use a semicolon and backslash (<tt>;\</tt>) at the 
+end of each line: </p>
+<pre>% <b>(</b>
+ <b>;\</b>
+
+ <b>;\</b>
+
+<b>) | tee teefile</b></pre>
+<p class="docText">In all these examples, remember that if you don't need to see 
+the output of the commands, you don't need <i>tee</i>. Use the subshell as 
+above, but replace <tt>| tee teefile</tt> with <tt>&gt; outfile</tt> or <tt>| 
+somecommand</tt>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-43-SECT-10">43.10 Redirecting Output to More Than One Place</h3>
+<p class="docText">What if you want to use the output of a program more than 
+once, and you don't want to deal with an intermediary file? For example, suppose 
+I have some large, compressed PostScript files. I want to print the files, but I 
+also want to know how many pages they are. I know that the number of pages 
+appears on a line following <tt>%%Pages</tt>: at the end of the file. Using
+<span class="docEmphBold">bzcat</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-6">Section 
+15.6</a>) to uncompress the file to standard output, I can type the following 
+commands into a <span class="docEmphBold">for loop</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">Section 
+28.9</a>) (or put them into a shell script). This loop sends each file to the 
+printer and uses <i>sed</i> to capture the correct line: </p>
+<p class="docText"><tt>-n</tt>
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-3">
+Section 34.3</a></p>
+<pre>for f
+do
+    bzcat $f | lpr
+    bzcat $f | sed -n &quot;s/^%%Pages: \([0-9][0-9]*\)/$f:   \1 pages/p&quot;
+done</pre>
+<p class="docText">But this ends up running <i>bzcat</i> twice, which takes some 
+time. I can expand the file with <i>bunzip2</i> first, but frankly I'm not sure 
+I have the disk space for that. </p>
+<p class="docText">Using process substitution and <span class="docEmphBold">tee</span> 
+(<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-8">Section 
+43.8</a>), I can do it in one line, without wasting processes and without eating 
+disk space: </p>
+<pre>for f
+do
+  bzcat $f | tee &gt;(lpr) | sed -n &quot;s/^%%Pages: \([0-9][0-9]*\)/$f: \1 pages/p&quot;
+done</pre>
+<p class="docText">From running this script, as each file is sent to the printer 
+I receive the following messages on my screen: </p>
+<pre>ch01.ps.gz: 44 pages
+ch02.ps.gz: 51 pages
+ch03.ps.gz: 23 pages
+   ...</pre>
+<p class="docText">Because <i>tee</i> can write to more than one file, it can 
+write to more than one process with process substitution. For instance, maybe 
+you want to send the file to both a black-and-white printer and a color printer 
+at the same time: </p>
+<pre>bzcat $f | tee &gt;(lpr -Pbw) &gt;(lpr -Pcolor) | \
+  sed -n &quot;s/^%%Pages: \([0-9][0-9]*\)/$f: \1 pages/p&quot;</pre>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: tpipe</p>
+<p class="docText">If your shell doesn't have process substitution, maybe you 
+have a shell like <i>bash</i> or <i>zsh</i> that does. (Write a shell script. Or 
+type the shell's name at your shell prompt, then type <i>exit</i> when you're 
+done with the temporary shell.) Otherwise, you can use <i>tpipe</i>; it's on the 
+CD-ROM [see
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>]. <i>tpipe</i> is similar to
+<span class="docEmphBold">tee</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-8">Section 
+43.8</a>), but instead of putting a copy of standard input in a file, it passes 
+the input to a new pipe. Give <i>tpipe</i> the name of the command (here, <i>lpr</i>) 
+that will read the text from its standard input: </p>
+<pre>bzcat $f | tpipe lpr | sed -n &quot;s/^%%Pages: \([0-9][0-9]*\)/$f: \1 pages/p&quot;</pre>
+<p class="docText">You can also simulate <i>tpipe</i> by using
+<span class="docEmphBold">awk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+20.10</a>). Write a little <i>awk</i> script that reads each input line and 
+writes the text both to a command and to <i>awk</i>'s standard output: </p>
+<pre>bzcat $f | awk &quot;{ print | \&quot;lpr\&quot; ; print }&quot; | \
+  sed -n &quot;s/^%%Pages: \([0-9][0-9]*\)/$f:   \1 pages/p&quot;</pre>
+<p class="docText">This is much slower and only works on text files, but it does 
+the job.</p>
+<p class="docText"><span class="docEmphasis">—LM and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-43-SECT-11">43.11 Named Pipes: FIFOs</h3>
+<p class="docText">When you type a pipe symbol (<tt>|</tt>) on a command line, 
+the two processes that communicate through the pipe must both have been started 
+from that same shell. Newer versions of Unix have a way to let two unrelated 
+processes (processes not started from the same parent process) communicate: a
+<span class="docEmphasis">named pipe</span> or FIFO (<span class="docEmphasis">F</span>irst
+<span class="docEmphasis">I</span>n <span class="docEmphasis">F</span>irst
+<span class="docEmphasis">O</span>ut). </p>
+<p class="docText">A FIFO works like a pipe, but its interface looks like a 
+file. It has a filename and <span class="docEmphBold">permissions</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-17">Section 
+1.17</a>), and it's in a directory. Once you make the FIFO, one process can 
+write to it (with the shell's <tt>&gt;</tt> operator, or directly) and another 
+process can read from it (the shell's <tt>&lt;</tt> operator, or directly). Unlike 
+a regular file, though, a FIFO doesn't &quot;fill up&quot; with data as a process writes 
+to it: if there's no process waiting to read the data, the data is lost. So, 
+when you use a FIFO between two processes, the processes still need to 
+coordinate with each other. There are times that temporary files are better. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: mkfifo</p>
+<p class="docText">The command to make a FIFO is <i>mkfifo</i>. (The GNU version 
+is on the CD-ROM [see
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>].) Like other files, the default permission 
+is set by your umask. There's also a <i>-m</i> option that sets the permissions 
+— with a numeric or symbolic mode like <span class="docEmphBold">chmod</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-5">Section 
+50.5</a>) uses. To remove a FIFO, use — you guessed it — <i>rm</i>. </p>
+<p class="docText">Let's look at an example that, although it's made up, shows 
+some important things to know about FIFOs. If you're using a window system, 
+you'll use two terminal windows (like <span class="docEmphBold">xterm</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-20">Section 
+24.20</a>)); you'll write to the FIFO from one window and read it from the 
+other. Or if you have two terminals, you can use both of them. Otherwise, with a 
+single terminal, you can put the writing process in the
+<span class="docEmphBold">background</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-2">Section 
+23.2</a>) and run the reading process in the foreground.<span id="ENB43-5"><a class="docLink" href="#EN43-5"><sup>[5]</sup></a></span>
+</p>
+<p class="docText">Start by making the FIFO. You can make it from any window. 
+(The FIFO stays in the filesystem until you remove it. You can use it over and 
+over again, though only one pair of processes can use it at any one time.) Then 
+have a look with <i>ls</i>; the FIFO has zero size, it has a <tt>p</tt> type in 
+the <i>-l</i> output and a <tt>|</tt> symbol from <i>-F</i>: </p>
+<p class="docText"><tt>-F</tt>
+<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-10">
+Section 8.10</a></p>
+<pre>$ <b>mkfifo /tmp/fifo</b>
+$ <b>ls -l /tmp/fifo</b>
+prw-rw-r--    1 jpeek    jpeek           0 Dec 30 00:25 /tmp/fifo
+$ <b>ls -F /tmp/fifo</b>
+/tmp/fifo|</pre>
+<p class="docText">Next, start the process that reads from the FIFO. Like a 
+program that's reading from a regular (anonymous) pipe, the process will block 
+(sit there doing nothing) until there's something to read. For now, plain
+<span class="docEmphBold">cat</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">Section 
+12.2</a>) is a good choice: </p>
+<pre>$ <b>cat /tmp/fifo </b>
+   <i> ...nothing (yet)...</i></pre>
+<p class="docText">To write to the FIFO, here's a little
+<span class="docEmphBold">shell script</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-1">Section 
+35.1</a>) that sends the current date and time to its standard output every 
+three seconds. You could name it <i>dater</i>: </p>
+<p class="docText"><tt>while</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-15">
+Section 35.15</a>, <tt>sleep</tt>
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-9">
+Section 24.9</a></p>
+<pre>#!/bin/sh
+
+while sleep 3
+do date
+done</pre>
+<p class="docText">In the other window or terminal, start <i>dater</i> and 
+redirect its output to the FIFO. The process will run, writing data to the FIFO 
+periodically: </p>
+<pre>$ <b>dater &gt; /tmp/fifo</b></pre>
+<p class="docText">In your window running <i>cat</i>, the dates should start to 
+appear. When you kill the writing process (or it finishes by itself), the reader 
+should terminate. </p>
+<p class="docText">Also try reading from the FIFO with any other Unix program, 
+like the <span class="docEmphBold">pr</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-6">Section 
+45.6</a>) formatter with its <i>-l15</i> option (to make output pages 15 lines 
+long, so you don't have to wait too long to see the next page header). This 
+makes a nice illustration of the way that standard pipes, as well as named 
+pipes, work: dribbling output to the reading process as the writing process 
+makes it. (Standard pipes may be <span class="docEmphasis">buffered</span>, 
+though, passing output in larger chunks.) </p>
+<p class="docText">If you have a third terminal or window, and you start another 
+reading process (like <tt>cat /tmp/fifo</tt>) there, it will block until you 
+kill the first reading process (the previous <tt>cat /tmp/fifo</tt>). </p>
+<p class="docText">This can be good food for thought. For instance, what output 
+do you see when <span class="docEmphBold">tail</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-8">Section 
+12.8</a>) reads from a pipe or FIFO? (Answer: nothing until the writing process 
+dies.) </p>
+<p class="docText">To review, though, a FIFO is useful anytime two processes 
+need to communicate but those processes weren't started from the same parent 
+process, so a traditional pipe can't work (because the second process can't 
+access the open file descriptor from the first process). </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-43-SECT-12">43.12 What Can You Do with an Empty File?</h3>
+<p class="docText">It isn't a file, actually, though you can use it like one.
+<span class="docEmphasis">/dev/null</span> is a Unix device.<span id="ENB43-6"><a class="docLink" href="#EN43-6"><sup>[6]</sup></a></span> 
+It's not a physical device. <span class="docEmphasis">/dev/null</span> is a 
+special device that &quot;eats&quot; any text written to it and returns &quot;end-of-file&quot; (a 
+file of length 0) when you read from it. So what the heck can you use it for?
+</p>
+<ul>
+  <li>
+  <p class="docList">Empty another file. <span class="docEmphBold">Just copy</span>
+  <span class="docEmphasis">/dev/null</span> &quot;on top of&quot; the other file (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-2">Section 
+  15.2</a>). </li>
+  <li>
+  <p class="docList">Make another program &quot;quiet&quot; by redirecting its output 
+  there. For instance, if you're putting a program into the background and you 
+  don't want it to bother you, type: </li>
+</ul>
+<pre>% <i>progname </i> <b>&gt; /dev/null &amp; </b></pre>
+<ul>
+  <li>
+  <p class="docList">That <span class="docEmphBold">redirects</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+  43.1</a>) standard output but leaves standard error hooked to your terminal, 
+  in case there is an error. </li>
+  <li>
+  <p class="docList">Answer a program that asks a lot of questions — you know 
+  you'll just press RETURN at each prompt. In a lot of cases, you can redirect 
+  the program's standard input from <span class="docEmphasis">/dev/null</span>:
+  </p>
+  <pre>% <i>progname </i> <b>&lt; /dev/null </b>
+Want the default setup? If yes, press RETURN:
+Enter filename or press RETURN for default:
+   ...</pre>
+  </li>
+  <li>
+  <p class="docList">You should test that with each program, though, before you 
+  assume this trick will work. (If it doesn't work, try
+  <span class="docEmphBold">yes</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-5">Section 
+  14.5</a>).) </li>
+  <li>
+  <p class="docList">Where a program needs an extra filename but you don't want 
+  it to read or write an actual file. For instance, the
+  <span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-1">Section 
+  13.1</a>) programs won't give the name of the file where they find a match 
+  unless there are at least two filenames on the command line. When you use a 
+  wildcard in a directory where maybe only one file will match,
+  <span class="docEmphBold">use /dev/null to be sure that grep will always see 
+  more than one</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-21">Section 
+  9.21</a>): </li>
+</ul>
+<pre>% <b>grep &quot; </b><i>outputfile </i><b>&quot; * /dev/null </b></pre>
+<ul>
+  <li>
+  <p class="docList">You're guaranteed that <i>grep</i> won't match its regular 
+  expression in <span class="docEmphasis">/dev/null</span>. </li>
+  <li>
+  <p class="docList">
+  <a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-3">
+  Section 15.3</a> shows even more uses for <span class="docEmphasis">/dev/null</span>.
+  </li>
+</ul>
+<p class="docText">Another interesting device (mostly for programmers) is
+<span class="docEmphasis">/dev/zero</span>. When you read it, you'll get ASCII 
+zeros (NUL characters) forever. There are no newlines either. For both of those 
+reasons, many Unix commands have trouble reading it. If you want to play, the 
+command below will give you a start (and <span class="docEmphBold">head</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-12">Section 
+12.12</a>) will give you a stop!):<span id="ENB43-7"><a class="docLink" href="#EN43-7"><sup>[7]</sup></a></span>
+</p>
+<p class="docText"><tt>od</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">
+Section 12.4</a></p>
+<pre>% <b>fold -20 /dev/zero | od -c | head</b></pre>
+<p class="docText"><span class="docEmphasis">— JP</span> </p>
+<blockquote><p class="docFootnote" id="EN43-1"><a class="docLink" href="#ENB43-1">[1]</a>&nbsp;&nbsp;If a program&#39;s input consists entirely of alphanumeric characters and 
+punctuation (i.e., ASCII data or international (non-English) characters).</p><p class="docFootnote" id="EN43-2"><a class="docLink" href="#ENB43-2">[2]</a>&nbsp;&nbsp;But it can find out.</p><p class="docFootnote" id="EN43-3"><a class="docLink" href="#ENB43-3">[3]</a>&nbsp;&nbsp;On Linux, at least, those 
+  are <span class="docEmphBold">symbolic links</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+  10.4</a>) to <span class="docEmphasis">/proc/self/fd/0</span>,
+  <span class="docEmphasis">/proc/self/fd/1</span>, and
+  <span class="docEmphasis">/proc/self/fd/2</span>, respectively.</p><p class="docFootnote" id="EN43-4"><a class="docLink" href="#ENB43-4">[4]</a>&nbsp;&nbsp;If you&#39;re using only <i>cat</i> and a single <i>echo</i>, you can use this 
+command instead:</p><p class="docFootnote" id="EN43-5"><a class="docLink" href="#ENB43-5">[5]</a>&nbsp;&nbsp;This may take some juggling 
+  because your system may require you to start the reading process before the 
+  writing process. If it does, and if your system has <span class="docEmphBold">
+  job control</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+  23.3</a>), do this: start the reading process, stop it with CTRL-z, start the 
+  writing process in the background, then bring the reading process to the 
+  foreground.</p><p class="docFootnote" id="EN43-6"><a class="docLink" href="#ENB43-6">[6]</a>&nbsp;&nbsp;Well, okay. It's a
+  <span class="docEmphasis">device file</span>.</p><p class="docFootnote" id="EN43-7"><a class="docLink" href="#ENB43-7">[7]</a>&nbsp;&nbsp;On some Unix versions, the
+  <i>head</i> program may not terminate after it has printed the first 10 lines. 
+  In that case, use <tt>sed 10q</tt> instead of <tt>head</tt>.</p></blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 42.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 44.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

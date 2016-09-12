@@ -1,0 +1,609 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 22</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 21.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 23.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 22. Sorting</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-22-SECT-1">22.1 Putting Things in Order</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-22-SECT-2">22.2 Sort Fields: How sort Sorts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-22-SECT-3">22.3 Changing the sort Field Delimiter</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-22-SECT-4">22.4 Confusion with Whitespace Field Delimiters</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-22-SECT-5">22.5 Alphabetic and Numeric Sorting</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-22-SECT-6">22.6 Miscellaneous sort Hints</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-22-SECT-7">22.7 lensort: Sort Lines by Length</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-22-SECT-8">22.8 Sorting a List of People by Last Name</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-22-SECT-1">22.1 Putting Things in Order</h3>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 class="docSidebarTitle">Summary Box</h2>
+      <p class="docText">Sorting a file under Unix is easy, right? Of course it 
+      is, if all you want to do is sort a list of single words, or sort lines 
+      starting with the first character in the line. But if you want to do more 
+      than that, there's a lot more to the <i>sort</i> command than typing <tt>
+      sort</tt> <tt><i>filename</i></tt>: </p>
+      <ul>
+        <li>
+        <p class="docList">
+        <a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-2">
+        Section 22.2</a> describes how to select individual fields from a line 
+        for <i>sort</i> to operate on. </li>
+        <li>
+        <p class="docList">
+        <a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-3">
+        Section 22.3</a> describes how to change the field delimiter from 
+        whitespace to some other character. </li>
+        <li>
+        <p class="docList">
+        <a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-4">
+        Section 22.4</a> describes the kinds of problems that you can encounter 
+        if fields <span class="docEmphasis">are</span> delimited by whitespace.
+        </li>
+        <li>
+        <p class="docList">
+        <a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-5">
+        Section 22.5</a> clarifies the distinctions between alphabetic and 
+        numeric sorting. </li>
+        <li>
+        <p class="docList">
+        <a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-6">
+        Section 22.6</a> gives miscellaneous hints about useful <i>sort</i> 
+        options. </li>
+      </ul>
+      <p class="docText">But learning the mechanics of <i>sort</i> isn't the end 
+      of the story. Like most of the other things you'll find in the Unix 
+      toolbox, <i>sort</i> is even more powerful when it's used with other 
+      programs. For example, you can: </p>
+      <ul>
+        <li>
+        <p class="docList">Sort paragraphs or other multiline entries.</li>
+        <li>
+        <p class="docList">Sort lines by how long they are (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-7">Section 
+        22.7</a>). </li>
+        <li>
+        <p class="docList">Sort a list of names by last name, whether or not 
+        there's a middle name as well (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-8">Section 
+        22.8</a>). </li>
+      </ul>
+      <p class="docText"><span class="docEmphasis">— TOR</span></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-22-SECT-2">22.2 Sort Fields: How sort Sorts</h3>
+<p class="docText">Unless you tell it otherwise, <i>sort</i> divides each line 
+into fields at whitespace (blanks or tabs), and sorts the lines by field, from 
+left to right. </p>
+<p class="docText">That is, it sorts on the basis of field 0 (leftmost), but 
+when the leftmost fields are the same, it sorts on the basis of field 1, and so 
+on. This is hard to put into words, but it's really just common sense. Suppose 
+your office inventory manager created a file like this: </p>
+<pre>supplies     pencils  148
+furniture    chairs   40
+kitchen      knives   22
+kitchen      forks    20
+supplies     pens     236
+furniture    couches  10
+furniture    tables   7
+supplies     paper    29</pre>
+<p class="docText">You'd want all the supplies sorted into categories, and 
+within each category, you'd want them sorted alphabetically: </p>
+<pre>% <b>sort supplies</b>
+furniture    chairs   40
+furniture    couches  10
+furniture    tables   7
+kitchen      forks    20
+kitchen      knives   22
+supplies     paper    29
+supplies     pencils  148
+supplies     pens     236</pre>
+<p class="docText">Of course, you don't always want to sort from left to right. 
+The command-line option <i>+n</i> tells <i>sort</i> to start sorting on field
+<span class="docEmphasis">n</span>; <i>-n</i> tells <i>sort</i> to stop sorting 
+on field <span class="docEmphasis">n</span>. Remember (again) that <i>sort</i> 
+counts fields from left to right, starting with 0.<span id="ENB22-1"><a class="docLink" href="#EN22-1"><sup>[1]</sup></a></span> 
+Here's an example. We want to sort a list of telephone numbers of authors, 
+presidents, and blues singers: </p>
+<pre>Robert M Johnson      344-0909
+Lyndon B Johnson      933-1423
+Samuel H Johnson      754-2542
+Michael K Loukides    112-2535
+Jerry O Peek          267-2345
+Timothy F O'Reilly    443-2434</pre>
+<p class="docText">According to standard &quot;telephone book rules,&quot; we want these 
+names sorted by last name, first name, and middle initial. We don't want the 
+phone number to play a part in the sorting. So we want to start sorting on field 
+2, stop sorting on field 3, continue sorting on field 0, sort on field 1, and 
+(just to make sure) stop sorting on field 2 (the last name). We can code this as 
+follows: </p>
+<pre>% <b>sort +2 -3 +0 -2 phonelist</b>
+Lyndon B Johnson      933-1423
+Robert M Johnson      344-0909
+Samuel H Johnson      754-2542
+Michael K Loukides    112-2535
+Timothy F O'Reilly    443-2434
+Jerry O Peek          267-2345</pre>
+<p class="docText">A few notes:</p>
+<ul>
+  <li>
+  <p class="docList">We need the <i>-3</i> option to prevent <i>sort</i> from 
+  sorting on the telephone number after sorting on the last name. Without <i>-3</i>, 
+  the &quot;Robert Johnson&quot; entry would appear before &quot;Lyndon Johnson&quot; because it has 
+  a lower phone number. </li>
+  <li>
+  <p class="docList">We don't need to state <i>+1</i> explicitly. Unless you 
+  give an explicit &quot;stop&quot; field, <i>+1</i> is implied after <i>+0</i>. </li>
+  <li>
+  <p class="docList">If two names are completely identical, we probably don't 
+  care what happens next. However, just to be sure that something unexpected 
+  doesn't take place, we end the option list with <i>-2</i>, which says, &quot;After 
+  sorting on the middle initial, don't do any further sorting.&quot; </li>
+</ul>
+<p class="docText">There are a couple of variations that are worth mentioning. 
+You may never need them unless you're really serious about sorting data files, 
+but it's good to keep them in the back of your mind. First, you can add any 
+&quot;collation&quot; operations (discard blanks, numeric sort, etc.) to the end of a 
+field specifier to describe how you want that field sorted. Using our previous 
+example, let's say that if two names <span class="docEmphasis">are</span> 
+identical, you want them sorted in numeric phone number order. The following 
+command does the trick: </p>
+<pre>% <b>sort +2 -3 +0 -2 +3n phonelist</b></pre>
+<p class="docText">The <i>+3n</i> option says &quot;do a numeric sort on the fourth 
+field.&quot; If you're worried about initial blanks (perhaps some of the phone 
+numbers have area codes), use <i>+3nb</i>. </p>
+<p class="docText">Second, you can specify individual columns within any field 
+for sorting, using the notation <i>+n.c</i>, where <span class="docEmphasis">n</span> 
+is a field number, and <span class="docEmphasis">c</span> is a character 
+position within the field. Likewise, the notation <i>-n.c</i> says &quot;stop sorting 
+at the character before character <span class="docEmphasis">c</span>.&quot; If you're 
+counting characters, be sure to use the <i>-b</i> (ignore whitespace) option — 
+otherwise, it will be very difficult to figure out what character you're 
+counting. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-22-SECT-3">22.3 Changing the sort Field Delimiter</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-2">
+Section 22.2</a> explained how <i>sort</i> separates a line of input into two or 
+more fields using whitespace (spaces or tabs) as field delimiters. The <i>-t</i> 
+option lets you change the field delimiter to some other character. </p>
+<p class="docText">For example, if you wanted to sort the login names on your 
+system by the login shell they use, you could issue a command like this: </p>
+<p class="docText"><tt>/etc..wd</tt>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-7">
+Section 1.7</a></p>
+<pre>% <b>sort -t: +6 /etc/passwd</b>
+root:SndEKOs9H7YLm:0:1:Operator:/:/bin/bash
+sys:*:2:2::/:/bin/bash
+jim:LjKwcUt8l6kZK:2391:1004:Jim O'Callahan:/u/jim:/bin/bash
+   ...
+bart:2DPD8rCOKBbUu:2665:1004:Bart Buus:/u/bart:/bin/tcsh
+tap:xY7oeuJ8WxyGO:2943:1004:Tap Bronman:/u/tap:/bin/tcsh</pre>
+<p class="docText">The option <i>-t:</i> tells <i>sort</i> to use a colon as a 
+field separator — so, in this example, field 0 is the login name, field 1 is the 
+encoded password, field 2 is the user ID number, field 3 is the group ID number, 
+and so on. By this numbering, the login shell is in the sixth field. </p>
+<p class="docText">Remember that <i>sort</i> numbers fields starting with zero — 
+this will save you lots of grief. Two consecutive colons indicate a &quot;null&quot; field 
+that still must be counted. </p>
+<p class="docText"><span class="docEmphasis">—ML and TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-22-SECT-4">22.4 Confusion with Whitespace Field Delimiters</h3>
+<p class="docText">One would hope that a simple task like sorting would be 
+relatively unambiguous. Unfortunately, it isn't. The behavior of <i>sort</i> can 
+be very puzzling. I'll try to straighten out some of the confusion — at the same 
+time, I'll be leaving myself open to abuse by the real <i>sort</i> experts. I 
+hope you appreciate this! Seriously, though: if you know of any other wrinkles 
+to the story, please let us know and we'll add them in the next edition. </p>
+<p class="docText">The trouble with <i>sort</i> is figuring out where one field 
+ends and another begins. It's simplest if you can <span class="docEmphBold">
+specify an explicit field delimiter</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-3">Section 
+22.3</a>). This makes it easy to tell where fields end and begin. But by 
+default, <i>sort</i> uses whitespace characters (tabs and spaces) to separate 
+fields, and the rules for interpreting whitespace field delimiters are 
+unfortunately complicated. As I see them, they are: </p>
+<ul>
+  <li>
+  <p class="docList">The first whitespace character you encounter is a &quot;field 
+  delimiter&quot;; it marks the end of the old field and the beginning of the next 
+  field. </li>
+  <li>
+  <p class="docList">Any whitespace character following a field delimiter is
+  <span class="docEmphasis">part of</span> the new field. That is, if you have 
+  two or more whitespace characters in a row, the first one is used as a field 
+  delimiter and isn't sorted. The remainder <span class="docEmphasis">are</span> 
+  sorted, as part of the next field. </li>
+  <li>
+  <p class="docList">Every field has at least one nonwhitespace character, 
+  unless you're at the end of the line. (That is, null fields only occur when 
+  you've reached the end of a line.) </li>
+  <li>
+  <p class="docList">All whitespace is not equal. Sorting is done according to 
+  the ASCII collating sequence. Therefore, TABs are sorted before spaces. </li>
+</ul>
+<p class="docText">Here is a silly but instructive example that demonstrates 
+most of the hard cases. We'll sort the file <span class="docEmphasis">sortme</span>, 
+which is: </p>
+<pre>        apple   Fruit shipment
+20      beta    beta test sites
+ 5              Something or other</pre>
+<p class="docText">All is not as it seems -- <span class="docEmphBold">cat -t -v</span> 
+(<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-5">Section 
+12.5</a>,
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">
+Section 12.4</a>) shows that the file really looks like this: </p>
+<pre>^Iapple^IFruit shipment
+20^Ibeta^Ibeta test sites
+ 5^I^ISomething or other</pre>
+<p class="docText"><tt>^I</tt> indicates a tab character. Before showing you 
+what <i>sort</i> does with this file, let's break it into fields, being very 
+careful to apply the rules above. In the table, we use quotes to show exactly 
+where each field begins and ends: </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="5">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">&nbsp;</th>
+    <th class="docTableHeader">
+    <p class="docText">Field 0</th>
+    <th class="docTableHeader">
+    <p class="docText">Field 1</th>
+    <th class="docTableHeader">
+    <p class="docText">Field 2</th>
+    <th class="docTableHeader">
+    <p class="docText">Field 3</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Line 1</td>
+    <td class="docTableCell">
+    <p class="docText">&quot;^Iapple&quot;</td>
+    <td class="docTableCell">
+    <p class="docText">&quot;Fruit&quot;</td>
+    <td class="docTableCell">
+    <p class="docText">&quot;shipment&quot;</td>
+    <td class="docTableCell">
+    <p class="docText">null (no more data)</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Line 2</td>
+    <td class="docTableCell">
+    <p class="docText">&quot;20&quot;</td>
+    <td class="docTableCell">
+    <p class="docText">&quot;beta&quot;</td>
+    <td class="docTableCell">
+    <p class="docText">&quot;beta&quot;</td>
+    <td class="docTableCell">
+    <p class="docText">&quot;test&quot;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Line 3</td>
+    <td class="docTableCell">
+    <p class="docText">&quot; 5&quot;</td>
+    <td class="docTableCell">
+    <p class="docText">&quot;^Isomething&quot;</td>
+    <td class="docTableCell">
+    <p class="docText">&quot;or&quot;</td>
+    <td class="docTableCell">
+    <p class="docText">&quot;other&quot;</td>
+  </tr>
+</table>
+<p class="docText">OK, now let's try some <i>sort</i> commands; I've added 
+annotations on the right, showing what character the &quot;sort&quot; was based on. First, 
+we'll sort on field zero — that is, the first field in each line: </p>
+<pre>% <b>sort sortme </b>                     <i> ...sort on field zero</i>
+        apple   Fruit shipments          <i> field 0, first character: TAB</i>
+ 5              Something or other       <i> field 0, first character: SPACE</i>
+20      beta    beta test sites          <i> field 0, first character: 2</i></pre>
+<p class="docText">As I noted earlier, a TAB precedes a space in the collating 
+sequence. Everything is as expected. Now let's try another, this time sorting on 
+field 1 (the second field): </p>
+<pre>+% <b>sort +1 sortme </b>                  <i> ...sort on field 1</i>
+ 5              Something or other       <i> field 1, first character: TAB</i>
+        apple   Fruit shipments          <i> field 1, first character: F</i>
+20      beta    beta test sites          <i> field 1, first character: b</i></pre>
+<p class="docText">Again, the initial TAB causes &quot;something or other&quot; to appear 
+first. &quot;Fruit shipments&quot; preceded &quot;beta&quot; because in the ASCII table, uppercase 
+letters precede lowercase letters. Now, let's sort on the next field: </p>
+<pre>+% <b>sort +2 sortme </b>                  <i> ...sort on field 2</i>
+20      beta    beta test sites          <i> field 2, first character: b</i>
+ 5              Something or other       <i> field 2, first character: o</i>
+        apple   Fruit shipments          <i> field 2, first character: s</i></pre>
+<p class="docText">No surprises here. And finally, sort on field 3 (the &quot;fourth&quot; 
+field): </p>
+<pre>+% <b>sort +3 sortme </b>                  <i> ...sort on field 3</i>
+        apple   Fruit shipments          <i> field 3,  NULL</i>
+ 5              Something or other       <i> field 3, first character: o</i>
+20      beta    beta test sites          <i> field 3, first character: t</i></pre>
+<p class="docText">The only surprise here is that the NULL field gets sorted 
+first. That's really no surprise, though: NULL has the ASCII value zero, so we 
+should expect it to come first. </p>
+<p class="docText">OK, this was a silly example. But it was a difficult one; a 
+casual understanding of what sort &quot;ought to do&quot; won't explain any of these 
+cases, which leads to another point. If someone tells you to sort some terrible 
+mess of a data file, you could be heading for a nightmare. But often, you're not 
+just sorting; you're also <span class="docEmphasis">designing</span> the data 
+file you want to sort. If you get to design the format for the input data, a 
+little bit of care will save you lots of headaches. If you have a choice,
+<span class="docEmphasis">never</span> allow TABs in the file. And be careful of 
+leading spaces; a word with an extra space before it will be sorted
+<span class="docEmphasis">before</span> other words. Therefore, use an explicit 
+delimiter between fields (like a colon), or use the <i>-b</i> option (and an 
+explicit sort field), which tells <i>sort</i> to ignore initial whitespace. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-22-SECT-5">22.5 Alphabetic and Numeric Sorting</h3>
+<p class="docText"><i>sort</i> performs two fundamentally different kinds of 
+sorting operations: alphabetic sorts and numeric sorts. An alphabetic sort is 
+performed according to the traditional &quot;dictionary order,&quot; using the ASCII 
+collating sequence. Uppercase letters come before lowercase letters (unless you 
+specify the <i>-f</i> option, which &quot;folds&quot; uppercase and lowercase together), 
+with numerals and punctuation interspersed. The <i>-l</i> (lowercase
+<span class="docEmphasis">L</span>) option sorts by the current locale instead 
+of the default US/ASCII order. </p>
+<p class="docText">This is all fairly trivial and common sense. However, it's 
+worth belaboring the difference, because it's a frequent source of bugs in shell 
+scripts. Say you sort the numbers 1 through 12. A numeric sort gives you these 
+numbers &quot;in order,&quot; just like you'd expect. An alphabetic sort gives you: </p>
+<pre>1
+11
+12
+2
+...</pre>
+<p class="docText">Of course, this is how you'd sort the numbers if you applied 
+dictionary rules to the list. Numeric sorts can handle decimal numbers (for 
+example, numbers like 123.44565778); they can't handle floating-point numbers 
+(for example, 1.2344565778E+02). The GNU <i>sort</i> does provide the <tt>-g</tt> 
+flag for sorting numbers in scientific notation. Unfortunately, it is 
+significantly slower than plain old decimal sorting. </p>
+<p class="docText">What happens if you include alphabetic characters in a 
+numeric sort? Although the results are predictable, I would prefer to say that 
+they're &quot;undefined.&quot; Including alphabetic characters in a numeric sort is a 
+mistake, and there's no guarantee that different versions of <i>sort</i> will 
+handle them the same way. As far as I know, there is no provision for sorting 
+hexadecimal numbers. </p>
+<p class="docText">One final note: your version of numeric sort may treat 
+initial blanks as significant, sorting numbers with additional spaces before 
+them ahead of numbers without the additional spaces. This is an incredibly 
+stupid misfeature. There is a workaround: use the <i>-b</i> (ignore leading 
+blanks) and always specify a sort field.<span id="ENB22-2"><a class="docLink" href="#EN22-2"><sup>[2]</sup></a></span> 
+That is, <tt>sort -nb +0</tt> will do what you expect; <tt>sort -n</tt> won't.
+</p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-22-SECT-6">22.6 Miscellaneous sort Hints</h3>
+<p class="docText">Here is a grab bag of useful, if not exactly interesting, <i>
+sort</i> features. The utility will actually do quite a bit, if you let it. </p>
+<h4  id="upt3-CHP-22-SECT-6.1" class="docSection2Title">22.6.1 Dealing with Repeated Lines</h4>
+<p class="docText"><span class="docEmphasis">sort -u</span> sorts the file and 
+eliminates duplicate lines. It's more powerful than <span class="docEmphBold">
+uniq</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-20">Section 
+21.20</a>) because: </p>
+<ul>
+  <li>
+  <p class="docList">It sorts the file for you; <i>uniq</i> assumes that the 
+  file is already sorted and won't do you any good if it isn't. </li>
+  <li>
+  <p class="docList">It is much more flexible. <span class="docEmphasis">sort -u</span> 
+  considers lines &quot;unique&quot; if the <span class="docEmphBold">sort fields</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-2">Section 
+  22.2</a>) you've selected match. So the lines don't even have to be (strictly 
+  speaking) unique; differences outside of the sort fields are ignored. </li>
+</ul>
+<p class="docText">In return, there are a few things that <i>uniq</i> does that
+<i>sort</i> won't do — such as print only those lines that aren't repeated, or 
+count the number of times each line is repeated. But on the whole, I find
+<span class="docEmphasis">sort -u</span> more useful. </p>
+<p class="docText">Here's one idea for using <span class="docEmphasis">sort -u</span>. 
+When I was writing a manual, I often needed to make tables of error messages. 
+The easiest way to do this was to <i>grep</i> the source code for
+<span class="docEmphasis">printf</span> statements, write some
+<span class="docEmphBold">Emacs</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-1">Section 
+19.1</a>) macros to eliminate junk that I didn't care about, use
+<span class="docEmphasis">sort -u</span> to put the messages in order and get 
+rid of duplicates, and write some more Emacs macros to format the error messages 
+into a table. All I had to do then was write the descriptions. </p>
+<h4  id="upt3-CHP-22-SECT-6.2" class="docSection2Title">22.6.2 Ignoring Blanks</h4>
+<p class="docText">One important option (that I've mentioned a number of times) 
+is <i>-b</i>; this tells <i>sort</i> to ignore extra whitespace at the beginning 
+of each field. This is absolutely essential; otherwise, your sorts will have 
+rather strange results. In my opinion, <i>-b</i> should be the default. But they 
+didn't ask me. </p>
+<p class="docText">Another thing to remember about <i>-b</i>: it works only if 
+you explicitly specify which fields you want to sort. By itself,
+<span class="docEmphasis">sort -b</span> is the same as <i>sort</i>: whitespace 
+characters are counted. I call this a bug, don't you? </p>
+<h4  id="upt3-CHP-22-SECT-6.3" class="docSection2Title">22.6.3 Case-Insensitive Sorts</h4>
+<p class="docText">If you don't care about the difference between uppercase and 
+lowercase letters, invoke <i>sort</i> with the <i>-f</i> (case-fold) option. 
+This folds lowercase letters into uppercase. In other words, it treats all 
+letters as uppercase. </p>
+<h4  id="upt3-CHP-22-SECT-6.4" class="docSection2Title">22.6.4 Dictionary Order</h4>
+<p class="docText">The <i>-d</i> option tells <i>sort</i> to ignore all 
+characters except for letters, digits, and whitespace. In particular,
+<span class="docEmphasis">sort -d</span> ignores punctuation. </p>
+<h4  id="upt3-CHP-22-SECT-6.5" class="docSection2Title">22.6.5 Month Order</h4>
+<p class="docText">The <i>-M</i> option tells <i>sort</i> to treat the first 
+three nonblank characters of a field as a three-letter month abbreviation and to 
+sort accordingly. That is, JAN comes before FEB, which comes before MAR. This 
+option isn't available on all versions of Unix. </p>
+<h4  id="upt3-CHP-22-SECT-6.6" class="docSection2Title">22.6.6 Reverse Sort</h4>
+<p class="docText">The <i>-r</i> option tells <i>sort</i> to &quot;reverse&quot; the order 
+of the sort; i.e., Z comes before A, 9 comes before 1, and so on. You'll find 
+that this option is really useful. For example, imagine you have a program 
+running in the background that records the number of free blocks in the 
+filesystem at midnight each night. Your log file might look like this: </p>
+<pre>Jan 1 2001:  108 free blocks
+Jan 2 2001:  308 free blocks
+Jan 3 2001: 1232 free blocks
+Jan 4 2001:   76 free blocks
+...</pre>
+<p class="docText">The script below finds the smallest and largest number of 
+free blocks in your log file: </p>
+<p class="docText"><tt>head</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-12">
+Section 12.12</a></p>
+<pre>#!/bin/sh
+echo &quot;Minimum free blocks&quot;
+sort -t: +1nb  logfile | head -1
+
+echo &quot;Maximum free blocks&quot;
+sort -t: +1nbr logfile | head -1</pre>
+<p class="docText">It's not profound, but it's an example of what you can do.
+</p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+
+<h3 class="docSection1Title" id="upt3-CHP-22-SECT-7">22.7 lensort: Sort Lines by Length</h3>
+<p class="docText">A nice little script to sort lines from shortest to longest 
+can be handy when you're writing and want to find your big words: </p>
+<p class="docText"><tt>deroff</tt>
+<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-9">
+Section 16.9</a>, <tt>uniq</tt>
+<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-20">
+Section 21.20</a></p>
+<pre>% <b>deroff -w report | uniq -d | lensort</b>
+a
+an
+  ...
+deoxyribonucleic</pre>
+<p class="docText">Once I used it to sort a list of pathnames:</p>
+<p class="docText"><tt>find</tt>
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-1">
+Section 9.1</a></p>
+<pre>% <b>find adir -type f -print | lensort</b>
+adir/.x
+adir/.temp
+   ...
+adir/subdir/part1/somefile
+adir/subdir/part1/a_test_case</pre>
+<p class="docText">The script uses <span class="docEmphBold">awk</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">Section 
+20.10</a>) to print each line's length, followed by the original line. Next, <i>
+sort</i> sorts the lengths <span class="docEmphBold">numerically</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-5">Section 
+22.5</a>). Then <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) strips off the lengths and the spaces and prints the lines: </p>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: lensort</p>
+<pre>#! /bin/sh
+awk 'BEGIN { FS=RS }
+{ print length, $0 }' $* |
+# Sort the lines numerically
+sort +0n -1 |
+# Remove the length and the space and print each line
+sed 's/^[0-9][0-9]* //'</pre>
+<p class="docText">(Some <i>awk</i>s require a semicolon after the first curly 
+bracket — that is, <tt>{ FS=RS };</tt>.) </p>
+<p class="docText">Of course, you can also tackle this problem with Perl: </p>
+<pre>$ perl -lne '$l{$_}=length;END{for(sort{$l{$a}&lt;=&gt;$l{$b}}keys %l){print}}' \
+                <tt><i>filename</i></tt></pre>
+<p class="docText">This one-line wonder has the side effect of eliminating 
+duplicate lines. If this seems a bit terse, that's because it's meant to be 
+&quot;write-only,&quot; that is, it is a bit of shell magic that you'd use to accomplish a 
+short-term task. If you foresee needing this same procedure in the future, it's 
+better to capture the magic in script. Scripts also tend to be easier to 
+understand, debug, and expand. The following script does the same thing as the 
+one-liner but a bit more clearly: </p>
+<pre>#!/usr/bin/perl
+
+my %lines;
+while(my $curr_line = &lt;STDIN&gt;){
+  chomp $curr_line;
+  $lines{$curr_line} = length $curr_line;
+}
+
+for my $line (sort{ $lines{$a} &lt;=&gt; $lines{$b} } keys %lines){
+  print $line, &quot;\n&quot;;
+}</pre>
+<p class="docText">This script reads in a line from standard input, removes the 
+newline character and creates an associative array that maps whole line to its 
+length in characters. After processing the whole file, the keys of the 
+associative array is sorted in ascending numerical order by each key's value. It 
+is then a simple matter to print the key, which is the line itself. More Perl 
+tricks can be found in
+<a class="docLink" href="_chapter 11.htm">Chapter 
+11</a>. </p>
+<p class="docText"><span class="docEmphasis">—JP and JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-22-SECT-8">22.8 Sorting a List of People by Last Name</h3>
+<p class="docText">It's hard to sort any old list of peoples' names because some 
+people have one-word first and last names like Joe Smith, but other people have 
+multi-part names like Mary Jo Appleton. This program sorts on the last word in 
+each name. That won't take care of the way that names are used everywhere in the 
+world, but it might give you some ideas. </p>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: namesort</p>
+<p class="docText">The script reads from files or its standard input; it writes 
+to standard output. </p>
+<pre>#! /bin/sh
+# Print last field (last name), a TAB, then whole name:
+awk '{print $NF &quot;\t&quot; $0}' $* |
+# sort (by last name: the temporary first field)
+sort |
+# strip off first field and print the names:
+cut -f2-</pre>
+<p class="docText">If you want more control over the sorting or you're 
+interested in pulling apart names in general, there's a Perl module you might 
+want to look at called <tt>Lingua::EN::NameParse</tt>. Below is a Perl script 
+that also sorts a list of names by surname. </p>
+<pre>#!/usr/bin/perl
+
+use Lingua::EN::NameParse;
+
+my $Name_Obj = Lingua::EN::NameParse-&gt;new(auto_clean  =&gt; 1);
+my @names = &lt;STDIN&gt;;
+for my $line (sort by_lastname @names){
+  chomp($line);
+  print $line, &quot;\n&quot;;
+}
+
+sub by_lastname {
+  my @names;
+  for my $name ($a, $b) {
+    chomp($name);
+    if( my $err = $Name_Obj-&gt;parse($name) ){
+      warn &quot;WARN: Unparsable name ($name): $err&quot;;
+    }
+    my %tmp = $Name_Obj-&gt;components;
+    push @names, \%tmp;
+  }
+  return lc $names[0]-&gt;{surname_1} cmp lc $names[1]-&gt;{surname_1};
+}</pre>
+<p class="docText">The script starts by bringing in the <tt>
+Lingua::EN::NameParse</tt> library. Then, all lines from standard input are read 
+in and stored in an array. Perl's <tt>sort</tt> function is particularly 
+flexible in that it can use a user-defined subroutine to determine the desired 
+collating sequence. Here, the subroutine <tt>by_lastname</tt> receives the next 
+two items of the list to be sorted in the &quot;magical&quot; global variables <tt>$a</tt> 
+and <tt>$b</tt>. These names are then parsed by the global <tt>
+Lingua::EN::NameParse</tt> object, and the name components are stored in the 
+array <tt>@names</tt>. It's then a simple matter to alphabetically compare the 
+lowercased surnames and return that value to <tt>sort</tt>. Although this script 
+may be a little bit more Perl than you wanted to know, the problem of sorting by 
+last names is complex. Fortunately, the <tt>Lingua::EN::NameParse</tt> module 
+available on CPAN was available to do the heavy lifting for us. In fact, one of 
+most the compelling reasons to learn Perl is the large collection of free 
+library modules stored on the Comprehensive Perl Archive Network (CPAN), which 
+is mirrored throughout the world. For more about CPAN, see
+<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-11">
+Section 41.11</a>. </p>
+<p class="docText"><span class="docEmphasis">—JP and JJ</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN22-1"><a class="docLink" href="#ENB22-1">[1]</a>&nbsp;&nbsp;I harp on this because I always get confused and have to look it up in the 
+manual page.</p><p class="docFootnote" id="EN22-2"><a class="docLink" href="#ENB22-2">[2]</a>&nbsp;&nbsp;Stupid misfeature number 2:
+  <i>-b</i> doesn't work unless you specify a sort field explicitly, with a <i>
+  +n</i> option.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 21.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 23.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

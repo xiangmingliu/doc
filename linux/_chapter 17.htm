@@ -1,0 +1,1700 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 17</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 16.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 18.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 17. vi Tips and Tricks</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-1">17.1 The vi Editor: Why So Much Material?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-2">17.2 What We Cover</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-3">17.3 Editing Multiple Files with vi</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-4">17.4 Edits Between Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-5">17.5 Local Settings for vi</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-6">17.6 Using Buffers to Move or Copy Text</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-7">17.7 Get Back What You Deleted with Numbered Buffers</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-8">17.8 Using Search Patterns and Global Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-9">17.9 Confirming Substitutions in vi</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-10">17.10 Keep Your Original File, Write to a New File</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-11">17.11 Saving Part of a File</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-12">17.12 Appending to an Existing File</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-13">17.13 Moving Blocks of Text by Patterns</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-14">17.14 Useful Global Commands (with Pattern Matches)</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-15">17.15 Counting Occurrences; Stopping Search Wraps</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-16">17.16 Capitalizing Every Word on a Line</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-17">17.17 Per-File Setups in Separate Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-18">17.18 Filtering Text Through a Unix Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-19">17.19 vi File Recovery Versus Networked Filesystems</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-20">17.20 Be Careful with vi -r Recovered Buffers</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-21">17.21 Shell Escapes: Running One UnixCommand While Using Another</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-22">17.22 vi Compound Searches</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-23">17.23 vi Word Abbreviation</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-24">17.24 Using vi Abbreviations as Commands (Cut and Paste Between vi's)</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-25">17.25 Fixing Typos with vi Abbreviations</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-26">17.26 vi Line Commands Versus Character Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-27">17.27 Out of Temporary Space? Use Another Directory</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-28">17.28 Neatening Lines</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-29">17.29 Finding Your Place with Undo</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-17-SECT-30">17.30 Setting Up vi with the .exrc File</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-1">17.1 The vi Editor: Why So Much Material?</h3>
+<p class="docText">We're giving a lot of pages to the <i>vi</i> editor. People 
+who use another editor, like Emacs, might wonder why. Here's why. </p>
+<p class="docText">I've watched people (including myself) learn and use <i>vi</i> 
+for 20 years. It's the standard editor that comes with almost every Unix system 
+these days, but most people have no idea that <i>vi</i> can do so much. People 
+are surprised, over and over, when I show them features that their editor has. 
+Even with its imperfections, <i>vi</i> is a power tool. If you work with files, 
+you probably use it constantly. Knowing how to use it well will save you lots of 
+time and work. </p>
+<p class="docText">But why not give the same coverage to another editor that 
+lots of people use: <span class="docEmphBold">GNU Emacs</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-1">Section 
+19.1</a>)? That's because GNU Emacs comes with source code and can be extended 
+by writing LISP code. Its commands have descriptive names that you can 
+understand by reading through a list. <i>vi</i>'s commands are usually no more 
+than a few characters long; many of the option names are short and not too 
+descriptive either. Lots of Unix systems don't even have <i>vi</i> source code 
+these days. </p>
+<p class="docText">I hope that you <i>vi</i> users will learn a lot in this 
+section and that people who don't use <i>vi</i> will at least browse through to 
+see some of <i>vi</i>'s less obvious features. </p>
+<p class="docText">If you're looking for additional text-editing power, you can 
+use <i>vim</i> instead of the plain vanilla <i>vi</i> installed on most systems. 
+All <i>vi</i> commands work with <i>vim</i>, but with added functionality, 
+power, and more standardized behavior accross flavors of Unix. There should be 
+an installation of <i>vim</i> for your Unix. </p>
+<p class="docText"><span class="docEmphasis">—JP and SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-2">17.2 What We Cover</h3>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 class="docSidebarTitle">Summary Box</h2>
+      <ul>
+        <li>
+        <p class="docList">Travel between files, save text into buffers, and 
+        move it around without leaving <i>vi</i>:
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-3">
+        Section 17.3</a>,
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-4">
+        Section 17.4</a>, and
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-6">
+        Section 17.6</a>. </li>
+        <li>
+        <p class="docList">Recover deletions from up to nine numbered buffers:
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-7">
+        Section 17.7</a>. </li>
+        <li>
+        <p class="docList">Do global search and replacement with pattern 
+        matching:
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-8">
+        Section 17.8</a>,
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-13">
+        Section 17.13</a>,
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-14">
+        Section 17.14</a>,
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-16">
+        Section 17.16</a>, and
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-22">
+        Section 17.22</a>. </li>
+        <li>
+        <p class="docList">Save a lot of typing with word abbreviations:
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-23">
+        Section 17.23</a>,
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-24">
+        Section 17.24</a>, and
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-25">
+        Section 17.25</a>. </li>
+        <li>
+        <p class="docList">&quot;Prettify&quot; lines of text that don't fit on the screen 
+        as you would like:
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-28">
+        Section 17.28</a>. </li>
+        <li>
+        <p class="docList">Run other Unix commands without leaving <i>vi</i> 
+        (called a filter-through):
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-18">
+        Section 17.18</a> and
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-21">
+        Section 17.21</a>. </li>
+        <li>
+        <p class="docList">Keep track of functions and included files with <i>
+        ctags</i> and <i>tags</i>. </li>
+        <li>
+        <p class="docList">Change your <i>vi</i> and <i>ex</i> options in your
+        <span class="docEmphasis">.exrc</span> file for all files or just for 
+        files in a local directory:
+        <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-5">
+        Section 17.5</a>. </li>
+      </ul>
+      <p class="docText">When you type a : (colon) command in <i>vi</i>, you're 
+      beginning an <i>ex</i> command. There's more information about <i>ex</i> 
+      in a later chapter:
+      <a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-3">
+      Section 20.3</a>,
+      <a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-4">
+      Section 20.4</a>, and
+      <a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-5">
+      Section 20.5</a>. </p>
+      <p class="docText"><span class="docEmphasis">— EK</span></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-3">17.3 Editing Multiple Files with vi</h3>
+<p class="docText"><i>ex</i> commands enable you to switch between multiple 
+files. The advantage is speed. When you are sharing the system with other users, 
+it takes time to exit and re-enter <i>vi</i> for each file you want to edit. 
+Staying in the same editing session and traveling between files is not only 
+faster for access, but you also save abbreviations and command sequences that 
+you have defined, and you keep <span class="docEmphBold">yank buffers</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-4">Section 
+17.4</a>) so that you can copy text from one file to another. </p>
+<p class="docText">When you first invoke <i>vi</i>, you can name more than one 
+file to edit and then use <i>ex</i> commands to travel between the files: </p>
+<pre>% <b>vi file1 file2</b></pre>
+<p class="docText">This edits <span class="docEmphasis">file1</span> first. 
+After you have finished editing the first file, the <i>ex</i> command <tt>:w</tt> 
+writes (saves) <span class="docEmphasis">file1</span>, and <tt>:n</tt> calls in 
+the next file (<span class="docEmphasis">file2</span>). You can type <tt>:wn</tt> 
+both to save the current file changes and to go to the next file. Typing <tt>:q!</tt> 
+discards changes and closes the current file. Type <tt>vi *</tt> to edit all the 
+files in a directory, though this will give you an error in some Unix systems. 
+Type CTRL-g or <tt>:f</tt> to get the name of your current file; <tt>:args</tt> 
+lists all filenames from the command line and puts brackets around the <tt>[<i>current</i>]</tt> 
+file. </p>
+<p class="docText">You can also switch at any time to another file not specified 
+on the command line with the <i>ex</i> command <tt>:e</tt>. If you want to edit 
+another file within <i>vi</i>, you first need to save your current file (<tt>:w</tt>), 
+then you can type the following command: </p>
+<pre><b>:e </b> <i>filename </i></pre>
+<p class="docText"><i>vi</i> &quot;remembers&quot; two filenames at a time as the current 
+and alternate filenames. These can be referred to by the symbols <tt>%</tt> 
+(current filename) and <tt>#</tt> (alternate filename). </p>
+<p class="docText"><tt>#</tt> is particularly useful with <tt>:e</tt>, since it 
+allows you to switch back and forth between two files easily. The command <tt>
+:e#</tt> is always &quot;switch to the other one.&quot; With different flavors of Unix, 
+the <i>vi</i> command CTRL-<tt>^</tt> (control-caret) is a synonym for <tt>:e#</tt>. 
+This usually seems to work even without pressing the SHIFT key. For instance, if 
+I get a caret by pressing SHIFT-6, I don't need to press CTRL-SHIFT-6 to make <i>
+vi</i> change files: just CTRL-6 is enough. </p>
+<p class="docText">If you have not first saved the current file, <i>vi</i> will 
+not allow you to switch files with <tt>:e</tt> or <tt>:n</tt> unless you tell it 
+imperatively to do so by adding an exclamation point after the command. </p>
+<p class="docText">The command:</p>
+<pre><b>:e!</b></pre>
+<p class="docText">is also useful. It discards your edits and returns to the 
+last saved version of the current file. </p>
+<p class="docText">In contrast to the <tt>#</tt> symbol, <tt>%</tt> is useful 
+mainly in <span class="docEmphBold">shell escapes</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-21">Section 
+17.21</a>) and when writing out the contents of the current buffer to a new 
+file. For example, you could save a second version of the file
+<span class="docEmphasis">letter</span> with the command: </p>
+<pre><b>:w %.new</b></pre>
+<p class="docText">instead of:</p>
+<pre><b>:w letter.new</b></pre>
+<p class="docText">— <span class="docEmphasis">LL and SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-4">17.4 Edits Between Files</h3>
+<p class="docText">When you give a yank buffer (temporary holding buffer) a 
+one-letter name, you have a convenient way to move text from one file to 
+another. Named buffers are not cleared when a new file is loaded into the <i>vi</i> 
+buffer with the <span class="docEmphBold">:e command</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-3">Section 
+17.3</a>). Thus, by yanking (copying) or deleting text from one file (into 
+multiple named buffers if necessary), calling in a new file with <tt>:e</tt> and 
+putting the named buffer into the new file, you can transfer material between 
+files. </p>
+<p class="docText">The following table illustrates how to transfer text from one 
+file to another. Type the keystrokes exactly as shown to achieve the stated 
+result. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Keystrokes</th>
+    <th class="docTableHeader">
+    <p class="docText">Action</th>
+    <th class="docTableHeader">
+    <p class="docText">Results</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&quot;f4yy</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Yank four lines into buffer f.</td>
+    <td class="docTableCell">
+    <pre>With a <tt><i>s</i></tt>creen editor you can scroll
+the page, move the cursor, delete lines,
+insert characters, and more, while seeing
+the results of the edits as you make them</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:w</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Save the file.</td>
+    <td class="docTableCell">
+    <pre>&quot;practice&quot; 6 lines 238 characters</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:e letter</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Enter the file <span class="docEmphasis">letter</span> 
+    with <tt>:e</tt>. Move cursor to where the copied text will be placed. </td>
+    <td class="docTableCell">
+    <pre>Dear Mr.
+Henshaw:
+I thought that you would
+be interested to know that:
+Yours truly,</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&quot;fp</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Place yanked text from named buffer f below the cursor.</td>
+    <td class="docTableCell">
+    <pre>Dear Mr.
+Henshaw:
+I thought that you would
+be interested to know that:
+With a screen editor you can scroll
+the page, move the cursor, delete lines,
+insert characters, and more, while seeing
+the results of the edits as you make them
+Yours truly,</pre>
+    </td>
+  </tr>
+</table>
+<p class="docText">If you yank into a buffer and type the buffer name as an 
+uppercase letter, your new text will be added to the text already in the buffer. 
+For example, you might use <tt>&quot;f4yy</tt> to yank four lines into the buffer 
+named <span class="docEmphasis">f</span>. If you then move somewhere else and 
+type <tt>&quot;F6yy</tt> with an uppercase <span class="docEmphasis">F</span>, that 
+will add six more lines to the same <span class="docEmphasis">f</span> buffer — 
+for a total of ten lines. You can yank into the uppercase buffer name over and 
+over. To output all of the yanked text, use the lowercase letter — like <tt>&quot;fp</tt>. 
+To clear the buffer and start over, use its lowercase name (<tt>&quot;fy...</tt>) 
+again. </p>
+<p class="docText">— <span class="docEmphasis">LL and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-5">17.5 Local Settings for vi</h3>
+<p class="docText">In addition to reading the <span class="docEmphasis">.exrc</span> 
+file (the vi configuration or startup file) in your home directory, many 
+versions of <i>vi</i> will read a file called <span class="docEmphasis">.exrc</span> 
+in the current directory. This allows you to set options that are appropriate to 
+a particular project. </p>
+<p class="docText">For example, you might want to have one set of options in a 
+directory used mainly for programming: </p>
+<pre>set number lisp autoindent sw=4 terse
+set tags=/usr/lib/tags</pre>
+<p class="docText">and another set of options in a directory used for text 
+editing:</p>
+<pre>set wrapmargin=15 ignorecase</pre>
+<p class="docText">Note that you can set certain options in the
+<span class="docEmphasis">.exrc</span> file in your <span class="docEmphBold">
+home directory</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-15">Section 
+1.15</a>) and unset them (for example, <tt>set wrapmargin=0 noignorecase</tt>) 
+in a local directory. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Many versions of <i>vi</i> don't read <i>.exrc</i> 
+        files in the current directory unless you first set the <tt>exrc</tt> 
+        option in your home directory's <i>.exrc</i> file: </p>
+        <pre>set exrc</pre>
+        <p class="docText">This mechanism makes it harder for other people to 
+        place, in your working directory, an <i>.exrc</i> file whose commands 
+        might jeopardize the security of your system. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">You can also define alternate <i>vi</i> environments by 
+saving option settings in a file other than <span class="docEmphasis">.exrc</span> 
+and reading in that file with the <tt>:so</tt> command. For example: </p>
+<pre>:so .progoptions</pre>
+<p class="docText">Local <span class="docEmphasis">.exrc</span> files are also 
+useful for defining <span class="docEmphBold">abbreviations</span> (
+<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-23">
+Section 17.23</a>) and <span class="docEmphBold">key mappings</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+18.2</a>). When we write a book or manual, we save all abbreviations to be used 
+in that book in an <span class="docEmphasis">.exrc</span> file in the directory 
+in which the book is being created. </p>
+<p class="docText">You can also store settings and startup commands for <i>vi</i> 
+and <i>ex</i> in an environment variable called <span class="docEmphBold">EXINIT</span> 
+(<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-27">Section 
+17.27</a>). If there is a conflict between settings in <span class="docEmphasis">
+EXINIT</span> and an <span class="docEmphasis">.exrc</span> file,
+<span class="docEmphasis">EXINIT</span> settings take precedence. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">You can keep a group of standard .<i>exrc</i> files 
+        in a central directory and <span class="docEmphBold">link</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-5">Section 
+        10.5</a>) to them from various local directories. For instance, from 
+        this book's source-file directory, which is full of SGML files, I made a 
+        symlink: </p>
+        <pre>% <b>ln -s ~/lib/vi/exrc.sgml .exrc</b></pre>
+        <p class="docText">I prefer symbolic links to hard links in a case like 
+        this because they make it easy to see to which central file the local
+        <span class="docEmphasis">.exrc</span> link points. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-6">17.6 Using Buffers to Move or Copy Text</h3>
+<p class="docText">In a <i>vi</i> editing session, your last deletion (<tt>d</tt> 
+or <tt>x</tt>) or yank (<tt>y</tt>) is saved in a buffer. You can access the 
+contents of that buffer and put the saved text back in your file with the
+<span class="docEmphasis">put</span> command (<tt>p</tt> or <tt>P</tt>). This is 
+a frequent sequence of commands: </p>
+<pre>5dd   <i>delete 5 lines</i>
+      <i> . . . move somewhere else</i>
+
+p     <i>put the 5 deleted lines back in a new</i>
+      <i>location, below the current line</i></pre>
+<p class="docText">Fewer new users are aware that <i>vi</i> stores the last
+<span class="docEmphBold">nine</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-7">Section 
+17.7</a>) deletions in numbered buffers. You can access any of these numbered 
+buffers to restore any (or all) of the last nine deletions. (Small deletions, of 
+only parts of lines, are not saved in numbered buffers, however.) Small 
+deletions can be recovered only by using the <tt>p</tt> or <tt>P</tt> command 
+immediately after you've made the deletion. </p>
+<p class="docText"><i>vi</i> also allows you to yank (copy) text to &quot;named&quot; 
+buffers identified by letters. You can fill up to 26 (a-z) buffers with yanked 
+text and restore that text with a <span class="docEmphasis">put</span> command 
+at any time in your editing session. This is especially important if you want to 
+transfer data between two files, because all buffers except those that are named 
+are lost when you change files. See
+<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-4">
+Section 17.4</a>. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-7">17.7 Get Back What You Deleted with Numbered 
+Buffers</h3>
+<p class="docText">Being able to delete large blocks of text in a single bound 
+is all very well and good, but what if you mistakenly delete 53 lines that you 
+need? There's a way to recover any of your past <span class="docEmphasis">nine</span> 
+deletions, because they're saved in numbered buffers. The last delete is saved 
+in buffer 1, the second-to-last in buffer 2, and so on. </p>
+<p class="docText">To recover a deletion, type <tt>&lt;&quot;&gt;</tt> (the double quote 
+character), identify the buffered text by number, then give the
+<span class="docEmphasis">put</span> command. To recover your second-to-last 
+deletion from buffer 2, type the following: </p>
+<pre>&quot;2p</pre>
+<p class="docText">The deletion in buffer 2 is placed on the line below the 
+cursor.</p>
+<p class="docText">If you're not sure which buffer contains the deletion you 
+want to restore, you don't have to keep typing <tt>&lt;&quot;&gt;</tt><span class="docEmphasis">n</span><tt>p</tt> 
+over and over again. If you use the <span class="docEmphasis">repeat</span> 
+command (.) with <tt>p</tt> after <tt>u</tt> (undo), it automatically increments 
+the buffer number. As a result, you can search through the numbered buffers as 
+follows: </p>
+<pre>&quot;1pu.u.u <i>etc.</i></pre>
+<p class="docText">to put the contents of each succeeding buffer in the file one 
+after the other. Each time you type <tt>u</tt>, the restored text is removed; 
+when you type a dot (.), the contents of the <span class="docEmphasis">next</span> 
+buffer is restored to your file. Keep typing <tt>u</tt> and . until you've 
+recovered the text you're looking for. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-8">17.8 Using Search Patterns and Global Commands</h3>
+<p class="docText">Besides using line numbers and address symbols (., <tt>$</tt>,
+<tt>%</tt>), <i>ex</i> (including the <i>ex</i> mode of <i>vi</i>, of course) 
+can <span class="docEmphBold">address lines</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-3">Section 
+20.3</a>) using <span class="docEmphBold">search patterns</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-1">Section 
+32.1</a>). For example: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">:/</span> <tt><i>
+  pattern</i></tt><span class="docMonofont">/d</span> </span></dt>
+  <dd>
+  <p class="docList">Deletes the next line containing <span class="docEmphasis">
+  pattern</span>.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">:/</span> <tt><i>
+  pattern</i></tt><span class="docMonofont">/+d</span> </span></dt>
+  <dd>
+  <p class="docList">Deletes the line <span class="docEmphasis">below</span> the 
+  next line containing <span class="docEmphasis">pattern</span>. (You could also 
+  use <tt>+1</tt> instead of <tt>+</tt> alone.) </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">:/</span> <tt><i>
+  pattern1</i></tt><span class="docMonofont">/,/</span> <tt><i>pattern2</i></tt><span class="docMonofont">/d</span>
+  </span></dt>
+  <dd>
+  <p class="docList">Deletes from the next line (after the current line) that 
+  contains <span class="docEmphasis">pattern1</span> through the next following 
+  line that contains <span class="docEmphasis">pattern2</span>. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">:.,/</span> <tt><i>
+  pattern</i></tt><span class="docMonofont">/m23</span> </span></dt>
+  <dd>
+  <p class="docList">Takes text from current line (.) through the next line 
+  containing <span class="docEmphasis">pattern</span> and puts it after line 23.
+  </dd>
+</dl>
+<p class="docText">Note that patterns are delimited by a slash both
+<span class="docEmphasis">before</span> and <span class="docEmphasis">after</span>.
+</p>
+<p class="docText">If you make deletions by pattern with <i>vi</i> and <i>ex</i>, 
+there is a difference in the way the two editors operate. Suppose you have in 
+your file named <span class="docEmphasis">practice</span> the following lines:
+</p>
+<pre>With a screen editor you can scroll the
+page, move the cursor, <tt><i>d</i></tt>elete lines, insert
+characters and more, while seeing results
+of your edits as you make them.</pre>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Key-strokes</th>
+    <th class="docTableHeader">
+    <p class="docText">Action</th>
+    <th class="docTableHeader">
+    <p class="docText">Results</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>d/while</tt></td>
+    <td class="docTableCell">
+    <p class="docText">The <i>vi</i> delete-to-<span class="docEmphasis">pattern</span> 
+    command deletes from the cursor up to the word <span class="docEmphasis">
+    while</span> but leaves the remainder of both lines. </td>
+    <td class="docTableCell">
+    <pre>With a screen editor you can scroll the
+page, move the cursor, while seeing results
+of your edits as you make them.</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:.,/while/d</tt></td>
+    <td class="docTableCell">
+    <p class="docText">The <i>ex</i> command deletes the entire range of 
+    addressed lines; in this case both the current line and the line containing 
+    the pattern. All lines are deleted in their entirety. </td>
+    <td class="docTableCell">
+    <pre>With a screen editor you can scroll the
+of your edits as you make them.</pre>
+    </td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-17-SECT-8.1" class="docSection2Title">17.8.1 Global Searches</h4>
+<p class="docText">In <i>vi</i> you use a <tt>/</tt> (slash) to search for 
+patterns of characters in your files. By contrast, <i>ex</i> has a global 
+command, <tt>g</tt>, that lets you search for a pattern and display all lines 
+containing the pattern when it finds them. The command <tt>:g!</tt> does the 
+opposite of <tt>:g</tt>. Use <tt>:g!</tt> (or its synonym <tt>:v</tt>) to search 
+for all lines that do <span class="docEmphasis">not</span> contain
+<span class="docEmphasis">pattern</span>. </p>
+<p class="docText">You can use the global command on all lines in the file, or 
+you can use line addresses to limit a global search to specified lines or to a 
+range of lines. </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">:g/</span> <tt><i>
+  pattern</i></tt><span class="docMonofont">/</span> </span></dt>
+  <dd>
+  <p class="docList">Finds (moves to) the last occurrence of
+  <span class="docEmphasis">pattern</span> in the file. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">:g/</span> <tt><i>
+  pattern</i></tt><span class="docMonofont">/p</span> </span></dt>
+  <dd>
+  <p class="docList">Finds and displays all lines in the file containing
+  <span class="docEmphasis">pattern</span>. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">:g!/</span> <tt><i>
+  pattern</i></tt><span class="docMonofont">/nu</span> </span></dt>
+  <dd>
+  <p class="docList">Finds and displays all lines in the file that don't contain
+  <span class="docEmphasis">pattern</span>; also displays line number for each 
+  line found. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">:60,124g/</span> <tt>
+  <i>pattern</i></tt><span class="docMonofont">/p</span> </span></dt>
+  <dd>
+  <p class="docList">Finds and displays any lines between 60 and 124 containing
+  <span class="docEmphasis">pattern</span>. </dd>
+</dl>
+<p class="docText"><tt>g</tt> can also be used for global replacements. For 
+example, to search for all lines that begin with <tt>WARNING</tt>: and change 
+the first word <tt>not</tt> on those lines to <tt>NOT</tt>: </p>
+<pre>:g/^WARNING:/s/\&lt;not\&gt;/NOT/</pre>
+<p class="docText">— <span class="docEmphasis">LL, from Learning the vi Editor 
+(O'Reilly, 1998)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-9">17.9 Confirming Substitutions in vi</h3>
+<p class="docText">It makes sense to be overly careful when using a 
+search-and-replace command. It sometimes happens that what you get is not what 
+you expected. You can undo any search-and-replace command by entering <tt>u</tt>, 
+provided that the command was intended for the most recent edit you made. But 
+you don't always catch undesired changes until it is too late to undo them. 
+Another way to protect your edited file is to save the file with <tt>:w</tt> 
+before performing a global replacement. Then at least you can quit the file 
+without saving your edits and go back to where you were before the change was 
+made. You can also read back in the previous version of the buffer with
+<span class="docEmphBold">:e!</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-3">Section 
+17.3</a>). </p>
+<p class="docText">It's wise to be cautious and know exactly what is going to be 
+changed in your file. If you'd like to see what the search turns up and confirm 
+each replacement before it is made, add the <tt>c</tt> option (for confirm) at 
+the end of the substitute command: </p>
+<pre><b>:1,30s/his/the/gc</b></pre>
+<p class="docText">The item to be substituted is highlighted so that placement 
+of the cursor on the first character is marked by a series of carets (<tt>^^^^</tt>).
+</p>
+<pre>copyists at his school
+            ^^^_</pre>
+<p class="docText">If you want to make the replacement, you must enter <tt>y</tt> 
+(for yes) and press RETURN. If you don't want to make a change, simply press 
+RETURN. </p>
+<p class="docText">The combination of the <span class="docEmphasis">vi</span> 
+commands, <tt>n</tt> (repeat last search) and dot (.) (repeat last command), is 
+also an extraordinarily useful and quick way to page through a file and make 
+repetitive changes that you may not want to make globally. So, for example, if 
+your editor has told you that you're using <span class="docEmphasis">which</span> 
+when you should be using <span class="docEmphasis">that</span>, you can 
+spot-check every occurrence of <span class="docEmphasis">which</span>, changing 
+only those that are incorrect. </p>
+<p class="docText">This often turns out to be faster than using a global 
+substitution with confirmation. It also lets you see other lines near the text 
+you're checking, which is hard to do with <tt>:s///c</tt> in original <i>vi</i>.
+<i>vi</i> clones have improved the situation. For instance, in <i>vim</i>, <tt>
+:s///c</tt> runs in fullscreen mode; it also lets you type CTRL-y and CTRL-e to 
+scroll the screen up or down to see context before you approve or deny each 
+substitution. </p>
+<p class="docText">—<span class="docEmphasis">DD, TOR, from Learning the vi 
+Editor (O'Reilly, 1998)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-10">17.10 Keep Your Original File, Write to a New File</h3>
+<p class="docText">You can use <tt>:w</tt> to save an entire buffer (the copy of 
+the file you are editing) under a new filename. </p>
+<p class="docText">Suppose you have a file <span class="docEmphasis">practice</span>, 
+containing 600 lines. You open the file and make extensive edits. You want to 
+quit but save <span class="docEmphasis">both</span> the old version of
+<span class="docEmphasis">practice</span> and your new edits for comparison. To 
+save the edited buffer in a file called <span class="docEmphasis">check_me</span>, 
+give the command: </p>
+<pre><b>:w check_me</b></pre>
+<p class="docText">Your old version, in the file <span class="docEmphasis">
+practice</span>, remains unchanged (provided that you didn't previously use <tt>
+:w</tt>). You can now quit the old version by typing <tt>:q</tt>. </p>
+<p class="docText">— <span class="docEmphasis">LL, from Learning the vi Editor 
+(O'Reilly, 1998)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-11">17.11 Saving Part of a File</h3>
+<p class="docText">While editing, you will sometimes want to save just part of 
+your file as a separate, new file. For example, you might have entered 
+formatting codes and text that you want to use as a header for several files.
+</p>
+<p class="docText">You can combine <span class="docEmphBold">ex line addressing</span> 
+(<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-3">Section 
+20.3</a>) with the write command, <tt>w</tt>, to save part of a file. For 
+example, if you are in the file <span class="docEmphasis">practice</span> and 
+want to save part of practice as the file <span class="docEmphasis">newfile</span>, 
+you could enter: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">:230,$w</span> <tt><i>
+  newfile</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Saves from line 230 to end-of-file in
+  <span class="docEmphasis">newfile</span>.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">:.,600w</span> <tt><i>
+  newfile</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Saves from the current line to line 600 in
+  <span class="docEmphasis">newfile</span>. </dd>
+</dl>
+<p class="docText">After <span class="docEmphasis">newfile</span> has been 
+created, you'll need <tt>w!</tt> instead of <tt>w</tt>. </p>
+<p class="docText">— <span class="docEmphasis">LL, from Learning the vi Editor 
+(O'Reilly, 1998)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-12">17.12 Appending to an Existing File</h3>
+<p class="docText">You can use the Unix redirect and append operator (<tt>&gt;&gt;</tt>) 
+with <tt>w</tt> to append all or part of the buffer's contents to an existing 
+file. For example, if you entered: </p>
+<pre><b>:1,10w </b> <i>newfile </i></pre>
+<p class="docText">and then:</p>
+<p class="docText"><tt>$</tt>
+<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-3">
+Section 20.3</a></p>
+<pre><b>:340,$w &gt;&gt; </b><i>newfile </i></pre>
+<p class="docText"><span class="docEmphasis">newfile</span> would contain lines 
+1-10 and line 340 to the end of the buffer. </p>
+<p class="docText"><span class="docEmphasis">—TOR, from Learning the vi Editor 
+(O'Reilly, 1998)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-13">17.13 Moving Blocks of Text by Patterns</h3>
+<p class="docText">You can move blocks of text delimited by
+<span class="docEmphBold">patterns</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-8">Section 
+17.8</a>). For example, assume you have a 150-page reference manual. All 
+reference pages are organized into three paragraphs with the same three 
+headings: SYNTAX, DESCRIPTION, and PARAMETERS. A sample of one reference page 
+follows: </p>
+<pre> .Rh 0 &quot;Get status of named file&quot; &quot;STAT&quot;
+ .Rh &quot;SYNTAX&quot;
+ .nf
+ integer*4 stat, retval
+ integer*4 status(11)
+ character*123 filename
+ ...
+ retval = stat (filename, status)
+ .fi
+ .Rh &quot;DESCRIPTION&quot;
+ Writes the fields of a system data structure into the
+ status array.
+ These fields contain (among other
+ things) information about the file's location, access
+ privileges, owner, and time of last modification.
+ .Rh &quot;PARAMETERS&quot;
+ .IP &quot;\fBfilename\fR&quot; 15n
+ A character string variable or constant containing
+ the Unix pathname for the file whose status you want
+ to retrieve.
+ You can give the ...</pre>
+<p class="docText">Suppose that it is decided to move the SYNTAX paragraph below 
+the DESCRIPTION paragraph. Using pattern matching, you can move blocks of text 
+on all 150 pages with one command! </p>
+<pre><b>:g/SYNTAX/,/DESCRIPTION/-1 mo /PARAMETERS/-1</b></pre>
+<p class="docText">This command operates on the block of text between the line 
+containing the word <span class="docEmphasis">SYNTAX</span> and the line just 
+before the word <span class="docEmphasis">DESCRIPTION</span> (<tt>/DESCRIPTION/-1</tt>). 
+The block is moved (using <tt>mo</tt>) to the line just before
+<span class="docEmphasis">PARAMETERS</span> (<tt>/PARAMETERS/-1</tt>). Note that
+<i>ex</i> can only place text below the line specified. To tell <i>ex</i> to 
+place text above a line, you first have to move up a line with <tt>-1</tt> and 
+then place your text below. In a case like this, one command literally saves 
+hours of work. (This is a real-life example — we once used a pattern match like 
+this to rearrange a reference manual containing hundreds of pages.) </p>
+<p class="docText">Block definition by patterns can be used equally well with 
+other <i>ex</i> commands. For example, if you wanted to delete all DESCRIPTION 
+paragraphs in the reference chapter, you could enter: </p>
+<pre><b>:g/DESCRIPTION/,/PARAMETERS/-1d</b></pre>
+<p class="docText">This very powerful kind of change is implicit in
+<span class="docEmphBold">ex's line addressing syntax</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-3">Section 
+20.3</a>), but it is not readily apparent even to experienced users. For this 
+reason, whenever you are faced with a complex, repetitive editing task, take the 
+time to analyze the problem and find out if you can apply pattern-matching tools 
+to do the job. </p>
+<p class="docText"><span class="docEmphasis">—TOR, from Learning the vi Editor 
+(O'Reilly, 1998)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-14">17.14 Useful Global Commands (with Pattern Matches)</h3>
+<p class="docText">The best way to learn pattern matching is by example, so 
+here's a short list of pattern-matching examples with explanations. (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-21">Section 
+32.21</a> has a list of these patterns.) Study the syntax carefully so you 
+understand the principles at work. You should then be able to adapt these 
+examples to your own situation. </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Change all occurrences of the word
+  <span class="docEmphasis">help</span> (or <span class="docEmphasis">Help</span>) 
+  to <span class="docEmphasis">HELP</span>: </p>
+  <p class="docList"><tt>%</tt>
+  <a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-3">
+  Section 20.3</a></p>
+  <pre><b>:%s/[Hh]elp/HELP/g</b></pre>
+  <p class="docList">or:</p>
+  <pre><b>:%s/[Hh]elp/\U&amp;/g</b></pre>
+  <p class="docList">The <tt>\U</tt> changes the pattern that follows to all 
+  uppercase. The pattern that follows is the repeated search pattern, which is 
+  either <span class="docEmphasis">help</span> or <span class="docEmphasis">Help</span>.
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Replace one or more spaces following a colon (:) or a 
+  period (.) with two spaces (here a space is marked by a <tt>·</tt>): </p>
+  <pre><b>:%s/\([:.]\)</b>··*/\1··/g</pre>
+  <p class="docList">Either of the two characters within brackets can be 
+  matched. This character is saved into a <span class="docEmphBold">hold buffer, 
+  using \( and \)</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-11">Section 
+  34.11</a>) and restored on the right-hand side by the <tt>\1</tt>. Note that 
+  most metacharacters lose their special meanings inside brackets — so the dot 
+  does not need to be escaped with a backslash (<tt>\</tt>). </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Delete all blank lines:</p>
+  <p class="docList"><tt>g</tt>
+  <a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-4">
+  Section 20.4</a></p>
+  <pre><b>:g/^$/d</b></pre>
+  <p class="docList">What you are actually matching here is the beginning of the 
+  line (<tt>^</tt>), followed by the end of the line (<tt>$</tt>), with nothing 
+  in between. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Delete all blank lines, plus any lines that contain only 
+  whitespace:</p>
+  <pre><b>:g/^[ </b>·<i>tab </i><b>]*$/d </b></pre>
+  <p class="docList">(In the previous line, a TAB character is shown as <tt><i>
+  tab</i></tt>.) A line may appear to be blank, but may in fact contain spaces 
+  or tabs. The previous numbered example will not delete such a line. This 
+  example, like the previous one, searches for the beginning and end of the 
+  line. But instead of having nothing in between, the pattern tries to find any 
+  number of spaces or tabs. If no spaces or tabs are matched, the line is blank. 
+  To delete lines that contain whitespace but that <span class="docEmphasis">
+  aren't</span> blank, you would have to match lines with
+  <span class="docEmphasis">at least</span> one space or tab: </p>
+  <pre><b>:g/^[ </b>·<i>tab </i><b>][ </b>·<i>tab </i><b>]*$/d </b></pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">This example and the next both refer to a line in a <i>
+  troff</i>-formatted document like this A-level (top-level) heading macro call:
+  </p>
+  <pre>.Ah &quot;Budget Projections&quot; &quot;for 2001-2002&quot;</pre>
+  <p class="docList">To match the first quoted argument of all section header (<tt>.Ah</tt>) 
+  macros and replace each line with this argument: </p>
+  <pre><b>:%s/^\.Ah &quot;\([^&quot;]*\)&quot; .*/\1/</b></pre>
+  <p class="docList">this example macro call would be changed to simply:</p>
+  <pre>Budget Projections</pre>
+  <p class="docList">The substitution assumes that the <tt>.Ah</tt> macro can 
+  have more than one argument surrounded by quotes. You want to match everything 
+  between quotes, but only up to the <span class="docEmphasis">first</span> 
+  closing quote. As
+  <a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-18">
+  Section 32.18</a> explains, using <tt>&quot;.*&quot;</tt> would be wrong because it 
+  would match all arguments on the line. What you do is match a series of 
+  characters that <span class="docEmphasis">aren't</span> quotes, <tt>[^&quot;]*</tt>. 
+  The pattern <tt>&quot;[^&quot;]*&quot;</tt> matches a quote, followed by any number of 
+  nonquote characters, followed by a quote. Enclose the first argument in <tt>\(</tt> 
+  and <tt>\)</tt> so that it can be replayed using <tt>\1</tt>. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Same as previous, except preserve the original lines by 
+  copying them:</p>
+  <pre><b>:g/^\.Ah/t$ | s/\.Ah &quot;\([^&quot;]*\)&quot; .*/\1/</b></pre>
+  <p class="docList">In <i>ex</i>, the vertical bar (<tt>|</tt>) is a command 
+  separator that works like a <span class="docEmphBold">semicolon</span> (<tt>;</tt>) 
+  (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-16">Section 
+  28.16</a>) on a Unix command line. The first part, <tt>:g/^\.Ah/t$</tt>, 
+  matches all lines that begin with a <tt>.Ah</tt> macro, uses the <tt>t</tt> 
+  command to copy these lines, and places the copies after the last line (<tt>$</tt>) 
+  of the file. The second part is the same as in the previous example, except 
+  that the substitutions are performed on copies at the end of the file. The 
+  original lines are unchanged. </span></li>
+</ol>
+</span>
+<p class="docText"><span class="docEmphasis">—TOR and DG , from Learning the vi 
+Editor (O'Reilly, 1998)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-15">17.15 Counting Occurrences; Stopping Search Wraps</h3>
+<p class="docText">Want to see how many times you used the word
+<span class="docEmphasis">very</span> in a file? There are a couple of easy 
+ways. </p>
+<p class="docText">First, tell <i>vi</i> to stop searching when you get to the 
+end of the file. Type the command <tt>:set nowrapscan</tt> or put it in your
+<span class="docEmphBold">.exrc file</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-30">Section 
+17.30</a>). </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Move to the top of the file with the <tt>1G</tt> command. 
+  Search for the first <span class="docEmphasis">very</span> with the command
+  <tt>/very</tt> (HINT: using the <span class="docEmphBold">word-limiting 
+  regular expression /\&lt;very\&gt;</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-12">Section 
+  32.12</a>) instead will keep you from matching words like
+  <span class="docEmphasis">every</span>). To find the next
+  <span class="docEmphasis">very</span>, type the <tt>n</tt> (next) command. </p>
+  <p class="docList">When <i>vi</i> says <tt>Address</tt> <tt>search</tt> <tt>
+  hit</tt> <tt>BOTTOM</tt> <tt>without</tt> <tt>matching</tt> <tt>pattern</tt>, 
+  you've found all of the words. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Use the command:</p>
+  <pre><b>:g/very/p</b></pre>
+  <p class="docList">The matching lines will scroll down your screen.</span></li>
+</ol>
+</span>
+<p class="docText">To find the line numbers, too, type <tt>:set</tt> <tt>number</tt> 
+before your searches. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-16">17.16 Capitalizing Every Word on a Line</h3>
+<p class="docText">Are you typing the title of an article or something else that 
+needs an uppercase letter at the start of every word? Do you need to capitalize 
+some text that isn't? It can be tedious to press the SHIFT key as you enter the 
+text or to use <tt>~</tt> (tilde) and <tt>w</tt> commands to change the text. 
+The following command capitalizes the first character of every word. </p>
+<pre>:<b>s/\&lt;./\u&amp;/g</b></pre>
+<p class="docText">(You might be wondering why we didn't use <tt>
+:s/\&lt;[a-z]/\u&amp;/g</tt> to match lowercase letters. The <tt>&lt;</tt>. actually 
+matches the first character of <span class="docEmphasis">every</span> word, but 
+the <tt>\u</tt> will only affect letters. So, unless you only want to capitalize 
+certain letters, <tt>&lt;</tt>. is enough.) </p>
+<p class="docText">The previous example does only the current line. You can add 
+a range of lines after the colon. For example, to edit all lines in the file, 
+type the following: </p>
+<pre><b>:%s/\&lt;./\u&amp;/g</b></pre>
+<p class="docText">To do the current line and the next five, use this:</p>
+<pre><b>:.,+5s/\&lt;./\u&amp;/g</b></pre>
+<p class="docText">To make the first character of each word uppercase (with <tt>
+\u</tt>) and the rest lowercase (with <tt>\L</tt>), try: </p>
+<p class="docText"><tt>\(...\)...\1</tt>
+<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-21">
+Section 32.21</a></p>
+<pre><b>:s/\&lt;\(.\)\([A-Za-z]*\)\&gt;/\u\1\L\2/g</b></pre>
+<p class="docText">The previous command doesn't convert the back ends of words 
+with hyphens (like <span class="docEmphasis">CD-ROM</span>) or apostrophes (like
+<span class="docEmphasis">O'Reilly</span>) to lowercase. That's because <tt>[A-Za-z]*\&gt;</tt> 
+only matches words whose second through last characters are all letters. You can 
+add a hyphen or an apostrophe to make that expression match more words, if you'd 
+like. </p>
+<p class="docText">Those commands can be a pain to type. If you use one of them 
+a lot, try putting it in a <span class="docEmphBold">keymap</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+18.2</a>). </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-17">17.17 Per-File Setups in Separate Files</h3>
+<p class="docText">Do you need to set certain editor options for certain files — 
+but <span class="docEmphasis">not</span> use the same setup for every file you 
+edit? Make a special setup file with the same name and an underscore ( <tt>_</tt> 
+) or an extension like <span class="docEmphasis">.vi</span>,
+<span class="docEmphasis">.ex</span>, or <span class="docEmphasis">.so</span> at 
+the end. For instance, a file named <i>report</i> could have a corresponding 
+setup file named <i>report_</i> or <i>report.so</i>. (You don't have to use an 
+underscore at the end of the filename. It's convenient, though, because it's not 
+a <span class="docEmphBold">shell special character</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-17">Section 
+27.17</a>).) </p>
+<p class="docText">The setup file has the same format as a
+<span class="docEmphBold">.exrc file</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-5">Section 
+17.5</a>). To make the editor read it, <span class="docEmphBold">map</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+18.2</a>) a function key like F1 (or any other key sequence): </p>
+<p class="docText"><tt>source</tt>
+<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-4">
+Section 20.4</a>, <tt>^[</tt><a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">Section 
+18.6</a> </p>
+<pre>map #1 :source %_^[</pre>
+<p class="docText">When you start <i>vi</i>, tap that key to read the setup 
+file. (The percent sign stands for the <span class="docEmphBold">current 
+filename</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-3">Section 
+17.3</a>).) </p>
+<p class="docText">If you want to use the same setup file for several files in a 
+directory, you might want to make <span class="docEmphBold">hard links</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>) between them. That will save disk space. It also means that if you 
+decide to change a setup option, you can edit one of the links to the setup 
+file, and the others will have the same change. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-18">17.18 Filtering Text Through a Unix Command</h3>
+<p class="docText">When you're editing in <i>vi</i>, you can send a block of 
+text as standard input to a Unix command. The output from this command replaces 
+the block of text in the buffer. </p>
+<p class="docText">In <i>vi</i>, you can filter text through a Unix command by 
+typing an exclamation mark (<tt>!</tt>) followed by any of <i>vi</i>'s movement 
+keystrokes that indicate a block of text and then by the Unix command line to be 
+executed. For example: </p>
+<pre><b>!) </b><i>command </i></pre>
+<p class="docText">will pass the next sentence through <span class="docEmphasis">
+command</span>.</p>
+<p class="docText">There are a couple of unusual features about how <i>vi</i> 
+acts when you use this structure: </p>
+<ul>
+  <li>
+  <p class="docList">First, the exclamation mark doesn't appear on your screen 
+  right away. When you type the keystroke(s) for the text object you want to 
+  filter, the exclamation mark appears at the bottom of the screen,
+  <span class="docEmphasis">but the character you type to reference the object 
+  does not</span>. </li>
+  <li>
+  <p class="docList">Second, text blocks must be more than one line, so you can 
+  use only the keystrokes that would move more than one line ( <tt>G</tt>, <tt>{ 
+  }</tt>, <tt>( )</tt>, <tt>[[ ]]</tt>, <tt>+</tt>, <tt>-</tt> ). To repeat the 
+  effect, a number may precede either the exclamation mark or the text object. 
+  (For example, both <tt>!10+</tt> and <tt>10!+</tt> would indicate the next ten 
+  lines.) Objects such as <tt>w</tt> do not work unless enough of them are 
+  specified so as to exceed a single line. You can also use a slash (<tt>/</tt>) 
+  followed by a <span class="docEmphasis">pattern</span> and a carriage return 
+  to specify the object. This takes the text up to the pattern as input to the 
+  command. </li>
+  <li>
+  <p class="docList">Third, there is a special text object that can be used only 
+  with this command syntax; you can specify the current line by entering a 
+  second exclamation mark: </p>
+  <pre><b>!! </b><i>command </i></pre>
+  <p class="docList">Remember that either the entire sequence or the text object 
+  can be preceded by a number to repeat the effect. For instance, to change 
+  lines 96 through 99 as in the previous example, you could position the cursor 
+  on line 96 and enter either: </p>
+  <pre><b>4!!sort</b></pre>
+  <p class="docList">or:</p>
+  <pre><b>!4!sort</b></pre>
+  </li>
+</ul>
+<p class="docText">As another example, assume you have a portion of text in a 
+message that you'd like to convert to all uppercase letters. <i>ex</i> has
+<span class="docEmphBold">operators to convert case</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-16">Section 
+17.16</a>), but it's also easy to convert case with the
+<span class="docEmphBold">tr</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-11">Section 
+21.11</a>) command. In this example, the second sentence is the block of text 
+that will be filtered to the command: </p>
+<pre>One sentence before.
+<tt><i>W</i></tt>ith a screen editor you can scroll the page
+move the cursor, delete lines, insert characters,
+and more, while seeing the results of your edits
+as you make them.
+One sentence after.</pre>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Keystrokes</th>
+    <th class="docTableHeader">
+    <p class="docText">Action</th>
+    <th class="docTableHeader">
+    <p class="docText">Results</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>!)</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">An exclamation mark appears on the last line to prompt 
+    you for the Unix command. </td>
+    <td class="docTableCell">
+    <pre>One sentence after.
+~
+~
+~
+!_</pre>
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>tr '[a-z]' '[A-Z]'</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Enter the Unix command, and press RETURN. The input is 
+    replaced by the output. </td>
+    <td class="docTableCell">
+    <pre>One sentence before.
+WITH A SCREEN EDITOR YOU CAN SCROLL THE PAGE
+MOVE THE CURSOR, DELETE LINES, INSERT CHARACTERS,
+AND MORE, WHILE seeING THE RESULTS OF YOUR EDITS
+AS YOU MAKE THEM.
+One sentence after.</pre>
+    </td>
+  </tr>
+</table>
+<p class="docText">To repeat the previous command, the syntax is as follows:</p>
+<pre>! <tt><i>object</i></tt> !</pre>
+<p class="docText">It is sometimes useful to send sections of a coded document 
+to <i>nroff</i> to be replaced by formatted output. Remember that the &quot;original&quot; 
+input is replaced by the output. Fortunately, if there is a mistake, such as an 
+error message being sent instead of the expected output, you can undo the 
+command and restore the lines. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="50" src="screw.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Sometimes a filter-through on old, buggy versions of
+        <i>vi</i> can completely scramble and trash your text. Things can be so 
+        bad that the <span class="docEmphasis">u</span> (undo) command won't 
+        work. If you've been burned this way before, you'll want to write your 
+        buffer (with <tt>:w</tt>) before filter-throughs. This doesn't seem to 
+        be a problem with modern versions, but be aware of it. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-19">17.19 vi File Recovery Versus Networked Filesystems</h3>
+<p class="docText">Have you ever used the <span class="docEmphasis">vi -r</span> 
+command to recover a file? It lets you get a file back that you were editing 
+when the system crashed or something else killed your editor before you could 
+save. The system may send you an email message something like this: </p>
+<pre>Date: Thu, 19 Nov 1999 09:59:00 EST
+To: jerry
+
+A copy of an editor buffer of your file &quot;afile&quot;
+was saved when the system went down.
+This buffer can be retrieved using the &quot;recover&quot; command of the editor.
+An easy way to do this is to give the command &quot;vi -r afile&quot;.
+This works for &quot;edit&quot; and &quot;ex&quot; also.</pre>
+<p class="docText">
+<img alt="figs/bomb.gif" src="bomb.gif" border="0" width="24" height="30">
+<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-20">
+Section 17.20</a></p>
+<p class="docText">Your files are saved under a directory named something like
+<span class="docEmphasis">/usr/preserve</span>. Follow the instructions and 
+you'll get back your file, more or less the way it was when you lost it. </p>
+<p class="docText">If your computers have networked filesystems, such as NFS, 
+there's a wrinkle in the way that <span class="docEmphasis">vi -r</span> works. 
+It may only work right on the specific computer where you were editing a file. 
+For example, if you're editing the file <span class="docEmphasis">foo</span> on 
+the host named <span class="docEmphasis">artemis</span> and it crashes, you may 
+not be able to log on to another host and do <span class="docEmphasis">vi -r foo</span> 
+to recover that file. That's because, on many hosts, temporary files (like 
+editor buffers) are stored on a local filesystem instead of on the networked 
+(shared) filesystems. On this kind of system, you may need to log on to
+<span class="docEmphasis">artemis</span> to recover your lost editor buffer. </p>
+<p class="docText">If you don't remember which computer you were using when the 
+file was lost, check the &quot;Received:&quot; lines in the email message header;<span id="ENB17-1"><a class="docLink" href="#EN17-1"><sup>[1]</sup></a></span> 
+they'll often show from which machine the message originally came. Also, if you 
+don't remember what files are saved on a machine, you can usually get a list of 
+your saved files by typing <span class="docEmphasis">vi -r</span> without a 
+filename: </p>
+<pre>% <b>vi -r</b>
+/var/preserve/jerry:
+On Wed Jul 17 at 08:02 saved 15 lines of file &quot;/u/jerry/Mail/drafts/1&quot;
+On Sun Aug 25 at 18:42 saved 157 lines of file &quot;doit&quot;
+/tmp:
+No files saved.</pre>
+<p class="docText">Don't wait too long. Many Unix systems remove these saved 
+editor buffers every month, week, or sooner. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-20">17.20 Be Careful with vi -r Recovered Buffers</h3>
+<p class="docText">Usually, when you're editing a file with <i>vi</i>, if you 
+type the command <span class="docEmphasis">ZZ</span>, it saves your file. But if 
+you recover a file with <span class="docEmphBold">vi -r</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-19">Section 
+17.19</a>), typing <span class="docEmphasis">ZZ</span> may not save your edits!
+</p>
+<p class="docText">That might be a good thing. When you recover a buffer, you 
+need to decide whether the recovered buffer is really what you want. Maybe 
+you've made other changes to the file since then. Maybe something went wrong as 
+the buffer was being saved (say, the system crashed). You shouldn't just save 
+without checking first. </p>
+<p class="docText">You can use the <tt>:w!</tt> command to write the recovered 
+version after you're sure that you want it. Use the <tt>:q!</tt> command if you 
+don't want the recovered version. </p>
+<p class="docText">Another good choice is to write the recovered buffer using a 
+different filename, then compare the recovered buffer to the original file. For 
+example, here I recover a draft MH email message and immediately write it to a 
+file named <i>recovered-9</i> in my <i>tmp</i> directory. Then I use a
+<span class="docEmphBold">shell escape</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-21">Section 
+17.21</a>) to run <span class="docEmphBold">diff</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-1">Section 
+11.1</a>) and compare the draft file on disk (<i>/home/jerry/Mail/drafts/9</i>) 
+with the copy of the recovered buffer that I just wrote (<i>/home/jerry/tmp/recovered-9</i>); 
+the <span class="docEmphBold">vi</span> <span class="docEmphBold">current 
+filename</span> <tt>%</tt> and alternate filename <span class="docEmphBold"># 
+shortcuts</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-3">Section 
+17.3</a>) are handy here. Oops: <i>diff</i> shows that the recovered version has 
+replaced the last three lines of the message on disk, in the recovered version, 
+with more than 2,000 lines of junk! </p>
+<p class="docText"><tt>less</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">
+Section 12.3</a></p>
+<pre>% <b>vi -r /home/jerry/Mail/drafts/9 </b>
+    <i> ...recovered file appears...</i>
+<b>:w ~/tmp/recovered-9 </b>
+/home/jerry/tmp/recovered-9: 55 lines, 168767 characters.
+<b>:!diff % # | less </b>
+!diff /home/jerry/Mail/drafts/9 /home/jerry/tmp/recovered-9 | less
+5c5
+&lt; Subject: Re: Two more Unix Power Tools questions
+---
+&gt; Subject: Next UPT (was: Re: Two more Unix Power Tools questions)
+146,148c146,2182
+&lt; Yes, you mentioned it once.  Thanks for pointing that out, Greg.
+&lt; I think the next job is to review all the articles in that chapter
+&lt; to be sure which items should be included -- just the articles, or
+---
+&gt; Yes, you^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@
+&gt; ^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@
+&gt; ^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@^@
+    <i> ...zillions of lines of junk...</i></pre>
+<p class="docText">At this point, the best thing to do is to quit <i>vi</i> 
+immediately (with <tt>:q!</tt>). Then fix up the original file by copying and 
+pasting the good text from the copy of the recovered buffer that I just wrote. 
+(You might want to rerun <i>diff</i>, outside of <i>vi</i>, to remind yourself 
+which parts of the recovered file you want to transfer to the original file.) 
+Starting a new <i>vi</i> session with the filenames of both the original file 
+and the (mostly trashed) recovered buffer, as
+<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-4">
+Section 17.4</a> explains, can make the recovery job easier. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-21">17.21 Shell Escapes: Running One UnixCommand While 
+Using Another</h3>
+<p class="docText">Some Unix commands (usually interactive commands like <i>vi</i>) 
+let you run another Unix command temporarily. To do that, you type a special 
+command character — usually an exclamation point (<tt>!</tt>) — then type the 
+Unix command line you want to run. In this article, I'll show examples for the
+<i>vi</i> editor. To see if this works on another utility, check its 
+documentation or just try typing <tt>!<i>Unixcommand</i></tt> when the utility 
+is waiting for you to type a command. </p>
+<p class="docText">You can run any Unix command without quitting <i>vi</i>. 
+That's handy, for example, if you want to read your mail or look at some other 
+file . . . , then go back to the file you were editing without losing your 
+place. It's called a &quot;shell escape.&quot; (By the way, there's a another way to do 
+this, <span class="docEmphBold">job control</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+23.3</a>), that works on most Unix systems. Job control is often more convenient 
+and flexible than shell escapes.) </p>
+<p class="docText">Let's say you're editing the file named
+<span class="docEmphasis">foo</span> and you need to run <i>grep</i> to get 
+someone's phone number from your phone file. The steps are as follows: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Be sure you're in command mode (press the ESC key if you 
+  aren't sure).</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">If you want to run a command that needs the file you're 
+  editing, remember to write out your <i>vi</i> buffer with the <tt>:w</tt> 
+  command. (So you probably wouldn't need to write anything before the following
+  <i>grep</i> command.) Type <tt>:!</tt> followed by the Unix command, then 
+  press RETURN. For example: </p>
+  <pre><b>:!grep tim ~/phone</b></pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">The <i>grep</i> program will run. When it finishes, <i>vi</i> 
+  will say: </p>
+  <pre>[Hit return to continue]</pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">After you press RETURN, you'll be right back where you 
+  were.</span></li>
+</ol>
+</span>
+<p class="docText">Other examples:</p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">:!less afile</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Page through <span class="docEmphasis">afile</span> on your 
+  screen.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">:!rcsdiff %</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Give this file to the <span class="docEmphBold">rcsdiff</span> 
+  (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-3">Section 
+  11.3</a>) program to see what you've changed since the file was checked out of 
+  the archive. <i>vi</i> <span class="docEmphBold">replaces</span> <tt>%</tt> 
+  with the name of the file you're editing now (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-3">Section 
+  17.3</a>). </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">:!mail</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Read your mail. Be careful about this if you were already 
+  running the <i>mail</i> program and you used the command
+  <span class="docEmphasis">~v</span> to edit a message with <i>vi</i> from 
+  inside the <i>mail</i> program. This shell escape starts a
+  <span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+  24.4</a>); it will <span class="docEmphasis">not</span> take you back to the 
+  same <i>mail</i> session before you started editing! </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">:sh</span></span> </dt>
+  <dd>
+  <p class="docList">Start a completely new shell. (If you are using a shell 
+  with job control, you'll almost always want to use job control to<span class="docEmphBold"> 
+  suspend vi</span> <span class="docEmphBold">temporarily</span> instead (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-6">Section 
+  23.6</a>). Press CTRL-z, or use the <i>ex</i> command <tt>:suspend</tt>.) </dd>
+</dl>
+<p class="docText">Basically, anything you can do at a shell prompt, you can do 
+with a shell escape. You'll be in a subshell though, not your original login 
+shell. So commands like <i>cd</i> won't affect the program where you started the 
+subshell or any other shell. On the bright side, changing directories or 
+resetting anything in your environment won't affect <i>vi</i> or the shell where 
+you started <i>vi</i>. Terminating the program you're running in the subshell 
+will bring you right back where you were. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-22">17.22 vi Compound Searches</h3>
+<p class="docText">You probably know that you can search for a word or phrase 
+with the <i>vi</i> <tt>/</tt> (slash) command: </p>
+<pre><b>/treasure</b></pre>
+<p class="docText">If you have a file that uses the same word over and over 
+again, you might want to find one particular place that the word is used. You 
+can repeat the search with the <span class="docEmphasis">n</span> command until 
+you find the place you want. That can take time and effort, though. </p>
+<p class="docText">For example, suppose you want to find the word &quot;treasure&quot; in 
+the sentence that has words like &quot;Los Alamos residents . . . treasure,&quot; but you 
+can't remember exactly how the sentence is written. You could use wildcards in 
+your regular expression: </p>
+<pre><b>/Los Alamos.*treasure</b></pre>
+<p class="docText">but then the phrases &quot;Los Alamos&quot; and &quot;treasure&quot; have to be 
+on the same line of the file you're searching — and they won't always be. Also, 
+you want your cursor on the word <span class="docEmphasis">treasure</span>, but 
+that search would put the cursor on <span class="docEmphasis">Los</span> 
+instead. </p>
+<p class="docText">&quot;Hmmm,&quot; you say, &quot;How about two separate searches, like 
+this?&quot; </p>
+<pre>/Los Alamos
+/treasure</pre>
+<p class="docText">The problem there is that the file might have the phrase &quot;Los 
+Alamos&quot; all throughout it; you might have to type <span class="docEmphasis">n</span> 
+over and over until you get to the sentence with <span class="docEmphasis">
+treasure</span>. </p>
+<p class="docText">Here's the easy way: a compound search. Say your cursor is on 
+line 1 of the following file: </p>
+<pre>Before the second World War, there was a treasured boys' school in
+what was to become the city of Los Alamos, New Mexico. The school at
+Los Alamos changed the lives and made a lifelong impression on most boys
+who attended. One of the boys who attended the Los Alamos school went on
+to propose that remote set of mesas as a site for the U.S. Government's
+   ...
+Since the war ended, most of the boys' school ranch buildings have been torn
+down or replaced. But there's one building that Los Alamos residents still
+use and treasure. It's The Lodge, a log building on the edge of what's now
+   ...</pre>
+<p class="docText">Type the command:</p>
+<pre><b>/Los Alamos/;/treasure/</b></pre>
+<p class="docText">That means &quot;find the first occurrence of
+<span class="docEmphasis">treasure</span> just after <span class="docEmphasis">
+Los Alamos</span>.&quot; Starting at the top of the previous example, that search 
+will skip past all the <span class="docEmphasis">treasure</span> and
+<span class="docEmphasis">Los Alamos</span> words until it finds the word
+<span class="docEmphasis">treasure</span> on the last line shown. (It's probably 
+smarter to type just <tt>/Alamos/;/treasure/</tt> in case
+<span class="docEmphasis">Los Alamos</span> is split across two lines of the 
+file.) </p>
+<p class="docText">Another example: a C programmer wants to find the
+<span class="docEmphasis">printf</span> function call just after the line where
+<span class="docEmphasis">i</span> is incremented by two (<tt>i += 2</tt>). She 
+could type: </p>
+<pre><b>/i += 2/;/printf/</b></pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">You can't repeat a compound search by typing <tt>n</tt>. 
+        The easiest way is to define the search as a <span class="docEmphBold">
+        key map</span>
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">
+        Section 18.2</a>): </p>
+        <p class="docText"><tt>^M</tt>
+        <a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">
+        Section 18.6</a></p>
+        <pre><b>:map #3 /Los Alamos/;/treasure/^M</b></pre>
+        <p class="docText">and repeat the search with (in this case) your F3 
+        function key.</td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-23">17.23 vi Word Abbreviation</h3>
+<p class="docText">You can define abbreviations that <i>vi</i> will 
+automatically expand into the full text whenever it's typed during text-input 
+mode. To define an abbreviation, use the <i>ex</i> command: </p>
+<pre><b>:ab </b> <i>abbr phrase </i></pre>
+<p class="docText"><span class="docEmphasis">abbr</span> is an abbreviation for 
+the specified <span class="docEmphasis">phrase</span>. The sequence of 
+characters that make up the abbreviation will be expanded during text-input mode 
+only if you type it as a full word; <span class="docEmphasis">abbr</span> will 
+not be expanded within a word. [I abbreviate <span class="docEmphasis">Covnex</span> 
+to <span class="docEmphasis">Convex</span>, my company's name, because I have 
+dyslexic fingers. <span class="docEmphasis">-- TC</span>] </p>
+<p class="docText">Suppose you want to enter text that contains a frequently 
+occuring phrase, such as a difficult product or company name. The command: </p>
+<pre><b>:ab ns the Nutshell Handbook</b></pre>
+<p class="docText">abbreviates <span class="docEmphasis">the Nutshell Handbook</span> 
+to the initials <span class="docEmphasis">ns</span>. Now whenever you type
+<span class="docEmphasis">ns</span> as a separate word during text-input mode,
+<span class="docEmphasis">ns</span> expands to the full text. </p>
+<p class="docText">Abbreviations expand as soon as you press a nonalphanumeric 
+character (e.g., punctuation), a carriage return, or ESC (returning to command 
+mode).<span id="ENB17-2"><a class="docLink" href="#EN17-2"><sup>[2]</sup></a></span> When 
+you are choosing abbreviations, choose combinations of characters that don't 
+ordinarily occur while you are typing text. If you create an abbreviation that 
+ends up expanding in places where you don't want it to, you can disable the 
+abbreviation by typing: </p>
+<pre><b>:unab </b> <i>abbr </i></pre>
+<p class="docText">To list your currently defined abbreviations, type:</p>
+<pre><b>:ab</b></pre>
+<p class="docText">The characters that compose your abbreviation cannot appear 
+at the end of your phrase. For example, if you issue the command: </p>
+<pre><b>:ab PG This movie is rated PG</b></pre>
+<p class="docText">you'll get the message <tt>No tail recursion</tt>, and the 
+abbreviation won't be set. The message means that you have tried to define 
+something that will expand itself repeatedly, creating an infinite loop. If you 
+issue the command: </p>
+<pre><b>:ab PG the PG rating system</b></pre>
+<p class="docText">you may or may not produce an infinite loop, but in either 
+case you won't get a warning message. For example, when the previous command was 
+tested on a System V version of Unix, the expansion worked. On a Berkeley 
+version, though, the abbreviation expanded repeatedly, like this: </p>
+<pre>the the the the the ...</pre>
+<p class="docText">until a memory error occurred and <i>vi</i> quit. We 
+recommend that you avoid repeating your abbreviation as part of the defined 
+phrase. </p>
+<p class="docText">—<span class="docEmphasis">DD and DG, from Learning the vi 
+Editor (O'Reilly, 1998)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-24">17.24 Using vi Abbreviations as Commands (Cut and 
+Paste Between vi's)</h3>
+<p class="docText">The <i>vi</i> command <span class="docEmphBold">ab</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-23">Section 
+17.23</a>) is for abbreviating words. But it's also good for abbreviating <i>ex</i>-mode 
+commands that you type over and over. In fact, for <i>ex</i>-mode commands 
+(commands that start with a colon (:)), abbreviations can be better than
+<span class="docEmphBold">keymaps</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+18.2</a>). That's because you can choose almost any command name; you don't have 
+to worry about conflicts with existing <i>vi</i> commands. </p>
+<p class="docText">Here's an example. If you have a windowing terminal or more 
+than one terminal, you might have <i>vi</i> sessions running in more than one 
+place. Your system might have a way to transfer text between windows, but it can 
+be easier to use files in <span class="docEmphasis">/tmp</span> — especially for 
+handling lots of text. (If your text is confidential and your
+<span class="docEmphBold">umask</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-4">Section 
+49.4</a>) isn't set to make new files unreadable by other users, try using a 
+more private directory.) Here are some abbreviations from my
+<span class="docEmphBold">.exrc</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-30">Section 
+17.30</a>) file: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: exrc</p>
+<pre>ab aW w! /tmp/jerry.temp.a
+ab aR r /tmp/jerry.temp.a
+ab bW w! /tmp/jerry.temp.b
+ab bR r /tmp/jerry.temp.b
+   ...</pre>
+<p class="docText">I use those abbreviations this way. To write the current and 
+next 45 lines to temporary file <span class="docEmphasis">a</span>, I type this 
+command in one <i>vi</i> session: </p>
+<pre><b>:.,+45 aW</b></pre>
+<p class="docText">To read those saved lines into another <i>vi</i> session, I 
+use: </p>
+<pre><b>:aR</b></pre>
+<p class="docText">You can do the same thing in a single <i>vi</i> session by 
+using <span class="docEmphBold">named buffers</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-4">Section 
+17.4</a>), but temporary files are the only method that works between two 
+separate <i>vi</i> sessions. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-25">17.25 Fixing Typos with vi Abbreviations</h3>
+<p class="docText"><span class="docEmphBold">Abbreviations</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-23">Section 
+17.23</a>) are a handy way to fix common typos. Try a few abbreviations like 
+this: </p>
+<pre>ab teh the
+ab taht that</pre>
+<p class="docText">in your <span class="docEmphBold">.exrc</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-5">Section 
+17.5</a>) file. </p>
+<p class="docText">Any time you find yourself transposing letters or saying, 
+&quot;Darn, I always misspell that word,&quot; add an abbreviation to
+<span class="docEmphasis">.exrc</span>. (Of course, you do have to worry about 
+performance if the file gets too big.) </p>
+<p class="docText">You may be able to enforce conventions this way. For example, 
+command names should be surrounded by <tt>&lt;command&gt;</tt> tags, so creating a 
+list of abbreviations like this: </p>
+<pre>ab vi &lt;command&gt;vi&lt;/command&gt;</pre>
+<p class="docText">saves us from having to type lots of SGML codes.</p>
+<p class="docText">(Depending on your version of <i>vi</i>, this abbreviation 
+may be <span class="docEmphBold">recursive</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-23">Section 
+17.23</a>) because the <tt>vi</tt> is sandwiched between other nonalphanumeric 
+characters. <i>nvi</i> repeated the <tt>&lt;command&gt;</tt>) quite a few times and 
+quit, but <i>vim</i> did what we wanted.) </p>
+<p class="docText"><span class="docEmphasis">—TOR and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-26">17.26 vi Line Commands Versus Character Commands</h3>
+<p class="docText">[Quite a few <i>vi</i> users understand how to build <i>vi</i> 
+commands with the <span class="docEmphasis">(number)(command)(text object)</span> 
+model. But not too many people understand the difference between line commands 
+and character commands. This article explains that and gives some examples. — 
+JP] </p>
+<p class="docText">The <tt>_</tt> (underscore) command is very similar to the
+<tt>^</tt> (caret) command in that it moves to the first nonblank character of 
+the current line. The key difference is that <tt>_</tt> is a
+<span class="docEmphasis">line</span> command while <tt>^</tt> is a
+<span class="docEmphasis">character</span> command. This is important for all 
+functions that read an &quot;address&quot; — for example, <tt>d</tt>, <tt>y</tt>, and <tt>
+c</tt>. </p>
+<p class="docText">In fact, delete, yank, and so on all call a common internal 
+routine in <i>vi</i> to get an &quot;address.&quot; If the address is of a particular 
+character, <i>vi</i> does a character-mode delete or yank or whatever. If it is 
+a line address, <i>vi</i> does a line-mode operation. The &quot;address&quot; command may 
+be any of the regular positioning commands (e.g., <tt>W</tt>, <tt>b</tt>, <tt>$</tt>, 
+or <tt>/pattern/</tt>) or the original character repeated (as in <tt>dd</tt> or
+<tt>yy</tt>). </p>
+<p class="docText">Some examples are found in
+<a class="docLink" href="#upt3-CHP-17-TABLE-1">Table 17-1</a>.</p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-17-TABLE-1" class="docTableTitle">Table 17-1. Examples of vi character and line 
+  commands </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Keystrokes</th>
+    <th class="docTableHeader">
+    <p class="docText">Results</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>dd</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Deletes the current line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>d'a</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Deletes all lines between the current line and the line 
+    containing mark <tt>a</tt>, inclusive. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>d'a</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Deletes all characters between the current character and 
+    the character at mark <tt>a</tt>. This works much like an Emacs <tt>W</tt> 
+    in that the two endpoints are considered to be between two characters. Note 
+    that a character-oriented delete may delete newlines. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>c/accord/</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Changes all characters (<span class="docEmphasis">not</span> 
+    lines!) between the current character up to but not including the <tt>a</tt> 
+    in <tt>accord</tt>. (However, see the following Note.) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>c?accord?</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Changes all characters between the current character and 
+    the <tt>accord</tt>, including the word <tt>accord</tt>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>yj</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Yanks two lines: the current line and the one below.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>yH</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Yanks all the lines from the top of the screen to the 
+    current line, inclusive. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&lt;G</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Unindents or &quot;dedents&quot; the lines between the current line 
+    and the last line, inclusive. (The variable <span class="docEmphasis">
+    shiftwidth</span> determines the amount of dedenting.) Note that this 
+    command turns character addresses into line addresses (so does <tt>&gt;</tt>).
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>!}fmt</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Runs the lines between the current line and the end of 
+    the paragraph through the program <span class="docEmphBold">fmt</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-28">Section 
+    17.28</a>). </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">If you have <span class="docEmphasis">wrapscan</span> 
+        set, a search like <tt>c?accord?</tt> may wrap from the beginning of the 
+        file to the end. This can cause unexpected results and is one reason why 
+        I have <tt>set nows</tt> in my <span class="docEmphasis">.exrc</span>. 
+        Unfortunately, turning off <span class="docEmphasis">wrapscan</span> 
+        breaks <span class="docEmphasis">tags</span> in many versions of <i>vi</i>.
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><i>vi</i> combines the repeat count on the command character 
+with the repeat count on the motion command, so that <tt>2y2j</tt> yanks five 
+lines. Interestingly, <tt>2y2_</tt> yanks 4 lines (so does <tt>2y2y</tt>) since 
+the <tt>_</tt> command moves down (repeat count minus 1) lines. Beware, however, 
+of using repeat counts on all of the motion commands; they're not all 
+implemented in the same way. <tt>4$</tt> moves to the end of the third line 
+below the current; <tt>4</tt> merely moves to the first nonblank character of 
+the current line. <tt>|</tt> (vertical bar) is a synonym for <tt>0</tt> (zero); 
+given a repeat count, it goes that many characters to the right of the beginning 
+of the line (as if you had typed <tt>|</tt> (<span class="docEmphasis">rept-1</span>)
+<tt>l</tt>). (Exercise for the reader: why can't you give a repeat count to <tt>
+0</tt>?) </p>
+<p class="docText">Uppercase letters do different things depending on the 
+command. The exact actions may not always seem sensible, but typically they 
+affect the &quot;current line&quot;: <tt>D</tt> acts like <tt>d$</tt>; <tt>C</tt> acts 
+like <tt>c$</tt>; <tt>Y</tt> acts like <tt>yy</tt>. The list must merely be 
+memorized, or you can use a good <i>vi</i> reference guide. </p>
+<p class="docText"><span class="docEmphasis">— CT</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-27">17.27 Out of Temporary Space? Use Another Directory</h3>
+<p class="docText"><i>vi</i> keeps its temporary copy of the file you're editing 
+in a temporary-file directory — usually <span class="docEmphasis">/tmp</span>,
+<span class="docEmphasis">/usr/tmp</span>, or <span class="docEmphasis">/var/tmp</span>. 
+If you're editing a big file or if the temporary filesystem runs out of space,
+<i>vi</i> may not be able to make your temporary file. When that happens, you 
+can use <i>vi</i>'s <tt>set</tt> <tt>directory</tt> command to set the pathname 
+of a different temporary directory. (If this happens a lot though, you should 
+talk to the system administrator and see if the standard area can be cleaned up 
+or made bigger.) </p>
+<p class="docText">First, you'll need the <span class="docEmphBold">absolute 
+pathname</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-7">Section 
+3.7</a>) of a directory on a filesystem with enough room. Use an existing 
+directory, or make a new one. </p>
+<p class="docText">The <i>vi</i> command is <tt>set directory</tt>. For example:
+</p>
+<pre>set directory=/usr1/jim/vitemp</pre>
+<p class="docText">You have to type that command before giving <i>vi</i> a 
+filename to edit — after that, <i>vi</i> has made the temporary file, and you'll 
+be too late. But if you type that command while using <i>vi</i> and then use the
+<span class="docEmphBold">:e command</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-3">Section 
+17.3</a>), all files from then on will use the new temporary directory (in the 
+versions I tried, at least). </p>
+<p class="docText">To set the directory temporarily, it's probably easiest to 
+add that command to the <span class="docEmphasis">EXINIT</span> environment 
+variable: </p>
+<pre>setenv EXINIT 'set directory=/usr1/jim/vitemp'</pre>
+<p class="docText">If you already have a <span class="docEmphBold">.exrc file</span> 
+(<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-5">Section 
+17.5</a>), setting <span class="docEmphasis">EXINIT</span> will make <i>vi</i> 
+ignore your <span class="docEmphasis">.exrc</span> file. To make the temporary
+<tt>set</tt> <tt>directory</tt> work, too, use a command with a vertical bar (<tt>|</tt>), 
+like this: </p>
+<pre>setenv EXINIT 'source /usr1/jim/.exrc|set directory=/usr1/jim/vitemp'</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-28">17.28 Neatening Lines</h3>
+<p class="docText">Have you made edits that left some of your lines too short or 
+long? The <span class="docEmphBold">fmt</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-2">Section 
+21.2</a>) utility can clean that up. Here's an example. Let's say you're editing 
+a file (email message, whatever) in <i>vi</i> and the lines aren't even. They 
+look like this: </p>
+<pre>This file is a mess
+with some short lines
+and some lines that are too long — like this one, which goes on and on for quite 
+a while and etc.
+
+Let's see what 'fmt' does with it.</pre>
+<p class="docText">You put your cursor on the first line and type (in command 
+mode):</p>
+<p class="docText"><tt>5!!</tt>
+<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-18">
+Section 17.18</a></p>
+<pre><b>5!!fmt</b></pre>
+<p class="docText">which means &quot;<span class="docEmphBold">filter</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-18">Section 
+17.18</a>) 5 lines through <i>fmt</i>.&quot; Then the lines will look like this: </p>
+<pre>This file is a mess with some short lines and some lines that are too
+long — like this one, which goes on and on for quite a while and etc.
+
+Let's see what 'fmt' does with it.</pre>
+<p class="docText">This is handiest for formatting paragraphs. Put your cursor 
+on the first line of the paragraph and type (in command mode): </p>
+<pre><b>!}fmt</b></pre>
+<p class="docText">If you don't have any text in your file that needs to be kept 
+as is, you can neaten the whole file at once by typing: </p>
+<p class="docText"><tt>%</tt>
+<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-3">
+Section 20.3</a></p>
+<pre><b>:%!fmt</b></pre>
+<p class="docText">There are a few different versions of <i>fmt</i>, some 
+fancier than others. Most of the articles in
+<a class="docLink" href="_chapter 21.htm">Chapter 
+21</a> about editing-related tools can be handy too. For example, <i>recomment</i> 
+reformats program comment blocks. <span class="docEmphBold">cut</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-14">Section 
+21.14</a>) can remove columns, fields, or shorten lines;
+<span class="docEmphBold">tr</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-11">Section 
+21.11</a>) can do other transformations. To neaten columns, try filtering 
+through with the setup in
+<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-17">
+Section 21.17</a>. In general, if the utility will read its standard input and 
+write converted text to its standard output, you can use the utility as a <i>vi</i> 
+filter. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-29">17.29 Finding Your Place with Undo</h3>
+<p class="docText">Often, you're editing one part of a file and need to go to 
+another point to look at something. How do you get back? </p>
+<p class="docText">You can mark your place with the <tt>m</tt> command. In 
+command mode, type <tt>m</tt> followed by any letter. (We'll use <tt>x</tt> in 
+the example.) Here are the commands to do the job: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">m</span> <tt><i>x</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Marks current position with <span class="docEmphasis">x</span> 
+  (<span class="docEmphasis">x</span> can be any letter). </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">'</span> <tt><i>x</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Moves cursor to first character of line marked by
+  <span class="docEmphasis">x</span>. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">`</span> <tt><i>x</i></tt></span>
+  </dt>
+  <dd>
+  <p class="docList">Moves cursor to character marked by
+  <span class="docEmphasis">x</span>.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">``</span></span> </dt>
+  <dd>
+  <p class="docList">Returns to exact position of previous mark or context after 
+  a move.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">''</span></span> </dt>
+  <dd>
+  <p class="docList">Returns to the beginning of the line of the previous mark 
+  or context.</dd>
+</dl>
+<p class="docText">I often find it just as easy to type <tt>u</tt> to undo my 
+last edit. That pops me right back to the place where I was editing. Then I type
+<tt>u</tt> again to restore the edit. Watch out for the new multilevel undo 
+feature in <i>vi</i> clones: typing <tt>u</tt> twice will undo
+<span class="docEmphasis">two</span> edits! (I still use <tt>m</tt> if I want to 
+mark more than one place.) </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-17-SECT-30">17.30 Setting Up vi with the .exrc File</h3>
+<p class="docText">You can store commands and settings to be executed any time 
+you start the <span class="docEmphBold">vi or ex editors</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-2">Section 
+17.2</a>) in <span class="docEmphasis">.exrc</span> in your home directory. You 
+can modify the <span class="docEmphasis">.exrc</span> file with the <i>vi</i> 
+editor, just as you can any other text file. </p>
+<p class="docText">If you don't yet have an <span class="docEmphasis">.exrc</span> 
+file, simply use <i>vi</i> to create one. Enter into this file the <i>set</i>,
+<span class="docEmphBold">ab</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-23">Section 
+17.23</a>), and <span class="docEmphBold">map</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+18.2</a>) commands that you want to have in effect whenever you use <i>vi</i> or
+<i>ex</i>. A sample <span class="docEmphasis">.exrc</span> file looks like this:
+</p>
+<pre>set nowrapscan wrapmargin=7
+set sections=SeAhBhChDh nomesg
+map q :w^M:n^M
+&quot; To swap two words, put cursor at start of first word and type v:
+map v dwElp
+ab ORA O'Reilly &amp; Associates, Inc.</pre>
+<p class="docText">The <tt>^M</tt> characters are RETURNs. Make them by pressing
+<span class="docEmphBold">CTRL-v, then RETURN</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">Section 
+18.6</a>). Lines that start with a double quote (<tt>&quot;</tt>) are comments. Since 
+the file is actually read by <i>ex</i> before it enters <i>vi</i>, commands in
+<span class="docEmphasis">.exrc</span> should not have a preceding colon (:).
+</p>
+<p class="docText">In addition to reading the <span class="docEmphasis">.exrc</span> 
+file in your home directory, <i>vi</i> will read the <span class="docEmphasis">.exrc</span> 
+file in the current directory. This allows you to <span class="docEmphBold">set 
+options that are appropriate to a particular project</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-5">Section 
+17.5</a>). </p>
+<p class="docText">If your <span class="docEmphasis">.exrc</span> file doesn't 
+seem to be working, watch carefully for error messages just as <i>vi</i> starts, 
+before it clears your screen. If you can't read them quickly enough, start <i>ex</i> 
+instead of <i>vi</i>. The <span class="docEmphasis">q!</span> command quits <i>
+ex</i>: </p>
+<pre>% <b>ex</b>
+No tail recursion
+:<b>q!</b></pre>
+<p class="docText"><span class="docEmphasis">—TOR </span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN17-1"><a class="docLink" href="#ENB17-1">[1]</a>&nbsp;&nbsp;Many email programs hide these header lines from you. You might need to set a 
+&quot;show all header fields&quot; option first.</p><p class="docFootnote" id="EN17-2"><a class="docLink" href="#ENB17-2">[2]</a>&nbsp;&nbsp;An abbreviation won't expand 
+  when you type an underscore ( <tt>_</tt> ); it's treated as part of the 
+  abbreviation.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 16.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 18.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

@@ -1,0 +1,3531 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="UNIX Power Tools, 3rd Edition">
+		<param name="Local" value="Front matter.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Copyright">
+			<param name="Local" value="Front matter.htm#FM1">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="How to Use This Book">
+			<param name="Local" value="Front matter.htm#FM2">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Preface">
+			<param name="Local" value="Front matter.htm#FM3">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="A Book for Browsing">
+				<param name="Local" value="Front matter.htm#FM4">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Like an Almanac">
+				<param name="Local" value="Front matter.htm#FM5">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Like a News Magazine">
+				<param name="Local" value="Front matter.htm#FM6">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Like a Hypertext Database">
+				<param name="Local" value="Front matter.htm#FM7">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Programs on the Web">
+				<param name="Local" value="Front matter.htm#FM8">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="About Unix Versions">
+				<param name="Local" value="Front matter.htm#FM9">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Cross-References">
+				<param name="Local" value="Front matter.htm#FM10">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="What's New in the Third Edition">
+				<param name="Local" value="Front matter.htm#FM11">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Typefaces and Other Conventions">
+				<param name="Local" value="Front matter.htm#FM12">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="The Authors">
+				<param name="Local" value="Front matter.htm#FM13">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="The Fine Print">
+				<param name="Local" value="Front matter.htm#FM14">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Request for Comments">
+				<param name="Local" value="Front matter.htm#FM15">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Acknowledgments for the First Edition">
+				<param name="Local" value="Front matter.htm#FM16">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Acknowledgments for the Second Edition">
+				<param name="Local" value="Front matter.htm#FM17">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Acknowledgments for the Third Edition">
+				<param name="Local" value="Front matter.htm#FM18">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Part I:  Basic Unix Environment">
+			<param name="Local" value="Part 1.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 1. Introduction">
+				<param name="Local" value="_chapter 1.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.1 What's Special About Unix?">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.2 Power Grows on You">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.3 The Core of Unix">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.4 Communication with Unix">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.5 Programs Are Designed to Work Together">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.6 There Are Many Shells">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.7 Which Shell Am I Running?">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.8 Anyone Can Program the Shell">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.9 Internal and External Commands">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.10 The Kernel and Daemons">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.11 Filenames">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.12 Filename Extensions">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.13 Wildcards">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.14 The Tree Structure of the Filesystem">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.15 Your Home Directory">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.16 Making Pathnames">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.17 File Access Permissions">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.18 The Superuser (Root)">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.19 When Is a File Not a File?">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-19">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.20 Scripting">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-20">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.21 Unix Networking and Communications">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-21">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="1.22 The X Window System">
+					<param name="Local" value="_chapter 1.htm#upt3-CHP-1-SECT-22">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 2. Getting Help">
+				<param name="Local" value="_chapter 2.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="2.1 The man Command">
+					<param name="Local" value="_chapter 2.htm#upt3-CHP-2-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="2.2 whatis: One-Line Command Summaries">
+					<param name="Local" value="_chapter 2.htm#upt3-CHP-2-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="2.3 whereis: Finding Where a Command Is Located">
+					<param name="Local" value="_chapter 2.htm#upt3-CHP-2-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="2.4 Searching Online Manual Pages">
+					<param name="Local" value="_chapter 2.htm#upt3-CHP-2-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="2.5 How Unix Systems Remember Their Names">
+					<param name="Local" value="_chapter 2.htm#upt3-CHP-2-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="2.6 Which Version Am I Using?">
+					<param name="Local" value="_chapter 2.htm#upt3-CHP-2-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="2.7 What tty Am I On?">
+					<param name="Local" value="_chapter 2.htm#upt3-CHP-2-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="2.8 Who's On?">
+					<param name="Local" value="_chapter 2.htm#upt3-CHP-2-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="2.9 The info Command">
+					<param name="Local" value="_chapter 2.htm#upt3-CHP-2-SECT-9">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Part II:  Customizing Your Environment">
+			<param name="Local" value="Part 2.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 3. Setting Up Your Unix Shell">
+				<param name="Local" value="_chapter 3.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.1 What Happens When You Log In">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.2 The Mac OS X Terminal Application">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.3 Shell Setup Files — Which, Where, and Why">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.4 Login Shells, Interactive Shells">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.5 What Goes in Shell Setup Files?">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.6 Tip for Changing Account Setup: Keep a Shell Ready">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.7 Use Absolute Pathnames in Shell Setup Files">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.8 Setup Files Aren't Read When You Want?">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.9 Gotchas in set prompt Test">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.10 Automatic Setups for Different Terminals">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.11 Terminal Setup: Testing TERM">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.12 Terminal Setup: Testing Remote Hostname and X Display">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.13 Terminal Setup: Testing Port">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.14 Terminal Setup: Testing Environment Variables">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.15 Terminal Setup: Searching Terminal Table">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.16 Terminal Setup: Testing Window Size">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.17 Terminal Setup: Setting and Testing Window Name">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.18 A .cshrc.$HOST File for Per Host Setup">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.19 Making a &quot;Login&quot; Shell">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-19">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.20 RC Files">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-20">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.21 Make Your Own Manpages Without Learning troff">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-21">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="3.22 Writing a Simple Manpage with the -man Macros">
+					<param name="Local" value="_chapter 3.htm#upt3-CHP-3-SECT-22">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 4. Interacting with Your Environment">
+				<param name="Local" value="_chapter 4.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.1 Basics of Setting the Prompt">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.2 Static Prompts">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.3 Dynamic Prompts">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.4 Simulating Dynamic Prompts">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.5 C-Shell Prompt Causes Problems in vi, rsh, etc.">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.6 Faster Prompt Setting with Built-ins">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.7 Multiline Shell Prompts">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.8 Session Info in Window Title or Status Line">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.9 A &quot;Menu Prompt&quot; for Naive Users">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.10 Highlighting and Color in Shell Prompts">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.11 Right-Side Prompts">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.12 Show Subshell Level with $SHLVL">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.13 What Good Is a Blank Shell Prompt?">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.14 dirs in Your Prompt: Better Than $cwd">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.15 External Commands Send Signals to Set Variables">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.16 Preprompt, Pre-execution, and Periodic Commands">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.17 Running Commands When You Log Out">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.18 Running Commands at Bourne/Korn Shell Logout">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="4.19 Stop Accidental Bourne-Shell Logouts">
+					<param name="Local" value="_chapter 4.htm#upt3-CHP-4-SECT-19">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 5. Getting the Most out of Terminals, xterm, and X Windows">
+				<param name="Local" value="_chapter 5.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.1 There's a Lot to Know About Terminals">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.2 The Idea of a Terminal Database">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.3 Setting the Terminal Type When You Log In">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.4 Querying Your Terminal Type: qterm">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.5 Querying Your xterm Size: resize">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.6 Checklist: Terminal Hangs When I Log In">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.7 Find Out Terminal Settings with stty">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.8 Setting Your Erase, Kill, and Interrupt Characters">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.9 Working with xterm and Friends">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.10 Login xterms and rxvts">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.11 Working with Scrollbars">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.12 How Many Lines to Save?">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.13 Simple Copy and Paste in xterm">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.14 Defining What Makes Up a Word for Selection Purposes">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.15 Setting the Titlebar and Icon Text">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.16 The Simple Way to Pick a Font">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.17 The xterm Menus">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.18 Changing Fonts Dynamically">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.19 Working with xclipboard">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-19">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.20 Problems with Large Selections">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-20">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.21 Tips for Copy and Paste Between Windows">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-21">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.22 Running a Single Command with xterm -e">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-22">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="5.23 Don't Quote Arguments to xterm -e">
+					<param name="Local" value="_chapter 5.htm#upt3-CHP-5-SECT-23">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 6. Your X Environment">
+				<param name="Local" value="_chapter 6.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="6.1 Defining Keys and Button Presses with xmodmap">
+					<param name="Local" value="_chapter 6.htm#upt3-CHP-6-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="6.2 Using xev to Learn Keysym Mappings">
+					<param name="Local" value="_chapter 6.htm#upt3-CHP-6-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="6.3 X Resource Syntax">
+					<param name="Local" value="_chapter 6.htm#upt3-CHP-6-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="6.4 X Event Translations">
+					<param name="Local" value="_chapter 6.htm#upt3-CHP-6-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="6.5 Setting X Resources: Overview">
+					<param name="Local" value="_chapter 6.htm#upt3-CHP-6-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="6.6 Setting Resources with the -xrm Option">
+					<param name="Local" value="_chapter 6.htm#upt3-CHP-6-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="6.7 How -name Affects Resources">
+					<param name="Local" value="_chapter 6.htm#upt3-CHP-6-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="6.8 Setting Resources with xrdb">
+					<param name="Local" value="_chapter 6.htm#upt3-CHP-6-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="6.9 Listing the Current Resources for a Client: appres">
+					<param name="Local" value="_chapter 6.htm#upt3-CHP-6-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="6.10 Starting Remote X Clients">
+					<param name="Local" value="_chapter 6.htm#upt3-CHP-6-SECT-10">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Part III:  Working with Files and Directories">
+			<param name="Local" value="Part 3.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 7. Directory Organization">
+				<param name="Local" value="_chapter 7.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="7.1 What? Me, Organized?">
+					<param name="Local" value="_chapter 7.htm#upt3-CHP-7-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="7.2 Many Homes">
+					<param name="Local" value="_chapter 7.htm#upt3-CHP-7-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="7.3 Access to Directories">
+					<param name="Local" value="_chapter 7.htm#upt3-CHP-7-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="7.4 A bin Directory for Your Programs and Scripts">
+					<param name="Local" value="_chapter 7.htm#upt3-CHP-7-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="7.5 Private (Personal) Directories">
+					<param name="Local" value="_chapter 7.htm#upt3-CHP-7-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="7.6 Naming Files">
+					<param name="Local" value="_chapter 7.htm#upt3-CHP-7-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="7.7 Make More Directories!">
+					<param name="Local" value="_chapter 7.htm#upt3-CHP-7-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="7.8 Making Directories Made Easier">
+					<param name="Local" value="_chapter 7.htm#upt3-CHP-7-SECT-8">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 8. Directories and Files">
+				<param name="Local" value="_chapter 8.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.1 Everything but the find Command">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.2 The Three Unix File Times">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.3 Finding Oldest or Newest Files with ls -t and ls -u">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.4 List All Subdirectories with ls -R">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.5 The ls -d Option">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.6 Color ls">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.7 Some GNU ls Features">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.8 A csh Alias to List Recently Changed Files">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.9 Showing Hidden Files with ls -A and -a">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.10 Useful ls Aliases">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.11 Can't Access a File? Look for Spaces in the Name">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.12 Showing Nonprintable Characters in Filenames">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.13 Counting Files by Types">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.14 Listing Files by Age and Size">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.15 newer: Print the Name of the Newest File">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.16 oldlinks: Find Unconnected Symbolic Links">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="8.17 Picking a Unique Filename Automatically">
+					<param name="Local" value="_chapter 8.htm#upt3-CHP-8-SECT-17">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 9. Finding Files with find">
+				<param name="Local" value="_chapter 9.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.1 How to Use find">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.2 Delving Through a Deep Directory Tree">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.3 Don't Forget -print">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.4 Looking for Files with Particular Names">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.5 Searching for Old Files">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.6 Be an Expert on find Search Operators">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.7 The Times That find Finds">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.8 Exact File-Time Comparisons">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.9 Running Commands on What You Find">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.10 Using -exec to Create Custom Tests">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.11 Custom -exec Tests Applied">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.12 Finding Many Things with One Command">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.13 Searching for Files by Type">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.14 Searching for Files by Size">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.15 Searching for Files by Permission">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.16 Searching by Owner and Group">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.17 Duplicating a Directory Tree">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.18 Using &quot;Fast find&quot; Databases">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.19 Wildcards with &quot;Fast find&quot; Database">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-19">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.20 Finding Files (Much) Faster with a find Database">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-20">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.21 grepping a Directory Tree">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-21">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.22 lookfor: Which File Has That Word?">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-22">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.23 Using Shell Arrays to Browse Directories">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-23">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.24 Finding the (Hard) Links to a File">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-24">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.25 Finding Files with -prune">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-25">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.26 Quick finds in the Current Directory">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-26">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.27 Skipping Parts of a Tree in find">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-27">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="9.28 Keeping find from Searching Networked Filesystem">
+					<param name="Local" value="_chapter 9.htm#upt3-CHP-9-SECT-28">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 10. Linking, Renaming, and Copying Files">
+				<param name="Local" value="_chapter 10.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.1 What's So Complicated About Copying Files">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.2 What's Really in a Directory?">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.3 Files with Two or More Names">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.4 More About Links">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.5 Creating and Removing Links">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.6 Stale Symbolic Links">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.7 Linking Directories">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.8 Showing the Actual Filenames for Symbolic Links">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.9 Renaming, Copying, or Comparing a Set of Files">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.10 Renaming a List of Files Interactively">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.11 One More Way to Do It">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.12 Copying Directory Trees with cp -r">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="10.13 Copying Directory Trees with tar and Pipes">
+					<param name="Local" value="_chapter 10.htm#upt3-CHP-10-SECT-13">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 11. Comparing Files">
+				<param name="Local" value="_chapter 11.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="11.1 Checking Differences with diff">
+					<param name="Local" value="_chapter 11.htm#upt3-CHP-11-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="11.2 Comparing Three Different Versions with diff3">
+					<param name="Local" value="_chapter 11.htm#upt3-CHP-11-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="11.3 Context diffs">
+					<param name="Local" value="_chapter 11.htm#upt3-CHP-11-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="11.4 Side-by-Side diffs: sdiff">
+					<param name="Local" value="_chapter 11.htm#upt3-CHP-11-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="11.5 Choosing Sides with sdiff">
+					<param name="Local" value="_chapter 11.htm#upt3-CHP-11-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="11.6 Problems with diff and Tabstops">
+					<param name="Local" value="_chapter 11.htm#upt3-CHP-11-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="11.7 cmp and diff">
+					<param name="Local" value="_chapter 11.htm#upt3-CHP-11-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="11.8 Comparing Two Files with comm">
+					<param name="Local" value="_chapter 11.htm#upt3-CHP-11-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="11.9 More Friendly comm Output">
+					<param name="Local" value="_chapter 11.htm#upt3-CHP-11-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="11.10 make Isn't Just for Programmers!">
+					<param name="Local" value="_chapter 11.htm#upt3-CHP-11-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="11.11 Even More Uses for make">
+					<param name="Local" value="_chapter 11.htm#upt3-CHP-11-SECT-11">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 12. Showing What's in a File">
+				<param name="Local" value="_chapter 12.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.1 Cracking the Nut">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.2 What Good Is a cat?">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.3 &quot;less&quot; is More">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.4 Show Nonprinting Characters with cat -v or od -c">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.5 What's in That Whitespace?">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.6 Finding File Types">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.7 Squash Extra Blank Lines">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.8 How to Look at the End of a File: tail">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.9 Finer Control on tail">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.10 How to Look at Files as They Grow">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.11 GNU tail File Following">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.12 Printing the Top of a File">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="12.13 Numbering Lines">
+					<param name="Local" value="_chapter 12.htm#upt3-CHP-12-SECT-13">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 13. Searching Through Files">
+				<param name="Local" value="_chapter 13.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.1 Different Versions of grep">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.2 Searching for Text with grep">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.3 Finding Text That Doesn't Match">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.4 Extended Searching for Text with egrep">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.5 grepping for a List of Patterns">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.6 Approximate grep: agrep">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.7 Search RCS Files with rcsgrep">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.8 GNU Context greps">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.9 A Multiline Context grep Using sed">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.10 Compound Searches">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.11 Narrowing a Search Quickly">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.12 Faking Case-Insensitive Searches">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.13 Finding a Character in a Column">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.14 Fast Searches and Spelling Checks with &quot;look&quot;">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.15 Finding Words Inside Binary Files">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="13.16 A Highlighting grep">
+					<param name="Local" value="_chapter 13.htm#upt3-CHP-13-SECT-16">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 14. Removing Files">
+				<param name="Local" value="_chapter 14.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.1 The Cycle of Creation and Destruction">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.2 How Unix Keeps Track of Files: Inodes">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.3 rm and Its Dangers">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.4 Tricks for Making rm Safer">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.5 Answer &quot;Yes&quot; or &quot;No&quot; Forever with yes">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.6 Remove Some, Leave Some">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.7 A Faster Way to Remove Files Interactively">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.8 Safer File Deletion in Some Directories">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.9 Safe Delete: Pros and Cons">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.10 Deletion with Prejudice: rm -f">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.11 Deleting Files with Odd Names">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.12 Using Wildcards to Delete Files with Strange Names">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.13 Handling a Filename Starting with a Dash (-)">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.14 Using unlink to Remove a File with a Strange Name">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.15 Removing a Strange File by its i-number">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.16 Problems Deleting Directories">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.17 Deleting Stale Files">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.18 Removing Every File but One">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="14.19 Using find to Clear Out Unneeded Files">
+					<param name="Local" value="_chapter 14.htm#upt3-CHP-14-SECT-19">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 15. Optimizing Disk Space">
+				<param name="Local" value="_chapter 15.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="15.1 Disk Space Is Cheap">
+					<param name="Local" value="_chapter 15.htm#upt3-CHP-15-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="15.2 Instead of Removing a File, Empty It">
+					<param name="Local" value="_chapter 15.htm#upt3-CHP-15-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="15.3 Save Space with &quot;Bit Bucket&quot; Log Files and Mailboxes">
+					<param name="Local" value="_chapter 15.htm#upt3-CHP-15-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="15.4 Save Space with a Link">
+					<param name="Local" value="_chapter 15.htm#upt3-CHP-15-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="15.5 Limiting File Sizes">
+					<param name="Local" value="_chapter 15.htm#upt3-CHP-15-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="15.6 Compressing Files to Save Space">
+					<param name="Local" value="_chapter 15.htm#upt3-CHP-15-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="15.7 Save Space: tar and compress a Directory Tree">
+					<param name="Local" value="_chapter 15.htm#upt3-CHP-15-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="15.8 How Much Disk Space?">
+					<param name="Local" value="_chapter 15.htm#upt3-CHP-15-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="15.9 Compressing a Directory Tree: Fine-Tuning">
+					<param name="Local" value="_chapter 15.htm#upt3-CHP-15-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="15.10 Save Space in Executable Files with strip">
+					<param name="Local" value="_chapter 15.htm#upt3-CHP-15-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="15.11 Disk Quotas">
+					<param name="Local" value="_chapter 15.htm#upt3-CHP-15-SECT-11">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Part IV:  Basic Editing">
+			<param name="Local" value="Part 4.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 16. Spell Checking, Word Counting, and Textual Analysis">
+				<param name="Local" value="_chapter 16.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="16.1 The Unix spell Command">
+					<param name="Local" value="_chapter 16.htm#upt3-CHP-16-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="16.2 Check Spelling Interactively with ispell">
+					<param name="Local" value="_chapter 16.htm#upt3-CHP-16-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="16.3 How Do I Spell That Word?">
+					<param name="Local" value="_chapter 16.htm#upt3-CHP-16-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="16.4 Inside spell">
+					<param name="Local" value="_chapter 16.htm#upt3-CHP-16-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="16.5 Adding Words to ispell's Dictionary">
+					<param name="Local" value="_chapter 16.htm#upt3-CHP-16-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="16.6 Counting Lines, Words, and Characters: wc">
+					<param name="Local" value="_chapter 16.htm#upt3-CHP-16-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="16.7 Find a a Doubled Word">
+					<param name="Local" value="_chapter 16.htm#upt3-CHP-16-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="16.8 Looking for Closure">
+					<param name="Local" value="_chapter 16.htm#upt3-CHP-16-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="16.9 Just the Words, Please">
+					<param name="Local" value="_chapter 16.htm#upt3-CHP-16-SECT-9">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 17. vi Tips and Tricks">
+				<param name="Local" value="_chapter 17.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.1 The vi Editor: Why So Much Material?">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.2 What We Cover">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.3 Editing Multiple Files with vi">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.4 Edits Between Files">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.5 Local Settings for vi">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.6 Using Buffers to Move or Copy Text">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.7 Get Back What You Deleted with Numbered Buffers">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.8 Using Search Patterns and Global Commands">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.9 Confirming Substitutions in vi">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.10 Keep Your Original File, Write to a New File">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.11 Saving Part of a File">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.12 Appending to an Existing File">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.13 Moving Blocks of Text by Patterns">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.14 Useful Global Commands (with Pattern Matches)">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.15 Counting Occurrences; Stopping Search Wraps">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.16 Capitalizing Every Word on a Line">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.17 Per-File Setups in Separate Files">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.18 Filtering Text Through a Unix Command">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.19 vi File Recovery Versus Networked Filesystems">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-19">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.20 Be Careful with vi -r Recovered Buffers">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-20">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.21 Shell Escapes: Running One UnixCommand While Using Another">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-21">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.22 vi Compound Searches">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-22">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.23 vi Word Abbreviation">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-23">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.24 Using vi Abbreviations as Commands (Cut and Paste Between vi's)">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-24">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.25 Fixing Typos with vi Abbreviations">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-25">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.26 vi Line Commands Versus Character Commands">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-26">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.27 Out of Temporary Space? Use Another Directory">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-27">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.28 Neatening Lines">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-28">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.29 Finding Your Place with Undo">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-29">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="17.30 Setting Up vi with the .exrc File">
+					<param name="Local" value="_chapter 17.htm#upt3-CHP-17-SECT-30">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 18. Creating Custom Commands in vi">
+				<param name="Local" value="_chapter 18.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.1 Why Type More Than You Have To?">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.2 Save Time and Typing with the vi map Commands">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.3 What You Lose When You Use map!">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.4 vi @-Functions">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.5 Keymaps for Pasting into a Window Running vi">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.6 Protecting Keys from Interpretation by ex">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.7 Maps for Repeated Edits">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.8 More Examples of Mapping Keys in vi">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.9 Repeating a vi Keymap">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.10 Typing in Uppercase Without CAPS LOCK">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.11 Text-Input Mode Cursor Motion with No Arrow Keys">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.12 Don't Lose Important Functions with vi Maps: Use noremap">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.13 vi Macro for Splitting Long Lines">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="18.14 File-Backup Macros">
+					<param name="Local" value="_chapter 18.htm#upt3-CHP-18-SECT-14">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 19. GNU Emacs">
+				<param name="Local" value="_chapter 19.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.1 Emacs: The Other Editor">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.2 Emacs Features: A Laundry List">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.3 Customizations and How to Avoid Them">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.4 Backup and Auto-Save Files">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.5 Putting Emacs in Overwrite Mode">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.6 Command Completion">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.7 Mike's Favorite Timesavers">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.8 Rational Searches">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.9 Unset PWD Before Using Emacs">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.10 Inserting Binary Characters into Files">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.11 Using Word-Abbreviation Mode">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.12 Directories for Emacs Hacks">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="19.13 An Absurd Amusement">
+					<param name="Local" value="_chapter 19.htm#upt3-CHP-19-SECT-13">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 20. Batch Editing">
+				<param name="Local" value="_chapter 20.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="20.1 Why Line Editors Aren't Dinosaurs">
+					<param name="Local" value="_chapter 20.htm#upt3-CHP-20-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="20.2 Writing Editing Scripts">
+					<param name="Local" value="_chapter 20.htm#upt3-CHP-20-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="20.3 Line Addressing">
+					<param name="Local" value="_chapter 20.htm#upt3-CHP-20-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="20.4 Useful ex Commands">
+					<param name="Local" value="_chapter 20.htm#upt3-CHP-20-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="20.5 Running Editing Scripts Within vi">
+					<param name="Local" value="_chapter 20.htm#upt3-CHP-20-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="20.6 Change Many Files by Editing Just One">
+					<param name="Local" value="_chapter 20.htm#upt3-CHP-20-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="20.7 ed/ex Batch Edits: A Typical Example">
+					<param name="Local" value="_chapter 20.htm#upt3-CHP-20-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="20.8 Batch Editing Gotcha: Editors Fail on Big Files">
+					<param name="Local" value="_chapter 20.htm#upt3-CHP-20-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="20.9 patch: Generalized Updating of Files That Differ">
+					<param name="Local" value="_chapter 20.htm#upt3-CHP-20-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="20.10 Quick Reference: awk">
+					<param name="Local" value="_chapter 20.htm#upt3-CHP-20-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="20.11 Versions of awk">
+					<param name="Local" value="_chapter 20.htm#upt3-CHP-20-SECT-11">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 21. You Can't Quite Call This Editing">
+				<param name="Local" value="_chapter 21.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.1 And Why Not?">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.2 Neatening Text with fmt">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.3 Alternatives to fmt">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.4 Clean Up Program Comment Blocks">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.5 Remove Mail/News Headers with behead">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.6 Low-Level File Butchery with dd">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.7 offset: Indent Text">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.8 Centering Lines in a File">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.9 Splitting Files at Fixed Points: split">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.10 Splitting Files by Context: csplit">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.11 Hacking on Characters with tr">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.12 Encoding &quot;Binary&quot; Files into ASCII">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.13 Text Conversion with dd">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.14 Cutting Columns or Fields">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.15 Making Text in Columns with pr">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.16 Make Columns Automatically with column">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.17 Straightening Jagged Columns">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.18 Pasting Things in Columns">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.19 Joining Lines with join">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-19">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.20 What Is (or Isn't) Unique?">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-20">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="21.21 Rotating Text">
+					<param name="Local" value="_chapter 21.htm#upt3-CHP-21-SECT-21">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 22. Sorting">
+				<param name="Local" value="_chapter 22.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="22.1 Putting Things in Order">
+					<param name="Local" value="_chapter 22.htm#upt3-CHP-22-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="22.2 Sort Fields: How sort Sorts">
+					<param name="Local" value="_chapter 22.htm#upt3-CHP-22-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="22.3 Changing the sort Field Delimiter">
+					<param name="Local" value="_chapter 22.htm#upt3-CHP-22-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="22.4 Confusion with Whitespace Field Delimiters">
+					<param name="Local" value="_chapter 22.htm#upt3-CHP-22-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="22.5 Alphabetic and Numeric Sorting">
+					<param name="Local" value="_chapter 22.htm#upt3-CHP-22-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="22.6 Miscellaneous sort Hints">
+					<param name="Local" value="_chapter 22.htm#upt3-CHP-22-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="22.7 lensort: Sort Lines by Length">
+					<param name="Local" value="_chapter 22.htm#upt3-CHP-22-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="22.8 Sorting a List of People by Last Name">
+					<param name="Local" value="_chapter 22.htm#upt3-CHP-22-SECT-8">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Part V:  Processes and the Kernel">
+			<param name="Local" value="Part 5.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 23. Job Control">
+				<param name="Local" value="_chapter 23.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.1 Job Control in a Nutshell">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.2 Job Control Basics">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.3 Using jobs Effectively">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.4 Some Gotchas with Job Control">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.5 The &quot;Current Job&quot; Isn't Always What You Expect">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.6 Job Control and autowrite: Real Timesavers!">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.7 System Overloaded? Try Stopping Some Jobs">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.8 Notification When Jobs Change State">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.9 Stop Background Output with stty tostop">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.10 nohup">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.11 Disowning Processes">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.12 Linux Virtual Consoles">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="23.13 Stopping Remote Login Sessions">
+					<param name="Local" value="_chapter 23.htm#upt3-CHP-23-SECT-13">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 24. Starting, Stopping, and Killing Processes">
+				<param name="Local" value="_chapter 24.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.1 What's in This Chapter">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.2 fork and exec">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.3 Managing Processes: Overall Concepts">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.4 Subshells">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.5 The ps Command">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.6 The Controlling Terminal">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.7 Tracking Down Processes">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.8 Why ps Prints Some Commands in Parentheses">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.9 The /proc Filesystem">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.10 What Are Signals?">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.11 Killing Foreground Jobs">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.12 Destroying Processes with kill">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.13 Printer Queue Watcher: A Restartable Daemon Shell Script">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.14 Killing All Your Processes">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.15 Killing Processes by Name?">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.16 Kill Processes Interactively">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.17 Processes Out of Control? Just STOP Them">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.18 Cleaning Up an Unkillable Process">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.19 Why You Can't Kill a Zombie">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-19">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.20 The Process Chain to Your Window">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-20">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.21 Terminal Windows Without Shells">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-21">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="24.22 Close a Window by Killing Its Process(es)">
+					<param name="Local" value="_chapter 24.htm#upt3-CHP-24-SECT-22">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 25. Delayed Execution">
+				<param name="Local" value="_chapter 25.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="25.1 Building Software Robots the Easy Way">
+					<param name="Local" value="_chapter 25.htm#upt3-CHP-25-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="25.2 Periodic Program Execution: The cron Facility">
+					<param name="Local" value="_chapter 25.htm#upt3-CHP-25-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="25.3 Adding crontab Entries">
+					<param name="Local" value="_chapter 25.htm#upt3-CHP-25-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="25.4 Including Standard Input Within a cron Entry">
+					<param name="Local" value="_chapter 25.htm#upt3-CHP-25-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="25.5 The at Command">
+					<param name="Local" value="_chapter 25.htm#upt3-CHP-25-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="25.6 Making Your at Jobs Quiet">
+					<param name="Local" value="_chapter 25.htm#upt3-CHP-25-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="25.7 Checking and Removing Jobs">
+					<param name="Local" value="_chapter 25.htm#upt3-CHP-25-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="25.8 Avoiding Other at and cron Jobs">
+					<param name="Local" value="_chapter 25.htm#upt3-CHP-25-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="25.9 Waiting a Little While: sleep">
+					<param name="Local" value="_chapter 25.htm#upt3-CHP-25-SECT-9">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 26. System Performance and Profiling">
+				<param name="Local" value="_chapter 26.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="26.1 Timing Is Everything">
+					<param name="Local" value="_chapter 26.htm#upt3-CHP-26-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="26.2 Timing Programs">
+					<param name="Local" value="_chapter 26.htm#upt3-CHP-26-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="26.3 What Commands Are Running and How Long Do They Take?">
+					<param name="Local" value="_chapter 26.htm#upt3-CHP-26-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="26.4 Checking System Load: uptime">
+					<param name="Local" value="_chapter 26.htm#upt3-CHP-26-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="26.5 Know When to Be &quot;nice&quot; to Other Users...and When Not To">
+					<param name="Local" value="_chapter 26.htm#upt3-CHP-26-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="26.6 A nice Gotcha">
+					<param name="Local" value="_chapter 26.htm#upt3-CHP-26-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="26.7 Changing a Running Job's Niceness">
+					<param name="Local" value="_chapter 26.htm#upt3-CHP-26-SECT-7">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Part VI:  Scripting">
+			<param name="Local" value="Part 6.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 27. Shell Interpretation">
+				<param name="Local" value="_chapter 27.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.1 What the Shell Does">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.2 How the Shell Executes Other Commands">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.3 What's a Shell, Anyway?">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.4 Command Evaluation and Accidentally Overwriting Files">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.5 Output Command-Line Arguments One by One">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.6 Controlling Shell Command Searches">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.7 Wildcards Inside Aliases">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.8 eval: When You Need Another Chance">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.9 Which One Will bash Use?">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.10 Which One Will the C Shell Use?">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.11 Is It &quot;2&gt;&amp;1 file&quot; or &quot;&gt; file 2&gt;&amp;1&quot;? Why?">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.12 Bourne Shell Quoting">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.13 Differences Between Bourne and C Shell Quoting">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.14 Quoting Special Characters in Filenames">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.15 Verbose and Echo Settings Show Quoting">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.16 Here Documents">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.17 &quot;Special&quot; Characters and Operators">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="27.18 How Many Backslashes?">
+					<param name="Local" value="_chapter 27.htm#upt3-CHP-27-SECT-18">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 28. Saving Time on the Command Line">
+				<param name="Local" value="_chapter 28.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.1 What's Special About the Unix Command Line">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.2 Reprinting Your Command Line with CTRL-r">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.3 Use Wildcards to Create Files?">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.4 Build Strings with { }">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.5 String Editing (Colon) Operators">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.6 Automatic Completion">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.7 Don't Match Useless Files in Filename Completion">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.8 Repeating Commands">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.9 Repeating and Varying Commands">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.10 Repeating a Command with Copy-and-Paste">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.11 Repeating a Time-Varying Command">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.12 Multiline Commands, Secondary Prompts">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.13 Here Document Example #1: Unformatted Form Letters">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.14 Command Substitution">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.15 Handling Lots of Text with Temporary Files">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.16 Separating Commands with Semicolons">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.17 Dealing with Too Many Arguments">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="28.18 Expect">
+					<param name="Local" value="_chapter 28.htm#upt3-CHP-28-SECT-18">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 29. Custom Commands">
+				<param name="Local" value="_chapter 29.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.1 Creating Custom Commands">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.2 Introduction to Shell Aliases">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.3 C-Shell Aliases with Command-Line Arguments">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.4 Setting and Unsetting Bourne-Type Aliases">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.5 Korn-Shell Aliases">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.6 zsh Aliases">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.7 Sourceable Scripts">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.8 Avoiding C-Shell Alias Loops">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.9 How to Put if-then-else in a C-Shell Alias">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.10 Fix Quoting in csh Aliases with makealias and quote">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.11 Shell Function Basics">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.12 Shell Function Specifics">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.13 Propagating Shell Functions">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="29.14 Simulated Bourne Shell Functions and Aliases">
+					<param name="Local" value="_chapter 29.htm#upt3-CHP-29-SECT-14">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 30. The Use of History">
+				<param name="Local" value="_chapter 30.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.1 The Lessons of History">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.2 History in a Nutshell">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.3 My Favorite Is !$">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.4 My Favorite Is !:n*">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.5 My Favorite Is ^^">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.6 Using !$ for Safety with Wildcards">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.7 History by Number">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.8 History Substitutions">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.9 Repeating a Cycle of Commands">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.10 Running a Series of Commands on a File">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.11 Check Your History First with :p">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.12 Picking Up Where You Left Off">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.13 Pass History to Another Shell">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.14 Shell Command-Line Editing">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.15 Changing History Characters with histchars">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="30.16 Instead of Changing History Characters">
+					<param name="Local" value="_chapter 30.htm#upt3-CHP-30-SECT-16">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 31. Moving Around in a Hurry">
+				<param name="Local" value="_chapter 31.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.1 Getting Around the Filesystem">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.2 Using Relative and Absolute Pathnames">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.3 What Good Is a Current Directory?">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.4 How Does Unix Find Your Current Directory?">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.5 Saving Time When You Change Directories: cdpath">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.6 Loop Control: break and continue">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.7 The Shells' pushd and popd Commands">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.8 Nice Aliases for pushd">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.9 Quick cds with Aliases">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.10 cd by Directory Initials">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.11 Finding (Anyone's) Home Directory, Quickly">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.12 Marking Your Place with a Shell Variable">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="31.13 Automatic Setup When You Enter/Exit a Directory">
+					<param name="Local" value="_chapter 31.htm#upt3-CHP-31-SECT-13">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 32. Regular Expressions (Pattern Matching)">
+				<param name="Local" value="_chapter 32.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.1 That's an Expression">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.2 Don't Confuse Regular Expressions with Wildcards">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.3 Understanding Expressions">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.4 Using Metacharacters in Regular Expressions">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.5 Regular Expressions: The Anchor Characters ^ and $">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.6 Regular Expressions: Matching a Character with a Character Set">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.7 Regular Expressions: Match Any Character with . (Dot)">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.8 Regular Expressions: Specifying a Range of Characters with [...]">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.9 Regular Expressions: Exceptions in a Character Set">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.10 Regular Expressions: Repeating Character Sets with *">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.11 Regular Expressions: Matching a Specific Number of Sets with \ { and \ }">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.12 Regular Expressions: Matching Words with \ &lt; and \ &gt;">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.13 Regular Expressions: Remembering Patterns with \ (, \ ), and \1">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.14 Regular Expressions: Potential Problems">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.15 Extended Regular Expressions">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.16 Getting Regular Expressions Right">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.17 Just What Does a Regular Expression Match?">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.18 Limiting the Extent of a Match">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.19 I Never Meta Character I Didn't Like">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-19">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.20 Valid Metacharacters for Different Unix Programs">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-20">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="32.21 Pattern Matching Quick Reference with Examples">
+					<param name="Local" value="_chapter 32.htm#upt3-CHP-32-SECT-21">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 33. Wildcards">
+				<param name="Local" value="_chapter 33.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="33.1 File-Naming Wildcards">
+					<param name="Local" value="_chapter 33.htm#upt3-CHP-33-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="33.2 Filename Wildcards in a Nutshell">
+					<param name="Local" value="_chapter 33.htm#upt3-CHP-33-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="33.3 Who Handles Wildcards?">
+					<param name="Local" value="_chapter 33.htm#upt3-CHP-33-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="33.4 What if a Wildcard Doesn't Match?">
+					<param name="Local" value="_chapter 33.htm#upt3-CHP-33-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="33.5 Maybe You Shouldn't Use Wildcards in Pathnames">
+					<param name="Local" value="_chapter 33.htm#upt3-CHP-33-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="33.6 Getting a List of Matching Files with grep -l">
+					<param name="Local" value="_chapter 33.htm#upt3-CHP-33-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="33.7 Getting a List of Nonmatching Files">
+					<param name="Local" value="_chapter 33.htm#upt3-CHP-33-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="33.8 nom: List Files That Don't Match a Wildcard">
+					<param name="Local" value="_chapter 33.htm#upt3-CHP-33-SECT-8">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 34. The sed Stream Editor">
+				<param name="Local" value="_chapter 34.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.1 sed Sermon^H^H^H^H^H^HSummary">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.2 Two Things You Must Know About sed">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.3 Invoking sed">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.4 Testing and Using a sed Script: checksed, runsed">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.5 sed Addressing Basics">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.6 Order of Commands in a Script">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.7 One Thing at a Time">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.8 Delimiting a Regular Expression">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.9 Newlines in a sed Replacement">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.10 Referencing the Search String in a Replacement">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.11 Referencing Portions of a Search String">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.12 Search and Replacement: One Match Among Many">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.13 Transformations on Text">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.14 Hold Space: The Set-Aside Buffer">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.15 Transforming Part of a Line">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.16 Making Edits Across Line Boundaries">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.17 The Deliberate Scrivener">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.18 Searching for Patterns Split Across Lines">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.19 Multiline Delete">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-19">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.20 Making Edits Everywhere Except...">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-20">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.21 The sed Test Command">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-21">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.22 Uses of the sed Quit Command">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-22">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.23 Dangers of the sed Quit Command">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-23">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="34.24 sed Newlines, Quoting, and Backslashes in a Shell Script">
+					<param name="Local" value="_chapter 34.htm#upt3-CHP-34-SECT-24">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 35. Shell Programming for the Uninitiated">
+				<param name="Local" value="_chapter 35.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.1 Writing a Simple Shell Program">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.2 Everyone Should Learn Some Shell Programming">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.3 What Environment Variables Are Good For">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.4 Parent-Child Relationships">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.5 Predefined Environment Variables">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.6 The PATH Environment Variable">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.7 PATH and path">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.8 The DISPLAY Environment Variable">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.9 Shell Variables">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.10 Test String Values with Bourne-Shell case">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.11 Pattern Matching in case Statements">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.12 Exit Status of Unix Processes">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.13 Test Exit Status with the if Statement">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.14 Testing Your Success">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.15 Loops That Test Exit Status">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.16 Set Exit Status of a Shell (Script)">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.17 Trapping Exits Caused by Interrupts">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.18 read: Reading from the Keyboard">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.19 Shell Script &quot;Wrappers&quot; for awk, sed, etc.">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-19">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.20 Handling Command-Line Arguments in Shell Scripts">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-20">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.21 Handling Command-Line Arguments with a for Loop">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-21">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.22 Handling Arguments with while and shift">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-22">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.23 Loop Control: break and continue">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-23">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.24 Standard Command-Line Parsing">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-24">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.25 The Bourne Shell set Command">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-25">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.26 test: Testing Files and Strings">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-26">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.27 Picking a Name for a New Command">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-27">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.28 Finding a Program Name and Giving Your Program Multiple Names">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-28">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.29 Reading Files with the . and source Commands">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-29">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="35.30 Using Shell Functions in Shell Scripts">
+					<param name="Local" value="_chapter 35.htm#upt3-CHP-35-SECT-30">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 36. Shell Programming for the Initiated">
+				<param name="Local" value="_chapter 36.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.1 Beyond the Basics">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.2 The Story of : # #!">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.3 Don't Need a Shell for Your Script? Don't Use One">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.5 The exec Command">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.6 The Unappreciated Bourne Shell &quot;:&quot; Operator">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.7 Parameter Substitution">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.8 Save Disk Space and Programming: Multiple Names for a Program">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.9 Finding the Last Command-Line Argument">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.10 How to Unset All Command-Line Parameters">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.11 Standard Input to a for Loop">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.12 Making a for Loop with Multiple Variables">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.13 Using basename and dirname">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.14 A while Loop with Several Loop Control Commands">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.15 Overview: Open Files and File Descriptors">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.16 n&gt;&amp;m: Swap Standard Output and Standard Error">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.17 A Shell Can Read a Script from Its Standard Input, but...">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.18 Shell Scripts On-the-Fly from Standard Input">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.19 Quoted hereis Document Terminators: sh Versus csh">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.20 Turn Off echo for &quot;Secret&quot; Answers">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-19">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.21 Quick Reference: expr">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-20">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.22 Testing Characters in a String with expr">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-21">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.23 Grabbing Parts of a String">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-22">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.24 Nested Command Substitution">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-23">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.25 Testing Two Strings with One case Statement">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-24">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.26 Outputting Text to an X Window">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-25">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="36.27 Shell Lockfile">
+					<param name="Local" value="_chapter 36.htm#upt3-CHP-36-SECT-26">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 37. Shell Script Debugging and Gotchas">
+				<param name="Local" value="_chapter 37.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="37.1 Tips for Debugging Shell Scripts">
+					<param name="Local" value="_chapter 37.htm#upt3-CHP-37-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="37.2 Bourne Shell Debugger Shows a Shell Variable">
+					<param name="Local" value="_chapter 37.htm#upt3-CHP-37-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="37.3 Stop Syntax Errors in Numeric Tests">
+					<param name="Local" value="_chapter 37.htm#upt3-CHP-37-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="37.4 Stop Syntax Errors in String Tests">
+					<param name="Local" value="_chapter 37.htm#upt3-CHP-37-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="37.5 Quoting and Command-Line Parameters">
+					<param name="Local" value="_chapter 37.htm#upt3-CHP-37-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="37.6 How Unix Keeps Time">
+					<param name="Local" value="_chapter 37.htm#upt3-CHP-37-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="37.7 Copy What You Do with script">
+					<param name="Local" value="_chapter 37.htm#upt3-CHP-37-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="37.8 Cleaning script Files">
+					<param name="Local" value="_chapter 37.htm#upt3-CHP-37-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="37.9 Making an Arbitrary-Size File for Testing">
+					<param name="Local" value="_chapter 37.htm#upt3-CHP-37-SECT-9">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Part VII:  Extending and Managing Your Environment">
+			<param name="Local" value="Part 7.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 38. Backing Up Files">
+				<param name="Local" value="_chapter 38.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.1 What Is This &quot;Backup&quot; Thing?">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.2 tar in a Nutshell">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.3 Make Your Own Backups">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.4 More Ways to Back Up">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.5 How to Make Backups to a Local Device">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.6 Restoring Files from Tape with tar">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.7 Using tar to a Remote Tape Drive">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.8 Using GNU tar with a Remote Tape Drive">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.9 On-Demand Incremental Backups of a Project">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.10 Using Wildcards with tar">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.11 Avoid Absolute Paths with tar">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.12 Getting tar's Arguments in the Right Order">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.13 The cpio Tape Archiver">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="38.14 Industrial Strength Backups">
+					<param name="Local" value="_chapter 38.htm#upt3-CHP-38-SECT-14">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 39. Creating and Reading Archives">
+				<param name="Local" value="_chapter 39.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="39.1 Packing Up and Moving">
+					<param name="Local" value="_chapter 39.htm#upt3-CHP-39-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="39.2 Using tar to Create and Unpack Archives">
+					<param name="Local" value="_chapter 39.htm#upt3-CHP-39-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="39.3 GNU tar Sampler">
+					<param name="Local" value="_chapter 39.htm#upt3-CHP-39-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="39.4 Managing and Sharing Files with RCS and CVS">
+					<param name="Local" value="_chapter 39.htm#upt3-CHP-39-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="39.5 RCS Basics">
+					<param name="Local" value="_chapter 39.htm#upt3-CHP-39-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="39.6 List RCS Revision Numbers with rcsrevs">
+					<param name="Local" value="_chapter 39.htm#upt3-CHP-39-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="39.7 CVS Basics">
+					<param name="Local" value="_chapter 39.htm#upt3-CHP-39-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="39.8 More CVS">
+					<param name="Local" value="_chapter 39.htm#upt3-CHP-39-SECT-8">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 40. Software Installation">
+				<param name="Local" value="_chapter 40.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="40.1 /usr/bin and Other Software Directories">
+					<param name="Local" value="_chapter 40.htm#upt3-CHP-40-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="40.2 The Challenges of Software Installation on Unix">
+					<param name="Local" value="_chapter 40.htm#upt3-CHP-40-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="40.3 Which make?">
+					<param name="Local" value="_chapter 40.htm#upt3-CHP-40-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="40.4 Simplifying the make Process">
+					<param name="Local" value="_chapter 40.htm#upt3-CHP-40-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="40.5 Using Debian's dselect">
+					<param name="Local" value="_chapter 40.htm#upt3-CHP-40-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="40.6 Installing Software with Debian's Apt-Get">
+					<param name="Local" value="_chapter 40.htm#upt3-CHP-40-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="40.7 Interruptable gets with wget">
+					<param name="Local" value="_chapter 40.htm#upt3-CHP-40-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="40.8 The curl Application and One-Step GNU-Darwin Auto-Installer for OS X">
+					<param name="Local" value="_chapter 40.htm#upt3-CHP-40-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="40.9 Installation with FreeBSD Ports">
+					<param name="Local" value="_chapter 40.htm#upt3-CHP-40-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="40.10 Installing with FreeBSD Packages">
+					<param name="Local" value="_chapter 40.htm#upt3-CHP-40-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="40.11 Finding and Installing RPM Packaged Software">
+					<param name="Local" value="_chapter 40.htm#upt3-CHP-40-SECT-11">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 41. Perl">
+				<param name="Local" value="_chapter 41.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.1 High-Octane Shell Scripting">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.2 Checking your Perl Installation">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.3 Compiling Perl from Scratch">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.4 Perl Boot Camp, Part 1: Typical Script Anatomy">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.5 Perl Boot Camp, Part 2: Variables and Data Types">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.6 Perl Boot Camp, Part 3: Branching and Looping">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.7 Perl Boot Camp, Part 4: Pattern Matching">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.8 Perl Boot Camp, Part 5: Perl Knows Unix">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.9 Perl Boot Camp, Part 6: Modules">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.10 Perl Boot Camp, Part 7: perldoc">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.11 CPAN">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.12 Make Custom grep Commands (etc.) with Perl">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="41.13 Perl and the Internet">
+					<param name="Local" value="_chapter 41.htm#upt3-CHP-41-SECT-13">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 42. Python">
+				<param name="Local" value="_chapter 42.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="42.1 What Is Python?">
+					<param name="Local" value="_chapter 42.htm#upt3-CHP-42-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="42.2 Installation and Distutils">
+					<param name="Local" value="_chapter 42.htm#upt3-CHP-42-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="42.3 Python Basics">
+					<param name="Local" value="_chapter 42.htm#upt3-CHP-42-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="42.4 Python and the Web">
+					<param name="Local" value="_chapter 42.htm#upt3-CHP-42-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="42.5 urllib">
+					<param name="Local" value="_chapter 42.htm#upt3-CHP-42-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="42.6 urllib2">
+					<param name="Local" value="_chapter 42.htm#upt3-CHP-42-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="42.7 htmllib and HTMLParser">
+					<param name="Local" value="_chapter 42.htm#upt3-CHP-42-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="42.8 cgi">
+					<param name="Local" value="_chapter 42.htm#upt3-CHP-42-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="42.9 mod_python">
+					<param name="Local" value="_chapter 42.htm#upt3-CHP-42-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="42.10 What About Perl?">
+					<param name="Local" value="_chapter 42.htm#upt3-CHP-42-SECT-10">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Part VIII:  Communication and Connectivity">
+			<param name="Local" value="Part 8.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 43. Redirecting Input and Output">
+				<param name="Local" value="_chapter 43.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="43.1 Using Standard Input and Output">
+					<param name="Local" value="_chapter 43.htm#upt3-CHP-43-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="43.2 One Argument with a cat Isn't Enough">
+					<param name="Local" value="_chapter 43.htm#upt3-CHP-43-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="43.3 Send (Only) Standard Error Down a Pipe">
+					<param name="Local" value="_chapter 43.htm#upt3-CHP-43-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="43.4 Problems Piping to a Pager">
+					<param name="Local" value="_chapter 43.htm#upt3-CHP-43-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="43.5 Redirection in C Shell: Capture Errors, Too?">
+					<param name="Local" value="_chapter 43.htm#upt3-CHP-43-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="43.6 Safe I/O Redirection with noclobber">
+					<param name="Local" value="_chapter 43.htm#upt3-CHP-43-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="43.7 The ( ) Subshell Operators">
+					<param name="Local" value="_chapter 43.htm#upt3-CHP-43-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="43.8 Send Output Two or More Places">
+					<param name="Local" value="_chapter 43.htm#upt3-CHP-43-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="43.9 How to tee Several Commands into One Place">
+					<param name="Local" value="_chapter 43.htm#upt3-CHP-43-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="43.10 Redirecting Output to More Than One Place">
+					<param name="Local" value="_chapter 43.htm#upt3-CHP-43-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="43.11 Named Pipes: FIFOs">
+					<param name="Local" value="_chapter 43.htm#upt3-CHP-43-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="43.12 What Can You Do with an Empty File?">
+					<param name="Local" value="_chapter 43.htm#upt3-CHP-43-SECT-12">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 44. Devices">
+				<param name="Local" value="_chapter 44.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.1 Quick Introduction to Hardware">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.2 Reading Kernel Boot Output">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.3 Basic Kernel Configuration">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.4 Disk Partitioning">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.5 Filesystem Types and /etc/fstab">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.6 Mounting and Unmounting Removable Filesystems">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.7 Loopback Mounts">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.8 Network Devices — ifconfig">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.9 Mounting Network Filesystems — NFS, SMBFS">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.10 Win Is a Modem Not a Modem?">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.11 Setting Up a Dialup PPP Session">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.12 USB Configuration">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.13 Dealing with Sound Cards and Other Annoying Hardware">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="44.14 Decapitating Your Machine — Serial Consoles">
+					<param name="Local" value="_chapter 44.htm#upt3-CHP-44-SECT-14">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 45. Printing">
+				<param name="Local" value="_chapter 45.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.1 Introduction to Printing">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.2 Introduction to Printing on Unix">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.3 Printer Control with lpc">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.4 Using Different Printers">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.5 Using Symbolic Links for Spooling">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.6 Formatting Plain Text: pr">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.7 Formatting Plain Text: enscript">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.8 Printing Over a Network">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.9 Printing Over Samba">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.10 Introduction to Typesetting">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.11 A Bit of Unix Typesetting History">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.12 Typesetting Manpages: nroff">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.13 Formatting Markup Languages — troff, L&lt;sup&gt;A&lt;/sup&gt;T&lt;sub&gt;E&lt;/sub&gt;X, HTML, and So On">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.14 Printing Languages — PostScript, PCL, DVI, PDF">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.15 Converting Text Files into a Printing Language">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-15">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.16 Converting Typeset Files into a Printing Language">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-16">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.17 Converting Source Files Automagically Within the Spooler">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-17">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.18 The Common Unix Printing System (CUPS)">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-18">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="45.19 The Portable Bitmap Package">
+					<param name="Local" value="_chapter 45.htm#upt3-CHP-45-SECT-19">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 46. Connectivity">
+				<param name="Local" value="_chapter 46.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.1 TCP/IP — IP Addresses and Ports">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.2 /etc/services Is Your Friend">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.3 Status and Troubleshooting">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.4 Where, Oh Where Did That Packet Go?">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.5 The Director of Operations: inetd">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.6 Secure Shell (SSH)">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.7 Configuring an Anonymous FTP Server">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.8 Mail — SMTP, POP, and IMAP">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.9 Domain Name Service (DNS)">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.10 Dynamic Host Configuration Protocol (DHCP)">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.11 Gateways and NAT">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.12 Firewalls">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="46.13 Gatewaying from a Personal LAN over a Modem">
+					<param name="Local" value="_chapter 46.htm#upt3-CHP-46-SECT-13">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 47. Connecting to MS Windows">
+				<param name="Local" value="_chapter 47.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="47.1 Building Bridges">
+					<param name="Local" value="_chapter 47.htm#upt3-CHP-47-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="47.2 Installing and Configuring Samba">
+					<param name="Local" value="_chapter 47.htm#upt3-CHP-47-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="47.3 Securing Samba">
+					<param name="Local" value="_chapter 47.htm#upt3-CHP-47-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="47.4 SWAT and GUI SMB Browsers">
+					<param name="Local" value="_chapter 47.htm#upt3-CHP-47-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="47.5 Printing with Samba">
+					<param name="Local" value="_chapter 47.htm#upt3-CHP-47-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="47.6 Connecting to SMB Shares from Unix">
+					<param name="Local" value="_chapter 47.htm#upt3-CHP-47-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="47.7 Sharing Desktops with VNC">
+					<param name="Local" value="_chapter 47.htm#upt3-CHP-47-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="47.8 Of Emulators and APIs">
+					<param name="Local" value="_chapter 47.htm#upt3-CHP-47-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="47.9 Citrix: Making Windows Multiuser">
+					<param name="Local" value="_chapter 47.htm#upt3-CHP-47-SECT-9">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Part IX:  Security">
+			<param name="Local" value="Part 9.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 48. Security Basics">
+				<param name="Local" value="_chapter 48.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="48.1 Understanding Points of Vulnerability">
+					<param name="Local" value="_chapter 48.htm#upt3-CHP-48-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="48.2 CERT Security Checklists">
+					<param name="Local" value="_chapter 48.htm#upt3-CHP-48-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="48.3 Keeping Up with Security Alerts">
+					<param name="Local" value="_chapter 48.htm#upt3-CHP-48-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="48.4 What We Mean by Buffer Overflow">
+					<param name="Local" value="_chapter 48.htm#upt3-CHP-48-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="48.5 What We Mean by DoS">
+					<param name="Local" value="_chapter 48.htm#upt3-CHP-48-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="48.6 Beware of Sluggish Performance">
+					<param name="Local" value="_chapter 48.htm#upt3-CHP-48-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="48.7 Intruder Detection">
+					<param name="Local" value="_chapter 48.htm#upt3-CHP-48-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="48.8 Importance of MOTD">
+					<param name="Local" value="_chapter 48.htm#upt3-CHP-48-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="48.9 The Linux proc Filesystem">
+					<param name="Local" value="_chapter 48.htm#upt3-CHP-48-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="48.10 Disabling inetd">
+					<param name="Local" value="_chapter 48.htm#upt3-CHP-48-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="48.11 Disallow rlogin and rsh">
+					<param name="Local" value="_chapter 48.htm#upt3-CHP-48-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="48.12 TCP Wrappers">
+					<param name="Local" value="_chapter 48.htm#upt3-CHP-48-SECT-12">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 49. Root, Group, and User Management">
+				<param name="Local" value="_chapter 49.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.1 Unix User/Group Infrastructure">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.2 When Does a User Become a User">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.3 Forgetting the root Password">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.4 Setting an Exact umask">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.5 Group Permissions in a Directory with the setgid Bit">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.6 Groups and Group Ownership">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.7 Add Users to a Group to Deny Permissions">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.8 Care and Feeding of SUID and SGID Scripts">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.9 Substitute Identity with su">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.10 Never Log In as root">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.11 Providing Superpowers with sudo">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.12 Enabling Root in Darwin">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="49.13 Disable logins">
+					<param name="Local" value="_chapter 49.htm#upt3-CHP-49-SECT-13">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 50. File Security, Ownership, and Sharing">
+				<param name="Local" value="_chapter 50.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.1 Introduction to File Ownership and Security">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.2 Tutorial on File and Directory Permissions">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.3 Who Will Own a New File?">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.4 Protecting Files with the Sticky Bit">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.5 Using chmod to Change File Permission">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.6 The Handy chmod = Operator">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.7 Protect Important Files: Make Them Unwritable">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-7">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.8 cx, cw, c-w: Quick File Permission Changes">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-8">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.9 A Loophole: Modifying Files Without Write Access">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-9">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.10 A Directory That People Can Access but Can't List">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-10">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.11 Juggling Permissions">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-11">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.12 File Verification with md5sum">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-12">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.13 Shell Scripts Must Be Readable and (Usually) Executable">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-13">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.14 Why Can't You Change File Ownership?">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-14">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="50.15 How to Change File Ownership Without chown">
+					<param name="Local" value="_chapter 50.htm#upt3-CHP-50-SECT-15">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Chapter 51. SSH">
+				<param name="Local" value="_chapter 51.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="51.1 Enabling Remote Access on Mac OS X">
+					<param name="Local" value="_chapter 51.htm#upt3-CHP-51-SECT-1">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="51.2 Protecting Access Through SSH">
+					<param name="Local" value="_chapter 51.htm#upt3-CHP-51-SECT-2">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="51.3 Free SSH with OpenSSH">
+					<param name="Local" value="_chapter 51.htm#upt3-CHP-51-SECT-3">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="51.4 SSH Problems and Solutions">
+					<param name="Local" value="_chapter 51.htm#upt3-CHP-51-SECT-4">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="51.5 General and Authentication Problems">
+					<param name="Local" value="_chapter 51.htm#upt3-CHP-51-SECT-5">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="51.6 Key and Agent Problems">
+					<param name="Local" value="_chapter 51.htm#upt3-CHP-51-SECT-6">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="51.7 Server and Client Problems">
+					<param name="Local" value="_chapter 51.htm#upt3-CHP-51-SECT-7">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Glossary">
+			<param name="Local" value="Glossary.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="A - M">
+				<param name="Local" value="Glossary.htm#Gloss-1">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="N - Z">
+				<param name="Local" value="Glossary.htm#Gloss-2">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Colophon">
+			<param name="Local" value="Colophon.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Index">
+			<param name="Local" value="Index.htm">
+			</OBJECT>
+	</UL>
+</UL>
+</BODY></HTML>

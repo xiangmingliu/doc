@@ -1,0 +1,205 @@
+.docBookTitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 24px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docPartTitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 24px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docPrefaceTitle {
+	FONT-SIZE: 22px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docAppendixTitle {
+	FONT-SIZE: 22px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docChapterTitle {
+	FONT-SIZE: 22px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docBibliographyTitle {
+	FONT-SIZE: 22px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docArticleTitle {
+	FONT-SIZE: 22px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docGlossaryTitle {
+	FONT-SIZE: 22px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docSidebarTitle {
+	FONT-SIZE: 22px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif; TEXT-ALIGN: center
+}
+.docSection1Title {
+	FONT-SIZE: 20px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docBibliodivTitle {
+	FONT-SIZE: 20px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docBridgehead {
+	FONT-SIZE: 20px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docSection2Title {
+	FONT-SIZE: 17px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docBibliosetTitle {
+	FONT-SIZE: 17px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docSection3Title {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docSection4Title {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docSection5Title {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docFigureTitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docTableTitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docExampleTitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docTocTitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docText {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: 'Times New Roman',Times,serif
+}
+.docList {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: 'Times New Roman',Times,serif
+}
+.docMonofont {
+	FONT-FAMILY: Courier New,Courier,monospace
+}
+.docTableHeader {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docTableCell {
+	FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docTableFooter {
+	FONT-SIZE: 10px; COLOR: black; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docRefCell {
+	FONT-SIZE: 17px; COLOR: black; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docTextHighlight {
+	COLOR: #cc0000; BACKGROUND-COLOR: #eeeeee
+}
+.docIndexterm {
+	FONT-SIZE: 12px; COLOR: #a0a0a0
+}
+.docFootnote {
+	FONT-SIZE: 12px; COLOR: #606060; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docItemizedlist {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docNote {
+	MARGIN-BOTTOM: 2em; MARGIN-LEFT: 2em; MARGIN-RIGHT: 2em; blockquote: 2em
+}
+.docNoteTitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: black; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docNormalTitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docTipTitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #354278; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docCautionsTitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 14px; COLOR: #cc0000; FONT-FAMILY: Arial,Helvetica,sans-serif
+}
+.docLink {
+	COLOR: #003399; TEXT-DECORATION: none
+}
+.docLink:visited {
+	COLOR: #3366cc; TEXT-DECORATION: none
+}
+.docLink:hover {
+	COLOR: #000033; TEXT-DECORATION: underline
+}
+.docEmphasis {
+	FONT-STYLE: italic
+}
+.docEmphBold {
+	FONT-WEIGHT: bold
+}
+.docEmphStrong {
+	FONT-WEIGHT: bold
+}
+.docEmphGray {
+	COLOR: #c0c0c0
+}
+.docEmphMark {
+	BACKGROUND-COLOR: #c0c0c0
+}
+.docEmphRev {
+	COLOR: silver; BACKGROUND-COLOR: black
+}
+.docEmphStrike {
+	TEXT-DECORATION: line-through
+}
+.docEmphUl {
+	TEXT-DECORATION: underline
+}
+.docEmphCursor {
+	TEXT-DECORATION: underline
+}
+.docEmphBoldItalic {
+	FONT-WEIGHT: bold; FONT-STYLE: italic
+}
+.docEmphRoman {
+	FONT-WEIGHT: normal; TEXT-TRANSFORM: none; FONT-STYLE: normal; FONT-VARIANT: normal; TEXT-DECORATION: none
+}
+.docEmphSmaller {
+	FONT-SIZE: smaller; COLOR: #354278
+}
+.docEmphHyperlink {
+	COLOR: black
+}
+.docCaps {
+	TEXT-TRANSFORM: uppercase
+}
+.docStructname {
+	FONT-VARIANT: small-caps
+}
+.docPubcolor {
+	COLOR: #354278
+}
+H1 {
+	COLOR: #354278
+}
+H2 {
+	COLOR: #354278
+}
+H3 {
+	COLOR: #354278
+}
+H4 {
+	COLOR: #354278
+}
+H5 {
+	COLOR: #354278
+}
+H6 {
+	COLOR: #354278
+}
+PRE {
+	FONT-SIZE: 15px; COLOR: #354278; FONT-FAMILY: Courier New,Courier,monospace
+}
+TT {
+	FONT-SIZE: 15px; COLOR: #354278; FONT-FAMILY: Courier New,Courier,monospace
+}
+.chaptoc{margin-left:.7in;
+	margin-top:0.20in;
+	margin-bottom:0.00in;
+}
+.sectoc{margin-left:1.0in;
+	margin-top:0.00in;
+	margin-bottom:0.00in;
+}
+.parttoc{margin-left:.5in;
+	margin-top:0.30in;
+	margin-bottom:0.00in;
+}
+.seven{font-size: 7pt;}

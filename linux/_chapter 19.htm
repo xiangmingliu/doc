@@ -1,0 +1,678 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 19</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 18.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 20.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 19. GNU Emacs</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-1">19.1 Emacs: The Other Editor</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-2">19.2 Emacs Features: A Laundry List</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-3">19.3 Customizations and How to Avoid Them</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-4">19.4 Backup and Auto-Save Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-5">19.5 Putting Emacs in Overwrite Mode</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-6">19.6 Command Completion</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-7">19.7 Mike's Favorite Timesavers</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-8">19.8 Rational Searches</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-9">19.9 Unset PWD Before Using Emacs</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-10">19.10 Inserting Binary Characters into Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-11">19.11 Using Word-Abbreviation Mode</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-12">19.12 Directories for Emacs Hacks</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-19-SECT-13">19.13 An Absurd Amusement</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-1">19.1 Emacs: The Other Editor</h3>
+<p class="docText">The &quot;other&quot; interactive editor that's commonly used is Emacs. 
+Emacs actually refers to a family of editors; versions of Emacs run under most 
+operating systems available. However, the most important (and most commonly 
+used) version of Emacs is &quot;GNU Emacs,&quot; developed by the Free Software 
+Foundation. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: emacs</p>
+<p class="docText">GNU Emacs is popular because it's the most powerful editor in 
+the Emacs family; it is also freely available under the terms of the FSF's 
+General Public License. Although there are certainly strong differences of 
+opinion between Emacs and <i>vi</i> users, most people agree that Emacs provides 
+a much more powerful and richer working environment. </p>
+<p class="docText">What's so good about Emacs, aside from the fact that it's 
+free? There are any number of individual features that I could mention. (I'll 
+give a list of favorite features in
+<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-2">
+Section 19.2</a>.) Emacs' best feature is the extent to which it interacts with 
+other Unix features. For example, it has a built-in email system so you can send 
+and receive mail without leaving the editor. It has tools for &quot;editing&quot; 
+(deleting, copying, renaming) files, for running a Unix shell within Emacs, and 
+so on. The C shell has a rather awkward command-history mechanism; the Korn 
+shell has something more elaborate. But imagine being able to recall and edit 
+your commands as easily as you edit a letter! That's far beyond the abilities of 
+any shell, but it's simple when you run a shell inside your editor. </p>
+<p class="docText">In this book, we can't give anywhere near as much attention 
+to Emacs <span class="docEmphBold">as we can to vi</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-1">Section 
+17.1</a>), but we will point out some of its best features and a few tricks that 
+will help you get the most out of it. For the impatient, here's a very brief 
+survival guide to Emacs. </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Starting Emacs</span></i> </dt>
+  <dd>
+  <p class="docList">Like <i>vi</i>, Emacs can be started from the shell prompt 
+  by typing its name, <tt>emacs</tt>. Once started, emacs will present you with 
+  a helpful screen of commands. A word of advice: take the tutorial (CTRL-h t). 
+  If you want to edit an existing file, simply type <tt>emacs</tt> with the 
+  desired filename after it. While editing your file, you may save your work to 
+  disk with CTRL-x CTRL-s. </dd>
+  <dt><i><span class="docPubcolor">Exiting Emacs</span></i> </dt>
+  <dd>
+  <p class="docList">To exit emacs, type CTRL-x CTRL-c. If you haven't saved 
+  your work yet, you will have the opportunity to do so before Emacs quits. </dd>
+  <dt><i><span class="docPubcolor">Moving around</span></i> </dt>
+  <dd>
+  <p class="docList">Unlike <i>vi</i>, Emacs doesn't have a command mode. Like 
+  many more modern editors, Emacs allows the user to begin typing his document 
+  immediately. Terminal emulation willing, the arrow keys work as expected to 
+  move your cursor in and around lines of text. For long documents, you can move 
+  by pages rather than lines. Pressing CTRL-v moves the cursor lower in the 
+  document, while ESC-v moves the cursor towards the begining. </dd>
+  <dt><i><span class="docPubcolor">Deleting characters and lines</span></i> </dt>
+  <dd>
+  <p class="docList">The BACKSPACE key normally erases one character to the left 
+  of the cursor, and the DELETE key erases the charater under the cursor. Entire 
+  lines of text may be removed using CTRL-k, which removes all text from the 
+  cursor to the end of the line. You can paste back the most recent cut with 
+  CTRL-y. </dd>
+  <dt><i><span class="docPubcolor">Undo</span></i> </dt>
+  <dd>
+  <p class="docList">To undo your last action, type CTRL-x u. You can cancel out 
+  of a command sequence with CTRL-g. This is helpful when you're experiencing 
+  key lag and type a few extra CTRL-c's. </dd>
+</dl>
+<p class="docText">One last tip before moving on. The Emacs online help descibes 
+key bindings using different abbreviations than used in this book. In the Emacs 
+documentation, C-x is our CTRL-x. Their M-x is our ESC-x. The M stands for META 
+key, which is mapped to the ESCAPE key and usually to the ALT key as well. For 
+consistency, this chapter always refers to the ESCAPE key. </p>
+<p class="docText"><span class="docEmphasis">—ML, BR, DC, and JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-2">19.2 Emacs Features: A Laundry List</h3>
+<p class="docText">Here's the list we promised — a list of our favorite 
+features: </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Windows</span></i> </dt>
+  <dd>
+  <p class="docList">Emacs is a &quot;windowed editor.&quot; Before anyone heard of the X 
+  Window System or the Macintosh, Emacs had the ability to divide a terminal's 
+  screen into several &quot;windows,&quot; allowing you to do different things in each 
+  one. You can edit a different file in each window or read mail in one window, 
+  answer mail in another, issue shell commands in a third, and so on. </p>
+  <p class="docList">Now that we all have nice workstations with mice and other 
+  crawly things for navigating around a bitmapped screen, why do you care? 
+  First, you may not have a bitmapped screen, and even if you have one in the 
+  office, you may not at home. Second, I still find Emacs preferable to most 
+  &quot;modern&quot; window systems because I don't have to use a mouse. If I want to 
+  create another window, I just type CTRL-x 2 (which splits the current window, 
+  whatever it is, into two); if I want to work in another window, I just type 
+  CTRL-x o; if I want to delete a window, I type CTRL-x 0. Is this faster than 
+  reaching for my mouse and moving it around? You bet. Particularly since my 
+  mouse is hidden under a pile of paper. (Of course, it's hidden because I 
+  hardly ever need it.) Once you've created a window, it's just as easy to start 
+  editing a new file, initiate a shell session, and so on. Third, even though 
+  you're using a windowing system, you may not have a lot of screen real estate 
+  available. By having a split Emacs screen, all editing can be done in one 
+  window, leaving enough room for other applications, such as the Mozilla web 
+  browser, to be open. Whether you're developing web pages or just reading 
+  Slashdot while &quot;working,&quot; you'll appreciate the free space on the screen. It 
+  isn't uncommon for Emacs users to always have Emacs open on their desktops.
+  </dd>
+  <dt><i><span class="docPubcolor">Shells</span></i> </dt>
+  <dd>
+  <p class="docList">You can start an interactive shell within any Emacs window; 
+  just type ESC-x <tt>shell</tt>, and you'll see your familiar shell prompt. 
+  It's easy to see why this is so useful. It's trivial to return to earlier 
+  comands, copy them, and edit them. Even more important, you can easily take 
+  the output of a command and copy it into a text file that you're editing — 
+  obviously an extremely useful feature when you're writing a book like this. 
+  Emacs also lets you issue commands that operate on the contents of a window or 
+  a selected region within a window. Another benefit to doing shell work 
+  directly in Emacs is that every word that appears in that shell buffer is 
+  available for <span class="docEmphBold">command completions</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-6">Section 
+  19.6</a>). So if you're creating a small shell script that has to reference a 
+  long directory name, being able to autocomplete that name is an invaluable 
+  feature. </p>
+  <p class="docList">In fact, there are many filesystem maintenance tasks with 
+  which Emacs can help you. You can view and manipulate directories and files 
+  with Dired mode, which can be activated by typing ESC-x dired. You'll be asked 
+  which directory you want to view (the current directory is the default). Do 
+  you want to remove a file that starts with a hyphen, but <i>rm</i> complains 
+  that your file is not a valid option? Start Emacs in Dired mode, select the 
+  file, and type <tt>D</tt>. Emacs will ask you for confirmation about the 
+  proposed deletion. Want to delete a bunch of files that can't be easily 
+  described with wildcards? In dired mode, select each file with <tt>d</tt>, 
+  then remove them all with ESC-x <tt>dired-do-flagged-delete</tt>. </dd>
+  <dt><i><span class="docPubcolor">Keyboard macros and advanced editing features</span></i>
+  </dt>
+  <dd>
+  <p class="docList">Emacs lets you define &quot;keyboard macros&quot; — and sequences of 
+  commands that can be executed automatically. This is similar to
+  <span class="docEmphBold">vi's map</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-2">Section 
+  18.2</a>) facility, with one extra twist: Emacs actually executes the commands 
+  while you're defining the macro; <i>vi</i> expects you to figure out what you 
+  need to do, type it in without any feedback, and hope that the macro doesn't 
+  do anything hostile when you edit it. With Emacs, it's much easier to get the 
+  macro right. You can see what it's going to do as you're defining it, and if 
+  you make a mistake, you can correct it immediately. </p>
+  <p class="docList">To create a macro, you first need to tell Emacs that it 
+  needs to remember the next sequence of keystrokes by typing CTRL-x (. Now 
+  perform the desired actions. To end the macro recording, type CTRL-x ). To 
+  execute the most recently defined macro, type CTRL-x e. If you make a mistake 
+  when recording the marco, type CTRL-g to cancel out of the entire operation, 
+  and begin recording the macro again. </p>
+  <p class="docList">Even if you don't create your own macros, Emacs provides a 
+  rich set of text- editing features that often <span class="docEmphasis">do 
+  what you mean</span>. For instance, Emacs allows users to make rectangluar 
+  text cuts. This is very useful for removing leading whitespace from a series 
+  of lines. To make the cut, you must first define the starting point of the 
+  rectangle to be cut. Position the cursor in Emacs to the upper-left corner of 
+  the area to be excised. Then mark the area with CTRL-SPACE. Move the cursor 
+  down to the last line of the area to be removed and then over to right as far 
+  as is desired. This is the lowest and rightmost corner of the rectangle. Now 
+  remove the area with the key sequence CTRL-x r k. </dd>
+  <dt><i><span class="docPubcolor">Editing modes</span></i> </dt>
+  <dd>
+  <p class="docList">Emacs has a large number of special editing modes that 
+  provide context-sensitive help while you're writing. For example, if you're 
+  writing a C program, the C mode will help you to observe conventions for 
+  indentation and commenting. It automatically lines up braces for you and tells 
+  you when parentheses are unbalanced. In X Windows, Emacs will even do syntax 
+  highlighting for you. Perl programmers get two editing modes to choose from, 
+  perl-mode and cperl-mode. Based on the file extension, Emacs will figure out 
+  which mode you want. (The default and simplest mode is called Fundamental.) 
+  You can enter a new mode by typing ESC- x and then the name of the mode. Emacs 
+  also integrates well with the perl debugger (ESC-x <tt>perldb</tt>) so that 
+  you can step through your running code in the editor. Emacs also supports many 
+  version-control systems including RCS and CVS. Checking out a file from RCS is 
+  as simple as typing CTRL-x v v. After you have made your edits, check in the 
+  file with CTRL-x v v. That's not a typo; Emacs can figure out the
+  <span class="docEmphasis">right thing to do</span> with your file because it 
+  remembers the last version-control state. Pretty cool. There are special modes 
+  for virtually every programming language I've ever heard of. There are also 
+  special modes for HTML, <i>troff</i>, T<sub>E</sub>X, outlines, stick figures, 
+  etc. For any kind of programming, Emacs is the Integrated Development 
+  Environment of choice for many users. </dd>
+  <dt><i><span class="docPubcolor">Mail, news, FTP, and HTTP</span></i> </dt>
+  <dd>
+  <p class="docList">Although I often use Emacs' mail facility as an example, 
+  I'm not personally fond of it. However, if you really like working within the 
+  Emacs environment, you should try it. Sending mail from Emacs (ESC-x <tt>mail</tt>) 
+  is convenient if you are already editing the file you wish to send. You can 
+  simply copy and paste your work into the mail buffer and send it along with 
+  CTRL-c CTRL-c. You can even add Cc: and Reply-to: fields to the message just 
+  by adding them to the mail buffer directly under the To: field. </p>
+  <p class="docList">Emacs also has a Usenet client called GNUS (ESC-x <tt>gnus</tt>) 
+  that has quite a following. What editor would be complete without an 
+  integrated FTP client? Certainly not Emacs. There are two ways to access FTP 
+  in Emacs. The first is to type ESC-x <tt>ftp</tt>. This gives you a shell-like 
+  ftp client. While this is nice, Emacs provides an even slicker way to FTP 
+  files. Ange-ftp mode allows Emacs users to open remote files almost as if they 
+  were local. To open a remote file or directory, simple type CTRL-x CTRL-f. 
+  However, you must specify the filename with a leading slash and your remote 
+  username followed by <tt>@</tt> and followed again by the ftp hostname, a 
+  colon, and the full path you wish to retrieve. For example, if I wished to 
+  edit the file <i>index.html</i> as user <tt>edit</tt> on my web server, I 
+  would use the filename<i> /edit@www.nowhere.com:/home/html/htdocs/index.html</i>.
+  </p>
+  <p class="docList">To extend the last example a bit, Emacs even has a 
+  web-browser mode so that you could look at the web page you just edited! In 
+  truth, lynx is still king of the ASCII web browsers, but the Emacs W3 mode is 
+  coming along. It doesn't normally come with Emacs, so you're going to have to 
+  look on the Web for it. It has very good integration with XEmacs (neè Lucent 
+  Emacs) and can even display images. Speaking of the Web, there's a nice Emacs 
+  feature called webjump (ESC-x <tt>webjumb</tt>) that will make a currently 
+  opened Web browser such as Netscape go to a new URL. Webjump comes with a list 
+  a predefined URLs, which can be expanded, of course. One of those URLs is 
+  Yahoo. When that site is selected, webjump will ask you for a query term to 
+  submit. After hitting return, the Yahoo search results will appear in a 
+  browser window. Again, it's a nice shortcut. </dd>
+  <dt><i><span class="docPubcolor">Customization</span></i> </dt>
+  <dd>
+  <p class="docList">Emacs is the most customizable tool I've ever seen. 
+  Customization is based on the LISP programming language, so you need to learn 
+  some LISP before you can work with it much. However, once you know LISP, you 
+  can do virtually anything. For example, you could write a complete spreadsheet 
+  program within Emacs — which means that you could use your normal Emacs 
+  commands to edit the spreadsheet and incorporate it (in whole or in part) into 
+  your documents. In fact, several Emacs spreadsheet modes exist, but their 
+  quality and functionality vary wildly. And, because of the FSF's General 
+  Public License, virtually all special-purpose packages are available for free.
+  </dd>
+</dl>
+<p class="docText"><span class="docEmphasis">—ML and JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-3">19.3 Customizations and How to Avoid Them</h3>
+<p class="docText">Emacs customizations are usually stored in a file called
+<span class="docEmphasis">.emacs</span> in your home directory. In
+<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-7">
+Section 19.7</a>, we've given a few customizations that I personally find 
+convenient; if you're like most people, you'll add customizations over time. 
+You'll end up doing this even if you're not a LISP programmer; if you know any 
+other Emacs users, you'll soon be borrowing their shortcuts. The best way to 
+customize Emacs to your taste is to find out what works for others . . . and 
+then steal it. For that matter, many — if not most — of the customizations in my 
+file were stolen from other users over the years. I hope I've gotten this 
+process off to a good start. </p>
+<p class="docText">However, you should also be aware of the &quot;dark side&quot; of 
+customization. What happens if you sit down at someone else's system, start 
+Emacs, and find out that he's customized it so extensively that it's 
+unrecognizable? Or that a &quot;helpful&quot; administrator has installed some system-wide 
+hacks that are getting in your way? Here's what will help. First, start <i>emacs</i> 
+with the option <i>-q</i>; that tells Emacs not to load any
+<span class="docEmphasis">.emacs</span> initialization file. (If you want to 
+load your initialization file instead of someone else's, try the option <i>-u 
+username</i>). </p>
+<p class="docText">That still doesn't solve the problem of system-wide 
+customizations. To keep those from getting in the way, put the following line at 
+the beginning of your <span class="docEmphasis">.emacs</span> file: </p>
+<pre>(setq inhibit-default-init t)</pre>
+<p class="docText">This turns off all &quot;global&quot; initializations. (If you're 
+sharing someone else's system, you may still need the <i>-u</i> option to force 
+Emacs to read your initialization file.) </p>
+<p class="docText"><span class="docEmphasis">—ML, DC, and BR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-4">19.4 Backup and Auto-Save Files</h3>
+<p class="docText">If you're like most people, you often spend a few hours 
+editing a file, only to decide that you liked your original version better. Or 
+you press some strange sequence of keys that makes Emacs do something extremely 
+weird and that you can't &quot;undo.&quot; Emacs provides several ways to get out of these 
+tight spots. </p>
+<p class="docText">First, try the command ESC-x <tt>revert-buffer</tt>. Emacs 
+will ask one of two questions: either &quot;Buffer has been auto-saved recently. 
+Revert from auto-save file? (y or n)&quot; or &quot;Revert buffer from file
+<span class="docEmphasis">your-filename</span>? (yes or no)&quot;. </p>
+<p class="docText">Before deciding what to do, it's important to understand the 
+difference between these two questions. Emacs creates an auto-save<span id="ENB19-1"><a class="docLink" href="#EN19-1"><sup>[1]</sup></a></span> 
+file every 300 keystrokes you type. So, if you're reverting to the auto-save 
+file, you'll at most lose your last 300 keystrokes. Maybe this is what you want 
+— but maybe you made the mistake a long time ago. In that case, you don't want 
+to use the auto-save file; type <tt>n</tt>, and you'll see the second question, 
+asking if you want to revert to the last copy of the file that you saved. Type
+<tt>yes</tt> to go back to your most recent saved version. </p>
+<p class="docText">It's possible that you'll only see the second question 
+(&quot;Revert buffer from file . . . &quot;). This means that you have saved the file 
+sometime within the last 300 keystrokes. As soon as you save a file, Emacs 
+deletes the auto-save file. It will create a new one every 300 keystrokes. </p>
+<p class="docText">It's worth noting that Emacs is <span class="docEmphasis">
+very</span> picky about what you type. If it asks for a <tt>y</tt> or an <tt>n</tt>, 
+you've got to type <tt>y</tt> or <tt>n</tt>. If it asks for <tt>yes</tt> or <tt>
+no</tt>, you've got to type <tt>yes</tt> or <tt>no</tt>. In situations like 
+this, where the two styles are mixed up, you've got to get it right. </p>
+<p class="docText">If you're in real trouble and you want to go back to your
+<span class="docEmphasis">original file</span> — the way it was when you started 
+editing — you need to recover Emacs' <span class="docEmphasis">backup file</span>. 
+If you're editing a file that already exists, Emacs will create a backup file as 
+soon as it starts. If you're editing a new file, Emacs will create a backup the
+<span class="docEmphasis">second</span> time you save the file. Once it's 
+created, the backup file is never touched; it stays there until the next time 
+you start Emacs, at which point you'll get a new backup, reflecting the file's 
+contents at the start of your editing session. </p>
+<p class="docText">Now that we're over the preliminaries, how do you recover the 
+backup file? Emacs doesn't have any special command for doing this; you have to 
+do it by hand. The backup file's name is the same as your original filename, 
+with a tilde (<tt>~</tt>) added to it. So quit Emacs (or start a shell), and 
+type: </p>
+<pre>% <b>mv </b> <i>your-filename </i><b>~ </b> <i>your-filename </i></pre>
+<p class="docText">Note that Emacs has the ability to save &quot;numbered&quot; backup 
+files, like the VAX/VMS operating system. We've never played with this feature 
+and don't think it's a particularly good idea. But it's there if you want it.
+</p>
+<p class="docText"><span class="docEmphasis">—ML and DC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-5">19.5 Putting Emacs in Overwrite Mode</h3>
+<p class="docText">Many users are used to editors that are normally in
+<span class="docEmphasis">overwrite mode</span>: when you backspace and start 
+typing, you type over the character that is underneath the cursor.<span id="ENB19-2"><a class="docLink" href="#EN19-2"><sup>[2]</sup></a></span> 
+By default, Emacs works in <span class="docEmphasis">insertion mode</span>, 
+where new characters are inserted just before the cursor's position. </p>
+<p class="docText">If you prefer overwrite mode, just give the command ESC-x <tt>
+overwrite-mode</tt>. You can use <span class="docEmphBold">command abbreviation</span> 
+(<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-6">Section 
+19.6</a>) to shorten this to ESC-x <tt>ov</tt>. On many keyboards, pressing 
+INSERT also turns on overwrite mode. If you get tired of overwrite mode, use the 
+same command to turn it off. </p>
+<p class="docText">If you <span class="docEmphasis">always</span> want to use 
+overwrite mode, create a file named <span class="docEmphasis">.emacs</span> in 
+your home directory, and put the following line in it: </p>
+<pre>(setq-default overwrite-mode t)</pre>
+<p class="docText">This is a simple Emacs customization; for a lot more about 
+customization, see O'Reilly &amp; Associates' <span class="docEmphasis">Learning GNU 
+Emacs</span>, by Bill Rosenblatt, Eric Raymond, and Debra Cameron. </p>
+<p class="docText"><span class="docEmphasis">—ML and DC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-6">19.6 Command Completion</h3>
+<p class="docText">Emacs has a great feature called <span class="docEmphasis">
+command completion</span>. Basically, command completion means that Emacs will 
+let you type the absolute minimum and it will fill in the rest. You can use 
+command completion whenever you're typing a filename, buffer name, command name, 
+or variable name. Simply type enough of the name to be &quot;unique&quot; (usually the 
+first few letters), followed by a TAB. Emacs will fill in the rest of the name 
+for you. If the name isn't unique — that is, if there are other filenames that 
+start with the same letters — Emacs will show you the alternatives. Type a few 
+more letters to select the file you want, then press TAB again. </p>
+<p class="docText">For example, if I'm trying to load the file
+<span class="docEmphasis">outline.txt</span>, I can simply give the command 
+CTRL-x CTRL-f <tt>out</tt> TAB. Providing that there are no other filenames 
+beginning with the letters <span class="docEmphasis">out</span>, Emacs will fill 
+in the rest of the filename. When I see that it's correct, I press RETURN, and 
+I'm done. </p>
+<p class="docText">When you use command completion, always make sure that Emacs 
+has successfully found the file you want. If you don't, the results may be 
+strange: you may end up with a partial filename or the wrong file. </p>
+<p class="docText">Along the same lines as command completion is a feature 
+called <span class="docEmphasis">dynamic expansion</span>. After typing the 
+first few letters of a word, you can have Emacs search all open buffers for 
+completions of that word. Simply type ESC-/, and emacs will complete the partial 
+word with one you've already typed. You can cycle through all the choices by 
+repeating the keystroke. Warning: this feature is addictive. </p>
+<p class="docText"><span class="docEmphasis">—ML and BR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-7">19.7 Mike's Favorite Timesavers</h3>
+<p class="docText">I'm a very fast typist — which means that I hate using 
+special function keys, arrow keys, and especially mice. I deeply resent anything 
+that moves me away from the basic alphanumeric keyboard. Even BACKSPACE and 
+DELETE are obnoxious, since they force me to shift my hand position. </p>
+<p class="docText">With this in mind, I've customized Emacs so that I can do 
+virtually anything with the basic alphabetic keys, plus the CONTROL key. Here 
+are some extracts from my <span class="docEmphasis">.emacs</span> file: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: .emacs_ml</p>
+<pre>;; Make CTRL-h delete the previous character. Normally, this gets
+;; you into the &quot;help&quot; system.
+ (define-key global-map &quot;\C-h&quot; 'backward-delete-char)
+;; make sure CTRL-h works in searches, too
+ (setq search-delete-char (string-to-char &quot;\C-h&quot;))
+;; bind the &quot;help&quot; facility somewhere else (CTRL-underscore).
+;; NOTE: CTRL-underscore is not defined on some terminals.
+ (define-key global-map &quot;\C-_&quot; 'help-command) ;; replacement
+ (setq help-char (string-to-char &quot;\C-_&quot;))
+;; Make ESC-h delete the previous word.
+ (define-key global-map &quot;\M-h&quot; 'backward-kill-word)
+;; Make CTRL-x CTRL-u the &quot;undo&quot; command; this is better than &quot;CTRL-x u&quot;
+;; because you don't have to release the CTRL key.
+ (define-key global-map &quot;\C-x\C-u&quot; 'undo)
+;; scroll the screen &quot;up&quot; or &quot;down&quot; one line with CTRL-z and ESC z
+ (defun scroll-up-one ( ) &quot;Scroll up 1 line.&quot; (interactive)
+   (scroll-up (prefix-numeric-value current-prefix-arg)))
+ (defun scroll-down-one ( ) &quot;Scroll down 1 line.&quot; (interactive)
+   (scroll-down (prefix-numeric-value current-prefix-arg)))
+ (define-key global-map &quot;\C-z&quot; 'scroll-up-one)
+ (define-key global-map &quot;\M-z&quot; 'scroll-down-one)
+;; Use CTRL-x CTRL-v to &quot;visit&quot; a new file, keeping the current file
+;; on the screen
+ (define-key global-map &quot;\C-x\C-v&quot; 'find-file-other-window)</pre>
+<p class="docText">The comments (lines beginning with two semicolons) should 
+adequately explain what these commands do. Figure out which you need, and add 
+them to your <span class="docEmphasis">.emacs</span> file. The most important 
+commands are at the <span class="docEmphasis">top</span> of the file. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-8">19.8 Rational Searches</h3>
+<p class="docText">Emacs has, oh, a hundred or so different search commands. 
+(Well, the number's probably more like 32, but who's counting?) There are 
+searches of absolutely every flavor you could ever imagine: incremental 
+searches, word searches,<span id="ENB19-3"><a class="docLink" href="#EN19-3"><sup>[3]</sup></a></span> 
+regular-expression searches, and so on. </p>
+<p class="docText">However, when it comes to your plain old garden-variety 
+search, Emacs is strangely deficient. There is a simple search that just looks 
+for some arbitrary sequence of characters, but it's rather well hidden. In 
+addition, it lacks one very important feature: you can't search for the same 
+string repeatedly. That is, you can't say &quot;Okay, you found the right sequence of 
+letters; give me the next occurrence&quot;; you have to retype your search string 
+every time. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: search.el</p>
+<p class="docText">I thought this was an incredible pain until a friend of mine 
+wrote a special search command. It's in the file <span class="docEmphasis">
+search.el</span>. Just stick this into your <span class="docEmphBold">directory 
+for Emacs hacks</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-12">Section 
+19.12</a>), and add something like the following to your
+<span class="docEmphasis">.emacs</span> file: </p>
+<pre>;; real searches, courtesy of Chris Genly
+;; substitute your own Emacs hack directory for /home/los/mikel/emacs
+ (load-file &quot;/home/los/mikel/emacs/search.el&quot;)</pre>
+<p class="docText">Now you can type CTRL-s to search forward and CTRL-r to 
+search back. Emacs will prompt you for a search string and start searching when 
+you press RETURN. Typing another CTRL-s or CTRL-r repeats your previous search. 
+When you try this, you'll see one other useful feature: unlike the other Emacs 
+searches, this kind of search displays the &quot;default&quot; (i.e., most recent) search 
+string in the minibuffer. It's exactly the kind of search I want. </p>
+<p class="docText">It's conceivable that you'll occasionally want incremental 
+searches. You'll have to &quot;rebind&quot; them, though, to use them conveniently. Here 
+are the key bindings that I use: </p>
+<pre>;; rebind incremental search as ESC-s and ESC-r
+ (define-key global-map &quot;\M-s&quot; 'isearch-forward)
+ (define-key global-map &quot;\M-r&quot; 'isearch-backward)
+ ;; have to rebind ESC s separately for text-mode. It's normally
+ ;; bound to 'center-line'.
+ (define-key text-mode-map &quot;\M-s&quot; 'isearch-forward)</pre>
+<p class="docText">That is, ESC-s and ESC-r now give you forward and reverse 
+incremental searches. And once you've started an incremental search, CTRL-s and 
+CTRL-r still repeat the previous incremental search, just as they're supposed 
+to. </p>
+<p class="docText">Of course, now you'll have to rebind the &quot;center-line&quot; 
+command if you're fond of it. In my opinion, it's not worth the trouble. The 
+game of &quot;musical key-bindings&quot; stops here. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-9">19.9 Unset PWD Before Using Emacs</h3>
+<p class="docText">I've seen a number of strange situations in which Emacs can't 
+find files unless you type a <span class="docEmphBold">complete (&quot;absolute&quot;) 
+pathname</span> (
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">
+Section 1.16</a>), starting from the root (<span class="docEmphasis">/</span> ). 
+When you try to visit a file, you'll get the message <tt>File</tt> <tt>not</tt>
+<tt>found</tt> and <tt>directory doesn't</tt> <tt>exist</tt>. </p>
+<p class="docText">In my experience, this usually means that the
+<span class="docEmphBold">C shell's PWD environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">Section 
+35.5</a>) has been incorrectly set. There are a few (relatively pathological) 
+ways of tricking the C shell into making a mistake. More commonly, though, I've 
+seen a few systems on which the C shell sticks an extra slash into
+<span class="docEmphasis">PWD</span>: that is, its value will be something like
+<span class="docEmphasis">/home/mike//Mail</span> rather than
+<span class="docEmphasis">/home/mike/Mail</span>. Unix doesn't care; it lets you 
+stack up extra slashes without any trouble. But Emacs interprets
+<span class="docEmphasis">//</span> as the root directory — that is, it discards 
+everything to the left of the double slash. So if you're trying to edit the file
+<span class="docEmphasis">/home/mike//Mail/output.txt</span>, Emacs will look 
+for <span class="docEmphasis">/Mail/output.txt</span>. Even if this file exists, 
+it's not what you want. [This also happens when Emacs is called from a (Bourne) 
+shell script that has changed its current directory without changing
+<span class="docEmphasis">PWD</span>. — <span class="docEmphasis">JP</span>] </p>
+<p class="docText">This problem is particularly annoying because the shell will 
+automatically reset <span class="docEmphasis">PWD</span> every time you change 
+directories. The obvious solution, sticking <tt>unsetenv PWD</tt> in your
+<span class="docEmphasis">.cshrc</span> file, doesn't do any good. </p>
+<p class="docText">What will work is defining an <span class="docEmphBold">alias</span> 
+(<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-1">Section 
+29.1</a>): </p>
+<p class="docText"><tt>(..)</tt>
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">
+Section 43.7</a></p>
+<pre>alias gmacs &quot;(unsetenv PWD; emacs \!*)&quot;</pre>
+<p class="docText">A better solution might be to switch to another shell that 
+doesn't have this problem. The Bourne shell (<i>sh</i>) obviously doesn't, since 
+it doesn't keep track of your current directory. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<ul>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-10">19.10 Inserting Binary Characters into Files</h3>
+<p class="docText">I remember being driven absolutely crazy by a guy (who 
+hopefully won't be reading this) who called me every other week and asked me how 
+to stick a page break into some text file he was writing. He was only printing 
+on a garden-variety printer, for which inserting a page break is a simple 
+matter: just add a formfeed character, CTRL-l. But CTRL-l already means 
+something to Emacs (&quot;redraw the screen&quot;). How do you get the character into your 
+file, without Emacs thinking that you're typing a command? </p>
+<p class="docText">Simple. Precede CTRL-l with the &quot;quoting&quot; command, CTRL-q. 
+CTRL-q tells Emacs that the next character you type is text, not a part of some 
+command. So the sequence CTRL-q CTRL-l inserts the character CTRL-l into your 
+file; you'll see <tt>^L</tt> on your screen. (Note that this represents a single 
+character, instead of two characters.) In turn, when you print the file on many 
+printers, the CTRL-l will cause a page eject at the appropriate point. </p>
+<p class="docText">You can use this technique to get any &quot;control character&quot; 
+into an Emacs file. In fact, under pressure I've done some pretty bizarre binary 
+editing — not a task I'd recommend, but certainly one that's possible. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-11">19.11 Using Word-Abbreviation Mode</h3>
+<p class="docText">Like <i>vi</i>, Emacs provides an &quot;abbreviation&quot; facility. 
+Its traditional usage lets you define abbreviations for long words or phrases so 
+you don't have to type them in their entirety. For example, let's say you are 
+writing a contract that repeatedly references the National Institute of 
+Standards and Technology. Rather than typing the full name, you can define the 
+abbreviation <tt>nist</tt>. Emacs inserts the full name whenever you type <tt>
+nist</tt>, followed by a space or punctuation mark. Emacs watches for you to 
+type an abbreviation, then expands it automatically as soon as you press the 
+spacebar or type a punctuation mark (such as <tt>.</tt>, <tt>,</tt>, <tt>!</tt>,
+<tt>?</tt>, <tt>;</tt>, or :). </p>
+<p class="docText">One use for word-abbreviation mode is to correct misspellings 
+as you type. Almost everyone has a dozen or so words that he habitually types 
+incorrectly, due to some worn neural pathways. You can simply tell Emacs that 
+these misspellings are &quot;abbreviations&quot; for the correct versions, and Emacs fixes 
+the misspellings every time you type them. If you take time to define your 
+common typos as abbreviations, you'll never be bothered with <tt>teh</tt>, <tt>
+adn</tt>, and <tt>recieve</tt> when you run the spellchecker. Emacs sweeps up 
+after your typos and corrects them. For example, let's say that you define <tt>
+teh</tt> as an abbreviation for <tt>the</tt>. When you press the spacebar after 
+you type <tt>teh</tt>, Emacs fixes it immediately, and you continue happily 
+typing. You may not even notice that you typed the word wrong before Emacs fixes 
+it. </p>
+<h4  id="upt3-CHP-19-SECT-11.1" class="docSection2Title">19.11.1 Trying Word Abbreviations for One Session</h4>
+<p class="docText">Usually, if you go to the trouble of defining a word 
+abbreviation, you will use it in more than one Emacs session. But if you'd like 
+to try out abbreviation mode to see if you want to make it part of your startup, 
+use the following procedure to define word abbreviations for this session: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Enter word-abbreviation mode by typing ESC-x <tt>
+  abbrev-mode</tt>. <tt>abbrev</tt> appears on the mode line. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Type the abbreviation you want to use, and press CTRL-x <tt>
+  a</tt>. Emacs then asks you for the expansion. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Type the definition for the abbreviation, and press RETURN. 
+  Emacs then expands the abbreviation; it will do so each time you type it 
+  followed by a space or punctuation mark. The abbreviations you've defined will 
+  work only during this Emacs session. </span></li>
+</ol>
+</span>
+<p class="docText">If you find that you like using word-abbreviation mode, you 
+may want to make it part of your startup, as described in the following section.
+</p>
+<h4  id="upt3-CHP-19-SECT-11.2" class="docSection2Title">19.11.2 Making Word Abbreviations Part of Your 
+Startup</h4>
+<p class="docText">Once you become hooked on abbreviation mode, make it part of 
+your <span class="docEmphasis">.emacs</span> file so that you enter abbreviation 
+mode and load your word-abbreviations file automatically. To define word 
+abbreviations and make them part of your startup: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Add these lines to your <span class="docEmphasis">.emacs</span> 
+  file:</p>
+  <pre>(setq-default abbrev-mode t)
+(read-abbrev-file &quot;~/.abbrev_defs&quot;)
+(setq save-abbrevs t)</pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Save the <span class="docEmphasis">.emacs</span> file, and 
+  re-enter Emacs. <tt>Abbrev</tt> appears on the mode line. (You'll get an error 
+  at this point; ignore it — it won't happen again.) </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Type an abbreviation you want to use, and then type CTRL-x
+  <tt>a</tt> following the abbreviation. Emacs asks you for the expansion.
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Type the definition for the abbreviation, and press RETURN. 
+  Emacs expands the abbreviation and will do so each time you type it followed 
+  by a space or punctuation mark. You can define as many abbreviations as you 
+  wish by repeating Steps 3 and 4. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Type ESC-x <tt>write-abbrev-file</tt> to save your 
+  abbreviations file. Emacs asks for the filename. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Type <tt>~/.abbrev_defs</tt>. Emacs then writes the file. 
+  You need only take this step the first time you define abbreviations using 
+  this procedure. After this file exists, the lines in your
+  <span class="docEmphasis">.emacs</span> file load the abbreviations file 
+  automatically. </span></li>
+</ol>
+</span>
+<p class="docText">After you've followed this procedure the first time, you only 
+need to use Steps 3 and 4 to define more abbreviations. When you add word 
+abbreviations in subsequent sessions, Emacs asks whether you want to save the 
+abbreviations file. Respond with a <tt>y</tt> to save the new abbreviations 
+you've defined and have them take effect automatically. If you define an 
+abbreviation and later regret it, use ESC-x <tt>edit-word-abbrevs</tt> to delete 
+it. </p>
+<p class="docText"><span class="docEmphasis">— DC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-12">19.12 Directories for Emacs Hacks</h3>
+<p class="docText">If you use any Emacs editor (GNU Emacs or any of the 
+commercial alternatives), you may have written lots of handy LISP programs to 
+use while you're editing. It's convenient to create a separate directory for 
+these; a good name for this directory is (obviously) <span class="docEmphasis">
+emacs</span>; it's usually located in your home directory. </p>
+<p class="docText">If you use GNU Emacs, you should put the following line in 
+the <span class="docEmphasis">.emacs</span> file: </p>
+<pre>(setq load-path (append load-path '(&quot;<tt><i>your-emacs-directory</i></tt>&quot;)))</pre>
+<p class="docText">This tells Emacs that it should look in your personal Emacs 
+directory to find your programs. (It's similar to the <span class="docEmphBold">
+PATH</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+35.6</a>) environment variable.) </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-19-SECT-13">19.13 An Absurd Amusement</h3>
+<p class="docText">If you have time to waste (and I mean
+<span class="docEmphasis">really</span> waste), Emacs has things to keep you 
+occupied. There are lots of interesting special effects, such as &quot;disassociated 
+text.&quot; My favorite is a command called &quot;psychoanalyze-pinhead.&quot; It's based on 
+&quot;doctor,&quot; which is a variation of the classic artificial-intelligence 
+demonstration called &quot;Eliza&quot;: the computer plays psychotherapist and asks you 
+questions; you reply, and your answers are the basis for new questions. Nothing 
+new, really; I remember it from my high school days, in the early 1970s. If you 
+think you might be in need of a psychotherapist, save your money and try ESC-x
+<tt>doctor</tt> RETURN. </p>
+<p class="docText">If you want to see something really interesting, try ESC-x
+<tt>psychoanalyze-pinhead</tt>. This takes the built-in &quot;doctor&quot; program and 
+feeds it with quotations from the cult comic strip <span class="docEmphasis">
+Zippy the Pinhead</span>. The result is indeed bizarre. Here's some typical 
+output: </p>
+<pre>I am the psychotherapist.  Please, describe your problems.  Each time
+you are finished talking, type RET twice.
+
+YOU PICKED KARL MALDEN'S NOSE!!
+
+Why do you say I picked karl malden's nose?
+
+Am I SHOPLIFTING?
+
+Is it because of your plans that you say are you shoplifting?
+
+Are you selling NYLON OIL WELLS??  If so, we can use TWO DOZEN!!</pre>
+<p class="docText">Press CTRL-c when you've had enough. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN19-1"><a class="docLink" href="#ENB19-1">[1]</a>&nbsp;&nbsp;For reference, the name of the auto-save file is <tt>#<i>your-filename</i>#</tt>; 
+that is, it sticks a hash mark (<tt>#</tt>) before and after the file&#39;s 
+&quot;regular&quot; name.</p><p class="docFootnote" id="EN19-2"><a class="docLink" href="#ENB19-2">[2]</a>&nbsp;&nbsp;This includes some mainframe 
+  editors, like XEDIT, and (in my memory) a lot of older tools for word 
+  processing and general editing.</p><p class="docFootnote" id="EN19-3"><a class="docLink" href="#ENB19-3">[3]</a>&nbsp;&nbsp;These are especially nice 
+  because they can search for phrases that cross line breaks; most searches 
+  assume that all the text you want will all be on the same line. However, you 
+  can only search for whole words, and if you use <i>troff</i> or T<sub>E</sub>X, 
+  Emacs may be confused by your &quot;markup.&quot;</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 18.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 20.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

@@ -1,0 +1,1006 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 51</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 50.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="Glossary.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 51. SSH</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-51-SECT-1">51.1 Enabling Remote Access on Mac OS X</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-51-SECT-2">51.2 Protecting Access Through SSH</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-51-SECT-3">51.3 Free SSH with OpenSSH</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-51-SECT-4">51.4 SSH Problems and Solutions</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-51-SECT-5">51.5 General and Authentication Problems</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-51-SECT-6">51.6 Key and Agent Problems</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-51-SECT-7">51.7 Server and Client Problems</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-51-SECT-1">51.1 Enabling Remote Access on Mac OS X</h3>
+<p class="docText"><span class="docEmphBold">Enabling SSH</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-6">Section 
+46.6</a>) on Mac OS X is fairly simple. Access the System Preferences from the 
+Apple menu and double-click the Sharing folder. When this opens, click the 
+Application tab and check the box labeled &quot;Allow remote login.&quot; Quit System 
+Preferences, and the machine is now configured for SSH access, remotely. </p>
+<p class="docText">To enable <i>telnet</i> , <i>rsh</i>, or <i>rlogin</i> (if 
+you're sure you want these processes), open the Terminal window and edit the <i>
+/etc/inetd.conf</i> file (using <span class="docEmphBold">sudo</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-11">Section 
+49.11</a>) if you're logged in as a member of the administration
+<span class="docEmphBold">group</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-7">Section 
+49.7</a>) or login as root). Remove the pound sign (#) from in front of whatever 
+remote service you want to enable: </p>
+<pre>#ftp     stream   tcp     nowait     root    /usr/libexec/tcpd            ftpd -L</pre>
+<p class="docText">You'll need to restart the server, or you can restart
+<span class="docEmphBold">inetd</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-5">Section 
+46.5</a>) by typing: </p>
+<pre>kill -HUP 'cat /var/run/inetd.pid'</pre>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-51-SECT-2">51.2 Protecting Access Through SSH</h3>
+<p class="docText">The problems associated with <i>telnet</i> and <i>ftp</i>, 
+such as passing plain text passwords, can be overcome through the use of
+<span class="docEmphBold">SSH</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-6">Section 
+46.6</a>). SSH encrypts any communication between the client and the server, 
+preventing anyone from capturing the information in transit. You should always 
+use SSH to connect to your system remotely. </p>
+<p class="docText">SSH works by authenticating the client using one of several 
+authentication schemes, including a simple authentication that looks for a 
+client machine within <i>/etc/hosts.equiv</i>. If the user on the local machine 
+matches the username on the remote machine, they're allowed in. This isn't 
+particularly safe, but it does provide encryption of transmitted data. </p>
+<p class="docText">A second authentication scheme verifies that the login would 
+normally validate with the <span class="docEmphasis">$HOME/.rhosts</span> — as 
+with <i>rlogin</i> — and that the client can verify the host's key; if so, login 
+is permitted. This is safer than the first authentication scheme. </p>
+<p class="docText">However, a better method is RSA-based authentication using 
+public-private keys. Regardless, once SSH is enabled, you can then use it to 
+telnet or rlogin to the server machine, and all data transmitted is safe from 
+snooping. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-51-SECT-3">51.3 Free SSH with OpenSSH</h3>
+<p class="docText">In some systems, such as Mac OS X, <span class="docEmphBold">
+SSH</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-6">Section 
+46.6</a>) is built-in. In other cases you can use commercial products, such as 
+SecureCRT. However, there is a freely available application you can download 
+called OpenSSH, available at
+<a class="docLink" href="http://www.openssh.com" target="_blank">
+http://www.openssh.com</a>. </p>
+<p class="docText">There are installation packages for OpenSSH for Linux, 
+Solaris, FreeBSD, AIX — in fact, most versions of Unix. </p>
+<p class="docText">OpenSSH has multiple tools, used in place of existing 
+connectivity applications: </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">ssh</span></i> </dt>
+  <dd>
+  <p class="docList">Replaces <i>telnet</i> and <span class="docEmphasis">rlogin</span></dd>
+  <dt><i><span class="docPubcolor">scp</span></i> </dt>
+  <dd>
+  <p class="docList">Replaces <span class="docEmphasis">rcp</span> for copying 
+  files</dd>
+  <dt><i><span class="docPubcolor">sftp</span></i> </dt>
+  <dd>
+  <p class="docList">Replaces <i>ftp</i></dd>
+</dl>
+<p class="docText">In addition, the installation features the necessary 
+server-side installation as well as utilities to assist in the setup and 
+maintenance of the application. </p>
+<p class="docText">To configure OpenSSH with FreeBSD, check the documentation 
+page at
+<a class="docLink" href="http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/openssh.html" target="_blank">
+http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/openssh.html</a>. To 
+use OpenSSH with Redhat Linux, check the web pages at
+<a class="docLink" href="http://www.redhat.com/docs/manuals/linux/RHL-7.3-Manual/custom-guide/ch-openssh.html" target="_blank">
+http://www.redhat.com/docs/manuals/linux/RHL-7.3-Manual/custom-guide/ch-openssh.html</a>. 
+Check your Unix system documentation for OpenSSH installation specific to your 
+environment. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-51-SECT-4">51.4 SSH Problems and Solutions</h3>
+<p class="docText">In the next sections, we cover a wide range of difficulties, 
+organized by category. We list what, in our experience, are the most frequently 
+asked of the frequently asked questions. We focus on problems that may occur in 
+many versions of the SSH software on diverse operating systems. We don't address 
+issues like this one, which rapidly become obsolete: </p>
+<p class="docText"><span class="docEmphasis">Compilation problems specific to 
+one operating system, such as &quot;HyperLinux beta 0.98 requires the -- with-woozle 
+flag&quot;</span> </p>
+<p class="docText">In all questions, we assume you have already used debug or 
+verbose mode (e.g., <span class="docEmphasis">ssh -v</span>) to isolate the 
+problem. (If you haven't, you should!) </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-51-SECT-5">51.5 General and Authentication Problems</h3>
+<p class="docText"><span class="docEmphBold">Q:</span> The
+<span class="docEmphBold">commands ssh</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-6">Section 
+46.6</a>), scp, ssh-agent, ssh-keygen, etc., aren't doing what I expect. Even 
+the help messages look weird. </p>
+<p class="docText"><span class="docEmphBold">A:</span> Maybe they are SSH2 
+programs when you are expecting SSH1, or vice versa. Locate the executables and 
+do an <span class="docEmphasis">ls -l</span>. If they are plain files, they are 
+most likely from SSH1 or OpenSSH. If they are symbolic links, check whether they 
+point to SSH1 or SSH2 files. (SSH2 files have names ending in &quot;2&quot;.) </p>
+<p class="docText"><span class="docEmphBold">Q:</span> When I try to connect to 
+an SSH server, I get the error &quot;Connection refused.&quot; </p>
+<p class="docText"><span class="docEmphBold">A:</span> No SSH server is running 
+where you tried to connect. Double-check the hostname and TCP port number: 
+perhaps the server is running on a port different from the default? </p>
+<p class="docText"><span class="docEmphBold">Q:</span> When I log in, the 
+message of the day (/etc/motd) prints twice.</p>
+<p class="docText"><span class="docEmphBold">A:</span> Both
+<span class="docEmphasis">sshd</span> and the <span class="docEmphasis">login</span> 
+program are printing it. Disable <span class="docEmphasis">sshd</span>'s 
+printing by setting the serverwide configuration keyword <tt>PrintMotd</tt> to
+<tt>no</tt>. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> When I log in, I see two 
+messages about email, such as &quot;No mail&quot; or &quot;You have mail.&quot; </p>
+<p class="docText"><span class="docEmphBold">A:</span> Both
+<span class="docEmphasis">sshd</span> and the <span class="docEmphasis">login</span> 
+program are checking for mail. Prevent <span class="docEmphasis">sshd</span> 
+from checking by setting the serverwide configuration keyword <tt>CheckMail</tt> 
+to <tt>no</tt>. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> The SSH1 server says 
+&quot;Permission denied&quot; and exits. </p>
+<p class="docText"><span class="docEmphBold">A:</span> This occurs if all 
+authentication techniques have failed. Run your client in debug mode and read 
+the diagnostic messages, looking for clues. Also read our solutions to specific 
+authentication problems in the rest of this section. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> How do I authenticate 
+without typing a password or passphrase?</p>
+<p class="docText"><span class="docEmphBold">A:</span> The four available 
+authentication methods for this are:</p>
+<ul>
+  <li>
+  <p class="docList">Public-key with <span class="docEmphasis">ssh-agent</span></li>
+  <li>
+  <p class="docList">Public-key with an unencrypted key on disk (empty 
+  passphrase)</li>
+  <li>
+  <p class="docList">Trusted-host</li>
+  <li>
+  <p class="docList">Kerberos (SSH1 and OpenSSH/1 only)</li>
+</ul>
+<p class="docText">Automatic authentication has a number of important issues you 
+should carefully consider before selecting from the preceding list. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> I get prompted for my 
+password or passphrase, but before I have time to respond, the SSH server closes 
+the connection. </p>
+<p class="docText"><span class="docEmphBold">A:</span> Your server's idle 
+timeout value may be too short. If you are a system administrator of the server 
+machine, set <tt>IdleTimeout</tt> to a larger value in the serverwide 
+configuration file. If you are an end user of SSH1 or OpenSSH, set an 
+idle-timeout value in <span class="docEmphasis">authorized_keys</span>. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> RequiredAuthentications 
+doesn't work.</p>
+<p class="docText"><span class="docEmphBold">A:</span> This feature was broken 
+in SSH2 2.0.13, causing authentication always to fail. This problem was fixed in 
+2.1.0. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> SilentDeny doesn't seem 
+to work for any authentication method. </p>
+<p class="docText"><span class="docEmphBold">A:</span> <tt>SilentDeny</tt> has 
+nothing to do with authentication. It applies only to access control using <tt>
+AllowHosts</tt> and <tt>DenyHosts</tt>. If a connection is denied access by an
+<tt>AllowHosts</tt> or <tt>DenyHosts</tt> value, <tt>SilentDeny</tt> controls 
+whether the client sees an informative failure message or not. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> Password authentication 
+isn't working.</p>
+<p class="docText"><span class="docEmphBold">A:</span> Use
+<span class="docEmphasis">ssh -v</span>. If the connection is being refused 
+altogether, the SSH server is probably not running, or you are connecting to the 
+wrong port. Port 22 is the default, but the remote system administrator might 
+have changed it. If you see &quot;permission denied,&quot; password authentication might 
+be disabled in the server. </p>
+<p class="docText">Make sure the server permits password authentication in the 
+serverwide configuration file (<tt>PasswordAuthentication yes</tt> for SSH1 and 
+OpenSSH, <tt>AllowedAuthentications password</tt> for SSH2). Also check your 
+client configuration file to make sure you don't have <tt>PasswordAuthentication 
+no</tt>. </p>
+<p class="docText">If you are prompted for your password, but it is rejected, 
+you might accidentally be connecting to the wrong account. Does your local 
+username differ from the remote username? If so, you must specify the remote 
+username when connecting: </p>
+<pre>$ <b>ssh -l my_remote_username server.example.com</b>
+$ <b>scp myfile my_remote_username@server.example.com:</b></pre>
+<p class="docText">If this still doesn't work, check your local client 
+configuration file (<span class="docEmphasis">~/.ssh/config</span> or
+<span class="docEmphasis">~/.ssh2/ssh2_config</span>) to make sure you haven't 
+accidentally set the wrong value for the <tt>User</tt> keyword. In particular, 
+if your configuration file contains <tt>Host</tt> values with wildcards, check 
+that your current command line (the one that isn't working) isn't matching the 
+wrong section in the file. </p>
+<p class="docText">One common problem on the server side involves OpenSSH and 
+Pluggable Authentication Modules configuration. PAM is a general system for 
+performing authentication, authorization, and accounting in an 
+application-independent fashion. If your operating system supports PAM (as Linux 
+and HPUX do, for example), OpenSSH will probably have been automatically 
+compiled to use it. Unless you take the extra step of configuring PAM to support 
+SSH, all password authentications will mysteriously fail. This is usually just a 
+matter of copying the appropriate <span class="docEmphasis">sshd.pam</span> file 
+from the <span class="docEmphasis">contrib</span> directory in the OpenSSH 
+distribution, naming the copy <span class="docEmphasis">sshd</span> and placing 
+it in the PAM configuration directory (usually <span class="docEmphasis">/etc/pam.d</span> 
+). The <span class="docEmphasis">contrib</span> directory contains several 
+example files for different flavors of Unix. For example, on a RedHat Linux 
+system: </p>
+<pre># <b>cp contrib/redhat/sshd.pam /etc/pam.d/sshd</b>
+# <b>chown root.root /etc/pam.d/sshd</b>
+# <b>chmod 644 /etc/pam.d/sshd</b></pre>
+<p class="docText">If OpenSSH isn't using PAM, and password authentication still 
+isn't working, the compilation switches <tt>--with-md5-passwords</tt> or <tt>
+--without-shadow</tt> might be relevant. These make no difference if PAM support 
+is enabled in OpenSSH, because they deal with how OpenSSH reads the Unix
+<span class="docEmphasis">passwd</span> map. When using PAM, the OpenSSH code 
+doesn't read the <span class="docEmphasis">passwd</span> map directly; the PAM 
+libraries do it instead. Without PAM, though, if your system is using MD5-hashed 
+passwords instead of the more traditional <span class="docEmphasis">crypt</span> 
+(DES) hash, you must use <tt>--with-md5-passwords</tt>. You can tell which hash 
+your system is using by inspecting the <span class="docEmphasis">/etc/passwd</span> 
+and <span class="docEmphasis">/etc/shadow</span> files. The hashed password is 
+the second field in each entry; if the password field in
+<span class="docEmphasis">/etc/passwd</span> is just &quot;x&quot;, the real entry is in
+<span class="docEmphasis">/etc/shadow</span> instead. MD5 hashes are much longer 
+and contain a wider range of characters: </p>
+<pre># /etc/shadow, MD5 hash
+test:$1$tEMXcnZB$rDEZbQXJzUz4g2J4qYkRh.:...
+# /etc/shadow, crypt hash
+test:JGQfZ8DeroV22:...</pre>
+<p class="docText">Finally, you can try <tt>--without-shadow</tt> if you suspect 
+OpenSSH is trying to use the shadow password file, but your system doesn't use 
+it. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> The server won't let me 
+use an empty password. </p>
+<p class="docText"><span class="docEmphBold">A:</span> Empty passwords are 
+insecure and should be avoided. Nevertheless, you can set <tt>
+PermitEmptyPasswords yes</tt> in the serverwide configuration file. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> Trusted-host 
+authentication isn't working (SSH1 RhostsRSA, SSH2 hostbased). </p>
+<p class="docText"><span class="docEmphBold">A:</span> Use
+<span class="docEmphasis">ssh -v</span>. If everything looks right, check the 
+following. Suppose the client user is orpheus@earth, and the target account is 
+orpheus@hades — that is, on host <span class="docEmphasis">earth</span>, user 
+orpheus invokes <span class="docEmphasis">ssh hades</span>. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> For SSH1 and OpenSSH/1</p>
+<p class="docText"><span class="docEmphBold">A:</span> The SSH client program 
+must be setuid root.</p>
+<p class="docText"><tt>RhostsRSAAuthentication yes</tt> belongs in the server 
+and client configurations. </p>
+<p class="docText">The client's public host key must be in the server's known 
+hosts list. In this case, <span class="docEmphasis">hades:/etc/ssh_known_hosts</span> 
+must contain an entry associating the name &quot;earth&quot; with earth's public host key, 
+like this: </p>
+<pre>earth 1024 37 71641647885140363140390131934...</pre>
+<p class="docText">The entry may be in the target account's known hosts file 
+instead, i.e., in <span class="docEmphasis">hades:~orpheus/.ssh/known_hosts</span>. 
+Take care that &quot;earth&quot; is the canonical name of the client host from the 
+server's point of view. That is, if the SSH connection is coming from the 
+address 192.168.10.1, <span class="docEmphasis">gethostbyname(192.168.10.1)</span> 
+on hades must return &quot;earth&quot;, not a nickname or alias for the host (e.g., if the 
+hostname is <span class="docEmphasis">river.earth.net</span>, the lookup must 
+not return just &quot;river&quot;). Note that this can involve multiple naming services, 
+since <tt>gethostbyname</tt> can be configured to consult multiple sources to 
+determine a translation (e.g., DNS, NIS, <span class="docEmphasis">/etc/hosts</span>). 
+See <span class="docEmphasis">/etc/nsswitch.conf</span>. If your systems don't 
+agree on canonical hostnames, you'll have no end of trouble with RhostsRSA. You 
+can work around such problems to an extent by manually adding extra host 
+nicknames to the known hosts file, like this: </p>
+<pre>earth,gaia,terra 1024 37 71641647885140363140390131934...</pre>
+<p class="docText">Edit <span class="docEmphasis">hades:/etc/shosts.equiv</span> 
+or <span class="docEmphasis">hades:~orpheus/.shosts</span> to allow the login. 
+Adding earth to <span class="docEmphasis">shosts.equiv</span> allows any nonroot 
+user on earth to access the account by the same name on hades. Adding earth to
+<span class="docEmphasis">.shosts</span> allows orpheus@earth to access orpheus@hades.
+</p>
+<p class="docText">Some firewalls reject outbound connections from privileged 
+ports. This prevents RhostsRSA authentication from working, since it relies on 
+privileged source ports. You can use <span class="docEmphasis">ssh -P</span> to 
+get a connection to the SSH server via a nonprivileged port, but you will have 
+to use a different kind of authentication. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> For SSH2</p>
+<p class="docText"><span class="docEmphBold">A:</span> <tt>
+AllowedAuthentications hostbased</tt> in the server and client configurations.
+</p>
+<p class="docText"><span class="docEmphasis">ssh2</span> doesn't need to be 
+setuid root, but <span class="docEmphasis">ssh-signer2</span> does. More 
+precisely, it needs to be able to read the private host key, which in the normal 
+installation means it must be setuid root. </p>
+<p class="docText">A copy of earth's public host key in
+<span class="docEmphasis">hades:/etc/ssh2/knownhosts/earth.ssh-dss.pub</span> 
+(or <span class="docEmphasis">hades:~orpheus:/.ssh2/knownhosts/earth.ssh-dss.pub</span>, 
+if you specified &quot;UserKnownHosts yes&quot; on the server). </p>
+<p class="docText">Regarding canonical hostnames, the same comments as for 
+RhostsRSA apply. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> For OpenSSH/2</p>
+<p class="docText"><span class="docEmphBold">A:</span> <tt>DSAAuthentication yes</tt> 
+belongs in the server and client configurations. </p>
+<p class="docText"><span class="docEmphasis">ssh</span> must be setuid root (or 
+otherwise able to read the client hosts's private host key in
+<span class="docEmphasis">/etc/ssh_host_dsa_key</span> ; it doesn't require a 
+privileged source port). </p>
+<p class="docText">A copy of earth's public host key in
+<span class="docEmphasis">hades:/etc/ssh_known_hosts2</span> (or
+<span class="docEmphasis">hades:~orpheus:/.ssh/known_hosts2</span>). </p>
+<p class="docText">The same comments as for RhostsRSA apply, regarding canonical 
+hostnames. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> How do I install my 
+public key file on the remote host the first time? </p>
+<p class="docText"><span class="docEmphBold">A:</span> Here's the general 
+method:</p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Generate a key pair.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Copy the text of the public key into your computer's 
+  clipboard or other cut/paste buffer. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Log into the remote host via SSH with password 
+  authentication, which doesn't require any special files in your remote 
+  account. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Edit the appropriate authorization and key files on the 
+  remote host:<ol class="docList" type="a">
+    <li>
+    <p class="docList">For SSH1 and OpenSSH/1, append the public key to
+    <span class="docEmphasis">~/.ssh/authorized_keys</span>. </li>
+    <li>
+    <p class="docList">For OpenSSH/2, append the public key to
+    <span class="docEmphasis">~/.ssh/authorized_keys2</span>. </li>
+    <li>
+    <p class="docList">For SSH2, paste the public key into a new
+    <span class="docEmphasis">.pub</span> file in <span class="docEmphasis">
+    ~/.ssh2</span> (say, <span class="docEmphasis">newkey.pub</span>), and 
+    append the line &quot;Key newkey.pub&quot; to <span class="docEmphasis">
+    ~/.ssh2/authorization</span>. </li>
+  </ol>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Log out from the remote host.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Log back into the remote host using public-key 
+  authentication.</span></li>
+</ol>
+</span>
+<p class="docText">When editing the remote authorization file, make sure your 
+text editor doesn't insert line breaks into the middle of a public key. SSH1 and 
+OpenSSH public keys are very long and must be kept on a single line. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> I put my SSH public key 
+file mykey.pub into my remote SSH directory, but public-key authentication 
+doesn't work. </p>
+<p class="docText"><span class="docEmphBold">A:</span> Placing a valid public 
+key file (e.g., <span class="docEmphasis">mykey.pub</span>) in your SSH 
+directory isn't sufficient. For SSH1 and OpenSSH/1, you must append the key 
+(i.e., the contents of <span class="docEmphasis">mykey.pub</span>) to
+<span class="docEmphasis">~/.ssh/authorized_keys</span>. For OpenSSH/2, append 
+the key to <span class="docEmphasis">~/.ssh/authorized_keys2</span>. For SSH2, 
+you must add a line of text to <span class="docEmphasis">~/.ssh2/authorization</span>,
+<tt>Key mykey.pub</tt>. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> Public-key authentication 
+isn't working. </p>
+<p class="docText"><span class="docEmphBold">A:</span> Invoke the client in 
+debug mode (<span class="docEmphasis">ssh -v</span>). Make sure: </p>
+<ul>
+  <li>
+  <p class="docList">Your local client is using the expected identity file.</li>
+  <li>
+  <p class="docList">The correct public key is on the remote host in the right 
+  location.</li>
+  <li>
+  <p class="docList">Your remote home directory, SSH directory, and other SSH-related 
+  files have the correct permissions. </li>
+</ul>
+<p class="docText"><span class="docEmphBold">Q:</span> I'm being prompted for my 
+login password instead of my public key passphrase. Or, my connection is 
+rejected with the error message &quot;No further authentication methods available.&quot; 
+(SSH2) </p>
+<p class="docText"><span class="docEmphBold">A:</span> There are several 
+possible causes for both of these problems.</p>
+<p class="docText">Public-key authentication must be enabled in both the client 
+and server (SSH1/OpenSSH <tt>RSAAuthentication yes</tt>, SSH2 <tt>
+AllowedAuthentications publickey</tt>). </p>
+<p class="docText">Specify your remote username with <span class="docEmphasis">
+-l</span> (lowercase L) if it differs from your local username, or else the SSH 
+server will examine the wrong remote account: </p>
+<pre>$ <b>ssh -l jones server.example.com</b></pre>
+<p class="docText">Check the file permissions in your server account. If certain 
+files or directories have the wrong owner or careless access permissions, the 
+SSH server refuses to perform public-key authentication. This is a security 
+feature. Run <span class="docEmphasis">ssh</span> in verbose mode to reveal the 
+problem: </p>
+<pre>$ <b>ssh -v server.example.com</b>
+...
+server.example.com: Remote: Bad file modes for /u/smith/.ssh</pre>
+<p class="docText">In your server account, make sure that the following files 
+and directories are owned by you and aren't world writable: ~,
+<span class="docEmphasis">~/.ssh</span>, <span class="docEmphasis">~/.ssh/authorized_keys</span>,
+<span class="docEmphasis">~/.ssh2</span>, <span class="docEmphasis">~/.rhosts</span>, 
+and <span class="docEmphasis">~/.shosts</span>. </p>
+<p class="docText">For SSH2, if you use the <span class="docEmphasis">-i</span> 
+option to specify an identification file: </p>
+<pre>$ ssh2 -i my-identity server.example.com</pre>
+<p class="docText">check that <span class="docEmphasis">my-identity</span> is an 
+identification file, not a private key file. (In contrast,
+<span class="docEmphasis">ssh -i</span> for SSH1 and OpenSSH expects a private 
+key file.) Remember that SSH2 identification files are text files containing the 
+names of private keys.</p>
+<p class="docText"><span class="docEmphBold">Q:</span> I'm being prompted for 
+the passphrase of the wrong key. </p>
+<p class="docText"><span class="docEmphBold">A:</span> Make sure your desired 
+public key is in your authorization file on the SSH server machine. </p>
+<p class="docText">Check for SSH agent problems. Are you running an agent and 
+trying to specify another key with <span class="docEmphasis">ssh -i</span> or 
+the <tt>IdentityFile</tt> keyword? The presence of an agent prevents
+<span class="docEmphasis">-i</span> and <tt>IdentityFile</tt> from working. 
+Terminate your agent and try again. </p>
+<p class="docText">For SSH1 and OpenSSH, if any options are specified in
+<span class="docEmphasis">~/.ssh/authorized_keys</span>, check for typographical 
+errors. A mistyped option causes the associated key line to be skipped silently. 
+Remember that options are separated by commas, not whitespace. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> After the PGP passphrase 
+prompt, I am being prompted for my login password. </p>
+<p class="docText"><span class="docEmphBold">A:</span> If you get prompted for 
+your PGP key, and then your password:</p>
+<pre>Passphrase for pgp key &quot;mykey&quot;: ********
+smith's password:</pre>
+<p class="docText">and you know you're typing your passphrase correctly, first 
+make sure you're typing your PGP passphrase correctly. (For instance, encrypt a 
+file with that public key and decrypt it.) If so, then there might be an 
+incompatibility between the PGP implementations on your client and server 
+machines. We've seen this behavior when the PGP key (generated on the client 
+machine) doesn't have sufficient bits for the PGP implementation on the server 
+machine. Generate a new key on the server machine. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> I get &quot;Invalid pgp key id 
+number `0276C297'&quot;. </p>
+<p class="docText"><span class="docEmphBold">A:</span> You probably forgot the 
+leading &quot;0x&quot; on the key ID, and SSH is trying to interpret a hexadecimal number 
+as a decimal. Use <tt>PgpKeyId 0x0276C297</tt> instead. </p>
+<p class="docText"><span class="docEmphasis">— SP </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-51-SECT-6">51.6 Key and Agent Problems</h3>
+<p class="docText"><span class="docEmphBold">Q:</span> I generated a key with 
+SSH1 and tried using it with another SSH1 client, such as NiftyTelnet SSH, 
+F-Secure SSH Client, or SecureCRT, but the client complains that the key is in 
+an invalid format. </p>
+<p class="docText"><span class="docEmphBold">A:</span> First, make sure you 
+generated the key using <span class="docEmphasis">ssh-keygen1</span>, not
+<span class="docEmphasis">ssh-keygen2</span>. SSH1 and SSH2 keys aren't 
+compatible. </p>
+<p class="docText">Next, make sure you transferred the key file using an 
+appropriate file-transfer program. If you used FTP, confirm that the private key 
+file was transferred in binary mode, or the copy will contain garbage. The 
+public key file should be transferred in ASCII mode. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> I generated an SSH1 key 
+and tried using it with SSH2, but it didn't work. (Or vice versa.) </p>
+<p class="docText"><span class="docEmphBold">A:</span> This is normal. SSH1 and 
+SSH2 keys aren't compatible.</p>
+<p class="docText"><span class="docEmphBold">Q:</span> I specified a key 
+manually, using -i or IdentityFile, but it never gets used! </p>
+<p class="docText"><span class="docEmphBold">A:</span> Are you running an agent? 
+If so, -<span class="docEmphasis">i</span> and <tt>IdentityFile</tt> don't have 
+any effect. The first applicable key in the agent takes precedence. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> Each time I run 
+ssh-keygen, it overwrites my default identity file.</p>
+<p class="docText"><span class="docEmphBold">A:</span> Tell
+<span class="docEmphasis">ssh-keygen</span> to write its output to a different 
+file. For <span class="docEmphasis">ssh-keygen</span> in SSH1 and OpenSSH, use 
+the <span class="docEmphasis">-f</span> option. For <span class="docEmphasis">
+ssh-keygen2</span>, specify the filename as the last argument on the command 
+line; no option is needed. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> Can I change the 
+passphrase for a key without regenerating the key?</p>
+<p class="docText"><span class="docEmphBold">A:</span> Yes. For
+<span class="docEmphasis">ssh-keygen</span> in SSH1 and OpenSSH, use the
+<span class="docEmphasis">-N</span> option, and for <span class="docEmphasis">
+ssh-keygen2</span>, use the <span class="docEmphasis">-p</span> option. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> How do I generate a host 
+key?</p>
+<p class="docText"><span class="docEmphBold">A:</span> Generate a key with an 
+empty passphrase and install it in the correct location: </p>
+<pre># SSH1, OpenSSH
+$ <b>ssh-keygen -N '' -b 1024 -f /etc/ssh_host_key</b>
+# SSH2 only
+$ <b>ssh-keygen2 -P -b 1024 /etc/ssh2/hostkey</b></pre>
+<p class="docText"><span class="docEmphBold">Q:</span> Generating a key takes a 
+long time.</p>
+<p class="docText"><span class="docEmphBold">A:</span> Yes it may, depending on 
+the speed of your CPU and the number of bits you have requested. DSA keys tend 
+to take longer than RSA keys. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> How many bits should I 
+make my keys?</p>
+<p class="docText"><span class="docEmphBold">A:</span> We recommend at least 
+1024 bits for strong security.</p>
+<p class="docText"><span class="docEmphBold">Q:</span> What does oOo.oOo.oOo.oOo 
+mean, as printed by ssh-keygen2?</p>
+<p class="docText"><span class="docEmphBold">A:</span> The manpage calls it a 
+&quot;progress indicator.&quot; We think it's an ASCII representation of a sine wave. Or 
+the sound of a chattering gorilla. You can hide it with the
+<span class="docEmphasis">-q</span> flag. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> My ssh-agent isn't 
+terminating after I log out.</p>
+<p class="docText"><span class="docEmphBold">A:</span> If you use the 
+single-shell method to start an agent, this isnormal. You must terminate the 
+agent yourself, either manually (bleah)or by including appropriate lines in
+<span class="docEmphBold">your shell configurationfiles</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-3">Section 
+6.3</a>). If you use thesubshell method, the agent automatically terminates when 
+you log out(actually, when you <span class="docEmphBold">exit the subshell</span>) 
+(<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-3">Section 
+6.3</a>). </p>
+<p class="docText"><span class="docEmphBold">Q:</span> When I invoke ssh-add and 
+type my passphrase, I get the error message &quot;Could not open a connection to your 
+authentication agent.&quot; </p>
+<p class="docText"><span class="docEmphBold">A:</span> Follow this debugging 
+process.</p>
+<p class="docText">Make sure you are running an <span class="docEmphasis">ssh-agent</span> 
+process:</p>
+<pre>$ <b>/usr/bin/ps -ef | grep ssh-agent</b>
+smith 22719     1  0 23:34:44 ?        0:00 ssh-agent</pre>
+<p class="docText">If not, you need to run an agent before
+<span class="docEmphasis">ssh-add</span> will work. </p>
+<p class="docText">Check that the agent's environment variables are set:</p>
+<pre>$ <b>env | grep SSH</b>
+SSH_AUTH_SOCK=/tmp/ssh-barrett/ssh-22719-agent
+SSH_AGENT_PID=22720</pre>
+<p class="docText">If not, you probably ran <span class="docEmphasis">ssh-agent</span> 
+incorrectly, like this: </p>
+<pre># Wrong!
+$ <b>ssh-agent</b></pre>
+<p class="docText">For the single-shell method, you must use
+<span class="docEmphasis">eval</span> with backquotes:</p>
+<pre>$ <b>eval `ssh-agent`</b></pre>
+<p class="docText">Or, for the subshell method, you must instruct
+<span class="docEmphasis">ssh-agent</span> to invoke a shell: </p>
+<pre>$ <b>ssh-agent $SHELL</b></pre>
+<p class="docText">Make sure the agent points to a valid socket:</p>
+<pre>$ <b>ls -lF $SSH_AUTH_SOCK</b>
+prwx-- -- --   1 smith   0 May 14 23:37 /tmp/ssh-smith/ssh-22719-agent|</pre>
+<p class="docText">If not, your <span class="docEmphasis">SSH_AUTH_SOCK</span> 
+variable might be pointing to an old socket from a previous invocation of
+<span class="docEmphasis">ssh-agent</span>, due to user error. Terminate and 
+restart the agent properly. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> My per-account server 
+configuration isn't taking effect. </p>
+<p class="docText"><span class="docEmphBold">A:</span> You might be confused 
+about which versions of SSH use which files:</p>
+<dl class="docList">
+  <dd>SSH1, OpenSSH/1: <i>~/.ssh/authorized_keys</i> </dd>
+  <dd>SSH2: <i>~/.ssh2/authorization</i> </dd>
+  <dd>OpenSSH/2: <i>~/.ssh/authorized_keys2</i> (note this isn't in <i>~/.ssh2</i>)
+  </dd>
+</dl>
+<p class="docText">Remember that the <span class="docEmphasis">authorized_keys</span> 
+and <span class="docEmphasis">authorized_keys2</span> files contains keys, 
+whereas the SSH2 <span class="docEmphasis">authorization</span> file contains 
+directives referring to other key files. </p>
+<p class="docText">You might have a typographical error in one of these files. 
+Check the spelling of options, and remember to separate SSH1
+<span class="docEmphasis">authorized_keys</span> options with commas, not 
+whitespace. For example: </p>
+<pre># correct
+no-x11-forwarding,no-pty 1024 35 8697511247987525784866526224505...
+# INCORRECT (will silently fail)
+no-x11-forwarding no-pty 1024 35 8697511247987525784866526224505...
+# ALSO INCORRECT (note the extra space after &quot;no-x11-forwarding,&quot;)
+no-x11-forwarding, no-pty 1024 35 8697511247987525784866526224505...</pre>
+<p class="docText"><span class="docEmphasis">— SP </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-51-SECT-7">51.7 Server and Client Problems</h3>
+<p class="docText"><span class="docEmphBold">Q:</span> How do I get sshd to 
+recognize a new configuration file? </p>
+<p class="docText"><span class="docEmphBold">A:</span> You can terminate and 
+restart <span class="docEmphasis">sshd</span>, but there's quicker way: send the 
+&quot;hangup&quot; signal (SIGHUP) to <span class="docEmphasis">sshd</span> with
+<span class="docEmphasis">kill -HUP</span>. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> I changed the sshd config 
+file and sent SIGHUP to the server. But it didn't seem to make any difference.
+</p>
+<p class="docText"><span class="docEmphBold">A:</span> <span class="docEmphasis">
+sshd</span> may have been invoked with a command-line option that overrides that 
+keyword. Command-line options remain in force and take precedence over 
+configuration file keywords. Try terminating and restarting
+<span class="docEmphasis">sshd</span>. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> A feature of ssh or scp 
+isn't working, but I'm sure I'm using it correctly. </p>
+<p class="docText"><span class="docEmphBold">A:</span> The feature might have 
+been disabled by a system administrator, either when the SSH software was 
+compiled (<a class="docLink" href="_chapter 4.htm">Chapter 
+4</a>) or during serverwide configuration (<a class="docLink" href="_chapter 5.htm">Chapter 
+5</a>). Compile-time flags cannot be checked easily, but serverwide 
+configurations are found in the files <span class="docEmphasis">/etc/sshd_config</span> 
+(SSH1, OpenSSH) or <span class="docEmphasis">/etc/ssh2/sshd2_config</span> 
+(SSH2). Ask your system administrator for assistance. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> ssh or scp is behaving 
+unexpectedly, using features I didn't request. </p>
+<p class="docText"><span class="docEmphBold">A:</span> The program might be 
+responding to keywords specified in your <span class="docEmphBold">client 
+configuration file</span> (<a class="docLink" href="_chapter 7.htm#upt3-CHP-7-SECT-1">Section 
+7.1</a>). Remember that multiple sections of the <span class="docEmphasis">
+config</span> file apply if multiple <tt>Host</tt> lines match the remote 
+machine name you specified on the command line. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> My SSH1 .ssh/config file 
+doesn't seem to work right.</p>
+<p class="docText"><span class="docEmphBold">A:</span> Remember that after the 
+first use of a &quot;Host&quot; directive in the <span class="docEmphasis">config</span> 
+file, all statements are inside some <tt>Host</tt> block, because a <tt>Host</tt> 
+block is only terminated by the start of another <tt>Host</tt> block. The
+<span class="docEmphasis">ssh1</span> manpage suggests that you put defaults at 
+the end of the <span class="docEmphasis">config</span> file, which is correct; 
+when looking up a directive in the <span class="docEmphasis">config</span> file,
+<span class="docEmphasis">ssh1</span> uses the first match it finds, so defaults 
+should go after any <tt>Host</tt> blocks. But don't let your own indentation or 
+whitespace fool you. The end of your file might look like: </p>
+<pre># last Host block
+Host server.example.com
+ User linda
+# defaults
+User smith</pre>
+<p class="docText">You intend that the username for logging into
+<span class="docEmphasis">server.example.com</span> is &quot;linda&quot;, and the default 
+username for hosts not explicitly listed earlier is &quot;smith&quot;. However, the line 
+&quot;User smith&quot; is still inside the &quot;Host server.example.com&quot; block. And since 
+there's an earlier <tt>User</tt> statement for <span class="docEmphasis">
+server.example.com</span>, &quot;User smith&quot; doesn't ever match anything, and
+<span class="docEmphasis">ssh</span> appears to ignore it. The right thing to do 
+is this: </p>
+<pre># last Host block
+Host server.example.com
+ User linda
+# defaults
+Host *
+ User smith</pre>
+<p class="docText"><span class="docEmphBold">Q:</span> My .ssh2/ssh2_config file 
+doesn't seem to work right.</p>
+<p class="docText"><span class="docEmphBold">A:</span> See our answer to the 
+previous question for SSH1. However, SSH2 has the opposite precedence rule: if 
+multiple configurations match your target, the <span class="docEmphasis">last</span>, 
+not the first, prevails. Therefore your defaults go at the beginning of the 
+file. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> I want to suspend ssh 
+with the escape sequence, but I am running more than two levels of ssh (machine 
+to machine to machine). How do I suspend an intermediate ssh? </p>
+<p class="docText"><span class="docEmphBold">A:</span> One method is to start 
+each <span class="docEmphasis">ssh</span> with a different escape character; 
+otherwise, the earliest <span class="docEmphasis">ssh</span> client in the chain 
+interprets the escape character and suspends. </p>
+<p class="docText">Or you can be clever. Remember that if you type the escape 
+character twice, that's the meta-escape: it allows you to send the escape 
+character itself, circumventing its usual special function. So, if you have 
+several chained <span class="docEmphasis">ssh</span> sessions, all using the 
+default escape character ~, you can suspend the <span class="docEmphasis">n</span>th 
+one by pressing the Return key, then <span class="docEmphasis">n</span> tildes, 
+then Control-Z.</p>
+<p class="docText"><span class="docEmphBold">Q:</span> I ran an ssh command in 
+the background on the command line, and it suspended itself, not running unless 
+I &quot;fg&quot; it. </p>
+<p class="docText"><span class="docEmphBold">A:</span> Use the
+<span class="docEmphasis">-n</span> command-line option, which instructs
+<span class="docEmphasis">ssh</span> not to read from stdin (actually, it 
+reopens stdin on <span class="docEmphasis">/dev/null</span> instead of your 
+terminal). Otherwise, the shell's job-control facility suspends the program if 
+it reads from stdin while in the background. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> ssh prints &quot;Compression 
+level must be from 1 (fast) to 9 (slow, best)&quot; and exits. </p>
+<p class="docText"><span class="docEmphBold">A:</span> Your <tt>CompressionLevel</tt> 
+is set to an illegal value for this host, probably in your
+<span class="docEmphasis">~/.ssh/config</span> file. It must be an integer 
+between 1 and 9, inclusive. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> ssh prints &quot;rsh not 
+available&quot; and exits. </p>
+<p class="docText"><span class="docEmphBold">A:</span> Your SSH connection 
+attempt failed, and your client was configured to fall back to an
+<span class="docEmphasis">rsh</span> connection. However, the server was 
+compiled without <span class="docEmphasis">rsh</span> fallback support or with 
+an invalid path to the <span class="docEmphasis">rsh</span> executable. </p>
+<p class="docText">If you didn't expect your SSH connection to fail, run the 
+client in debug mode and look for the reason. Otherwise, the SSH server is just 
+not set up to receive <span class="docEmphasis">rsh</span> connections. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> ssh1 prints &quot;Too many 
+identity files specified (max 100)&quot; and exits. </p>
+<p class="docText"><span class="docEmphBold">A:</span> SSH1 has a hardcoded 
+limit of 100 identity files (private key files) per session. Either you ran an
+<span class="docEmphasis">ssh1</span> command line with over 100
+<span class="docEmphasis">-i</span> options, or your configuration file
+<span class="docEmphasis">~/.ssh/config</span> has an entry with over 100 <tt>
+IdentityFile</tt> keywords. You should never see this message unless your SSH 
+command lines and/or configuration files are being generated automatically by 
+another application, and something in that application has run amok. (Or else 
+you're doing something <span class="docEmphasis">really</span> funky.) </p>
+<p class="docText"><span class="docEmphBold">Q:</span> ssh1 prints &quot;Cannot fork 
+into background without a command to execute&quot; and exits. </p>
+<p class="docText"><span class="docEmphBold">A:</span> You used the
+<span class="docEmphasis">-f</span> flag of <span class="docEmphasis">ssh1</span>, 
+didn't you? This tells the client to put itself into the background as soon as 
+authentication completes, and then execute whatever remote command you 
+requested. But, you didn't provide a remote command. You typed something like:
+</p>
+<pre># This is wrong
+$ <b>ssh1 -f server.example.com</b></pre>
+<p class="docText">The <span class="docEmphasis">-f</span> flag makes sense only 
+when you give <span class="docEmphasis">ssh1</span> a command to run after it 
+goes into the background: </p>
+<pre>$ <b>ssh1 -f server.example.com /bin/who</b></pre>
+<p class="docText">If you just want the SSH session for port-forwarding 
+purposes, you may not want to give a command. You have to give one anyway; the 
+SSH1 protocol requires it. Use <span class="docEmphasis">sleep 100000</span>. 
+Don't use an infinite loop like the shell command <span class="docEmphasis">
+while true; do false; done</span>. This gives you the same effect, but your 
+remote shell will eat all the spare CPU time on the remote machine, annoying the 
+sysadmin and shortening your account's life expectancy. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> ssh1 prints &quot;Hostname or 
+username is longer than 255 characters&quot; and exits. </p>
+<p class="docText"><span class="docEmphBold">A:</span> <span class="docEmphasis">
+ssh1</span> has a static limit of 255 characters for the name of a remote host 
+or a remote account (username). You instructed <span class="docEmphasis">ssh1</span>, 
+either on the command line or in your configuration file, to use a hostname or 
+username that's longer than this limit. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> ssh1 prints &quot;No host key 
+is known for &lt;server name&gt; and you have requested strict checking (or `cannot 
+confirm operation when running in batch mode'),&quot; and exits. </p>
+<p class="docText"><span class="docEmphBold">A:</span> The client can't find the 
+server's host key in its known-hosts list, and it is configured not to add it 
+automatically (or is running in batch mode and so can't prompt you about adding 
+it). You must add it manually to your per-account or systemwide known-hosts 
+files. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> ssh1 prints &quot;Selected 
+cipher type . . . not supported by server&quot; and exits. </p>
+<p class="docText"><span class="docEmphBold">A:</span> You requested that
+<span class="docEmphasis">ssh1</span> use a particular encryption cipher, but 
+the SSH1 server doesn't support it. Normally, the SSH1 client and server 
+negotiate to determine which cipher to use, so you probably forced a particular 
+cipher by providing the <span class="docEmphasis">-c</span> flag on the
+<span class="docEmphasis">ssh1</span> command line or by using the <tt>Cipher</tt> 
+keyword in the configuration file. Either don't specify a cipher and let the 
+client and server work it out, or select a different cipher. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> ssh1 prints &quot;channel_request_remote_forwarding: 
+too many forwards&quot; and exits. </p>
+<p class="docText"><span class="docEmphBold">A:</span> <span class="docEmphasis">
+ssh1</span> has a static limit of 100 forwardings per session, and you've 
+requested more. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> scp printed an error 
+message: &quot;Write failed flushing stdout buffer. write stdout: Broken pipe&quot; or 
+&quot;packet too long&quot;. </p>
+<p class="docText"><span class="docEmphBold">A:</span> Your shell startup file 
+(e.g., <span class="docEmphasis">~/.cshrc</span>, <span class="docEmphasis">~/.bashrc</span>), 
+which is run when <span class="docEmphasis">scp</span> connects, might be 
+writing a message on standard output. These interfere with the communication 
+between the two <span class="docEmphasis">scp1</span> programs (or
+<span class="docEmphasis">scp2</span> and <span class="docEmphasis">sftp-server)</span>. 
+If you don't see any obvious output commands, look for <span class="docEmphasis">
+stty</span> or <span class="docEmphasis">tset</span> commands that might be 
+printing something. </p>
+<p class="docText">Either remove the offending statement from the startup file 
+or suppress it for noninteractive sessions: </p>
+<pre>if ($?prompt) then
+  echo 'Here is the message that screws up scp.'
+endif</pre>
+<p class="docText">The latest versions of SSH2 have a new server configuration 
+statement, <tt>AllowCshrcSourcingWithSubsystems</tt>, which should be set to <tt>
+no</tt> to prevent this problem. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> scp printed an error 
+message, &quot;Not a regular file.&quot; </p>
+<p class="docText"><span class="docEmphBold">A:</span> Are you trying to copy a 
+directory? Use the <span class="docEmphasis">-r</span> option for a recursive 
+copy. Otherwise, you may be trying to copy a special file that it doesn't make 
+sense to copy, such as a device node, socket, or named pipe. If you do an
+<span class="docEmphasis">ls -l</span> of the file in question and the first 
+character in the file description is something other than <tt>-</tt> (for a 
+regular file) or <tt>d</tt> (for a directory), this is probably what's 
+happening. You didn't really want to copy that file, did you? </p>
+<p class="docText"><span class="docEmphBold">Q:</span> Why don't wildcards or 
+shell variables work on the scp command line? </p>
+<p class="docText"><span class="docEmphBold">A:</span> Remember that wildcards 
+and variables are expanded by the <span class="docEmphasis">local</span> shell 
+first, not on the remote machine. This happens even before
+<span class="docEmphasis">scp</span> runs. So if you type: </p>
+<pre>$ <b>scp server.example.com:a* .</b></pre>
+<p class="docText">the local shell attempts to find local files matching the 
+pattern <tt>server.example.com:a*</tt>. This is probably not what you intended. 
+You probably wanted files matching <tt>a*</tt> on <span class="docEmphasis">
+server.example.com</span> to be copied to the local machine. </p>
+<p class="docText">Some shells, notably C shell and its derivatives, simply 
+report &quot;No match&quot; and exit. Bourne shell and its derivatives (<span class="docEmphasis">sh</span>,
+<span class="docEmphasis">ksh</span>, <span class="docEmphasis">bash</span>), 
+finding no match, will actually pass the string <tt>server.example.com:a*</tt> 
+to the server as you'd hoped. </p>
+<p class="docText">Similarly, if you want to copy your remote mail file to the 
+local machine, the command: </p>
+<pre>$ <b>scp server.example.com:$MAIL .</b></pre>
+<p class="docText">might not do what you intend. <tt>$MAIL</tt> is expanded 
+locally before <span class="docEmphasis">scp</span> executes. Unless (by 
+coincidence) <tt>$MAIL</tt> is the same on the local and remote machines, the 
+command won't behave as expected. </p>
+<p class="docText">Don't rely on shell quirks and coincidences to get your work 
+done. Instead, escape your wildcards and variables so the local shell won't 
+attempt to expand them: </p>
+<pre>$ <b>scp server.example.com:a\* .</b>
+$ <b>scp 'server.example.com:$MAIL' .</b></pre>
+<p class="docText"><span class="docEmphBold">Q:</span> I used scp to copy a file 
+from the local machine to a remote machine. It ran without errors. But when I 
+logged into the remote machine, the file wasn't there! </p>
+<p class="docText"><span class="docEmphBold">A:</span> By any chance, did you 
+omit a colon? Suppose you want to copy the file <span class="docEmphasis">myfile</span> 
+from the local machine to <span class="docEmphasis">server.example.com</span>. A 
+correct command is: </p>
+<pre>$ <b>scp myfile server.example.com</b>:</pre>
+<p class="docText">but if you forget the final colon:</p>
+<pre># This is wrong!
+$ <b>scp myfile server.example.com</b></pre>
+<p class="docText"><span class="docEmphasis">myfile</span> gets copied locally 
+to a file called <i>server.example.com</i>. Check for such a file on the local 
+machine. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> How can I give somebody 
+access to my account by scp to copy files but not give full login permissions?
+</p>
+<p class="docText"><span class="docEmphBold">A:</span> Bad idea. Even if you can 
+limit the access to <span class="docEmphasis">scp</span>, this doesn't protect 
+your account. Your friend could run: </p>
+<pre><i>$  </i><b>scp evil_authorized_keys you@your.host:.ssh/authorized_keys </b></pre>
+<p class="docText">Oops, your friend has just replaced your
+<span class="docEmphasis">authorized_keys</span> file, giving himself full login 
+permissions. Maybe you can accomplish what you want with a clever forced 
+command, limiting the set of programs your friend may run in your account. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> scp -p preserves file 
+timestamps and modes. Can it preserve file ownership? </p>
+<p class="docText"><span class="docEmphBold">A:</span> No. Ownership of remote 
+files is determined by SSH authentication. Suppose user smith has accounts on 
+local computer <span class="docEmphasis">L</span> and remote computer
+<span class="docEmphasis">R</span>. If the local smith copies a file by
+<span class="docEmphasis">scp</span> to the remote smith account, authenticating 
+by SSH, the remote file is owned by the <span class="docEmphasis">remote</span> 
+smith. If you want the file to be owned by a different remote user,
+<span class="docEmphasis">scp</span> must authenticate as that different user.
+<span class="docEmphasis">scp</span> has no other knowledge of users and uids, 
+and besides, only root can change file ownership (on most modern Unix variants, 
+anyway). </p>
+<p class="docText"><span class="docEmphBold">Q:</span> Okay, scp -p doesn't 
+preserve file ownership information. But I am the superuser, and I'm trying to 
+copy a directory hierarchy between machines (scp -r) and the files have a 
+variety of owners. How can I preserve the ownership information in the copies?
+</p>
+<p class="docText"><span class="docEmphBold">A:</span> Don't use
+<span class="docEmphasis">scp</span> for this purpose. Use
+<span class="docEmphasis">tar</span> and pipe it through
+<span class="docEmphasis">ssh</span>. From the local machine, type: </p>
+<pre># <b>tar cpf - local_dir | (ssh remote_machine &quot;cd remote_dir; tar xpf -&quot;)</b></pre>
+<p class="docText"><span class="docEmphBold">Q:</span> sftp2 reports &quot;Cipher 
+&lt;name&gt; is not supported. Connection lost.&quot; </p>
+<p class="docText"><span class="docEmphBold">A:</span> Internally,
+<span class="docEmphasis">sftp2</span> invokes an <span class="docEmphasis">ssh2</span> 
+command to contact <span class="docEmphasis">sftp-server</span>. It searches the 
+user's PATH to locate the <span class="docEmphasis">ssh2</span> executable 
+rather than a hardcoded location. If you have more than one version of SSH2 
+installed on your system, <span class="docEmphasis">sftp2</span> might invoke 
+the wrong <span class="docEmphasis">ssh2</span> program. This can produce the 
+error message shown. </p>
+<p class="docText">For example, suppose you have both SSH2 and F-Secure SSH2 
+installed. SSH2 is installed in the usual place, under <span class="docEmphasis">
+/usr/local</span>, whereas F-Secure is installed under <span class="docEmphasis">
+/usr/local/f-secure</span>. You ordinarily use SSH2, so
+<span class="docEmphasis">/usr/local/bin</span> is in your PATH, but
+<span class="docEmphasis">/usr/local/f-secure</span> isn't. You decide to use 
+the F-Secure version of <span class="docEmphasis">scp2</span> because you want 
+the CAST-128 cipher, which SSH2 doesn't include. First, you confirm that the SSH 
+server in question supports CAST-128: </p>
+<pre>$ <b>/usr/local/f-secure/bin/ssh2 -v -c cast server</b>
+  ...
+debug: c_to_s: cipher cast128-cbc, mac hmac-sha1, compression none
+debug: s_to_c: cipher cast128-cbc, mac hmac-sha1, compression none</pre>
+<p class="docText">Satisfied, you try <span class="docEmphasis">scp2</span> and 
+get this:</p>
+<pre>$ <b>/usr/local/f-secure/bin/scp2 -c cast foo server:bar</b>
+FATAL: ssh2: Cipher cast is not supported.
+Connection lost.</pre>
+<p class="docText"><span class="docEmphasis">scp2</span> is running the wrong 
+copy of <span class="docEmphasis">ssh2</span> from <span class="docEmphasis">/usr/local/bin/ssh2</span>, 
+rather than <span class="docEmphasis">/usr/local/f-secure/bin/ssh2</span>. To 
+fix this, simply put <span class="docEmphasis">/usr/local/f-secure/bin</span> 
+earlier in your PATH than <span class="docEmphasis">/usr/local/bin</span>, or 
+specify the alternative location of <span class="docEmphasis">ssh2</span> with
+<span class="docEmphasis">scp2 -S</span>. </p>
+<p class="docText">The same problem can occur in other situations where SSH 
+programs run other programs. We have run afoul of it using host-based 
+authentication with both 2.1.0 and 2.2.0 installed. The later
+<span class="docEmphasis">ssh2</span> ran the earlier <span class="docEmphasis">
+ssh-signer2</span> program, and the client/signer protocol had changed, causing 
+it to hang. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> sftp2 reports &quot;ssh_packet_wrapper_input: 
+invalid packet received.&quot; </p>
+<p class="docText"><span class="docEmphBold">A:</span> Although this error 
+appears mysterious, its cause is mundane. A command in the remote account's 
+shell startup file is printing something to standard output, even though stdout 
+isn't a terminal in this case, and <span class="docEmphasis">sftp2</span> is 
+trying to interpret this unexpected output as part of the SFTP packet protocol. 
+It fails and dies. </p>
+<p class="docText">You see, <span class="docEmphasis">sshd</span> uses the shell 
+to start the <span class="docEmphasis">sftp-server</span> subsystem. The user's 
+shell startup file prints something, which the SFTP client tries to interpret as 
+an SFTP protocol packet. This fails, and the client exits with the error 
+message; the first field in a packet is the length field, which is why it's 
+always that message. </p>
+<p class="docText">To fix this problem, be sure your shell startup file doesn't 
+print anything unless it's running interactively. <span class="docEmphasis">tcsh</span>, 
+for example, sets the variable <tt>$interactive</tt> if stdin is a terminal. 
+This problem has been addressed in SSH 2.2.0 with the <tt>
+AllowCshrcSourcingWithSubsystems</tt> flag, which defaults to <tt>no</tt>, 
+instructing the shell not to run the user's startup file. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> I'm trying to do port 
+forwarding, but ssh complains: &quot;bind: Address already in use.&quot; </p>
+<p class="docText"><span class="docEmphBold">A:</span> The port you're trying to 
+forward is already being used by another program on the listening side (the 
+local host if it's a <span class="docEmphasis">-L</span> forwarding or the 
+remote host if it's a <span class="docEmphasis">-R</span> ). Try using the
+<span class="docEmphasis">netstat -a</span> command, available on most Unix 
+implementations and some Windows platforms. If you see an entry for your port in 
+the LISTEN state, you know that something else is using that port. Check to see 
+whether you've inadvertently left another <span class="docEmphasis">ssh</span> 
+command running that's forwarding the same port. Otherwise, just choose another, 
+unused port to forward. </p>
+<p class="docText">This problem can occur when there doesn't appear to be any 
+other program using your port, especially if you've been experimenting with the 
+forwarding feature and have repeatedly used the same <span class="docEmphasis">
+ssh</span> to forward the same port. If the last one of these died unexpectedly 
+(you interrupted it, or it crashed, or the connection was forcibly closed from 
+the other side, etc.), the local TCP socket may have been left in the TIME_WAIT 
+state (you may see this if you used the <span class="docEmphasis">netstat</span> 
+program as described earlier). When this happens, you have to wait a few minutes 
+for the socket to time out of this state and become free for use again. Of 
+course, you can just choose another port number if you're impatient. </p>
+<p class="docText"><span class="docEmphBold">Q:</span> How do I secure FTP with 
+port forwarding? </p>
+<p class="docText"><span class="docEmphBold">A:</span> This is a complex topic. 
+FTP has two types of TCP connections, control and data. The control connection 
+carries your login name, password, and FTP commands; it is on TCP port 21 and 
+can be forwarded by the standard method. In two windows, run: </p>
+<pre>$ <b>ssh -L2001:name.of.server.com:21 name.of.server.com</b>
+$ <b>ftp localhost 2001</b></pre>
+<p class="docText">Your FTP client probably needs to run in passive mode 
+(execute the <tt>passive</tt> command). FTP data connections carry the files 
+being transferred. These connections occur on randomly selected TCP ports and 
+can't be forwarded in general, unless you enjoy pain. If firewalls or NAT 
+(network address translation) are involved, you may need additional steps (or it 
+may not be possible). </p>
+<p class="docText"><span class="docEmphBold">Q:</span> X forwarding isn't 
+working. </p>
+<p class="docText"><span class="docEmphBold">A:</span> Use
+<span class="docEmphasis">ssh -v</span>, and see if the output points out an 
+obvious problem. If not, check the following. </p>
+<p class="docText">Make sure you have X working before using SSH. Try running a 
+simple X client such as <span class="docEmphasis">xlogo</span> or
+<span class="docEmphasis">xterm</span> first. Your local
+<span class="docEmphasis">DISPLAY</span> variable must be set, or SSH doesn't 
+attempt X forwarding. </p>
+<p class="docText">X forwarding must be turned on in the client and server, and 
+not disallowed by the target account (that is, with <tt>no-X11-forwarding</tt> 
+in the <span class="docEmphasis">authorized_keys</span> file). </p>
+<p class="docText"><span class="docEmphasis">sshd</span> must be able to find 
+the <span class="docEmphasis">xauth</span> program to run it on the remote side. 
+If it can't, this should show up when running <span class="docEmphasis">ssh -v</span>. 
+You can fix this on the server side with the <tt>XAuthLocation</tt> directive 
+(SSH1, OpenSSH), or by setting a PATH (that contains <span class="docEmphasis">
+xauth</span>) in your remote shell startup file. </p>
+<p class="docText">Don't set the <span class="docEmphasis">DISPLAY</span> 
+variable yourself on the remote side. <span class="docEmphasis">sshd</span> 
+automatically sets this value correctly for the forwarding session. If you have 
+commands in your login or shell startup files that unconditionally set
+<span class="docEmphasis">DISPLAY</span>, change the code to set it only if X 
+forwarding isn't in use. </p>
+<p class="docText">OpenSSH sets the remote <span class="docEmphasis">XAUTHORITY</span> 
+variable as well, placing the <span class="docEmphasis">xauth</span> credentials 
+file under <span class="docEmphasis">/tmp</span>. Make sure you haven't 
+overridden this setting, which should look like: </p>
+<pre>$ <b>echo $XAUTHORITY</b>
+/tmp/ssh-maPK4047/cookies</pre>
+<p class="docText">Some flavors of Unix actually have code in the standard shell 
+startup files (e.g., <span class="docEmphasis">/etc/bashrc, /etc/csh.login</span>) 
+that unconditionally sets <span class="docEmphasis">XAUTHORITY</span> to
+<span class="docEmphasis">~/.Xauthority</span>. If that's the problem, you must 
+ask the sysadmin to fix it; the startup file should set
+<span class="docEmphasis">XAUTHORITY</span> only if the variable is unset. </p>
+<p class="docText">If you are using an SSH startup file (<span class="docEmphasis">/etc/sshrc</span> 
+or <span class="docEmphasis">~/.ssh/rc</span>), <span class="docEmphasis">sshd</span> 
+doesn't run <span class="docEmphasis">xauth</span> for you on the remote side to 
+add the proxy key; one of these startup files must do it, receiving the proxy 
+key type and data on standard input from <span class="docEmphasis">sshd</span>
+</p>
+<p class="docText"><span class="docEmphasis">— SP</span> </p>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 50.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="Glossary.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

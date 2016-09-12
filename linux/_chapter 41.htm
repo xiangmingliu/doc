@@ -1,0 +1,1902 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 41</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 40.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 42.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 41. Perl</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-1">41.1 High-Octane Shell Scripting</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-2">41.2 Checking your Perl Installation</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-3">41.3 Compiling Perl from Scratch</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-4">41.4 Perl Boot Camp, Part 1: Typical Script Anatomy</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-5">41.5 Perl Boot Camp, Part 2: Variables and Data Types</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-6">41.6 Perl Boot Camp, Part 3: Branching and Looping</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-7">41.7 Perl Boot Camp, Part 4: Pattern Matching</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-8">41.8 Perl Boot Camp, Part 5: Perl Knows Unix</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-9">41.9 Perl Boot Camp, Part 6: Modules</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-10">41.10 Perl Boot Camp, Part 7: perldoc</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-11">41.11 CPAN</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-12">41.12 Make Custom grep Commands (etc.) with Perl</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-41-SECT-13">41.13 Perl and the Internet</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-1">41.1 High-Octane Shell Scripting</h3>
+<p class="docText">Perl<span id="ENB41-1"><a class="docLink" href="#EN41-1"><sup>[1]</sup></a></span> 
+is an ecclectic, interpreted language with deep roots in Unix. It was originally 
+written by Larry Wall, creator of other Unix staples such as <i>patch</i> and <i>
+rn</i>, to help with system administration tasks. Because many of its variables 
+are prefixed with <tt>$</tt>, Perl often looks like an <i>awk</i> program or 
+even a Bourne shell script. Like all appearances, this too can be deceiving. 
+Perl is a complete programming language that supports both structured and object 
+oriented programming. Getting started with Perl is easy, since many of the 
+Bourne shell tricks you've seen will work (after a fashion) under Perl. As your 
+knowledge grows, you'll find that Perl will help you scratch increasingly 
+obscure itches. Because Perl has been ported to many different platforms, it 
+brings a Unix-like API to whichever operating system is hosting it. Perl makes 
+cross-platform programming a reality. </p>
+<p class="docText">The complete guide to Perl is O'Reilly's <i>Programming Perl</i>, 
+a book that weighs in at over 1500 pages. Therefore, only the barest of 
+essentials can be presented here to help you identify your Perl installation, 
+tinker with existing scripts, and install new modules. Luckily, Perl always 
+comes with documentation that can be accessed through the
+<span class="docEmphBold">perldoc</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-10">Section 
+41.10</a>) system. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-2">41.2 Checking your Perl Installation</h3>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: perl</p>
+<p class="docText">Before presenting the details of Perl syntax, it would be 
+prudent to check whether or not Perl is on your system and learn how to install 
+it if it isn't. Perl is an interpreted language whose interpreter is called <i>
+perl</i>. It is this program that reads, compiles and runs Perl source code. 
+Normally, <i>perl</i> will be in your shell's path. It can often be found 
+lurking in <i>/usr/bin</i> or <i>/usr/local/bin</i>. Use your system's <i>find</i> 
+or <i>locate</i> command to track down <i>perl</i> if it doesn't appear in your 
+command path. To see what version of Perl you have, use the <tt>-v</tt> flag 
+like this: </p>
+<pre>$ perl -v
+
+This is perl, v5.6.1 built for i686-linux
+
+Copyright 1987-2001, Larry Wall
+
+Perl may be copied only under the terms of either the Artistic License or the
+GNU General Public License, which may be found in the Perl 5 source kit.
+
+Complete documentation for Perl, including FAQ lists, should be found on
+this system using `man perl' or `perldoc perl'.  If you have access to the
+Internet, point your browser at http://www.perl.com/, the Perl Home Page.</pre>
+<p class="docText">This Perl is the latest stable version, 5.6.1. Perl is under 
+very active development and newer versions may soon be available. As with all 
+software projects, there is an unstable, developer's version of Perl that 
+currently is 5.7.3. The version number scheme follows the pattern: </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Revision number</span></i> </dt>
+  <dd>
+  <p class="docList">These change only when the language is substantially 
+  redefined.</dd>
+  <dt><i><span class="docPubcolor">Version number</span></i> </dt>
+  <dd>
+  <p class="docList">Even numbers indicate a stable, production-quality release. 
+  Odd numbers should only be used by Perl developers and the curious. Version 
+  numbers indicate an important change in the language that may affect scripts 
+  written to run under a previous version of Perl. Be sure to check out the 
+  perldelta manpage for details. </dd>
+  <dt><i><span class="docPubcolor">Subversion level</span></i> </dt>
+  <dd>
+  <p class="docList">This number is better thought of as the patch level for a 
+  given version. Only bug fixes will appear with each new patch level release. 
+  of <i>perl</i>. </dd>
+</dl>
+<p class="docText">Local configuration information about <i>perl</i> can be 
+obtained with the <tt>-V</tt> flag. A slightly abbreviated version of that 
+command's output appears below. </p>
+<pre>$ perl -V
+Summary of my perl5 (revision 5.0 version 6 subversion 1) configuration:
+  Platform:
+    osname=linux, osvers=2.4.2-2, archname=i686-linux
+    uname='linux marian 2.4.2-2 #1 sun apr 8 20:41:30 edt 2001 i686 unknown '
+    config_args=''
+    hint=recommended, useposix=true, d_sigaction=define
+    ...
+
+  Compiler:
+    cc='cc', ccflags ='-fno-strict-aliasing ...'
+    optimize='-O2',
+    cppflags='-fno-strict-aliasing'
+    intsize=4, longsize=4, ptrsize=4, doublesize=8, byteorder=1234
+    ...
+
+Characteristics of this binary (from libperl):
+  Compile-time options: USE_LARGE_FILES
+  Built under linux
+  Compiled at Oct  1 2001 16:15:45
+  @INC:
+    /usr/local/lib/perl5/5.6.1/i686-linux
+    /usr/local/lib/perl5/5.6.1
+    /usr/local/lib/perl5/site_perl/5.6.1/i686-linux
+    /usr/local/lib/perl5/site_perl/5.6.1
+    /usr/local/lib/perl5/site_perl
+    .</pre>
+<p class="docText">The sections followed by ellipses have been truncated. What's 
+important to note here is that the configuration, compiler, and linker options 
+are available (and are used by the <i>perlbug</i> program if you need to file a 
+bug report about Perl). Of more practical use is the section beginning with <tt>
+@INC</tt>. This lists the directories in which <i>perl</i> will look for library 
+modules, described later in
+<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-11">
+Section 41.11</a>. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-3">41.3 Compiling Perl from Scratch</h3>
+<p class="docText">If you don't have Perl already or you'd like to install the 
+latest version, you have a few options. The first is to get a precompiled 
+version for your platform. This is an option of last resort, since you lose the 
+opportunity to configure Perl for your system. Most Unix systems will compile 
+the Perl source code cleanly. </p>
+<p class="docText">To compile Perl, you will need to fetch the latest Perl 
+source for the <span class="docEmphBold">Comprehensive Perl Archive Network</span>
+<span class="docEmphBold">(CPAN)</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-11">Section 
+41.11</a>). You can find the gzipped tar archive of the source code at
+<a class="docLink" href="http://www.cpan.org/src/stable.tar.gz" target="_blank">
+http://www.cpan.org/src/stable.tar.gz</a>. The archive is several megabytes, so 
+those on a slow modem link need to plan accordingly. Unpack the archive with the 
+following command: </p>
+<pre>$ gzip -dc stable.tar.gz | tar xvf -</pre>
+<p class="docText">You should now have a new subdirectory called
+<span class="docEmphasis">perl-X.Y.Z</span> (whatever the current version of 
+Perl is). Change into this directory and you will be be ready to configure the 
+build process for <i>perl</i>. </p>
+<p class="docText">Like many Unix utilities, compiling Perl requires configuring 
+a Makefile and then executing <i>make</i>. The Perl source comes with a robust
+<span class="docEmphasis">Configure</span> shell script that will prompt you to 
+confirm information it finds about your system. Often, all the defaults are fine 
+so you can tell the <span class="docEmphasis">Configure</span> not to prompt you 
+for confirmation by passing the <tt>-de</tt> flag. If all goes well with the 
+configuration stage, you'll want to start compiling the source with <i>make</i>. 
+These steps can be effectively combined into to following idiom: </p>
+<pre>$ ./Configure -de &amp;&amp; make test</pre>
+<p class="docText">Recall that the double ampersand is a kind of flow control 
+operator in the shell that allows the <i>make</i> to happen only if the <i>
+Configure</i> succeeds. The Perl source comes with a test suite that attempts to 
+verify that the build went according to plan. Since the test suite needs <i>perl</i> 
+to be built, this command is similiar to typing: </p>
+<pre>$ ./Configure -de &amp;&amp; make &amp;&amp; make test</pre>
+<p class="docText">The configuration stage may report missing libraries (like 
+those needed to make NDBM files or read shadowed password files). Generally, 
+these messages are harmless. If an important dependency is missing, the <i>
+Configure</i> script will halt. You will need to read the error message to 
+figure out what's missing from your system that Perl requires. Generally, Perl 
+will configure and compile without much intervention from you. </p>
+<p class="docText">If the <tt>make test</tt> command succeeds, you are ready to 
+install your new Perl. Typically, installation requires administrative 
+privileges since you'll be writing files in <i>/usr/local</i> (the default 
+installation root). One way to do this is to use the <i>su</i> command like 
+this: </p>
+<pre>$ su -c 'make install'</pre>
+<p class="docText">This will prompt you for root's password. During the 
+installation process, you will be asked if you want Perl installed as <i>/usr/bin/perl</i>. 
+On a system that didn't have Perl to begin with, you can safely answer yes to 
+this question. On a system that already had Perl, you might wish to answer no 
+here. The new Perl interpreter will still be installed in <i>/usr/local/bin/perl</i>. 
+You should now have the latest version of Perl on your system. Use <i>/path/to/newly_installed/perl 
+-v</i> to verify this. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-4">41.4 Perl Boot Camp, Part 1: Typical Script Anatomy</h3>
+<p class="docText">It is impossible to present a complete guide to programming 
+Perl in this one small section, but you can glean enough information here to be 
+able to modify existing Perl scripts and evaluate whether you'd like to learn 
+more about this incredibly handy language. </p>
+<p class="docText">Perl scripts bare a passing resemblence to Bourne shell 
+scripts. <a class="docLink" href="#upt3-CHP-41-EX-1">Example 41-1</a> a script 
+called <span class="docEmphasis">writewav.pl</span> that comes with the Perl 
+module Audio::SoundFile. It converts a given sound file into WAV format. The 
+details of what it's doing aren't important, but it does demonstrate some common 
+Perl structures that you should understand at a high level. </p>
+<h5 id="upt3-CHP-41-EX-1" class="docExampleTitle">Example 41-1. A sample Perl script </h5>
+<pre>#!/usr/bin/perl -w
+
+=head1 NAME
+
+ writewav - Converts any sound file into .wav format
+
+=cut
+
+use Audio::SoundFile;
+use Audio::SoundFile::Header;
+
+my ($buffer, $length, $header, $reader, $writer);
+my $BUFFSIZE = 16384;
+my $ifile = shift @ARGV || usage( );
+my $ofile = shift @ARGV || usage( );
+
+$reader = Audio::SoundFile::Reader-&gt;new($ifile, \$header);
+$header-&gt;{format} = SF_FORMAT_WAV | SF_FORMAT_PCM;
+$writer = Audio::SoundFile::Writer-&gt;new($ofile,  $header);
+
+while ($length = $reader-&gt;bread_pdl(\$buffer, $BUFFSIZE)) {
+    $writer-&gt;bwrite_pdl($buffer);
+}
+
+$reader-&gt;close;
+$writer-&gt;close;
+
+sub usage {
+  print &quot;usage: $0 &lt;infile&gt; &lt;outfile&gt;\n&quot;;
+  exit(1);
+}</pre>
+<p class="docText">The first line of <a class="docLink" href="#upt3-CHP-41-EX-1">
+Example 41-1</a> should be familiar to shell hackers; it's the shebang line. 
+When the first two bytes of a file are the characters <tt>#!</tt>, the shell 
+uses the rest of that file's first line to determine which program should be 
+used to interpret the rest of the file. In this case, the path to the Perl 
+interpreter is given. Command line arguments can be given to the interpreter. 
+Here <tt>-w</tt> instructs Perl to print warning messages when it finds code 
+that is likely to be incorrect. This includes such common gaffes as trying to 
+write to a read-only file handle, subroutines that recurse more than 100 times, 
+and attempts to get the value of a scalar variable that hasn't been assigned a 
+value yet. This flag is a new Perl programmer's best friend and should be used 
+in all programs. </p>
+<p class="docText">All lines that start with <tt>=</tt> in the left margin are 
+part of Perl's Plain Old Documentation (POD) system. Everything between the 
+directives <tt>=head1</tt> and <tt>=cut</tt> are documentation and do not affect 
+how the script runs. There are Perl tools like <i>pod2text</i> and <i>pod2man</i> 
+that will format the POD found in a script into the particular output format 
+given in the command's name. There's even a <i>pod2man</i> program used during 
+the Perl installation procedure that creates all the Perl manpages on the target 
+system. </p>
+<p class="docText">The next two lines begin with actual Perl code. To use Perl 
+library files called <span class="docEmphBold">modules</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-10">Section 
+41.10</a>), scripts invoke the <span class="docEmphasis">use module</span> 
+statement. Perl searches the paths listed in the global variable
+<span class="docEmphBold">@INC</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-2">Section 
+41.2</a>) for these modules, which typically have the extension
+<span class="docEmphasis">.pm</span>. </p>
+<p class="docText">In Perl, variables don't need to be declared before being 
+used. Although this behavior is convenient for small scripts, larger scripts can 
+benefit from the disciplined approach of declaring variables. Perl 5 — that is, 
+Perl revision 5 — introduced the <tt>my</tt> operator as a way of declaring a 
+variable. Declaring variables allows the <tt>-w</tt> flag to help catch 
+misspelled variable names, which are a common source of bugs in Perl scripts.
+</p>
+<p class="docText">A variable that holds a single value is called a
+<span class="docEmphasis">scalar</span> and is always prefixed with a <tt>$</tt> 
+(even in assignments), unlike variables in the Bourne shell. The <tt>=</tt> is 
+the assignment operator (when it's not appearing as a POD directive). Another 
+kind of variable, called an <span class="docEmphasis">array</span>, can be used 
+to hold many scalar values. Array variables begin with <tt>@</tt>. One example 
+of a global array variable is <tt>@ARGV</tt>, which holds the list of 
+command-line arguments passed into the Perl script. </p>
+<p class="docText">Continuing with <a class="docLink" href="#upt3-CHP-41-EX-1">
+Example 41-1</a>, the two variables <tt>$ifile</tt> and <tt>$ofile</tt> get 
+values from the command line. The <tt>shift</tt> operator removes values from 
+the beginning of the <tt>@ARGV</tt> array. If there aren't enough values on the 
+command line, the user defined subroutine <tt>usage( )</tt> is called. </p>
+<p class="docText">Perl supports object oriented programming (OOP). The hallmark 
+of OOP is that both the data and the subroutines (called
+<span class="docEmphasis">methods</span> in OOP jargon) for processing that data 
+are accessed through an object. In traditional procedural programming, data 
+structures are stored separately from functions that manipulate them. 
+Fortunately, using object oriented Perl modules is often straightforward. In
+<a class="docLink" href="#upt3-CHP-41-EX-1">Example 41-1</a>, the scalar <tt>
+$reader</tt> is a new Audio::SoundFile::Reader object. Unlike other OOP 
+languages, Perl's objects are not opaque: the user can set or get values 
+internal to the object. This is what is happening on the next line. The <tt>-&gt;</tt> 
+dereferencing operator is used both to get at values that are pointed to by
+<span class="docEmphBold">references</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-5.4">Section 
+41.5.4</a>) and to make method calls. Here, the key <tt>format</tt> is set to a 
+value that is created by the bitwise <tt>or</tt> of the values returned by the 
+subroutines <tt>SF_FORMAT_WAV</tt> and <tt>SF_FORMAT_PCM</tt>. Another object,
+<tt>$writer</tt>, is created on the following line. </p>
+<p class="docText">The heart of the program is the <tt>while</tt> loop which, in 
+English, reads, &quot;While reading more chunks of the source file, translate that 
+chunk into WAV data and write it to the outfile.&quot; When the loop finishes, those 
+objects are no longer needed, so the <tt>close( )</tt> method is called on each 
+of them to release any resources used by those objects. This is the end of the 
+program's execution, but there's a bit more to this script. </p>
+<p class="docText">Perl allows for user defined subroutines. Although they can 
+be anywhere in the file, subroutine definitions typically come after the main 
+block of code. Here, a subroutine called <tt>usage( )</tt> is defined that 
+simply prints some help to the user and quits. Inside of double quoted strings, 
+Perl interpolates scalar and array values. This is a fancy way of saying that 
+Perl replaces variables with their values. Because Perl tries to do the right 
+thing with interpolation, there may be occasions when Perl's rules surprise you. 
+Take a look at the <i>perldata</i> manpage for the definitive rules governing 
+variable interpolation and a peek at the <i>perltrap</i> manpage for common 
+interpolation mistakes. You can prevent interpolation by putting a backslash in 
+front of the variable name (e.g. <tt>\$foo is $foo</tt>) or use single quotes, 
+which never interpolate variables. Finally, the <tt>exit(1)</tt> function halts 
+the script before the subroutine can return to the caller and returns the value 
+1 to the operating system. </p>
+<p class="docText">That's the 50,000-foot view of a Perl script. To confidently 
+modify existing Perl scripts, it is necessary to understand some of the basic 
+components of Perl better. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-5">41.5 Perl Boot Camp, Part 2: Variables and Data 
+Types</h3>
+<p class="docText">Data types are the kinds of values Perl supports. Common data 
+types include arbitrarily long strings (e.g., <tt>&quot;hi, bob&quot;</tt>), intergers 
+(e.g., <tt>42</tt>) and floating point numbers (e.g., <tt>3.14</tt>). Perl is a
+<span class="docEmphasis">loosely typed</span> language, which means that Perl 
+works hard to let you forget about what kind of data you're dealing with. For 
+the most part, you will be dealing with strings, which plays to Perl's 
+strengths. To manipulate data, variables are employed.
+<a class="docLink" href="#upt3-CHP-41-TABLE-1">Table 41-1</a> lists the most 
+common variable types in Perl. For the full story on Perl data types, read the
+<i>perldata</i> manpage. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-41-TABLE-1" class="docTableTitle">Table 41-1. Common Perl variables </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Name</th>
+    <th class="docTableHeader">
+    <p class="docText">Example</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>scalar</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$lastname</tt>, <tt>$PI</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Holds single values</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>array</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>@people</tt>, <tt>$peple[0]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Holds an ordered sequence of scalar values</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>hash</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>%cgi_params</tt>, <tt>$cgi_params{'action'}</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Holds a set of key-value pairs</td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-41-SECT-5.1" class="docSection2Title">41.5.1 Scalars</h4>
+<p class="docText">When you want to store single values, like any of those given 
+in the previous paragraph, you will use a <tt>scalar</tt> variable. Scalars are 
+labeled with a <tt>$</tt> followed by a letter and any sequence of letters, 
+numbers, and underscores. Scalars defined at the top of scripts are often used 
+as constants. You may need to tweak some of them, particularly those containing 
+filesystem paths, to get third-party scripts to run on your system. </p>
+<p class="docText">Of course, values can be compared to each other or added 
+together. Perl has relational operators that treat values as numbers and other 
+relational operators that treat values as strings. Although Perl has different 
+operators for numbers and strings, Perl makes scalar values do the right thing 
+most of the time. For example, you want to create a series of filenames like
+<span class="docEmphasis">mail_num</span>. The following code does this. </p>
+<pre>foreach my $num (1..10) {
+   print &quot;mail_&quot; . $num . &quot;\n&quot;;
+}</pre>
+<p class="docText">Even though <tt>$num</tt> is a number, the string 
+concatenation operator is able to use it as a string.
+<a class="docLink" href="_chapter 40.htm#upt3-CHP-40-TABLE-2">
+Table 40-2</a> shows string operators, and
+<a class="docLink" href="#upt3-CHP-41-TABLE-3">Table 41-3</a> shows the 
+numerical ones. See the <tt>perlop</tt> manpage for the full story. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-41-TABLE-2" class="docTableTitle">Table 41-2. String operators </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Operator</th>
+    <th class="docTableHeader">
+    <p class="docText">Example</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>.</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$saluation . &quot; Jones&quot;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">String concatenation</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>eq</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$foo eq $bar</tt></td>
+    <td class="docTableCell">
+    <p class="docText">String equality test</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>ne</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$bar ne $baz</tt></td>
+    <td class="docTableCell">
+    <p class="docText">String inequality test</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>gt</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$name gt &quot;Bob&quot;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">True if left string comes after right in ASCII</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>lt</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$name lt &quot;Xavier&quot;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">True if left string comes before right in ASCII</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>cmp</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$name cmp &quot;Wilson&quot;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Return -1 if left operand ASCII-sorts before the right; 0 
+    if right and left are equal; 1 if right sorts before left </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>lc</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>lc &quot;Bob&quot;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Return an all-lowercase copy of the given string</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>uc</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>uc &quot;lorrie&quot;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Return an all-uppercase copy of the given string</td>
+  </tr>
+</table>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-41-TABLE-3" class="docTableTitle">Table 41-3. Numerical operators </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Operator</th>
+    <th class="docTableHeader">
+    <p class="docText">Example</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>+</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$a + 1</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Numerical addition</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>-</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$c - 2</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Numerical subtraction</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>*</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>3 * $b</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Numerical multiplication</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>/</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>4/$non_zero</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Numerical division</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>++</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$a++</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Autoincrement; adds one to a number</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>==</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$a == $b</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Numeric equality test</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>!=</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$p != $q</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Numeric inequality test</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&lt;</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$diff &lt; 32</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Numeric less-than test </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&gt;</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$sum &gt; 64</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Numeric greater-than test</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&lt;=&gt;</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$sum &lt;=&gt; 64</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Return -1 if left is numerically less than right; 0 if 
+    left equals right; 1 if right is less than left </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&lt;=</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$sum &lt;= 64</tt></td>
+    <td class="docTableCell">
+    <p class="docText">True if left operand is numerically less than or equal to 
+    right</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&gt;=</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$sum &gt;= 64</tt></td>
+    <td class="docTableCell">
+    <p class="docText">True if left is numerally greater than or equal to right</td>
+  </tr>
+</table>
+<p class="docText">You may have notice that some of the operators in the 
+previous tables were described as returning true or false values. A true value 
+in Perl is any value that isn't false, and there are only 4 kinds of false 
+values in Perl: </p>
+<ul>
+  <li>
+  <p class="docList">values that are numerically zero</li>
+  <li>
+  <p class="docList">values that are empty strings</li>
+  <li>
+  <p class="docList">values that are <tt>undef</tt></li>
+  <li>
+  <p class="docList">empty lists</li>
+</ul>
+<p class="docText">Like many other languages, Perl supports Boolean operators 
+(see <a class="docLink" href="#upt3-CHP-41-TABLE-3">Table 41-3</a>) that return 
+true or false values. Typically, you encounter these in <tt>if</tt> statements 
+like the following: </p>
+<pre>if ($temp &lt; 30 &amp;&amp; $is_rainy) {
+  print &quot;I'm telecommuting today\n&quot;;
+}</pre>
+<p class="docText">Another common use of Boolean operators is to short-circuit 
+two expressions. This is a way to prevent the right operand from executing 
+unless the left operand returns a desired truth value. Consider the very 
+ordinary case of opening a filehandle for reading. A common idiom to do this is:
+</p>
+<pre>open (FH, &quot;<tt><i>filename</i></tt>&quot;) || die &quot;Can't open file&quot;;</pre>
+<p class="docText">This short-cut operation depends on the <tt>open</tt> 
+function returning a true value if it can open the requested file. Only if it 
+cannot is the right side of the <tt>||</tt> operator executed (<tt>die</tt> 
+prints whatever message you provide and halts the program). </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-41-TABLE-4" class="docTableTitle">Table 41-4. Boolean operators </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Operator</th>
+    <th class="docTableHeader">
+    <p class="docText">Example</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&amp;&amp;</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$a &amp;&amp; $b</tt></td>
+    <td class="docTableCell">
+    <p class="docText">True if both $a and $b are true</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>||</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$a || $b</tt></td>
+    <td class="docTableCell">
+    <p class="docText">True if either $a or $b is true</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>!</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><tt>!$a</tt></td>
+    <td class="docTableCell">
+    <p class="docText">True if $a is false</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>and</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$a and $b</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Same as &amp;&amp;, but with a lower precedence</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>or</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$a or $b</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Same as ||, but with a lower precedence</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>not</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>not $a</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Same as !, but with a lower precedence</td>
+  </tr>
+</table>
+<p class="docText">Looking at <a class="docLink" href="#upt3-CHP-41-TABLE-4">
+Table 41-4</a>, you will notice that there appear to be redundant operators. The 
+operators that are English words have a lower precedence that the symbolic ones. 
+Precedence is simply the order in which Perl executes expressions. You are 
+probably familiar with precedence rules from mathematics: </p>
+<pre>1 + 2 * 3 + 4 = 11
+(1 + 2) * (3 + 4) = 21</pre>
+<p class="docText">Similarly, Perl's operators have precedence as well, as shown 
+in <a class="docLink" href="#upt3-CHP-41-EX-2">Example 41-2</a>. </p>
+<h5 id="upt3-CHP-41-EX-2" class="docExampleTitle">Example 41-2. Precedence</h5>
+<pre>lc $a || &quot;BB&quot;   # like (lc $a) || (&quot;BB&quot;)
+lc ($a || &quot;BB&quot;)</pre>
+<p class="docText">Because <tt>||</tt> has a lower precedence that the <tt>lc</tt> 
+operator, the first line of <a class="docLink" href="#upt3-CHP-41-EX-2">Example 
+41-2</a> is a Boolean test between two expressions. In the second line, the 
+Boolean <tt>||</tt> operator is used to create a default argument to <tt>lc</tt> 
+should <tt>$a</tt> be a false value. </p>
+<p class="docText">Because Perl doesn't require parentheses around built-in 
+operators and functions, you will often see code like: </p>
+<pre>open FH, &quot;&gt; &quot; . &quot;<tt><i>filename</i></tt>&quot; or die &quot;Can't open file&quot;;
+print FH &quot;[info]: disk write error\n&quot;;</pre>
+<p class="docText">Precedence ambiguities can be resolved by using parentheses 
+where doubt occurs. </p>
+<p class="docText">Although Perl has many special variables, the one you'll 
+encounter most is <tt>$_</tt>. Many operators and functions, such as <tt>lc</tt> 
+and <tt>print</tt>, will operate on <tt>$_</tt> in the absence of an explicit 
+parameter, as in <a class="docLink" href="#upt3-CHP-41-EX-3">Example 41-3</a>.
+</p>
+<h5 id="upt3-CHP-41-EX-3" class="docExampleTitle">Example 41-3. Simple echo loop </h5>
+<pre>while(&lt;&gt;){
+   print
+}</pre>
+<p class="docText">In this example, every line read from standard input with the
+<tt>&lt;&gt;</tt> operator is available inside the <span class="docEmphBold">while</span> 
+(<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-7">Section 
+41.7</a>) loop through <tt>$_</tt>. The <tt>print</tt> function, in the absence 
+of an explicit argument, echoes the value of <tt>$_</tt>. Note that <tt>$_</tt> 
+can be assigned to (e.g., <tt>$_ = &quot;Hello, Perl</tt>&quot;) just like any other 
+scalar. </p>
+<h4  id="upt3-CHP-41-SECT-5.2" class="docSection2Title">41.5.2 Arrays</h4>
+<p class="docText">When you want to collect more than one value into a variable, 
+you have two ways to go in Perl. If you need an ordered set of values, you will 
+choose to use a Perl array. These variables start with <tt>@</tt> and are 
+followed by a label that follows the same convention as a scalar. Two global 
+arrays have already been mentioned: <tt>@INC</tt> and <tt>@ARGV</tt>. Since 
+arrays hold multiple values, getting and setting values is a little different 
+from scalars. Here's an example of creating an array with values, looking at 
+one, and assigning a new value to that array index. </p>
+<pre>@things    = ('phone', 'cat', 'hard drive');
+print &quot;The second element is: &quot;, $things[1], &quot;\n&quot;;
+
+$things[1] = 'dog';
+print &quot;The second element is now: &quot;, $things[1], &quot;\n&quot;;</pre>
+<p class="docText">In the first line, the array <tt>@things</tt> is initialized 
+with a list of three scalar values. Array indexes begin with zero, so the second 
+element is accessed through the index value of 1. Arrays will grow as needed, so 
+you could have added a fourth element like this: </p>
+<pre>$things[3] = 'DVD player';</pre>
+<p class="docText">Why is a <tt>$</tt> used here and not <tt>@</tt>? Use <tt>@</tt> 
+only when referring to the whole array variable. Each element is a scalar whose 
+name is <tt>$things[<i>index</i></tt>]. This rule comes up again when dealing 
+with hashes. </p>
+<p class="docText">Typically you will want to iterate through all the values in 
+an array, which is done with <span class="docEmphBold">loops</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-7">Section 
+41.7</a>). Although there are several looping constructs, the most common idiom 
+to examine all the values in an array sequentially is shown in
+<a class="docLink" href="#upt3-CHP-41-EX-4">Example 41-4</a>. </p>
+<h5 id="upt3-CHP-41-EX-4" class="docExampleTitle">Example 41-4. Using foreach to loop through an array
+</h5>
+<pre>print &quot;Paths Perl checks for modules\n&quot;;
+foreach my $el (@INC) {
+  print $el, &quot;\n&quot;;
+}</pre>
+<p class="docText">Lists are a data type that is closely related to arrays. 
+Lists are sequences of scalar values enclosed in parentheses that are not 
+associated with an array variable. They are used to initialize a new array 
+variable. Common array operators are listed in
+<a class="docLink" href="#upt3-CHP-41-TABLE-5">Table 41-5</a>. </p>
+<pre>my @primes     = (1,3,5,7,9,11);
+my @empty_list = ( );</pre>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-41-TABLE-5" class="docTableTitle">Table 41-5. Common array operators </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Name</th>
+    <th class="docTableHeader">
+    <p class="docText">Example</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>pop</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$last = pop @array;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Return last element of array; remove that element from 
+    array</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>push</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>push @array, @<i>new_elements</i>;</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Add the contents of @<tt><i>new_elements</i></tt> to the 
+    end of target array </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>shift</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>$first = shift @array;</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Return the first element of array; shift all elements one 
+    index lower (removing the first element) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>unshift</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>unshift @array, @<i>new_elements</i>;</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Add @<tt><i>new_elements</i></tt> to the beginning of 
+    target array </td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-41-SECT-5.3" class="docSection2Title">41.5.3 Hashes</h4>
+<p class="docText">Associative arrays, or hashes, are a collection of scalar 
+values that are arranged in key-value pairs. Instead of using integers to 
+retrieve values in a hash, strings are used. Hashes begin with <tt>%</tt>.
+<a class="docLink" href="#upt3-CHP-41-EX-5">Example 41-5</a> shows a hash 
+variable in action. </p>
+<h5 id="upt3-CHP-41-EX-5" class="docExampleTitle">Example 41-5. Using hashes </h5>
+<pre>my %birthdays = (
+                 'mom'    =&gt; 'JUN 14',
+                 'archie' =&gt; 'JUN 12',
+                 'jay'    =&gt; 'JUL 11',
+                );
+
+print &quot;Archie's birthday is: &quot;, $birthdays{'archie'}, &quot;\n&quot;;
+$birthday{'joe'} = 'DEC 12';
+print &quot;My birthday is: &quot;, $birthdays{'joe'}, &quot;\n&quot;;</pre>
+<p class="docText">Hashes are a funny kind of list. When initializing a hash 
+with values, it is common to arrange the list in key-value pairs. The 
+strange-looking <tt>=&gt;</tt> operator is often called a &quot;fat comma&quot; because these 
+two lines of Perl do the same thing: </p>
+<pre>%birthdays = ( 'jay' =&gt; 'JUL 11' );
+%birthdays = ( 'jay', 'JUL 11');</pre>
+<p class="docText">Use the fat comma when initializing hashes since it conveys 
+the association between the values better. As an added bonus, the fat comma 
+makes unquoted barewords on its left into quoted strings. </p>
+<p class="docText"><a class="docLink" href="#upt3-CHP-41-EX-6">Example 41-6</a> 
+shows some quoting styles for hash keys.</p>
+<h5 id="upt3-CHP-41-EX-6" class="docExampleTitle">Example 41-6. Various quoting styles for hash keys
+</h5>
+<pre>my %baz = ( foo =&gt; 1,
+            'bar', 2,
+            'boz' =&gt; 3);</pre>
+<p class="docText">Unlike arrays, hashes use strings to index into the list. So 
+to retrieve the birthday of &quot;jay&quot;, put the key inside curly braces, like this:
+</p>
+<pre>print &quot;Jay's birthday is: &quot;, $birthday{'jay'}, &quot;\n&quot;;</pre>
+<p class="docText">Because Perl assumes that barewords used as a key when 
+retrieving a hash value are autoquoted, you may omit quotes between the curly 
+braces (e.g., <tt>$birthday{jay}</tt>). Like arrays, hashes will grow as you 
+need them to. Whenever you need to model a set or record the number of event 
+occurrences, hashes are the variable to use. </p>
+<p class="docText">Like arrays, you will often need to iterate over the set of 
+key-value pairs in a hash. Two common techniques for doing this are shown in
+<a class="docLink" href="#upt3-CHP-41-EX-7">Example 41-7</a>.
+<a class="docLink" href="#upt3-CHP-41-TABLE-6">Table 41-6</a> lists common Perl 
+hash functions. </p>
+<h5 id="upt3-CHP-41-EX-7" class="docExampleTitle">Example 41-7. Interating over a hash </h5>
+<pre>my %example = (foo =&gt; 1, bar =&gt; 2, baz =&gt; 3);
+
+while (my ($key, $value) = %example) {
+   print &quot;$key has a value of $value\n&quot;;
+}
+
+foreach my $key (keys %example) {
+  print &quot;$key has a value of $example{$key}\n&quot;;
+}</pre>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-41-TABLE-6" class="docTableTitle">Table 41-6. Common Perl hash functions</h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Name</th>
+    <th class="docTableHeader">
+    <p class="docText">Example</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>delete</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>delete $hash{{<i>key</i></tt>&quot;} </td>
+    <td class="docTableCell">
+    <p class="docText">Delete the key-value pair from hash that is indexed on
+    <tt><i>key</i></tt> </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>each</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>($key, $value) = each %hash</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Return the next key-value pair in hash; the pairs aren't 
+    usefully ordered </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>exists</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>print &quot;key found&quot; if exists $hash{&quot;<i>key</i></tt>&quot;}
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Return true if hash has <tt><i>key</i></tt>, even if that 
+    key's value if undefined </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>keys</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>@keys = keys %hash</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Return the list of keys in the hash; not ordered</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>values</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>@values = values %hash</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Return the list of values in the hash; values will be in 
+    the same order as keys fetched by <tt>keys %hash</tt> </td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-41-SECT-5.4" class="docSection2Title">41.5.4 References</h4>
+<p class="docText">As odd as it may first seem, it is sometimes necessary to 
+have variables for variables. A funny kind of scalar, a reference is a sort of 
+IOU that promises where the original variable's data can be found. References 
+are primarily used in cases. First, because hashes and arrays store only scalar 
+values, the only way to store one multivalued data type in another is to store a 
+reference instead (see the <i>perldsc</i> manpage for more details). Second, 
+when the size of a data structure makes a variable inefficient to pass into 
+subroutines, a reference is passed instead. Third, because arguments passed into 
+subroutines are really just copies of the original, there's no way to change the 
+original values of the arguments back in the calling context. If you give a 
+subroutine a reference as an argument, it can change that value in the caller. 
+Consult the <i>perlref</i> and <i>perlreftut</i> manpages for more details on 
+references. </p>
+<p class="docText">Taking a reference to a variable is straightforward. Simply 
+use the reference operator, <tt>\</tt>, to create a reference. For example: </p>
+<pre>$scalar_ref = \$bob;
+$array_ref  = \@things;
+$hash_ref   = \%grades;</pre>
+<p class="docText">You can even create references without variables:</p>
+<pre>$anonymous_array = [ 'Mojo Jo-Jo', 'Fuzzy Lumpkins', 'Him' ];
+$anonymous_hash  = { 'pink'  =&gt; 'Blossom',
+                     'green' =&gt; 'Buttercup',
+                     'blue'  =&gt; 'Bubbles',
+                   };</pre>
+<p class="docText">The square brackets return a reference to the list that they 
+surround. The curly braces create a reference to a hash. Arrays and hashes 
+created in this way are called <span class="docEmphasis">anonymous</span> 
+because there is no named variable to which these references refer. </p>
+<p class="docText">There are two ways of deferencing references (that is, 
+getting back the original values). The first way is to use <tt>{}</tt>. For 
+instance: </p>
+<pre>print &quot;Your name is: &quot;, ${$scalar_ref};
+
+foreach my $el ( @{$anonymous_array} ) {
+  print &quot;Villian: $el\n&quot;;
+}
+
+while (my ($key, $value) = each %{$anonymous_hash}) {
+  print &quot;$key is associated with $value\n&quot;;
+}</pre>
+<p class="docText">The second way, using <tt>-&gt;</tt>, is useful only for 
+references to collection types. </p>
+<pre>print &quot;$anonymous_hash-&gt;{'pink'} likes the color pink\n&quot;; # 'Blossom'
+print &quot;The scariest villian of all is $anonymous_array-&gt;[2]\n&quot;; # 'Him'</pre>
+<p class="docText"><span class="docEmphasis">— JJ </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-6">41.6 Perl Boot Camp, Part 3: Branching and Looping</h3>
+<p class="docText">To do any interesting stuff with data, Perl needs to be able 
+to branch and loop. Perl supports the C-like <tt>if</tt>-<tt>then</tt>-<tt>else</tt> 
+construct, as the following shows: </p>
+<pre>if ( $password eq 'secret' ) {
+  print &quot;Come on in\n&quot;;
+} else {
+  print &quot;Incorrect password\n&quot;;
+}</pre>
+<p class="docText">You can also invert simple tests that only have one statement 
+in the <tt>then</tt> block. </p>
+<pre>print &quot;Don't I know you?\n&quot; if $user eq 'joe';</pre>
+<p class="docText">You can invert the logic of <tt>if</tt> by using <tt>unless</tt>:
+</p>
+<pre>print &quot;Please supply command line arguments\n&quot; unless @ARGV;</pre>
+<p class="docText">The <tt>print</tt> happens only if <tt>@ARGV</tt> is empty.
+</p>
+<p class="docText">Sometimes you need to iterate through each element of a list. 
+This can be done with the <tt>foreach</tt> loop: </p>
+<pre>foreach my $thing (@my_room) {
+  print &quot;dusting $thing\n&quot;;
+  dust($thing);
+}</pre>
+<p class="docText">A synonym for <tt>foreach</tt> is <tt>for</tt>. Bourne shell 
+hackers (or those who don't like typing) may feel more comfortable using <tt>for</tt> 
+rather than then <tt>foreach</tt>. </p>
+<p class="docText">Each time through the loop, <tt>$thing</tt> is aliased to the 
+next element in <tt>@my_room</tt>. Any change to <tt>$thing</tt> will change 
+that element in the array, so be careful. If you don't supply a scalar variable 
+like <tt>$thing</tt>, Perl will set <tt>$_</tt> for you each time through the 
+loop. The previous example could also be written: </p>
+<pre>foreach (@my_room) {
+  print &quot;dusting $_\n&quot;;
+  dust($_);
+}</pre>
+<p class="docText">Sometimes you need to continue looping while an event is 
+happening, like reading input from standard input: </p>
+<pre>while ( my $line = &lt;STDIN&gt; ) {
+  print &quot;I got: $line&quot;;
+}</pre>
+<p class="docText">Each line of input a user provides is stored in <tt>$line</tt>, 
+including the newline at the end. When the user hits the end-of-file control key 
+(CTRL-D), the loop exits. Like the <tt>foreach</tt> loop, you can leave off the 
+scalar variable while reading from a filehandle,<span id="ENB41-2"><a class="docLink" href="#EN41-2"><sup>[2]</sup></a></span>
+and <tt>$_</tt> will be set to the next line of input each time through the 
+loop. </p>
+<pre>while (&lt;&gt;) {
+  print &quot;I got: $_&quot;;
+}</pre>
+<p class="docText">Sometimes you need to interrupt the execute flow of your 
+loop. Perl gives you three operators to do that (see
+<a class="docLink" href="#upt3-CHP-41-TABLE-7">Table 41-7</a>). </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-41-TABLE-7" class="docTableTitle">Table 41-7. Loop flow-control operators </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Operator</th>
+    <th class="docTableHeader">
+    <p class="docText">Example</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>next</tt> </td>
+    <td class="docTableCell">
+    <pre>while(&lt;&gt;){
+  next if $_ ne &quot;continue\n&quot;;
+}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Jump to the top of the loop and iterate normally</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>last</tt> </td>
+    <td class="docTableCell">
+    <pre>while(&lt;&gt;){
+  last if $_ eq &quot;quit\n&quot;
+}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Jump out of the loop to the next line of the program</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>redo</tt> </td>
+    <td class="docTableCell">
+    <pre>for $url (@urls){
+  unless( $content = get($url) ){
+    print &quot;couldn't fetch page - retrying\n&quot;;
+    redo;
+  }
+}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Jump to the top of the loop, but don't evaluate the loop 
+    condition </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— JJ </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-7">41.7 Perl Boot Camp, Part 4: Pattern Matching</h3>
+<p class="docText">Perl is excellent at finding patterns in text. It does this 
+with regular expressions, similar to the ones used by <i>grep</i> and <i>awk</i>. 
+Any scalar can be matched against a regular expression with the matching binding 
+operator, <tt>=~</tt>. For example: </p>
+<pre>if( $user =~ /jjohn/ ){
+  print &quot;I know you&quot;;
+}</pre>
+<p class="docText">Without the matching binding operator, regular expressions 
+match against the current value of <tt>$_</tt>. For example: </p>
+<pre>while (&lt;&gt;) {
+  if (/quit/i) {
+    print &quot;Looks like you want out.\n&quot;;
+    last;
+  }
+}</pre>
+<p class="docText">In this code, each line of input is examined for the 
+character sequence <tt>quit</tt>. The <tt>/i</tt> modifier at the end of the 
+regular expression makes the matching case-insensitive (i.e., <tt>Quit</tt> 
+matches as well as <tt>qUIT</tt>). </p>
+<p class="docText">As with regular expressions in other utilities, Perl attempts 
+to find the leftmost and longest match for your pattern against a given string. 
+Patterns are made up of characters (which normally match themselves) and special 
+metacharacters, including those found in
+<a class="docLink" href="#upt3-CHP-41-TABLE-8">Table 41-8</a>. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-41-TABLE-8" class="docTableTitle">Table 41-8. Common Perl regular expression 
+  metacharacters </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Operator</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Pattern must match at the beginning of the line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>$</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Pattern must match at the end of the line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>.</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Match any character (expect the newline).</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt><i>pat1</i>|<i>pat2</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Alternation: match the pattern on either the left or 
+    right.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>(<i>pattern</i>)</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Group this pattern together as one (good for quantifiers 
+    and capturing). </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[</tt> <tt><i>synbols</i>]</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Define a new character class: any of the symbols given 
+    can match one character of input (e.g. <tt>/[aeiou]/</tt> matches a string 
+    with at least one regular vowel). </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\w</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Match a letter, number and underscore.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\d</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Match a number.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>\s</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Match a whitespace character: space, tab, \n, \r.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt><i>pattern</i>*</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Match 0 or more consecutive occurences of <tt><i>pattern</i></tt>.
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt><i>pattern</i>+</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Match 1 or more consecutive occurrences of <tt><i>pattern</i></tt>.
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt><i>pattern</i>?</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Optionally match <tt><i>pattern</i></tt>.</td>
+  </tr>
+</table>
+<p class="docText">A very common task for which regular expressions are used is 
+extracting specific information from a line of text. Suppose you wanted to get 
+the first dotted quad that appears in this <i>ifconfig</i> command: </p>
+<pre>$ ifconfig eth0
+eth0      Link encap:Ethernet  HWaddr 00:A0:76:C0:1A:E1
+          inet addr:192.168.1.50  Bcast:192.168.1.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:365079 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:426050 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:3844 txqueuelen:100
+          Interrupt:9 Base address:0x300</pre>
+<p class="docText">The output of a command can be captured into an array using 
+the backtick operator. Each line of the command's output will be an element of 
+the array. One way to extract the IP address from that line is with the 
+following code: </p>
+<pre>my @ifconfig = `/sbin/ifconfig eth0`;
+for (@ifconfig) {
+  if ( /(\d+\.\d+\.\d+\.\d+)/ ) {
+    print &quot;Quad: $1\n&quot;;
+    last;
+  }
+}</pre>
+<p class="docText">This regular expression looks for one or more digits (<tt>\d+</tt>) 
+followed by a literal dot (rather than the regular expression metacharacter), 
+followed by two more digit/dot pairs, followed by one or more digits. If this 
+pattern is found in the current line, the part that was matched is captured 
+(thanks to the parentheses) into the special variable <tt>$1</tt>. You can 
+capture more patterns in a regular expression with more parentheses. Each 
+captured text appears in a sequential higher scalar (i.e., the next paren-captured 
+match will be <tt>$2</tt>). </p>
+<p class="docText">Sometimes, you need to find all the matches for your pattern 
+in a given string. This can be done with the <tt>/g</tt> regular expression 
+modifier. If you wanted to find all the dotted quads in the <i>ifconfig</i> 
+output, you could use the following code: </p>
+<pre>my @ifconfig = `/sbin/ifconfig eth0`;
+for (@ifconfig) {
+    while( /(\d+\.\d+\.\d+\.\d+)/g ){
+        print &quot;Quad: $1\n&quot;;
+    }
+}</pre>
+<p class="docText">Here, the <span class="docEmphasis">if</span> block is 
+replaced with a <span class="docEmphasis">while</span> loop. This is important 
+for <tt>/g</tt> to work as expected. If the current line has something that 
+looks like a dotted quad, that value is capture in <tt>$1</tt>, just as before. 
+However, the <tt>/g</tt> modifier remembers where in the string it made the last 
+match and looks after that point for another one. </p>
+<p class="docText">Perl's regular expression support has set the standard for 
+other langauges. As such, it is impossible to give a comprehensive guide to Perl 
+regular expressions here, but see O'Reilly's <i>Mastering Regular Expressions</i> 
+or the <span class="docEmphasis">perlre</span> manpage. </p>
+<p class="docText"><span class="docEmphasis">— JJ </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-8">41.8 Perl Boot Camp, Part 5: Perl Knows Unix</h3>
+<p class="docText">There are many built-in Perl operators that mimic Unix system 
+calls and standard utilities, as are partially listed in
+<a class="docLink" href="#upt3-CHP-41-TABLE-9">Table 41-9</a>. Those that aren't 
+hardcoded into the language are often available through
+<span class="docEmphBold">modules</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-9">Section 
+41.9</a>). In fact, there are too many Unix-like operators to describe here, but 
+this sampling should give you a good start. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-41-TABLE-9" class="docTableTitle">Table 41-9. Perl filesystem functions </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Function</th>
+    <th class="docTableHeader">
+    <p class="docText">Example</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>chmod</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>chmod 0775,</tt> <tt><i>filenames</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText">Change file permission on given file or list of files; 
+    same as the system command. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>chown</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>chown</tt> <tt><i>UID</i>,</tt> <tt><i>GID</i>,</tt>
+    <tt><i>filenames</i></tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Change owner and group on given list of filenames; same 
+    as the system command. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>rename</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>rename</tt> <tt><i>oldname</i>,</tt> <tt><i>newname</i></tt>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">Change a file's name; similiar to <i>mv.</i> </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>unlink</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>unlink</tt> <tt><i>filenames</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText">Unlink given filenames; deletes files that aren't hard 
+    linked elsewhere. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>system</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>system(<i>executable</i>)</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Create a subshell to execute an external command whose 
+    ouput isn't accessible to Perl. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>qx()</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><tt>@output = qc(<i>executable</i>)</tt> </td>
+    <td class="docTableCell">
+    <p class="docText">Create a subshell to execute external command and return 
+    lines of output as an array to Perl; same as <tt>''</tt>. </td>
+  </tr>
+</table>
+<p class="docText">One advantage Perl has over shell scripting is that Perl has 
+filehandles. In Perl, files can only be created, edited, or read through special 
+variables called filehandles. These variables have no funny punctuation 
+prefixing them. It is customary to make filehandles all uppercase. The code 
+below shows a typical way to read an existing file and echo its contents to the 
+screen: </p>
+<pre>my $file = &quot;<tt><i>your_filename</i></tt>&quot;;
+open (IN, $file) || die &quot;can't open $file: $!&quot;;
+while (&lt;IN&gt;) {
+   print;
+}
+close (IN);</pre>
+<p class="docText">In this simple code, the <tt>open</tt> function is used to 
+associate the filehandle <tt>IN</tt> with whatever filename you choose. If the
+<tt>open</tt> fails, the expression to the right of the logical OR will execute. 
+The <tt>die</tt> function halts the program with the string provided. Here, that 
+string includes the special variable <tt>$!</tt>, which contains the error 
+message from the last failed system call (which here is <tt>open</tt>). If the
+<tt>open</tt> succeeds, <tt>IN</tt> can be read from with the <tt>&lt;&gt;</tt> 
+operator. As noted earlier, this operator populates <tt>$_</tt> with the next 
+line of input each time through the loop until there are no more lines to read. 
+The <tt>print</tt> function will use <tt>$_</tt> if no other argument is passed 
+to it. Although Perl will free all filehandles when the script exits, it's a 
+good habit to close all filehandles you open. </p>
+<p class="docText">Writing to files is almost as easy as reading from them. 
+Consider this code: </p>
+<pre>my $file = &quot;<tt><i>your_filename</i></tt>&quot;;
+open (OUT, &quot;&gt; &quot;. $file) || die &quot;can't make $file: $!&quot;;
+print OUT &quot;&lt;html&gt;&lt;body&gt;&lt;h1&gt;hello, world&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;\n&quot;;
+close(OUT);</pre>
+<p class="docText">This snippet starts in a familiar way, but the <tt>open</tt> 
+call is a little different. To tell Perl you want to create a new file or 
+overwrite an existing one, simply prefix the filename with a <tt>&gt;</tt>. If you 
+wanted to append to an existing file, use <tt>&gt;&gt;</tt> instead. Now you can print 
+to that file by passing the filehandle to <tt>print</tt> (notice there's no 
+comma after the filehandle). Here, a simple HTML file is being created. </p>
+<p class="docText">You can also read directories in Perl. The following code 
+looks in the current directory and describes each file as a directory, symbolic 
+link, or regular file. </p>
+<pre>opendir (DIR, &quot;.&quot;) || die &quot;error: $!&quot;;
+
+while (my $file = readdir(DIR)) {
+    print &quot;$file -&gt; &quot;;
+
+    if ( -d $file ) {
+      print &quot;directory\n&quot;;
+
+    } elsif ( -l $file ) {
+      print &quot;symlink\n&quot;;
+
+    } else{
+      print &quot;file\n&quot;
+    }
+}
+closedir (DIR);</pre>
+<p class="docText">To read directories, use the <tt>opendir</tt> function, which 
+has a similiar interface to <tt>open</tt>'s. Unfortunately, the <tt>&lt;&gt;</tt> 
+operator won't work on directory handles, so use the <tt>readdir</tt> command to 
+iterate over each file in the directory. Perl provides file test operators, like 
+those in the Bourne shell, to determine what kind of file its argument is. The
+<tt>-d</tt> operator tests whether a file is a directory, while the <tt>-l</tt> 
+operator tests whether a file is symbolic link. Perl doesn't have a switch 
+operator like C, but you can tack on as many <tt>elsif</tt> blocks as you need. 
+What's not shown here is how to create a directory. Just as you would at the 
+shell prompt, Perl provides a <tt>mkdir</tt> function that takes an octal number 
+(which must start with zero!) and the name of the directory to create. Pretty 
+simple. </p>
+<p class="docText">In <span class="docEmphasis">/etc/passwd</span> and in 
+password files for CVS and Apache, user passwords are stored as a string that 
+has been passed through a one-way hashing algorithm (such as DES), usually using 
+the system's <tt>crypt(3)</tt> system call. Perl provides access to this system 
+call with a function of the same name. The following code prompts users for a 
+new password for a fictional program and creates its own password file. </p>
+<pre>print &quot;Username: \n&quot;;
+my $user = &lt;&gt;;
+print &quot;Password: \n&quot;;
+my $pass = &lt;&gt;;
+
+chomp($user, $pass);
+my $crypt = crypt($pass, substr($user, 0, 2));
+open (OUT, &quot;&gt;&gt;passwd&quot;) || die &quot;error: $_&quot;;
+print OUT &quot;$user;$crypt;&quot;. localtime( ) . &quot;\n&quot;;
+close (OUT);</pre>
+<p class="docText">After collecting the username and password from the user, the
+<tt>chomp</tt> function removes the trailing newline from the input just 
+collected. The <tt>crypt</tt> function expects the string to be hashed and a 
+random two-character salt. Here, the first two characters of the username are 
+used, via the <tt>substr</tt> function. The line written to the password file 
+consists of a semicolon-separated list of the username, the hashed password, and 
+a date stamp of when the account was added. Here, the <tt>localtime</tt> 
+function call is used in scalar context because of the concatenation operator. 
+This produces a human-readable string like <tt>Sat Mar 16 21:17:44</tt> <tt>2002</tt>. 
+Used in list context, <tt>localtime</tt> returns a nine element list that's not 
+easily consumed by human eyes (see <i>Programming Perl</i>, published by 
+O'Reilly, for more details on scalar versus list context). </p>
+<p class="docText">This section hardly scratched the surface of using Perl as a 
+system administration tool. Many books have been written on this very topic, 
+including O'Reilly's <i>Perl for System Administration</i>. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-9">41.9 Perl Boot Camp, Part 6: Modules</h3>
+<p class="docText">Modules are Perl's way of extending functionality, in the 
+same way C has library files. Modules can be used to encapsulate a set of 
+related function calls (the way Data::Dumper does), implement pragmas (like <tt>
+use strict</tt>), or create object classes (like HTML::TokeParser). Whatever a 
+module does, it must first be <span class="docEmphBold">installed on your system</span> 
+(<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-11">Section 
+41.11</a>) before you can use it. </p>
+<p class="docText">Using a module in Perl is often straightforward. For example, 
+the Data::Dumper module has a function called <tt>Dumper</tt> that takes a 
+reference to a variable and deconstructs the entire structure into a printable 
+string. This is an invaluable debugging tool. The following code shows 
+Data::Dumper in action: </p>
+<pre>use Data::Dumper;
+print &quot;The current environment is: &quot;, Dumper(\%ENV), &quot;\n&quot;;</pre>
+<p class="docText">An abbreviated version of the output from this code is this:</p>
+<pre>The current enviroment is: $VAR1 = {
+          'DISPLAY' =&gt; ':0',
+          'COLORTERM' =&gt; 'gnome-terminal',
+          'QTDIR' =&gt; '/usr/lib/qt-2.3.0',
+          'PVM_RSH' =&gt; '/usr/bin/rsh',
+          'OSTYPE' =&gt; 'linux-gnu',
+          'PWD' =&gt; '/home/jjohn/docs/unix_powertools/upt',
+          'EDITOR' =&gt; 'emacs -nw',
+          'LOGNAME' =&gt; 'jjohn',
+          'MACHTYPE' =&gt; 'i386-redhat-linux-gnu',
+          'SHELL' =&gt; '/bin/bash',
+          'MAIL' =&gt; '/var/spool/mail/jjohn',
+          '_' =&gt; '/usr/local/bin/perl',
+          'HISTSIZE' =&gt; '1000',
+          'CVS_RSH' =&gt; 'ssh1',
+          'HOSTNAME' =&gt; 'marian',
+          'TERM' =&gt; 'xterm',
+          ...
+        };</pre>
+<p class="docText">In this code, the Data::Dumper is made available to your 
+script with the <span class="docEmphasis">use</span> statement. You should be 
+aware that <span class="docEmphasis">use</span> happens at the script's compile 
+time, meaning that you can't use this statement to dynamically load modules at 
+runtime (but this is possible; see <span class="docEmphasis">Programming Perl</span> 
+for details). Data::Dumper automatically makes the function <tt>Dumper</tt> 
+available to your script. Here the global hash <tt>%ENV</tt>, which contains all 
+your shell's environment variables, is deconstructed. <tt>Dumper</tt> can take 
+multiple variables, so when looking at a hash or array, be sure to prefix the 
+variable with the <span class="docEmphBold">reference operator</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-5.4">Section 
+41.5.4</a>) <tt>\</tt>. Without a passed reference, the output of <tt>Dumper</tt> 
+won't exactly what you expect. </p>
+<p class="docText">Many Perl modules are object oriented. Although writing 
+object classes may not be trivial, using them is. Here, the CGI module is used 
+to create a very simple HTML page. </p>
+<pre>use CGI;
+$q = CGI-&gt;new;
+print
+    $q-&gt;header,
+    $q-&gt;start_html,
+    $q-&gt;h1(&quot;hello, world!&quot;),
+    $q-&gt;end_html;</pre>
+<p class="docText">There's no difference in how object classes are brought into 
+your script with <span class="docEmphasis">use</span>. New objects are created 
+through a method traditionally called <tt>new</tt> (<span class="docEmphasis">new</span> 
+is not an operator, as it is in other languages). Sometimes, <tt>new</tt> will 
+require arguments. Once the object (<tt>$q</tt>) is created, all method access 
+must be made through it, using the <tt>-&gt;</tt> operator. That's all there is too 
+it. Of course every module is different, so you will need to use
+<span class="docEmphBold">perldoc modulename</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-10">Section 
+41.10</a>) to the module's documentation. </p>
+<p class="docText">Infrequently, you may need to find the module files on your 
+system. Modules are usually files that have the extension <i>.pm</i> and are 
+found in one of the directories listed in the <tt>@INC</tt> array. Every module 
+should declare its own namespace, so that its variables and functions don't 
+overwrite the ones you define in the scripts that use the modules. These 
+namespaces are hierarchical, so so that the module Data::Dumper belongs to the 
+Data module group.<span id="ENB41-3"><a class="docLink" href="#EN41-3"><sup>[3]</sup></a></span> 
+When the Data::Dumper module is installed on your system, it is placed somewhere 
+with the rest of your Perl modules in a directory called <i>Data</i>, in which a 
+file called <i>Dumper.pm</i> will be copied. Generally, <tt>:</tt>: in a module 
+name translates to a <tt>/</tt> on the filesystem. You can also use <tt>perldoc 
+-l</tt> <tt><i>modulename</i></tt> to list the module's filesystem path. </p>
+<p class="docText">There are many good reasons to learn Perl, but the ace up a 
+Perl programmer's sleeve is the <span class="docEmphBold">Comprehensive Perl 
+Archive Network</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-11">Section 
+41.11</a>) (CPAN), which is the central repository for Perl modules. There are 
+hundreds of modules on CPAN, ranging from the essential (IO::Socket) to the 
+useful (LWP, DBI, mod_perl), to the frivolous (Acme::Buffy). The main CPAN 
+server is accessible on the web at
+<a class="docLink" href="http://www.cpan.org" target="_blank">
+http://www.cpan.org</a>. CPAN is mirrored all over the world, so look for a 
+mirror near you. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-10">41.10 Perl Boot Camp, Part 7: perldoc</h3>
+<p class="docText">We all need a little help sometimes, and it's at those times 
+that <i>perldoc</i> comes in handy. Normally, core Perl and module documentation 
+is accessible through your system's <i>manpage</i> system, but you can also use 
+the <i>perldoc</i> program, which has a few convenient features that you should 
+be aware of. Like <i>man</i>, <i>perldoc</i> takes the name of a module or core 
+Perl document as an argument. </p>
+<p class="docText">Your system's <i>perl</i> comes bundled with hundreds of 
+pages of very readable documentation. The top of the document tree can be 
+accessed with either <i>perldoc perl</i> or <i>man perl</i>. This page is little 
+more than a table of contents<span id="ENB41-4"><a class="docLink" href="#EN41-4"><sup>[4]</sup></a></span> 
+for the rest of the <span class="docEmphasis">perl</span> documentation. There 
+are over 40 documents listed there, but there are a couple that will be 
+immediately useful to novice Perl programmers, as
+<a class="docLink" href="#upt3-CHP-41-TABLE-10">Table 41-10</a> shows. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-41-TABLE-10" class="docTableTitle">Table 41-10. Frequently used Perl manpages </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Name</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">perlsyn</td>
+    <td class="docTableCell">
+    <p class="docText">The complete guide to Perl syntax</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">perldata</td>
+    <td class="docTableCell">
+    <p class="docText">Perl's data types explained</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">perlop</td>
+    <td class="docTableCell">
+    <p class="docText">Perl's operators and their precedence</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">perlfunc</td>
+    <td class="docTableCell">
+    <p class="docText">The complete guide to all of Perl's built-in functions
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">perlre</td>
+    <td class="docTableCell">
+    <p class="docText">The complete guide to Perl's regular expressions</td>
+  </tr>
+</table>
+<p class="docText">In many cases (such as the ones above), <i>perldoc</i> 
+doesn't do anything <i>man</i> can't. However with <i>perldoc</i>, you can 
+easily look up built-in Perl functions with the <tt>-f</tt> flag (<tt>-t</tt> 
+formats any POD elements for a text console). For instance, to see the entry on
+<tt>print</tt>, try this: </p>
+<pre>$ perldoc -tf print</pre>
+<p class="docText">You'll get back something like the following (which has been 
+abbreviated): </p>
+<pre>print FILEHANDLE LIST
+print LIST
+print   Prints a string or a list of strings.  Returns
+        true if successful.  FILEHANDLE may be a scalar
+        variable name, in which case the variable contains
+        the name of or a reference to the filehandle, thus
+        introducing one level of indirection.
+         ...</pre>
+<p class="docText">Perl has quite a large FAQ. You can read each of the nine 
+sections (<span class="docEmphasis">perlfaq1</span> through
+<span class="docEmphasis">perlfaq9</span>) to find the answer to your question 
+or you can use the <tt>-q</tt> flag to keyword search all of the FAQ. </p>
+<pre>$ perldoc -q fork
+Found in /usr/local/lib/perl5/5.6.1/pod/perlfaq8.pod
+       How do I fork a daemon process?
+
+       If by daemon process you mean one that's detached (disas-
+       sociated from its tty), then the following process is
+       reported to work on most Unixish systems.  Non-Unix users
+       should check their Your_OS::Process module for other solu-
+       tions.
+       ...</pre>
+<p class="docText">Do take advantage of the copious documentation already on 
+your system: you will be reward many times over. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-11">41.11 CPAN</h3>
+<p class="docText">The Comprehensive Perl Archive Network (CPAN), whose URL is
+<a class="docLink" href="http://www.cpan.org" target="_blank">
+http://www.cpan.org</a>, is the place to get modules, scripts, and the Perl 
+source code. This system is mirrored all over the world, so consult
+<a class="docLink" href="http://www.cpan.org/SITES.html" target="_blank">
+http://www.cpan.org/SITES.html</a> or
+<a class="docLink" href="http://mirror.cpan.org" target="_blank">
+http://mirror.cpan.org</a> for the server nearest you. There is a really 
+complete CPAN FAQ that can be found at
+<a class="docLink" href="http://www.cpan.org/misc/cpan-faq.html" target="_blank">
+http://www.cpan.org/misc/cpan-faq.html</a>. </p>
+<p class="docText">This section covers obtaining and installing modules from 
+CPAN. If your installation of Perl is up to date, module installation is 
+trivial. If you've got a &quot;unique&quot; system, you may need to take matters into your 
+own hands. </p>
+<h4  id="upt3-CHP-41-SECT-11.1" class="docSection2Title">41.11.1 Installing Modules the Easy Way</h4>
+<p class="docText">In a fit of inspired genius (or madness), the CPAN module was 
+created to automate the task of fetching and installing modules. If you want to 
+install the Text::AutoFormat suite, it's as easy as becoming superuser on your 
+system and typing: </p>
+<pre># perl -MCPAN -e 'install Text::AutoFormat'</pre>
+<p class="docText">Perl has many command-line switches. Here, <tt>-M</tt> 
+(equivalent to <tt>use</tt> <tt><i>module</i></tt>) and <tt>-e</tt> (execute the 
+next argument as <span class="docEmphasis">perl</span> code) are used. If you've 
+never run the CPAN module before, be prepared to answer a lot of questions about 
+your network setup and where certain system binaries are. Luckily, you can 
+usually accept the defaults safely. Once that's done, the CPAN module will go to 
+the CPAN mirror you specified; find the latest version of the module you asked 
+for; and download, unpack, configure, and install it for you with no additional 
+typing. Now that's twenty-first-century library management! If your module 
+depends on other modules not installed on your system, CPAN will attempt to 
+fetch and install the missing modules. In fact, you can update the CPAN module 
+itself with: </p>
+<pre># perl -MCPAN -e 'install Bundle::CPAN'</pre>
+<p class="docText">The CPAN module also has an interactive shell you can access 
+like this: </p>
+<pre>$ perl -MCPAN -e shell</pre>
+<p class="docText">Why bother with the interactive shell? Sometimes you want to 
+install several unrelated modules at once. This is done more conveniently in the 
+CPAN shell. Alternately, you may want only to download module archives without 
+actualling installing them. The entire range of shell options can be found with 
+the <tt>h</tt> command inside the shell. One of the most useful shell functions, 
+the search function, can be used to look up available CPAN modules. For 
+instance: </p>
+<pre>$ sudo perl -MCPAN -e shell
+
+cpan shell -- CPAN exploration and modules installation (v1.59)
+ReadLine support enabled
+
+cpan&gt; i /Text/
+CPAN: Storable loaded ok
+Going to read /usr/local/cpan/Metadata
+Module          AddressBook::DB::Text (D/DL/DLEIGH/AddressBook-0.16.tar.gz)
+Module          AnyData::Format::Text (J/JZ/JZUCKER/AnyData-0.05.tar.gz)
+Module          Apache::PrettyText (C/CH/CHTHORMAN/Apache-PrettyText-1.03...
+...
+
+401 items found
+cpan&gt; quit</pre>
+<p class="docText">Here, we use the <tt>i</tt> command to search for the regular 
+expression <tt>/Text/</tt> in all the module names. </p>
+<p class="docText">When you first run the CPAN module, you will be asked a 
+series of configuration questions. The first question you'll be asked when 
+configuring CPAN is to name a CPAN build and cache directory (where CPAN unpacks 
+fetched module archives and builds them). Put this in a sensible place where you 
+and other users can can get to it, such as <i>/usr/local/cpan</i>. You'll be 
+asked to name the maximum size for the cache directory (the default is 10MB). 
+The next question will ask when to perform size checks on the cache, <tt>atstart</tt> 
+or <tt>never</tt>. Unless you have a compelling reason not to remove old module 
+builds, accept the default of <tt>atstart</tt>. You then be asked whether CPAN 
+metadata should be cached, and again, accept the default of <tt>yes</tt>. </p>
+<p class="docText">The next question asks about what character set your terminal 
+expects. Again, you should accept the default of <tt>yes</tt>. The configuration 
+then asks what it should do when unfulfilled dependencies are encountered during 
+a module installation. CPAN can automatically fetch the missing modules (<tt>follow</tt>), 
+ask for confirmation before downloading them (<tt>ask</tt>), or do nothing (<tt>ignore</tt>). 
+If you are on a fast Internet connection, you may want to set the policy to <tt>
+follow</tt>. The safest policy, and one that guards against runaway module 
+fetching sessions, is <tt>ask</tt>. </p>
+<p class="docText">The next several questions ask for the location of certain 
+binaries (like <i>lynx</i>, <i>make</i>, <i>gzip</i>, etc.). Answer these 
+appropriately. The next set of questions ask for additional <i>make</i> 
+parameters. Again, accept the defaults. You will then be asked about your 
+network setup. If you are behind a firewall that uses SOCKs or proxy servers for 
+FTP and HTTP, you will need to enter those server names. CPAN will ask you to 
+pick a CPAN mirror closest to you, by asking you for continent and country 
+information. You'll be presented with a list of CPAN mirrors, and you can enter 
+the numbers of the URLs in which you are interested. Generally, you'll only need 
+to give one or two mirrors. The last question is about the WAIT system, to which 
+you can safely accept the default. This concludes the CPAN configuration. </p>
+<h4  id="upt3-CHP-41-SECT-11.2" class="docSection2Title">41.11.2 Installing Modules the Hard Way</h4>
+<p class="docText">Most modules on CPAN are gzipped <i>tar</i> archives that 
+have some common files in them that makes installing them fairly simple. To 
+install a CPAN module, unpack your archive and <span class="docEmphasis">cd</span> 
+to the new directory that was just created. Now type: </p>
+<pre>$ perl Makefile.PL &amp;&amp; make test</pre>
+<p class="docText">This is a similiar configure and compile idiom to the one 
+shown in
+<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-3">
+Section 41.3</a>. If the tests all succeed, change to root and install the 
+module with: </p>
+<pre># make install</pre>
+<p class="docText">The module is now available to your system.</p>
+<h4  id="upt3-CHP-41-SECT-11.3" class="docSection2Title">41.11.3 Browsing the CPAN Web Site</h4>
+<p class="docText">There's something to be said for browsing the CPAN archive 
+with a web browser. In fact, there are all kinds of ancillary tidbits that are 
+available only on the web site. However, CPAN's main purpose is to store and 
+serve modules. </p>
+<p class="docText">Modules on CPAN are arranged by author name, module name, 
+category, and recentness. Of these, module name and category are perhaps the 
+most useful for CPAN newbies. The full Perl documentation is linked to from CPAN, 
+but you should have this on your system already. Of course, no serious web site 
+these days is missing a search engine, and CPAN is no exception. In fact, the 
+search engine has its own URL:
+<a class="docLink" href="http://search.cpan.org" target="_blank">
+http://search.cpan.org</a>. This is an excellent resource for quickly finding 
+modules that may solve your problem. </p>
+<p class="docText">CPAN is an ocean of code that awaits your exploration.</p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-12">41.12 Make Custom grep Commands (etc.) with Perl</h3>
+<p class="docText">All of the various <i>grep</i>-like utilities perform pretty 
+much the same function, with minor differences — they search for a specified 
+pattern in some or all of a file and display that pattern with varying amounts 
+of surrounding context. </p>
+<p class="docText">As you use Unix more and more, you will find yourself wanting 
+to do an increasing number of <i>grep</i>-like tasks, but no particular Unix 
+utility will quite suit them all (hence the need for the various <i>grep</i> 
+utilities discussed earlier). You'll start accumulating C programs, <i>awk</i> 
+scripts, and shell scripts to do these different tasks, and you'll be craving 
+one utility that can easily encompass them all so you don't have to waste the 
+disk space for all of those binaries. That utility is <span class="docEmphBold">
+Perl</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-1">Section 
+41.1</a>), the &quot;Practical Extraction and Report Language&quot; developed by Larry 
+Wall. According to the documentation accompanying Perl, it is &quot;an interpreted 
+language optimized for scanning arbitrary text files, extracting information 
+from those text files, and printing reports based on that information.&quot; </p>
+<p class="docText">For example, to search for a pattern in the header of a 
+Usenet message: </p>
+<pre>perl -ne 'exit if (/^$/); print if (/<tt><i>pattern</i></tt>/);' <tt><i>filename</i></tt></pre>
+<p class="docText">[This works because <span class="docEmphBold">mail and Usenet</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) messages always use a blank line — indicated by <tt>^$</tt> in regular 
+expression syntax — to separate the header from the body of the message. —
+<span class="docEmphasis">TOR</span>] </p>
+<p class="docText">[The <tt>-n</tt> flag tells <i>perl</i> to wrap the contents 
+of <tt>-e</tt> into the body of a <tt>while(&lt;&gt;){ ... }</tt> loop. —
+<span class="docEmphasis">JJ</span>] </p>
+<p class="docText">To do a search for a pattern and print the paragraphs in 
+which it appears: </p>
+<pre>perl -ne '$/ = &quot;\n\n&quot;; print if (/<tt><i>pattern</i></tt>/);' <tt><i>filename</i></tt></pre>
+<p class="docText">[This assumes that paragraphs are delimited by a double 
+linefeed — that is, a blank line. You'd have to adjust this script for a <i>
+troff</i> or T<sub>E</sub>X document where paragraphs are separated by special 
+codes. — <span class="docEmphasis">TOR</span>] </p>
+<p class="docText">Searching through files is one of Perl's strengths, but 
+certainly not its only strength. Perl encompasses all the functionality of <i>
+sed</i>, <i>awk</i>, <i>grep</i>, <i>find</i>, and other Unix utilities. 
+Furthermore, a Perl program to do something originally done with one or more of 
+these utilities is usually faster and easier to read than the non-Perl solution.
+</p>
+<p class="docText"><span class="docEmphasis">— JIK</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-41-SECT-13">41.13 Perl and the Internet</h3>
+<p class="docText">Because Perl supports Berkeley sockets, all kinds of 
+networking tasks can be automated with Perl. Below are some common idioms to 
+show you what is possible with Perl and a little elbow grease. </p>
+<h4  id="upt3-CHP-41-SECT-13.1" class="docSection2Title">41.13.1 Be Your Own Web Browser with LWP</h4>
+<p class="docText">The suite of classes that handle all the aspects of HTTP are 
+collectively known as LWP (for libwww-perl library). If your Perl installation 
+doesn't currently have LWP, you can easily install it with the
+<span class="docEmphBold">CPAN module</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-11">Section 
+41.11</a>) like this: </p>
+<pre># perl -MCPAN -e 'install Bundle::LWP'</pre>
+<p class="docText">If you also included an X widget library such as Tk, you 
+could create a graphic web browser in Perl (an example of this comes with the 
+Perl Tk library). However, you don't need all of that if you simply want to grab 
+a file from a web server: </p>
+<pre>use LWP::Simple;
+my $url = &quot;http://slashdot.org/slashdot.rdf&quot;;
+getstore($url, &quot;s.rdf&quot;);</pre>
+<p class="docText">This example grabs the Rich Site Summary file from the 
+popular tech news portal, Slashdot, and saves it to a local file called <i>s.rdf</i>. 
+In fact, you don't even need to bother with a full-fledged script: </p>
+<pre>$ perl -MLWP::Simple -e 'getstore(&quot;http://slashdot.org/slashdot.rdf&quot;, &quot;s.rdf&quot;)'</pre>
+<p class="docText">Sometimes you want to process a web page to extract 
+information from it. Here, the title of the page given by the URL given on the 
+command line is extracted and reported: </p>
+<pre>use LWP::Simple;
+use HTML::TokeParser;
+
+$url = $ARGV[0] || 'http://www.oreilly.com';
+$content = get($url);
+die &quot;Can't fetch page: halting\n&quot; unless $content;
+
+$parser = HTML::TokeParser-&gt;new(\$content);
+$parser-&gt;get_tag(&quot;title&quot;);
+$title = $parser-&gt;get_token;
+print $title-&gt;[1], &quot;\n&quot; if $title;</pre>
+<p class="docText">After bringing in the library to fetch the web page (LWP::Simple) 
+and the one that can parse HTML (HTML::TokeParser), the command line is 
+inspected for a user-supplied URL. If one isn't there, a default URL is used. 
+The <tt>get</tt> function, imported implicitly from LWP::Simple, attempts to 
+fetch the URL. If it succeeds, the whole page is kept in memory in the scalar
+<tt>$content</tt>. If the fetch fails, <tt>$content</tt> will be empty, and the 
+script halts. If there's something to parse, a reference to the content is 
+passed into the HTML::TokeParser object constructor. HTML::TokeParser 
+deconstructs a page into individual HTML elements. Although this isn't the way 
+most people think of HTML, it does make it easier for both computers and 
+programmers to process web pages. Since nearly every web page has only one <tt>
+&lt;title&gt;</tt> tag, the parser is instructed to ignore all tokens until it finds 
+the opening <tt>&lt;title&gt;</tt> tag. The actual title string is a text string and 
+fetching that piece requires getting the next token. The method <tt>get_token</tt> 
+returns an array reference of various sizes depending on the kind of token 
+returned (see the HTML::TokeParse manpage for details). In this case, the 
+desired element is the second one. </p>
+<p class="docText">One important word of caution: these scripts are very simple 
+web crawlers, and if you plan to be grabbing a lot of pages from a web server 
+you don't own, you should do more research into how to build polite web robots. 
+See O'Reilly's <i>Perl &amp; LWP</i>. </p>
+<h4  id="upt3-CHP-41-SECT-13.2" class="docSection2Title">41.13.2 Sending Mail with Mail::Sendmail</h4>
+<p class="docText">Often, you may find it necessary to send an email reminder 
+from a Perl script. You could do this with sockets only, handling the whole SMTP 
+protocol in your code, but why bother? Someone has already done this for you. In 
+fact, there are several SMTP modules on CPAN, but the easiest one to use for 
+simple text messages is Mail::Sendmail. Here's an example: </p>
+<pre>use Mail::Sendmail;
+
+my %mail = (
+                Subject =&gt; &quot;About your disk quota&quot;
+                To      =&gt; &quot;jane@hostname.com, fred@hostname.com&quot;
+                From    =&gt; &quot;admin@hostname.com&quot;,
+                Message =&gt; &quot;You've exceeded your disk quotas&quot;,
+                smtp    =&gt; &quot;smtp-mailhost.hostname.com&quot;,
+           );
+
+sendmail(%mail) or die &quot;error: $Mail::Sendmail::error&quot;;
+print &quot;done\a\n&quot;;</pre>
+<p class="docText">Since most readers will be familiar with the way email works, 
+this module should be fairly easy to adapt to your own use. The one field that 
+may not be immediately clear is <tt>smtp</tt>. This field should be set to the 
+hostname or IP address of a machine that will accept SMTP relay requests from 
+the machine on which your script is running. With the proliferation of email 
+viruses of mass destruction, mail administrators don't usually allow their 
+machines to be used by unknown parties. Talk to your local system administrator 
+to find a suitable SMTP host for your needs. </p>
+<h4  id="upt3-CHP-41-SECT-13.3" class="docSection2Title">41.13.3 CGI Teaser</h4>
+<p class="docText">What Perl chapter would be complete without some mention of 
+CGI? The Common Gateway Interface is a standard by which web servers, like 
+Apache, allow external programs to interact with web clients. The details of CGI 
+can be found in O'Reilly's <i>CGI Programming with Perl</i>, but the code below 
+uses the venerable CGI module to create a simple form and display the results 
+after the user has hit the submit button. You will need look through your local 
+web server's configuration files to see where such a script needs to be in order 
+for it to work. Unfortunately, that information is very system-dependent. </p>
+<pre>use CGI;
+
+$cgi  = CGI-&gt;new;
+$name = $cgi-&gt;param(&quot;usrname&quot;);
+
+print
+  $cgi-&gt;header, $cgi-&gt;start_html,
+  $cgi-&gt;h1(&quot;My First CGI Program&quot;);
+
+if( $name ){
+  print $cgi-&gt;p(&quot;Hello, $name&quot;);
+}
+
+print
+  $cgi-&gt;start_form,
+  $cgi-&gt;p(&quot;What's your name: &quot;), $cgi-&gt;textfield(-name =&gt; &quot;usrname&quot;),
+  $cgi-&gt;submit, $cgi-&gt;end_form,
+  $cgi-&gt;end_html;</pre>
+<p class="docText">CGI scripts are unlike other scripts with which you are 
+probably more familiar, because these programs have a notion of programming 
+state. In other words, when the user first accesses this page, <tt>$name</tt> 
+will be empty and a blank form with a text box will be displayed. When the user 
+enters something into that textbox and submits the form, the user's input will 
+be stored under the key <tt>usrname</tt>. After the user presses the form's 
+submit button, the values of that form are available through the CGI method <tt>
+param</tt>. Here, the desired value is stored under the key <tt>usrname</tt>. If 
+this value is populated, a simple message is displayed before showing the form 
+again. </p>
+<p class="docText">Now you have nearly all the tools necessary to create your 
+own Internet search engine. I leave the details of creating a massive data 
+storage and retrieval system needed to catalog millions of web pages as an 
+exercise for the reader. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<blockquote><p class="docFootnote" id="EN41-1"><a class="docLink" href="#ENB41-1">[1]</a>&nbsp;&nbsp;A word on casing: &quot;Perl&quot; refers to the language as an abstract concept; &quot;<i>perl&quot;</i> 
+refers to the program installed on your machine.</p><p class="docFootnote" id="EN41-2"><a class="docLink" href="#ENB41-2">[2]</a>&nbsp;&nbsp;STDIN is normally assumed 
+  here.</p><p class="docFootnote" id="EN41-3"><a class="docLink" href="#ENB41-3">[3]</a>&nbsp;&nbsp;Well, that's the theory 
+  anyway. In practice, modules that aren't written by the same group of people 
+  often have somewhat arbitrary top-level namespaces.</p><p class="docFootnote" id="EN41-4"><a class="docLink" href="#ENB41-4">[4]</a>&nbsp;&nbsp;There's actually a more 
+  complete table of contents available: <tt>man perltoc</tt>.</p></blockquote>
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 40.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 42.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

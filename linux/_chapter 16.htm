@@ -1,0 +1,728 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 16</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 15.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 17.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 16. Spell Checking, Word Counting, and 
+Textual Analysis</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-16-SECT-1">16.1 The Unix spell Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-16-SECT-2">16.2 Check Spelling Interactively with ispell</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-16-SECT-3">16.3 How Do I Spell That Word?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-16-SECT-4">16.4 Inside spell</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-16-SECT-5">16.5 Adding Words to ispell's Dictionary</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-16-SECT-6">16.6 Counting Lines, Words, and Characters: wc</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-16-SECT-7">16.7 Find a a Doubled Word</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-16-SECT-8">16.8 Looking for Closure</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-16-SECT-9">16.9 Just the Words, Please</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-16-SECT-1">16.1 The Unix spell Command</h3>
+<p class="docText">On some Unix systems, the <i>spell</i> command reads one or 
+more files and prints a list of words that may be misspelled. You can redirect 
+the output to a file, use <span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-1">Section 
+13.1</a>) to locate each of the words, and then use <i>vi</i> or <i>ex</i> to 
+make the edits. It's also possible to hack up a shell and <i>sed</i> script that 
+interactively displays the misspellings and fixes them on command, but 
+realistically, this is too tedious for most users. (The
+<span class="docEmphBold">ispell</span> (<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-2">Section 
+16.2</a>) program solves many — though not all — of these problems.) </p>
+<p class="docText">When you run <i>spell</i> on a file, the list of words it 
+produces usually includes a number of legitimate words or terms that the program 
+does not recognize. <i>spell</i> is case sensitive; it's happy with
+<span class="docEmphasis">Aaron</span> but complains about
+<span class="docEmphasis">aaron</span>. You must cull out the proper nouns and 
+other words <i>spell</i> doesn't know about to arrive at a list of true 
+misspellings. For instance, look at the results on this sample sentence: </p>
+<pre>$ <b>cat sample</b>
+Alcuin uses TranScript to convert ditroff into
+PostScript output for the LaserWriter printerr.
+$ <b>spell sample</b>
+Alcuin
+ditroff
+printerr
+LaserWriter
+PostScript
+TranScript</pre>
+<p class="docText">Only one word in this list is actually misspelled.</p>
+<p class="docText">On many Unix systems, you can supply a local dictionary file 
+so that <i>spell</i> recognizes special words and terms specific to your site or 
+application. After you have run <i>spell</i> and looked through the word list, 
+you can create a file containing the words that were not actual misspellings. 
+The <i>spell</i> command will check this list after it has gone through its own 
+dictionary. On certain systems, your word-list file must be
+<span class="docEmphBold">sorted</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-1">Section 
+22.1</a>). </p>
+<p class="docText">If you added the special terms in a file named
+<span class="docEmphasis">dict</span>, you could specify that file on the 
+command line using the <tt>+</tt> option: </p>
+<pre>$ <b>spell +dict sample</b>
+printerr</pre>
+<p class="docText">The output is reduced to the single misspelling.</p>
+<p class="docText">The <i>spell</i> command will make some errors based on 
+incorrect derivation of spellings from the root words contained in its 
+dictionary. If you understand <span class="docEmphBold">how spell</span>
+<span class="docEmphBold">works</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-4">Section 
+15.4</a>), you may be less surprised by some of these errors. </p>
+<p class="docText">As stated at the beginning, <i>spell</i> isn't on all Unix 
+systems, e.g., Darwin and FreeBSD. In these other environments, check for the 
+existence of alternative spell checking, such as <span class="docEmphBold">
+ispell</span> (<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-2">Section 
+16.2</a>). Or you can download and install the GNU version of <i>spell</i> at
+<a class="docLink" href="http://www.gnu.org/directory/spell.html" target="_blank">
+http://www.gnu.org/directory/spell.html</a>. </p>
+<p class="docText">—<span class="docEmphasis">DD and SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-16-SECT-2">16.2 Check Spelling Interactively with ispell</h3>
+<p class="docText">The original Unix spell-checking program,
+<span class="docEmphBold">spell</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-1">Section 
+15.1</a>), is fine for quick checks of spelling in a short document, but it 
+makes you cry out for a real spellchecker, which not only shows you the 
+misspelled words in context, but offers to change them for you. </p>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: ispell</p>
+<p class="docText"><i>ispell</i>, a very useful program that's been ported to 
+Unix and enhanced over the years, does all this and more. Either it will be 
+preinstalled or you'll need to install it for your Unix version. </p>
+<p class="docText">Here's the basic usage: just as with <i>spell</i>, you spell 
+check a document by giving <i>ispell</i> a filename. But there the similarities 
+cease. <i>ispell</i> takes over your screen or window, printing two lines of 
+context at the bottom of the screen. If your terminal can do reverse video, the 
+offending word is highlighted. Several alternate possibilities are presented in 
+the upper-left corner of the screen — any word in <i>ispell</i>'s dictionary 
+that differs by only one letter, has a missing or extra letter, or transposed 
+letters. </p>
+<p class="docText">Faced with a highlighted word, you have eight choices:</p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docEmphBold">SPACE</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Press the spacebar to accept the current spelling.</dd>
+  <dt><span class="docPubcolor"><span class="docEmphBold">A</span></span> </dt>
+  <dd>
+  <p class="docList">Type <tt>A</tt> to accept the current spelling, now and for 
+  the rest of this input file. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphBold">I</span></span> </dt>
+  <dd>
+  <p class="docList">Type <tt>I</tt> to accept the current spelling now and for 
+  the rest of this input file and also to instruct <i>ispell</i> to add the word 
+  to your private dictionary. By default, the private dictionary is the file
+  <span class="docEmphasis">.ispell_words</span> in your home directory, but it 
+  can be changed with the <i>-p</i> option or by setting the
+  <span class="docEmphBold">environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+  35.3</a>) <span class="docEmphasis">WORDLIST</span> to the name of some other 
+  file. If you work with computers, this option will come in handy since we use 
+  so much jargon in this business! It makes a lot more sense to &quot;teach&quot; all 
+  those words to <i>ispell</i> than to keep being offered them for possible 
+  correction. (One gotcha: when specifying an alternate file, you must use an
+  <span class="docEmphBold">absolute pathname</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-14">Section 
+  1.14</a>), or <i>ispell</i> will look for the file in your home directory.)
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphBold">0-9</span></span> </dt>
+  <dd>
+  <p class="docList">Type the digit corresponding to one of <i>ispell</i>'s 
+  alternative suggestions to use that spelling instead. For example, if you've 
+  typed &quot;hnadle,&quot; as I did when writing this article, <i>ispell</i> will offer
+  <tt>0: handle</tt> in the upper-left corner of your screen. Typing <tt>0</tt> 
+  makes the change and moves on to the next misspelling, if any. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphBold">R</span></span> </dt>
+  <dd>
+  <p class="docList">Type <tt>R</tt> if none of <i>ispell</i>'s offerings do the 
+  trick and you want to be prompted for a replacement. Type in the new word, and 
+  the replacement is made. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphBold">L</span></span> </dt>
+  <dd>
+  <p class="docList">Type <tt>L</tt> if <i>ispell</i> didn't make any helpful 
+  suggestions and you're at a loss as to how to spell the word correctly. <i>
+  ispell</i> will prompt you for a lookup string. You can use <tt>*</tt> as a 
+  wildcard character (it appears to substitute for zero or one characters); <i>
+  ispell</i> will print a list of matching words from its dictionary. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphBold">Q</span></span> </dt>
+  <dd>
+  <p class="docList">Type <tt>Q</tt> to quit, writing any changes made so far, 
+  but ignoring any misspellings later in the input file. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphBold">X</span></span> </dt>
+  <dd>
+  <p class="docList">Type <tt>X</tt> to quit without writing any changes.</dd>
+</dl>
+<p class="docText">But that's not all! <i>ispell</i> also saves a copy of your 
+original file with a <span class="docEmphasis">.bak</span> extension, just in 
+case you regret any of your changes. If you don't want <i>ispell</i> making
+<span class="docEmphasis">.bak</span> files, invoke it with the <i>-x</i> 
+option. </p>
+<p class="docText">How about this: <i>ispell</i> knows about capitalization. It 
+already knows about proper names and a lot of common acronyms — it can even 
+handle words like &quot;T<sub>E</sub>X&quot; that have oddball capitalization. Speaking of 
+T<sub>E</sub>X, <i>ispell</i> has special modes in which it recognizes T<sub>E</sub>X 
+constructions. </p>
+<p class="docText">If <i>ispell</i> isn't on your system by default, you should 
+be able to find an installation of it packaged in your system's own unique 
+software-installation packaging, discussed in
+<a class="docLink" href="_Chapter%2040.htm">Chapter 
+40</a>. </p>
+<p class="docText">In addition, you can also look for a newer spell-checking 
+utility, <i>aspell</i> , based on <i>ispell</i> but with improved processing. 
+Though <i>aspell</i> is being considered a replacement for <i>ispell</i>, the 
+latter is still the most commonly found and used of the two. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-16-SECT-3">16.3 How Do I Spell That Word?</h3>
+<p class="docText">Are you writing a document and want to check the spelling of 
+a word before you finish (if you aren't using a word processor with automatic 
+spelling correction, that is)? A Unix system gives you several ways to do this.
+</p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Because this is Unix, you can use any of these 
+        approaches when you write a script of your own. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">If you aren't sure which of two possible spellings is 
+  right, you can use the <i>spell</i> command with no arguments to find out. 
+  Type the name of the command, followed by a RETURN, then type the alternative 
+  spellings you are considering. Press CTRL-d (on a line by itself) to end the 
+  list. The <i>spell</i> command will echo back the word(s) in the list that it 
+  considers to be in error: </p>
+  <pre>$ <b>spell</b>
+misspelling
+mispelling
+CTRL-d
+mispelling</pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">If you're using <span class="docEmphBold">ispell</span> (
+  <a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-2">
+  Section 16.2</a>) or the newer <i>aspell</i>, you need to add the <i>-a</i> 
+  option. The purpose of this option is to let the speller interact with other 
+  programs; there are details in the programs' documentation. But, like most 
+  Unix filters, you can also let these programs read a word from standard input 
+  and write their response on standard output; it will either tell you that the 
+  spelling is right or give you a list of suggestions. <i>aspell</i> and <i>
+  ispell</i> will use their local dictionaries and improved spelling rules. </p>
+  <p class="docList">As an example, let's check the spelling of
+  <span class="docEmphasis">outragous</span> and <span class="docEmphasis">whut</span> 
+  with both <span class="docEmphasis">ispell</span> and
+  <span class="docEmphasis">aspell</span>: </p>
+  <pre>$ <b>ispell -a</b>
+@(#) International Ispell Version 3.1.20 10/10/95
+<b>outragous whut</b>
+&amp; outragous 1 0: outrageous
+&amp; whut 5 10: hut, shut, what, whet, whit
+
+CTRL-d
+$ <b>aspell -a</b>
+@(#) International Ispell Version 3.1.20 (but really Aspell .32.6 alpha)
+<b>outragous whut</b>
+&amp; outragous 3 0: outrageous, outrages, outrage's
+&amp; whut 5 10: what, whet, whit, hut, shut
+
+CTRL-d
+$</pre>
+  <p class="docList">When these spellers start, they print a version message and 
+  wait for input. I type the words I want to check and press RETURN. The speller 
+  returns one result line for each word:
+  <ul>
+    <li>
+    <p class="docList">A result of <tt>*</tt> means the word is spelled 
+    correctly.</li>
+    <li>
+    <p class="docList">A line starting with <tt>&amp;</tt> means the speller has 
+    suggestions. Then it repeats the word, the number of suggestions it has for 
+    that word, the character position that the word had on the input line, and 
+    finally the suggestions. </li>
+    <li>
+    <p class="docList">So <i>ispell</i> suggested that <span class="docEmphasis">
+    outragous</span> might be <span class="docEmphasis">outrageous</span>. <i>
+    aspell</i> also came up with <span class="docEmphasis">outrages</span> and
+    <span class="docEmphasis">outrage's</span>. (I'd say that
+    <span class="docEmphasis">outrage's</span> is barely a word. Be careful with
+    <i>aspell</i>'s suggestions.) Both spellers had five suggestions for
+    <span class="docEmphasis">whut</span>; the differences are interesting . . .
+    </li>
+    <li>
+    <p class="docList">A result of <tt>#</tt> means there were no suggestions.</li>
+  </ul>
+  <p class="docList">After processing a line, the spellers both print an empty 
+  line. Press CTRL-d to end input. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Another way to do the same thing is with
+  <span class="docEmphBold">look</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-14">Section 
+  13.14</a>). With just one argument, <i>look</i> searches the system word file,
+  <span class="docEmphasis">/usr/dict/words</span>, for words starting with the 
+  characters in that one argument. That's a good way to check spelling or find a 
+  related word: </p>
+  <pre>% <b>look help</b>
+help
+helpful
+helpmate</pre>
+  <p class="docList"><i>look</i> uses its <i>-df</i> options automatically when 
+  it searches the word list. <i>-d</i> ignores any character that isn't a 
+  letter, number, space or tab; <i>-f</i> treats upper- and lowercase letters 
+  the same. </span></li>
+</ol>
+</span>
+<p class="docText"><span class="docEmphasis">—JP and DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-16-SECT-4">16.4 Inside spell</h3>
+<p class="docText">[If you have <span class="docEmphBold">ispell</span> (<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-2">Section 
+16.2</a>), there's not a whole lot of reason for using <i>spell</i> any more. 
+Not only is <i>ispell</i> more powerful, it's a heck of a lot easier to update 
+its spelling dictionaries. Nonetheless, we decided to include this article, 
+because it clarifies the kinds of rules that spellcheckers go through to expand 
+on the words in their dictionaries. — TOR] </p>
+<p class="docText">On many Unix systems, the directory <span class="docEmphasis">
+/usr/lib/spell</span> contains the main program invoked by the <i>spell</i> 
+command along with auxiliary programs and data files. </p>
+<p class="docText">On some systems, the <i>spell</i> command is a shell script 
+that pipes its input through <span class="docEmphBold">deroff -w and sort -u</span> 
+(
+<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-6">
+Section 22.6</a>) to remove formatting codes and prepare a sorted word list, one 
+word per line. On other systems, it is a standalone program that does these 
+steps internally. Two separate spelling lists are maintained, one for American 
+usage and one for British usage (invoked with the <i>-b</i> option to <i>spell</i>). 
+These lists, <span class="docEmphasis">hlista</span> and
+<span class="docEmphasis">hlistb</span>, cannot be read or updated directly. 
+They are compressed files, compiled from a list of words represented as 
+nine-digit hash codes. (Hash coding is a special technique used to search for 
+information quickly.) </p>
+<p class="docText">The main program invoked by <i>spell</i> is <i>spellprog</i>. 
+It loads the list of hash codes from either <span class="docEmphasis">hlista</span> 
+or <span class="docEmphasis">hlistb</span> into a table, and it looks for the 
+hash code corresponding to each word on the sorted word list. This eliminates 
+all words (or hash codes) actually found in the spelling list. For the remaining 
+words, <i>spellprog</i> tries to derive a recognizable word by performing 
+various operations on the word stem based on suffix and prefix rules. A few of 
+these manipulations follow: </p>
+<dl class="docList">
+  <dd>-y+iness +ness -y+i+less +less -y+ies -t+ce -t+cy </dd>
+</dl>
+<p class="docText">The new words created as a result of these manipulations will 
+be checked once more against the spell table. However, before the 
+stem-derivative rules are applied, the remaining words are checked against a 
+table of hash codes built from the file <span class="docEmphasis">hstop</span>. 
+The stop list contains typical misspellings that stem-derivative operations 
+might allow to pass. For instance, the misspelled word <span class="docEmphasis">
+thier</span> would be converted into <span class="docEmphasis">thy</span> using 
+the suffix rule -y+ier. The <span class="docEmphasis">hstop</span> file accounts 
+for as many cases of this type of error as possible. </p>
+<p class="docText">The final output consists of words not found in the spell 
+list — even after the program tried to search for their stems — and words that 
+were found in the stop list. </p>
+<p class="docText">You can get a better sense of these rules in action by using 
+the <i>-v</i> or <i>-x</i> option. The <i>-v</i> option eliminates the last 
+look-up in the table and produces a list of words that are not actually in the 
+spelling list, along with possible derivatives. It allows you to see which words 
+were found as a result of stem-derivative operations and prints the rule used. 
+(Refer to the <span class="docEmphasis">sample</span> file in
+<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-1">
+Section 16.1</a>.) </p>
+<pre>% <b>spell -v sample</b>
+Alcuin
+ditroff
+LaserWriter
+PostScript
+printerr
+TranScript
++out  output
++s    uses</pre>
+<p class="docText">The <i>-x</i> option makes <i>spell</i> begin at the 
+stem-derivative stage and prints the various attempts it makes to find the stem 
+of each word. </p>
+<pre>% <b>spell -x sample</b>
+...
+=into
+=LaserWriter
+=LaserWrite
+=LaserWrit
+=laserWriter
+=laserWrite
+=laserWrit
+=output
+=put
+...
+LaserWriter
+...</pre>
+<p class="docText">The stem is preceded by an equals sign (<tt>=</tt>). At the 
+end of the output are the words whose stem does not appear in the spell list.
+</p>
+<p class="docText">One other file you should know about is
+<span class="docEmphasis">spellhist</span>. On some systems, each time you run
+<i>spell</i>, the output is appended through <span class="docEmphBold">tee</span> 
+(<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-8">Section 
+43.8</a>) into <span class="docEmphasis">spellhist</span>, in effect creating a 
+list of all the misspelled or unrecognized words for your site. The
+<span class="docEmphasis">spellhist</span> file is something of a &quot;garbage&quot; file 
+that keeps on growing: you will want to reduce it or remove it periodically. To 
+extract useful information from this <span class="docEmphasis">spellhist</span>, 
+you might use the <i>sort</i> and <span class="docEmphBold">uniq -c</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-20">Section 
+21.20</a>) commands to compile a list of misspelled words or special terms that 
+occur most frequently. It is possible to add these words back into the basic 
+spelling dictionary, but this is too complex a process to describe here. It's 
+probably easier just to use a <span class="docEmphBold">local spelling 
+dictionary</span> (<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-1">Section 
+16.1</a>). Even better, use <i>ispell</i>; not only is it a more powerful 
+spelling program, it is much easier to <span class="docEmphBold">update the word 
+lists it uses</span> (<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-5">Section 
+16.5</a>). </p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-16-SECT-5">16.5 Adding Words to ispell's Dictionary</h3>
+<p class="docText"><span class="docEmphBold">ispell</span> (<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-2">Section 
+16.2</a>) uses two lists for spelling verification: a master word list and a 
+supplemental personal word list. </p>
+<p class="docText">The master word list for <i>ispell</i> is normally the file
+<span class="docEmphasis">/usr/local/lib/ispell/ispell.hash</span>, though the 
+location of the file can vary on your system. This is a &quot;hashed&quot; dictionary 
+file. That is, it has been converted to a condensed, program-readable form using 
+the <i>buildhash</i> program (which comes with <i>ispell</i>) to speed the 
+spell-checking process. </p>
+<p class="docText">The personal word list is normally a file called <i>.ispell_english</i> 
+or <i>.ispell_words</i> in your home directory. (You can override this default 
+with either the <i>-p</i> command-line option or the <span class="docEmphasis">
+WORDLIST</span> <span class="docEmphBold">environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>).) This file is simply a list of words, one per line, so you can 
+readily edit it to add, alter, or remove entries. The personal word list is 
+normally used in addition to the master word list, so if a word usage is 
+permitted by either list it is not flagged by <i>ispell</i>. </p>
+<p class="docText">Custom personal word lists are particularly useful for 
+checking documents that use jargon or special technical words that are not in 
+the master word list, and for personal needs such as holding the names of your 
+correspondents. You may choose to keep more than one custom word list to meet 
+various special requirements. </p>
+<p class="docText">You can add to your personal word list any time you use <i>
+ispell</i>: simply use the <i>I</i> command to tell <i>ispell</i> that the word 
+it offered as a misspelling is actually correct, and should be added to the 
+dictionary. You can also add a list of words from a file using the
+<span class="docEmphBold">ispell -a</span> (<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-3">Section 
+16.3</a>) option. The words must be one to a line, but need not be sorted. Each 
+word to be added must be preceded with an asterisk. (Why? Because
+<span class="docEmphasis">ispell -a</span> has other functions as well.) So, for 
+example, we could have added a list of Unix utility names to our personal 
+dictionaries all at once, rather than one-by-one as they were encountered during 
+spell checking. </p>
+<p class="docText">Obviously, though, in an environment where many people are 
+working with the same set of technical terms, it doesn't make sense for each 
+individual to add the same word list to his own private
+<span class="docEmphasis">.ispell_words</span> file. It would make far more 
+sense for a group to agree on a common dictionary for specialized terms and 
+always to set <span class="docEmphasis">WORDLIST</span> to point to that common 
+dictionary. </p>
+<p class="docText">If the private word list gets too long, you can create a 
+&quot;munched&quot; word list. The <i>munchlist</i> script that comes with <i>ispell</i> 
+reduces the words in a word list to a set of word roots and permitted suffixes 
+according to rules described in the <span class="docEmphasis">ispell</span>(4) 
+reference page that will be installed with <i>ispell</i> from the CD-ROM [see
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>]. This creates a more compact but still 
+editable word list. </p>
+<p class="docText">Another option is to provide an alternative master spelling 
+list using the <i>-d</i> option. This has two problems, though: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">The master spelling list should include spellings that are 
+  always valid, regardless of context. You do not want to overload your master 
+  word list with terms that might be misspellings in a different context. For 
+  example, <i>perl</i> is a powerful programming language, but in other 
+  contexts, <span class="docEmphasis">perl</span> might be a misspelling of
+  <span class="docEmphasis">pearl</span>. You may want to place
+  <span class="docEmphasis">perl</span> in a supplemental word list when 
+  documenting Unix utilities, but you probably wouldn't want it in the master 
+  word list unless you were documenting Unix utilities most of the time that you 
+  use <i>ispell</i>. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">The <i>-d</i> option must point to a hashed dictionary 
+  file. What's more, you cannot edit a hashed dictionary; you will have to edit 
+  a master word list and use (or have the system administrator use) <i>buildhash</i> 
+  to hash the new dictionary to optimize spell checker performance. </span></li>
+</ol>
+</span>
+<p class="docText">To build a new hashed word list, provide <i>buildhash</i> 
+with a complete list of the words you want included, one per line. (The <i>
+buildhash</i> utility can only process a raw word list, not a munched word 
+list.) The standard system word list, <span class="docEmphasis">/usr/dict/words</span> 
+on many systems, can provide a good starting point. This file is writable only 
+by the system administrator and probably shouldn't be changed in any case. So 
+make a copy of this file, and edit or add to the copy. After processing the file 
+with <i>buildhash</i>, you can either replace the default
+<span class="docEmphasis">ispell.hash</span> file or point to your new hashed 
+file with the <i>-d</i> option. </p>
+<p class="docText"><span class="docEmphasis">—TOR and LK</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-16-SECT-6">16.6 Counting Lines, Words, and Characters: wc</h3>
+<p class="docText">The <i>wc</i> (word count) command counts the number of 
+lines, words, and characters in the files you specify. (Like most Unix 
+utilities, <i>wc</i> reads from its standard input if you don't specify a 
+filename.) For example, the file <span class="docEmphasis">letter</span> has 120 
+lines, 734 words, and 4,297 characters: </p>
+<pre>% <b>wc letter</b>
+     120     734    4297 letter</pre>
+<p class="docText">You can restrict what is counted by specifying the options <i>
+-l</i> (count lines only), <i>-w</i> (count words only), and <i>-c</i> (count 
+characters only). For example, you can count the number of lines in a file: </p>
+<pre>% <b>wc -l letter</b>
+     120 letter</pre>
+<p class="docText">or you can count the number of files in a directory: </p>
+<pre>% <b>cd man_pages</b>
+% <b>ls | wc -w</b>
+     233</pre>
+<p class="docText">The first example uses a file as input; the second example 
+pipes the output of an <i>ls</i> command to the input of <i>wc</i>. (Be aware 
+that the <span class="docEmphBold">-a option</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-9">Section 
+8.9</a>) makes <i>ls</i> list dot files. If your <i>ls</i> command is
+<span class="docEmphBold">aliased</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>) to include <i>-a</i> or other options that add words to the normal 
+output — such as the line <tt>total</tt> <tt><i>nnn</i></tt> from
+<span class="docEmphasis">ls -l</span> — then you may not get the results you 
+want.) </p>
+<p class="docText">The following command will tell you how many more words are 
+in <span class="docEmphasis">new.file</span> than in <span class="docEmphasis">
+old.file</span>: </p>
+<pre>% <b>expr `wc -w &lt; new.file`  -  `wc -w &lt; old.file`</b></pre>
+<p class="docText">Many shells have built-in arithmetic commands and don't 
+really need <i>expr </i>; however, <i>expr</i> works in all shells. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">In a programming application, you'll usually want <i>
+        wc</i> to read the input files by using a <tt>&lt;</tt> character, as shown 
+        earlier. If instead you say: </p>
+        <pre>% <b>expr `wc -w new.file` - `wc -w old.file`</b></pre>
+        <p class="docText">the filenames will show up in the expressions and 
+        produce a syntax error.<span id="ENB16-1"><a class="docLink" href="#EN16-1"><sup>[1]</sup></a></span></p>
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Taking this concept a step further, here's a simple shell 
+script to calculate the differences in word count between two files: </p>
+<pre>count_1=`wc -w &lt; $1`   # number of words in file 1
+count_2=`wc -w &lt; $2`   # number of words in file 2
+
+diff_12=`expr $count_1 - $count_2`   # difference in word count
+
+# if $diff_12 is negative, reverse order and don't show the minus sign:
+case &quot;$diff_12&quot; in
+-*) echo &quot;$2 has `expr $diff_12 : '-\(.*\)'` more words than $1&quot; ;;
+*)  echo &quot;$1 has $diff_12 more words than $2&quot; ;;
+esac</pre>
+<p class="docText">If this script were called <span class="docEmphasis">count.it</span>, 
+then you could invoke it like this: </p>
+<pre>% <b>count.it draft.2 draft.1</b>
+draft.1 has 23 more words than draft.2</pre>
+<p class="docText">You could modify this script to count lines or characters.</p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Unless the counts are very large, the output of <i>wc</i> 
+        will have leading spaces. This can cause trouble in scripts if you 
+        aren't careful. For instance, in the previous script, the command: </p>
+        <pre>echo &quot;$1 has $count_1 words&quot;</pre>
+        <p class="docText">might print:</p>
+        <pre>draft.2 has       79 words</pre>
+        <p class="docText">See the extra spaces? Understanding how the shell 
+        handles <span class="docEmphBold">quoting</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+        27.12</a>) will help here. If you can, let the shell read the <i>wc</i> 
+        output and remove extra spaces. For example, without quotes, the shell 
+        passes four separate words to <i>echo</i> -- and <i>echo</i> adds a 
+        single space between each word: </p>
+        <pre>echo $1 has $count_1 words</pre>
+        <p class="docText">that might print:</p>
+        <pre>draft.2 has 79 words</pre>
+        <p class="docText">That's especially important to understand when you 
+        use <i>wc</i> with <i>test</i> or <i>expr</i> commands that don't expect 
+        spaces in their arguments. If you can't use the shell to strip out the 
+        spaces, delete them by piping the <i>wc</i> output through
+        <span class="docEmphBold">tr -d ' '</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-11">Section 
+        21.11</a>). </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Finally, two notes about file size:</p>
+<ul>
+  <li>
+  <p class="docList"><span class="docEmphasis">wc -c</span> isn't an efficient 
+  way to count the characters in large numbers of files. <i>wc</i> opens and 
+  reads each file, which takes time. The fourth or fifth column of output from
+  <span class="docEmphasis">ls -l</span> (depending on your version) gives the 
+  character count without opening the file. </li>
+  <li>
+  <p class="docList">Using character counts (as in the previous item) doesn't 
+  give you the total disk space used by files. That's because, in general, each 
+  file takes at least one disk block to store. The <span class="docEmphBold">du</span> 
+  (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-8">Section 
+  15.8</a>) command gives accurate disk usage. </li>
+</ul>
+<p class="docText"><span class="docEmphasis">—JP, DG, and SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-16-SECT-7">16.7 Find a a Doubled Word</h3>
+<p class="docText">One type of error that's hard to catch when proofreading is a 
+doubled word. It's hard to miss the double &quot;a&quot; in the title of this article, but 
+you might find yourself from time to time with a &quot;the&quot; on the end of one line 
+and the beginning of another. </p>
+<p class="docText">We've seen <i>awk</i> scripts to catch this, but nothing so 
+simple as this shell function. Here are two versions; the second is for the
+<span class="docEmphBold">System V version of tr</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-11">Section 
+21.11</a>): </p>
+<p class="docText"><tt>uniq</tt>
+<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-20">
+Section 21.20</a></p>
+<pre>ww( ) { cat $* | tr -cs &quot;a-z'&quot; &quot;\012&quot; | uniq -d; }
+
+ww( ) { cat $* | tr -cs &quot;[a-z]'&quot; &quot;[\012*]&quot; | uniq -d; }</pre>
+<p class="docText">In the script <i>ww.sh</i>, the output of the file is piped 
+to <i>tr</i> to break the stream into separate words, which is then passed to 
+the <i>uniq</i> command for testing of duplicate terms. </p>
+<p class="docText"><span class="docEmphasis">—TOR and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-16-SECT-8">16.8 Looking for Closure</h3>
+<p class="docText">A common problem in text processing is making sure that items 
+that need to occur in pairs actually do so. </p>
+<p class="docText">Most Unix text editors include support for making sure that 
+elements of C syntax such as parentheses and braces are closed properly. Some 
+editors, such as <span class="docEmphBold">Emacs</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-1">Section 
+19.1</a>) and <span class="docEmphBold">vim</span>
+<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-1">
+Section 17.1</a>), also support syntax coloring and checking for text documents 
+-- HTML and SGML, for instance. There's much less support in command-line 
+utilities for making sure that textual documents have the proper structure. For 
+example, HTML documents that start a list with <tt>&lt;UL&gt;</tt> need a closing <tt>
+&lt;/UL&gt;</tt>. </p>
+<p class="docText">Unix provides a number of tools that might help you to tackle 
+this problem. Here's a <i>gawk</i> script written by Dale Dougherty that makes 
+sure <tt>&lt;UL&gt;</tt> and <tt>&lt;/UL&gt;</tt> tags macros come in pairs: </p>
+<p class="docText"><tt>gawk</tt>
+<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-11">
+Section 20.11</a></p>
+<pre>#! /usr/local/bin/gawk -f
+BEGIN {
+    IGNORECASE = 1
+    inList = 0
+    LSlineno = 0
+    LElineno = 0
+    prevFile = &quot;&quot;
+}
+# if more than one file, check for unclosed list in first file
+FILENAME != prevFile {
+    if (inList)
+     printf (&quot;%s: found &lt;UL&gt; at line %d without &lt;/UL&gt; before end of file\n&quot;,
+            prevFile, LSlineno)
+    inList = 0
+    prevFile = FILENAME
+}
+# match &lt;UL&gt; and see if we are in list
+/^&lt;UL&gt;/ {
+    if (inList) {
+        printf(&quot;%s: nested list starts: line %d and %d\n&quot;,
+            FILENAME, LSlineno, FNR)
+    }
+    inList = 1
+    LSlineno = FNR
+}
+/^&lt;\/UL&gt;/ {
+    if (! inList)
+        printf(&quot;%s: too many list ends: line %d and %d\n&quot;,
+            FILENAME, LElineno, FNR)
+    else
+        inList = 0
+    LElineno = FNR
+}
+# this catches end of input
+END {
+    if (inList)
+        printf (&quot;%s: found &lt;UL&gt; at line %d without &lt;/UL&gt; before end of file\n&quot;,
+            FILENAME, LSlineno)
+}</pre>
+<p class="docText">You can adapt this type of script for any place you need to 
+check for a start and finish to an item. Note, though, that not all systems have
+<i>gawk</i> preinstalled. You'll want to look for an installation of the utility 
+for your system to use this script. </p>
+<p class="docText">A more complete syntax-checking program could be written with 
+the help of a lexical analyzer like <i>lex</i>. <i>lex</i> is normally used by 
+experienced C programmers, but it can be used profitably by someone who has 
+mastered <i>awk</i> and is just beginning with C, since it combines an <i>awk</i>-like 
+pattern-matching process using regular-expression syntax with actions written in 
+the more powerful and flexible C language. (See O'Reilly &amp; Associates'
+<span class="docEmphasis">lex &amp; yacc</span>.) </p>
+<p class="docText">Of course, this kind of problem could be very easily tackled 
+with the information in
+<a class="docLink" href="_chapter 41.htm">Chapter 
+41</a>. </p>
+<p class="docText"><span class="docEmphasis">—TOR and SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-16-SECT-9">16.9 Just the Words, Please</h3>
+<p class="docText">In various textual-analysis scripts, you
+<span class="docEmphBold">sometimes need just the words</span> (<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-7">Section 
+16.7</a>). </p>
+<p class="docText">I know two ways to do this. The <i>deroff</i> command was 
+designed to strip out <span class="docEmphBold">troff</span>
+<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-11">
+Section 45.11</a>) constructs and punctuation from files. The command
+<span class="docEmphasis">deroff -w</span> will give you a list of just the 
+words in a document; pipe to <span class="docEmphBold">sort -u</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-6">Section 
+22.6</a>) if you want only one of each. </p>
+<p class="docText"><i>deroff</i> has one major failing, though. It considers a 
+word as just a string of characters beginning with a letter of the alphabet. A 
+single character won't do, which leaves out one-letter words like the indefinite 
+article &quot;A.&quot; </p>
+<p class="docText">A substitute is <span class="docEmphBold">tr</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-11">Section 
+21.11</a>), which can perform various kinds of character-by-character 
+conversions. </p>
+<p class="docText">To produce a list of all the individual words in a file, type 
+the following: </p>
+<p class="docText"><tt>&lt;</tt>
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">
+Section 43.1</a></p>
+<pre>% <b>tr -cs A-Za-z '\012' &lt; </b><i> file </i></pre>
+<p class="docText">The <i>-c</i> option &quot;complements&quot; the first string passed to
+<i>tr</i>; <i>-s</i> squeezes out repeated characters. This has the effect of 
+saying: &quot;Take any nonalphabetic characters you find (one or more) and convert 
+them to newlines (<tt>\012</tt>).&quot; </p>
+<p class="docText">(Wouldn't it be nice if <i>tr</i> just recognized standard 
+Unix <span class="docEmphBold">regular expression syntax</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-4">Section 
+32.4</a>)? Then, instead of <tt>-c A-Za-z</tt>, you'd say <tt>'[^A-Za-z]'</tt>. 
+It's no less obscure, but at least it's used by other programs, so there's one 
+less thing to learn.) </p>
+<p class="docText">The <span class="docEmphBold">System V version of tr</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-11">Section 
+21.11</a>) has slightly different syntax. You'd get the same effect with this:
+</p>
+<pre>% <b>tr -cs '[A-Z][a-z]' '[\012*]' &lt;  </b><i>file </i></pre>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN16-1"><a class="docLink" href="#ENB16-1">[1]</a>&nbsp;&nbsp;You could also type
+          <tt>cat new.file | wc -w</tt>, but this involves two commands, so it's
+          <span class="docEmphBold">less efficient</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-2">Section 
+          43.2</a>).</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 15.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 17.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

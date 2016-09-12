@@ -1,0 +1,502 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 37</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 36.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 38.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 37. Shell Script Debugging and Gotchas</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-37-SECT-1">37.1 Tips for Debugging Shell Scripts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-37-SECT-2">37.2 Bourne Shell Debugger Shows a Shell Variable</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-37-SECT-3">37.3 Stop Syntax Errors in Numeric Tests</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-37-SECT-4">37.4 Stop Syntax Errors in String Tests</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-37-SECT-5">37.5 Quoting and Command-Line Parameters</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-37-SECT-6">37.6 How Unix Keeps Time</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-37-SECT-7">37.7 Copy What You Do with script</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-37-SECT-8">37.8 Cleaning script Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-37-SECT-9">37.9 Making an Arbitrary-Size File for Testing</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-37-SECT-1">37.1 Tips for Debugging Shell Scripts</h3>
+<p class="docText">Depending on the Bourne shell version you have, the error 
+messages it gives can be downright useless. For instance, it might say just <tt>
+End</tt> <tt>of</tt> <tt>file</tt> <tt>unexpected</tt>. Here are a few tricks to 
+use to get a little more information about what's going on. Remember, it's 
+probably best for you to use one of shells derived from the Bourne shell, rather 
+than the C shell, for scripting. </p>
+<h4  id="upt3-CHP-37-SECT-1.1" class="docSection2Title">37.1.1 Use -xv</h4>
+<p class="docText">Start your script like this:</p>
+<pre>#!/bin/sh -xv</pre>
+<p class="docText">(If your Unix can't handle <tt>#!</tt>, use the command
+<span class="docEmphBold">set -xv</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">Section 
+35.25</a>)). The <tt>-xv</tt> shows you what's happening as the shell reads your 
+script. The lines of the script will be shown as the shell reads them. The shell 
+shows each command it executes with a plus sign (<tt>+</tt>) before the command.
+</p>
+<p class="docText">Note that the shell reads an entire loop (<i>for</i>, <i>
+while</i>, etc.) before it executes any commands in the loop. </p>
+<p class="docText">If you want to run a script with debugging but you don't want 
+to edit the script file, you can also start the shell explicitly from the 
+command line and give the options there: </p>
+<pre>% <b>sh -xv  </b><i>scrfile </i></pre>
+<p class="docText">Debugging output is usually pretty long, more than a 
+screenful, so I pipe it to a pager like <i>less</i>. But the shell sends its 
+debugging output to <span class="docEmphasis">stderr</span>, so I
+<span class="docEmphBold">pipe both stdout and stderr</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-4">Section 
+43.4</a>) to the pager. </p>
+<pre>$ <i>scrfile </i><b> 2&gt;&amp;1 | less </b></pre>
+<p class="docText">Do you want to save the debugging output in a file and see it 
+on your screen, too? Use <span class="docEmphBold">tee</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-8">Section 
+43.8</a>) to copy the <span class="docEmphasis">scrfile</span> stdout and stderr; 
+add <i>tee</i> to the pipeline before the pager. </p>
+<pre>$ <i>scrfile </i><b> | tee  </b><i>outfile </i> <b>2&gt;&amp;1 | </b> <i>less </i></pre>
+<p class="docText">If the script is slow, you can run it in the background.
+<span class="docEmphBold">Redirect the shell's output and errors</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-5">Section 
+43.5</a>,
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-11">
+Section 27.11</a>) into a temporary file. Use <span class="docEmphBold">tail -f</span> 
+(<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-10">Section 
+12.10</a>) to &quot;watch&quot; the log file. If you want to do something else while the 
+script runs, just kill the <i>tail</i> command (with CTRL-c or your interrupt 
+key), do something else, then start another <i>tail -f</i> when you want to 
+watch again. </p>
+<p class="docText">Finally, if the script normally writes something to its 
+standard output, you can <span class="docEmphBold">split the normal and 
+debugging outputs into two files</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>). </p>
+<h4  id="upt3-CHP-37-SECT-1.2" class="docSection2Title">37.1.2 Unmatched Operators</h4>
+<p class="docText">If the shell says <tt>End of file unexpected</tt>, look for a 
+line in your script that has an opening quote but no closing quote. The shell is 
+probably searching for but never finding the matching quote. Missing parentheses 
+and braces (<tt>{}</tt>) can cause the same error. </p>
+<h4  id="upt3-CHP-37-SECT-1.3" class="docSection2Title">37.1.3 Exit Early</h4>
+<p class="docText">If you're getting an <tt>End of file unexpected</tt> error, 
+put these two lines near the middle of the script: </p>
+<pre>echo &quot;DEBUG: quitting early...&quot; 1&gt;&amp;2
+exit</pre>
+<p class="docText">Then run your script. Those lines will print a message and 
+stop the shell where you put them. If you don't get the <tt>End of file 
+unexpected</tt> error anymore, you know that the problem is somewhere after the
+<tt>exit</tt> line, and you can move those two lines farther down and try again. 
+Otherwise, move them up. </p>
+<h4  id="upt3-CHP-37-SECT-1.4" class="docSection2Title">37.1.4 Missing or Extra esac, ;;, fi, etc.</h4>
+<p class="docText">A message like <tt>line 23: ;; unexpected</tt> means that you 
+have an unmatched piece of code somewhere before line 23. You'll also see <tt>fi 
+unexpected</tt>. Look at all nested <i>if</i> and <i>case</i> statements, and 
+statements like them, to be sure that they end in the right places. </p>
+<h4  id="upt3-CHP-37-SECT-1.5" class="docSection2Title">37.1.5 Line Numbers Reset Inside Redirected Loops</h4>
+<p class="docText">The shell may give you an error that mentions &quot;line 1&quot; or 
+another line number that seems way too small, when there's no error close to the 
+top of your script. Look at any loops or other structures with
+<span class="docEmphBold">redirected inputs or outputs</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-6">Section 
+43.6</a>). Some Bourne shells start a separate shell to run these loops and lose 
+track of the line numbers. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-37-SECT-2">37.2 Bourne Shell Debugger Shows a Shell Variable</h3>
+<p class="docText">If you have a shell script that sets several variables and 
+you want to show the value of one of them, you can add <span class="docEmphBold">
+a loop that asks you for variable names and displays their values</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-14">Section 
+36.14</a>): </p>
+<pre>% <b>cat myscript</b>
+#!/bin/sh
+   ...
+while echo &quot;Pick a variable; just RETURN quits: \c&quot;
+      read var
+do
+      case &quot;$var&quot; in
+      &quot;&quot;) break ;;
+      *)  eval echo \$$var ;;
+      esac
+done</pre>
+<p class="docText">The loop prompts <tt>Pick a variable</tt>:, then reads a 
+value; if you type an empty answer, the loop quits. Otherwise, the value of that 
+variable is displayed; the <span class="docEmphBold">eval</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-8">Section 
+27.8</a>) command scans the <i>echo</i> command line twice. </p>
+<p class="docText">This tip isn't just good for debugging. It's good in any 
+shell script where you need to show the value of a variable by typing its name.
+</p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-37-SECT-3">37.3 Stop Syntax Errors in Numeric Tests</h3>
+<p class="docText">The <span class="docEmphBold">test and [ (square bracket) 
+commands</span> (
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">
+Section 35.26</a>) can compare two numbers. But it's an error if one of the 
+numbers you test is stored in a shell variable that's empty or doesn't exist. 
+For example, an empty <span class="docEmphasis">num</span> variable here will 
+give you a <tt>Syntax error</tt>: </p>
+<pre>if [ &quot;$num&quot; -gt 0 ]
+then ...</pre>
+<p class="docText">To stop syntax errors, add a leading zero, like this:</p>
+<pre>if [ &quot;0$num&quot; -gt 0 ]
+then ...</pre>
+<p class="docText">In that case, if <tt>$num</tt> is empty, the test will 
+compare <tt>0</tt> to <tt>0</tt>. If <tt>$num</tt> is <tt>1</tt>, the test will 
+be true (because <tt>01</tt> is greater than <tt>0</tt>) — and so on, just as it 
+should be. </p>
+<p class="docText">The zero trick doesn't work with negative numbers, though, so 
+if you expect ever to need to deal with negative numbers, you may want to look 
+into other methods of checking to see if a variable has a value, such as this 
+method from the <i>bash</i> shell, which displays an error if the variable is 
+null or unset, or the following method, which assigns a default value: </p>
+<pre>#!/bin/sh
+   ...
+
+# check $num first, fail with error
+tmp=${num:?&quot;num not set&quot;}
+
+# use a default
+default=0
+if [ ${num:-default} -gt 0 ]
+then
+   ...</pre>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-37-SECT-4">37.4 Stop Syntax Errors in String Tests</h3>
+<p class="docText">Using the <span class="docEmphBold">test or [ (square 
+bracket) command</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">Section 
+35.26</a>) for a string test can cause errors if the variable starts with a dash 
+(<tt>-</tt>). For example: </p>
+<pre>if [ &quot;$var&quot; = <tt><i>something</i></tt> ]
+then ...</pre>
+<p class="docText">If <tt>$var</tt> starts with <tt>-r</tt>, the <i>test</i> 
+command may think that you want to test for a readable file. </p>
+<p class="docText">One common fix (that doesn't always work; see below) is to 
+put an extra character at the start of each side of the test. This means the 
+first argument will never start with a dash; it won't look like an option: </p>
+<pre>if [ &quot;X$var&quot; = X<tt><i>something</i></tt> ]
+then ...</pre>
+<p class="docText">That trick doesn't work if you want the test to fail when the 
+variable is empty or not set. Here's a Bourne shell test that handles empty 
+variables: </p>
+<pre>case &quot;${var+X}&quot; in
+X) <i>...do this if variable is set...</i>
+   ;;
+
+*) <i>...do this if variable is not set...</i>
+   ;;
+esac</pre>
+<p class="docText">If <tt>$var</tt> is set (even if it has an empty string), the 
+shell replaces <span class="docEmphBold">${var+X}</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">Section 
+36.7</a>) with just <tt>X</tt> and the first part of the <i>case</i> succeeds. 
+Otherwise the default case, <tt>*)</tt>, is used. </p>
+<p class="docText">See also
+<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-3">
+Section 37.3</a> for a brief example of <i>bash</i> parameter expansion and 
+dealing with unset or null values by reporting an error or by assigning default 
+values. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-37-SECT-5">37.5 Quoting and Command-Line Parameters</h3>
+<p class="docText"><span class="docEmphBold">Q:</span> <span class="docEmphasis">
+I need to pass a shell script some arguments with multiple words. I thought that 
+putting <span class="docEmphBold">quotes</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) around command-line arguments would group them. The shell script 
+seems to ignore the quoting, somehow. Here's a simple example:</span> </p>
+<pre>$ <b>cat script</b>
+   ...
+for arg in $*
+do
+    echo &quot;Argument is $arg&quot;
+done
+$ <b>script '1 2 3' 4</b>
+   ...
+Argument is 1
+Argument is 2
+Argument is 3
+Argument is 4</pre>
+<p class="docText"><span class="docEmphBold">A:</span> This is the way <tt>$*</tt> 
+is defined to work. <tt>$*</tt> expands to: </p>
+<pre>$1 $2</pre>
+<p class="docText">[not <tt>&lt;&quot;&gt;$1&lt;&quot;&gt; &lt;&quot;&gt;$2&lt;&quot;&gt;</tt> <span class="docEmphasis">— 
+JP</span>] if there are two arguments. Hence the <i>for</i> loop reads: </p>
+<pre>for arg in 1 2 3 4</pre>
+<p class="docText">Note that the quotes are gone. What you wanted the shell to 
+see was:</p>
+<pre>for arg in '1 2 3' 4</pre>
+<p class="docText">You can't get that, but you can get something that is good 
+enough: </p>
+<p class="docText"><tt>&quot;$@&quot;</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">
+Section 35.20</a></p>
+<pre>for arg in &quot;$@&quot;</pre>
+<p class="docText">In effect, <tt>$@</tt> expands to: </p>
+<pre>$1&quot; &quot;$2</pre>
+<p class="docText">Putting <tt>&quot;&quot;</tt>s around <tt>$@</tt>, the effect is: </p>
+<pre>for arg in &quot;$1&quot; &quot;$2&quot;</pre>
+<p class="docText">Shell quoting is unnecessarily complex. The C shell actually 
+has the right idea (variables can be set to &quot;word lists&quot;;
+<span class="docEmphasis">argv</span> is such a list), but its defaults and 
+syntax for suppressing them make for an artless programming language: </p>
+<pre>foreach arg ($argv:q)      # colon q ?!?</pre>
+<p class="docText">For the special case of iterating a shell variable over the 
+argument list as it stands at the beginning of the iteration, the Bourne shell 
+provides the construct <tt>for arg</tt> <tt>do</tt> [i.e., no <tt>in</tt> <tt>
+<i>list </i></tt><span class="docEmphasis">— JP</span>]: </p>
+<pre>for arg
+do echo &quot;Argument is $arg&quot;
+done</pre>
+<p class="docText">The example produces:</p>
+<pre>Argument is 1 2 3
+Argument is 4</pre>
+<p class="docText"><tt>&quot;$@&quot;</tt> is still needed for passing argument lists to 
+other programs. Unfortunately, since <tt>$@</tt> is defined as expanding to: </p>
+<pre>$1&quot; &quot;$2...$<tt><i>n-1</i></tt>&quot; &quot;$<tt><i>n</i></tt></pre>
+<p class="docText">(where <tt><i>n</i></tt> is the number of arguments), when 
+there are no arguments, <tt>&quot;$@&quot;</tt> expands to <tt>&quot;&quot;</tt>, and <tt>&quot;&quot;</tt> 
+produces a single argument. [Many Unix vendors considered this a bug and changed 
+it so that it produces <span class="docEmphasis">no</span> arguments.
+<span class="docEmphasis">— JP</span>] The best solution for this is to use, for 
+example: </p>
+<pre>% <b>cat bin/okeeffe</b>
+#! /bin/sh
+exec rsh okeeffe.berkeley.edu -l torek ${1+&quot;$@&quot;}
+%</pre>
+<p class="docText">The construct <tt>${1+&quot;$@&quot;}</tt> means &quot;expand <tt>$1</tt>, 
+but if <tt>$1</tt> is not defined, use <tt>&quot;$@&quot;</tt> instead.&quot; [You don't need 
+this on Bourne shells with the &quot;bug fix&quot; I mentioned, or on <i>bash</i>
+<span class="docEmphasis">et al</span>. <span class="docEmphasis">— JP</span>] 
+Hence, if there are no arguments, we get <tt>$1</tt> (which is nothing and 
+produces no arguments); otherwise, we get <tt>&quot;$@&quot;</tt> (which expands as 
+above). <tt>${<i>var</i>+<i>instead</i>}</tt> is one of several <i>sh</i>
+<span class="docEmphBold">&quot;expansion shortcuts&quot;</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">Section 
+36.7</a>). Another more generally useful one is <tt>${<i>var-default</i>}</tt>, 
+which expands to <tt>$<i>var</i></tt>, but if <span class="docEmphasis">var</span> 
+is not set, to <tt><i>default</i></tt> instead. All of these can be found in the 
+manual for <i>sh</i>, which is worth reading several times, experimenting as you 
+go. </p>
+<p class="docText"><i>bash</i> has a variety of similar but expanded mechanisms 
+as well, involving a colon before the modifier: </p>
+<pre>foo=${bar:-baz}             <i>if bar set and non-null, substitute value, else substitute baz...</i>
+fum=${fee:=foe}             <i>if fee unset or is null, set it to foe, value then substituted...</i>
+fiend=${jeckyll::=hyde}     <i>set jeckyll to hyde, then substitute value... (zsh only)</i>
+${required?&quot;error&quot;}        <i>if required set or non-null, substitute its value,
+                                  else return &quot;error&quot; and exit...</i>
+man=${fullmoon:+wolfman}    <i>if fullmoon set and non-null, substitute wolfman, </i>
+<i>                                                        else substitute nothing...</i></pre>
+<p class="docText">See the <i>bash</i> manual page's section on parameter 
+expansion. <i>ksh</i>, <i>pdksh</i>, and <i>zsh</i> also have support for the 
+same syntax; <i>zsh</i> has an entire manual page devoted to just parameter 
+expansions: <span class="docEmphasis">zshexpn</span>(1). Poke around; there's 
+lots of good stuff to explore. </p>
+<p class="docText">—<span class="docEmphasis">CT and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-37-SECT-6">37.6 How Unix Keeps Time</h3>
+<p class="docText">Like all other operating systems, Unix has a concept of the 
+time. And virtually all Unix systems, even the smallest, include a clock with 
+some sort of battery backup built in. </p>
+<p class="docText">All Unix systems keep time by counting the number of 
+microseconds since midnight, January 1, 1970, Greenwich Mean Time. This date is 
+commonly called the <span class="docEmphasis">epoch</span>, and it has 
+folk-significance as the begining of the Unix era. Although the first work on 
+Unix began in the late '60s, the first versions of Unix were available (within 
+Bell Laboratories) in the early '70s. </p>
+<p class="docText">This count gets updated roughly 60 times per second. The 
+exact rate depends on your particular Unix system and is determined by the 
+constant, HZ, defined in the header file <i>/usr/include/sys/param.h</i>:<span id="ENB37-1"><a class="docLink" href="#EN37-1"><sup>[1]</sup></a></span>
+</p>
+<pre>#define   HZ   60</pre>
+<p class="docText">This is the time's &quot;resolution,&quot; often referred to as the 
+clock's &quot;tick.&quot; Note that it has nothing to do with your system's CPU clock 
+rate. Time measurements are normally no more precise than your system's clock 
+resolution, although some systems have added facilities for more precise timing.
+</p>
+<p class="docText">If your Unix system belongs to a network, it is important to 
+keep all the clocks on the network &quot;in sync.&quot;<span id="ENB37-2"><a class="docLink" href="#EN37-2"><sup>[2]</sup></a></span> Strange things happen if you copy a 
+file from one system to another and its date appears to be some time in the 
+future. Many Unix systems run a <span class="docEmphasis">time daemon</span> 
+(one of those mysterious <span class="docEmphBold">helper programs</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-10">Section 
+1.10</a>)) to take care of this.<span id="ENB37-3"><a class="docLink" href="#EN37-3"><sup>[3]</sup></a></span>
+</p>
+<p class="docText">Unix automatically keeps track of daylight savings time 
+(summer time), leap years, and other chronological trivia. When the system is 
+installed, you have to tell it your time zone and the style of daylight savings 
+time you want to observe. As Unix has become an international standard, the 
+number of time zones (and obscure ways of handling daylight savings time) it can 
+handle correctly has proliferated. In a few cases, you still have to handle 
+these things by hand; for example, in Europe, as of this writing, the beginning 
+and end of Summer Time were set periodically by the European Parliament, and so 
+may change. Care for Libyan Standard Time? </p>
+<p class="docText">Unix's internal routines compute time in relation to the 
+epoch, but there is no reason for you to worry about it unless you're a C 
+programmer. A library of time routines can convert between this internal 
+representation and more usable representations; see the Unix manual page for
+<span class="docEmphasis">ctime</span>(3). </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-37-SECT-7">37.7 Copy What You Do with script</h3>
+<p class="docText">Are you typing a complicated set of commands that you need to 
+show someone else or keep &quot;on file&quot; for documentation? Are you debugging a 
+program that goes wrong somewhere — but the error message flashes by so fast 
+that you can't see it? Do you want to show a &quot;prerecorded&quot; demonstration of an 
+interactive program? The <i>script</i> program can help with all of these 
+problems. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Versions of <i>script</i> on Unix systems without
+        <span class="docEmphasis">pty</span>s aren't as flexible as the version 
+        I'm explaining here. For instance, those versions won't let you use
+        <span class="docEmphBold">job control</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+        23.3</a>) during the script. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">To copy everything you do into a file, just type:</p>
+<pre>% <b>script</b>
+Script started, file is typescript
+%</pre>
+<p class="docText">Now you can type any Unix command that you'd use at a shell 
+prompt. Everything you do is copied into a file named <i>typescript</i> in the 
+current directory. (To use a different filename, type its
+<span class="docEmphBold">pathname</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>) on the command line, like <tt>script</tt> <tt><i>scriptfile</i></tt>.) 
+When you're done, type CTRL-d or <span class="docEmphBold">exit</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>) at a shell prompt. </p>
+<p class="docText">One thing that surprises people is that
+<span class="docEmphasis">everything</span> will be copied into the script file. 
+That includes escape sequences that programs send to your terminal. This is both 
+good and bad. </p>
+<p class="docText">The good part is that you can &quot;play back&quot; whatever happened 
+by <span class="docEmphBold">catting</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">Section 
+12.2</a>) the script to your screen. When things get boring, you can run an 
+interactive program like <i>vi</i> inside the script — then quit the script and 
+play it back with <span class="docEmphasis">cat typescript</span>. The cursor 
+will fly across the screen and your file will be re-edited before your eyes. 
+(This is easier to see if the terminal is set to a slow data rate.) </p>
+<p class="docText">The bad part is that errors you correct and other 
+terminal-control sequences will be in the file, too. If you edit or print the 
+script file, it may be full of &quot;junk&quot; such as <tt>^M</tt> (carriage return) and
+<tt>^H</tt> (backspace) characters. (A command like <span class="docEmphasis">
+cat -v</span> or <span class="docEmphBold">od -c</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">Section 
+12.4</a>) will show you these characters.) If the file has just a few of these 
+characters, you can clean it up by hand with your text editor's global 
+substitution commands. You can also automate your &quot;script cleaning&quot; with 
+techniques such as the ones in
+<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-11">
+Section 21.11</a> and
+<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-8">
+Section 37.8</a>. </p>
+<p class="docText">If you're using <i>xterm</i>, it may have a built-in logger. 
+Check its <span class="docEmphBold">menus</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-17">Section 
+5.17</a>). </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-37-SECT-8">37.8 Cleaning script Files</h3>
+<p class="docText">As
+<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-7">
+Section 37.7</a> explains, the files made by the <i>script</i> program can have 
+stray control characters in them. The shell script called
+<span class="docEmphasis">script.tidy</span> can clean them up. Dan Bernstein 
+wrote it and posted it to Usenet; I made a few changes. It reads from files or 
+standard input and writes to standard output. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: script.tidy</p>
+<p class="docText"><span class="docEmphasis">script.tidy</span> uses the
+<span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) substitute command to remove CTRL-m (RETURN) characters from the ends 
+of lines. It uses the <span class="docEmphBold">sed</span>
+<span class="docEmphBold">test command</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-21">Section 
+34.21</a>) to repeat a series of commands that delete a character followed by 
+CTRL-h (BACKSPACE). If you use DELETE as your <span class="docEmphBold">erase 
+character</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-8">Section 
+5.8</a>), change the script to eat DELETE instead of BACKSPACE.
+<span class="docEmphasis">script.tidy</span> uses a trick with <i>echo</i> and
+<i>tr</i> to store the control characters in shell variables. Because the <i>sed</i> 
+script has <span class="docEmphBold">doublequotes</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) around it, the shell variables are substituted in the right places 
+before the shell starts <i>sed</i>. </p>
+<p class="docText"><tt>eval</tt>
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-8">
+Section 27.8</a>, <tt>exec</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-5">
+Section 36.5</a></p>
+<pre>#!/bin/sh
+
+# Public domain.
+
+# Put CTRL-M in $m and CTRL-H in $b.
+# Change \010 to \177 if you use DEL for erasing.
+eval `echo m=M b=H | tr 'MH' '\015\010'`
+exec sed &quot;s/$m\$//
+:x
+s/[^$b]$b//
+t x&quot; $*</pre>
+<p class="docText">You can also hack the <i>sed</i> script in
+<span class="docEmphasis">script.tidy</span> to delete some of your terminal's 
+escape sequences. (A really automated <span class="docEmphasis">script.tidy</span> 
+would read your <span class="docEmphasis">termcap</span> or
+<span class="docEmphasis">terminfo</span> entry and look for all those escape 
+sequences in the script file.) </p>
+<p class="docText">Bear in mind that <i>script</i> was designed to emulate a 
+paper terminal; if you've modified your prompt, especially if you are using 
+multiple-line prompts, your <i>script</i> output is going to be full of far 
+worse junk than <i>script.tidy</i> can fix. If you find that <i>script</i> 
+simply doesn't do it for you, you should consider whether you want a complete 
+record of all terminal input and output or just a record of what you typed. If 
+the latter is more to your liking, you should look into the various history 
+editing and printing capabilities provided by modern shells. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-37-SECT-9">37.9 Making an Arbitrary-Size File for Testing</h3>
+<p class="docText">The <span class="docEmphBold">yes command</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-5">Section 
+14.5</a>) outputs text over and over.<span id="ENB37-4"><a class="docLink" href="#EN37-4"><sup>[4]</sup></a></span> 
+If you need a file of some size for testing, make it with <i>yes</i> and
+<span class="docEmphBold">head</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-12">Section 
+12.12</a>). For example, to make a file 100k (102,400) characters long, with 
+12,800 8-character lines (7 digits and a newline), type: </p>
+<pre>% <b>yes 1234567 | head -12800 &gt; 100k-file</b></pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">On some Unix systems, the command may &quot;hang&quot; and need 
+        to be killed with CTRL-c because <i>head</i> keeps reading input from 
+        the pipe. If it hangs on your system, replace <tt>head -12800</tt> with
+        <tt>sed 12800q</tt>. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">You might just want to use <i>perl</i>, instead:</p>
+<pre>$ perl -e 'print &quot;1234567\n&quot; x 12800' &gt; file</pre>
+<p class="docText">For the Unix admin who has everything, here's one more way, 
+this time using the venerated <i>dd</i> command: </p>
+<pre>$ yes | dd of=file count=25</pre>
+<p class="docText">There are many variations on this theme. The preceding 
+example simply copies 25 blocks of 512 bytes each from standard input (the 
+output of the <i>yes</i> command) to the file <i>file</i>. You could also 
+specify a number of bytes to read at a time, using the <i>ibs</i> option, and 
+then specify the number of records to write out, using <i>count</i>: </p>
+<pre>$ yes | dd ibs=1 of=file count=12800</pre>
+<p class="docText">There's More Than One Way To Do It. Be careful, though — you 
+can fill up a disk pretty quickly playing around with the <i>dd</i> command! </p>
+<p class="docText"><span class="docEmphasis">—JIK, JP, and SJC </span></p>
+<blockquote>
+<p class="docFootnote" id="EN37-1"><a class="docLink" href="#ENB37-1">[1]</a>&nbsp;&nbsp;It may be in a file included thereby; on Linux, a bit of hunting shows it in <i>
+/usr/include/asm/param.h</i>. The value may vary from system to system, as well.</p><p class="docFootnote" id="EN37-2"><a class="docLink" href="#ENB37-2">[2]</a>&nbsp;&nbsp;This is particularly true if 
+  your system runs public services such as mail or HTTP.</p><p class="docFootnote" id="EN37-3"><a class="docLink" href="#ENB37-3">[3]</a>&nbsp;&nbsp;A popular choice for network 
+  time synchronization is <span class="docEmphasis">ntp</span>, available from
+  <a class="docLink" href="http://www.eecis.udel.edu/~ntp/" target="_blank">
+  http://www.eecis.udel.edu/~ntp/</a>.</p><p class="docFootnote" id="EN37-4"><a class="docLink" href="#ENB37-4">[4]</a>&nbsp;&nbsp;Believe it or not, it does 
+  have a purpose; it was originally designed to pipe &quot;y&quot; answers into 
+  interactive programs such as <i>fsck</i> before those programs provided the 
+  option to proceed with implicit approval. The FreeBSD 4.4 manual says of
+  <span class="docEmphasis">yes</span>(1) that it &quot;outputs <tt><i>expletive</i></tt>, 
+  or, by default, `y'&quot;, forever.</p></blockquote>
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 36.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 38.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

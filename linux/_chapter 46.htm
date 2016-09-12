@@ -1,0 +1,713 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 46</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 45.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 47.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 46. Connectivity</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-1">46.1 TCP/IP — IP Addresses and Ports</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-2">46.2 /etc/services Is Your Friend</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-3">46.3 Status and Troubleshooting</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-4">46.4 Where, Oh Where Did That Packet Go?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-5">46.5 The Director of Operations: inetd</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-6">46.6 Secure Shell (SSH)</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-7">46.7 Configuring an Anonymous FTP Server</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-8">46.8 Mail — SMTP, POP, and IMAP</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-9">46.9 Domain Name Service (DNS)</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-10">46.10 Dynamic Host Configuration Protocol (DHCP)</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-11">46.11 Gateways and NAT</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-12">46.12 Firewalls</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-46-SECT-13">46.13 Gatewaying from a Personal LAN over a Modem</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-1">46.1 TCP/IP — IP Addresses and Ports</h3>
+<p class="docText">TCP/IP networking is a part of the Open Systems 
+Interconnection (OSI) Model. Much like you can string together lots of little 
+single-purpose Unix tools to do complex tasks, the OSI Model is made up of 
+specific single-purpose layers that work together. Each layer builds on the 
+layers below. Layers 1 and 2 are concerned with hardware; physical standards 
+such as required voltages and low-level protocols like Ethernet reside there. 
+Layers 3 and 4 are networking layers, which this article introduces. Layers 5 
+through 7 are application layers, where networking interfaces such as BSD 
+sockets and applications such as web browsers, telnet clients, and diagnostic 
+tools live. </p>
+<p class="docText">For most Unixes, the fundamentals of networking (once you get 
+past the network device drivers) are the Layer 3 Internet Protocol (IP) and a 
+Layer 4 protocol on top of it, either the Transport Control Protocol (TCP), the 
+User Datagram Protocol (UDP), or the IP Control Message Protocol (ICMP). These 
+four protocols are so commonly treated as one unit that you'll often see them 
+referred to together as TCP/IP. </p>
+<h4  id="upt3-CHP-46-SECT-1.1" class="docSection2Title">46.1.1 Internet Protocol (IP)</h4>
+<p class="docText">IP's job is to get small chunks of data, called packets, from 
+one machine to another. It is a &quot;best effort&quot; protocol; that is, it makes its 
+best effort to deliver each packet to the right host, and if it can't, it simply 
+drops the packet on the floor. It may seem like losing bits of your data would 
+be a bad thing, but it turns out that this feature is part of what allows the 
+Internet to route traffic around problems; higher-level protocols and 
+applications notice that packets are being dropped and resend them, sometimes 
+through better routes. </p>
+<p class="docText">IP identifies machines through <span class="docEmphasis">IP 
+addresses</span>. Every machine that wants to communicate with another machine 
+via TCP/IP must have a unique IP address, unless it's using
+<span class="docEmphBold">Network Address Translation (NAT)</span> (<a class="docLink" href="#upt3-CHP-46-SECT-1">Section 
+46.1</a>). When you dial up your ISP with a modem, your ISP assigns you a 
+dynamic IP address, good for that modem session. When you have a dedicated 
+broadband connection, often your ISP will assign you a small block of static IP 
+addresses to use as you like. Each ISP is in turn assigned large blocks of IP 
+addresses for them to dole out to their users, and traffic on the Internet 
+travels from ISP to ISP based on the addresses they hold. </p>
+<p class="docText">The current standard version of IP is Version 4 (IPv4), which 
+uses 32-bit addresses. With the explosion of the Internet, addresses are being 
+used up at quite an impressive rate; remember that normally every single machine 
+connected to the Internet needs its own IP address. Version 6 (IPv6) is, at the 
+time of this writing, a proposed standard that uses 128-bit addresses. For the 
+purposes of this book, we'll gloss over the differences, since they mostly don't 
+matter at this level. Our examples will use IPv4 addresses, since that's what 
+you're most likely to be dealing with for a little while yet. </p>
+<h4  id="upt3-CHP-46-SECT-1.2" class="docSection2Title">46.1.2 Layer 4 Protocols: TCP, UDP, and ICMP</h4>
+<p class="docText">TCP, UDP, and ICMP all &quot;sit on top&quot; of IP; that is, they use 
+IP to actually deliver the packets. </p>
+<p class="docText">TCP's job is to provide ordered and guaranteed delivery. 
+Ordered delivery means that the application at the other end of the TCP 
+connection reads data in the same order as it was sent. Guaranteed delivery 
+means that TCP keeps track of which packets arrived at the other end and resends 
+packets that were dropped. Together, these two characteristics provide a network 
+communication mechanism that acts very much like a Unix pipe from an 
+application's point of view; you simply write bytes in one end and they come out 
+the other. Many common network applications sit on top of TCP and use these 
+services, including telnet, HTTP servers and web browsers,
+<span class="docEmphBold">SSH</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-6">Section 
+46.6</a>), and <span class="docEmphBold">email</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-8">Section 
+46.8</a>). </p>
+<p class="docText">UDP provides application access to the basic delivery 
+mechanism of IP and adds port addressing (see below). Some applications don't 
+need guaranteed delivery and want the lower overhead of UDP, or want the 
+low-level control of network error recovery UDP can provide, or need to be able 
+to do certain kinds of broadcast. Services like <span class="docEmphBold">DNS</span> 
+(<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-9">Section 
+46.9</a>) and <span class="docEmphBold">DHCP</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-10">Section 
+46.10</a>) use UDP rather than TCP, as do many Internet games. </p>
+<p class="docText">Both TCP and UDP provide addressing of their own above and 
+beyond IP addresses; these addresses are called <span class="docEmphasis">ports</span> 
+. Generally, simply getting a packet to a machine isn't quite enough; if you 
+want two programs to communicate, they need a rendezvous point; there can be a 
+lot of programs running on the destination machine, and TCP and UDP need to know 
+to which program packets should be delivered. An IP address and a port provide 
+the means for two programs to hook up and start talking. Every communication 
+needs a port on each machine; one side &quot;listens&quot; on a well-known port and the 
+other side &quot;connects&quot; to that port, generating a random port of its own. </p>
+<p class="docText">Ports are represented by an integer number. Ports below 1024 
+are usually accessible only by programs running as root and are thus mostly 
+reserved for system services and the like. <span class="docEmphBold">
+/etc/services</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-2">Section 
+46.2</a>) lists most of the well-known ports used by the main system services.
+</p>
+<p class="docText">Finally, ICMP provides diagnostic and traffic control 
+messages. ICMP is primarily used by applications such as
+<span class="docEmphBold">ping and traceroute</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-4">Section 
+46.4</a>) to diagnose problems, check network status, and the like. Routers can 
+also use ICMP to control traffic. </p>
+<p class="docText"><span class="docEmphasis">— DJPH </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-2">46.2 /etc/services Is Your Friend</h3>
+<p class="docText">After you've been dealing with Internet services for a while, 
+you come to remember certain well-known port numbers off of the top of your 
+head. <span class="docEmphBold">SMTP</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-8">Section 
+46.8</a>) is port 25, HTTP is port 80, and so on. However, unless your memory is 
+far better than mine, you won't remember them all. </p>
+<p class="docText">Luckily, that's part of what <i>/etc/services</i> is for. 
+It's a database of well-known ports with symbolic names; any program that can 
+take a port number should be able to take the appropriate symbolic name instead. 
+If you want to make sure your SMTP server is up, the following two commands are 
+equivalent: </p>
+<pre>% <b>telnet localhost 25</b>
+% <b>telnet localhost smtp</b></pre>
+<p class="docText">The definitive database of well-known ports is currently 
+available at
+<a class="docLink" href="http://www.iana.org/assignments/port-numbers" target="_blank">
+http://www.iana.org/assignments/port-numbers</a>. On most Unixes, <i>
+/etc/services</i> is just a snapshot taken at the time that version of that Unix 
+was released. When installing new services, often you'll want to tweak your 
+local copy of <i>/etc/services</i> to reflect the new service, if it's not 
+already there, even if only as a reminder. </p>
+<p class="docText">The format of the <i>/etc/services</i> is simple:</p>
+<pre><tt><i>service name</i></tt>        <tt><i>port</i></tt>/<tt><i>protocol</i></tt>        <tt><i>aliases</i></tt></pre>
+<p class="docText">Comments within the file start with a pound sign (<tt>#</tt>). 
+As an example, a few common entries from <i>/etc/services</i>: </p>
+<pre>ftp-data         20/tcp    #File Transfer [Default Data]
+ftp-data         20/udp    #File Transfer [Default Data]
+ftp              21/tcp    #File Transfer [Control]
+ftp              21/udp    #File Transfer [Control]
+ssh              22/tcp    #Secure Shell Login
+ssh              22/udp    #Secure Shell Login
+telnet           23/tcp
+telnet           23/udp
+smtp             25/tcp    mail         #Simple Mail Transfer
+smtp             25/udp    mail         #Simple Mail Transfer</pre>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-3">46.3 Status and Troubleshooting</h3>
+<p class="docText"><i>ifconfig</i> can be used to configure
+<span class="docEmphBold">network devices</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-8">Section 
+44.8</a>), but it also can be used to see the current network device 
+configuration. <span class="docEmphasis">ifconfig -a</span> is very useful for 
+this. Here's some sample output on a FreeBSD machine: </p>
+<pre>% <b>ifconfig -a</b>
+rl0: flags=8843&lt;UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST&gt; mtu 1500
+        inet 192.168.1.1 netmask 0xffffffc0 broadcast 192.168.1.255
+        inet 192.168.1.5 netmask 0xffffffff broadcast 192.168.1.255
+        inet 192.168.1.6 netmask 0xffffffff broadcast 192.168.1.255
+        inet 192.168.1.7 netmask 0xffffffff broadcast 192.168.1.255
+        ether 0a:5c:da:a3:53:11
+        media: autoselect (100baseTX &lt;full-duplex&gt;) status: active
+        supported media: autoselect 100baseTX &lt;full-duplex&gt; 100baseTX 10baseT/UTP
+        &lt;full-duplex&gt; 10baseT/UTP 100baseTX &lt;hw-loopback&gt;
+lo0: flags=8049&lt;UP,LOOPBACK,RUNNING,MULTICAST&gt; mtu 16384
+        inet 127.0.0.1 netmask 0xff000000</pre>
+<p class="docText">This shows two network devices: <tt>rl0</tt>, which is an 
+Ethernet card, and <tt>lo0</tt>, which is the loopback device. <tt>rl0</tt>'s 
+primary IP address is 192.168.1.1, and it has aliases (that is, it also answers 
+to) 192.168.1.5 through 192.168.1.6. This also shows me that both network 
+devices believe that they're actively sending and receiving packets (<tt>UP</tt>) 
+and shows various options set on each device. </p>
+<p class="docText">The output on Linux is slightly different, but similar enough 
+to easily find the same information. Linux also adds a few statistics to its <i>
+ifconfig</i> output that otherwise require a <i>netstat</i> to see. Especially 
+useful are packets received and transmitted: </p>
+<pre>eth0      Link encap:Ethernet  HWaddr 0a:5c:da:a3:53:11
+          inet addr:192.168.1.1  Bcast:192.168.1.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:18999386 errors:28965 dropped:0 overruns:0 frame:28965
+          TX packets:33955631 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:29132 txqueuelen:100
+          RX bytes:1496731954 (1.3 GiB)  TX bytes:2477239809 (2.3 GiB)
+          Interrupt:10 Base address:0xda00
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:3924  Metric:1
+          RX packets:107211318 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:107211318 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:2880669120 (2.6 GiB)  TX bytes:2880669120 (2.6 GiB)</pre>
+<p class="docText">Note that on Linux 2.4 kernels, <i>ipconfig</i> and <i>route</i> 
+(see below) are being phased out in favor of <i>iproute2</i>. See the manpage 
+for <i>iproute2</i> if you're on a 2.4 machine and want to be up to date. </p>
+<p class="docText"><i>netstat</i> can be used to get a variety of useful 
+information. By default, <i>netstat</i> displays a list of active sockets, thus 
+showing you what is currently connected to your machine (and what your machine 
+is currently connected to). <i>netstat -r</i> can show your routing tables, 
+which is particularly useful when trying to understand why your machine can't 
+seem to talk to anything. If the interface appears to be up, and you can
+<span class="docEmphBold">ping</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-4">Section 
+46.4</a>) other machines on your local network, but you can't get out, check 
+your routing tables. It's quite possible that you don't have a default route, or 
+your default route doesn't point to your <span class="docEmphBold">gateway</span> 
+(<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-11">Section 
+46.11</a>). For a private LAN running <span class="docEmphBold">NAT</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-11">Section 
+46.11</a>), your routing table might look something like this (the <i>-n</i> 
+option says to show IP addresses instead of attempting to resolve them into 
+hostnames): </p>
+<pre>% <b>netstat -rn</b>
+Routing tables
+
+Internet:
+Destination        Gateway            Flags     Refs     Use     Netif Expire
+default            192.168.1.1        UGSc       17   543792      rl0
+127.0.0.1          127.0.0.1          UH          2  2869882      lo0
+192.168.1.0/24     link#1             UC          0        0      rl0 =&gt;</pre>
+<p class="docText">Again, on Linux the output is slightly different but similar 
+to interpret. The only thing to note is that 0.0.0.0 represents the default 
+route when we use <i>-n</i>: </p>
+<pre>Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+192.168.1.0     0.0.0.0         255.255.255.0   U         0 0          0 eth0
+0.0.0.0         192.168.1.1     0.0.0.0         UG        0 0          0 eth0</pre>
+<p class="docText"><i>route</i> lets you manipulate the routing table. If, for 
+example, you didn't see the default route when you used
+<span class="docEmphasis">netstat -rn</span>, you could add it with: </p>
+<pre>% <b>route add default 192.168.1.1</b></pre>
+<p class="docText"><i>route</i> allows a variety of ways to manipulate the 
+routing table; see its manpage for details. Note that Linux's <i>route</i> has a 
+syntax for some commands that's slightly different than any other <i>route</i>.
+</p>
+<p class="docText">Finally, <i>dig</i> allows you to easily make very specific
+<span class="docEmphBold">DNS</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-9">Section 
+46.9</a>) queries. For example, to find out information about
+<span class="docEmphasis">www.oreilly.com</span>: </p>
+<pre>% <b>dig www.oreilly.com</b>
+...
+;; ANSWER SECTION:
+www.oreilly.com.        6H IN A         209.204.146.22
+
+;; AUTHORITY SECTION:
+oreilly.com.            6H IN NS        ns.oreilly.com.
+oreilly.com.            6H IN NS        ns1.sonic.net.
+...</pre>
+<p class="docText">This shows us the address (<tt>A</tt>) record and the 
+nameservers (<tt>NS</tt>) that have authority over this particular address. If 
+we want to find out the hostname for that IP address, we can do this: </p>
+<pre>% <b>dig -x 209.204.146.22</b>
+;; ANSWER SECTION:
+...
+22.146.204.209.in-addr.arpa.  6H IN PTR  www.oreilly.com.
+
+;; AUTHORITY SECTION:
+146.204.209.in-addr.arpa.  6H IN NS  ns.oreilly.com.
+146.204.209.in-addr.arpa.  6H IN NS  ns1.sonic.net.
+...</pre>
+<p class="docText">This automatically deals with the details of reverse DNS 
+lookups for us and shows us the pointer (<tt>PTR</tt>) record for that IP 
+address, which tells us the canonical hostname. If we want to find out where 
+mail should go: </p>
+<pre>% <b>dig oreilly.com mx</b>
+...
+;; ANSWER SECTION:
+oreilly.com.            6H IN MX        20 smtp2.oreilly.com.
+
+;; AUTHORITY SECTION:
+oreilly.com.            6H IN NS        ns.oreilly.com.
+oreilly.com.            6H IN NS        ns1.sonic.net.
+...</pre>
+<p class="docText">This shows us the mail exchanger (<tt>MX</tt>) record, which 
+is where we ought to be sending mail. Any information stored in DNS can be found 
+out with the right <i>dig</i> query; browse the manpage to get an idea. </p>
+<p class="docText"><span class="docEmphasis">DJPH</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-4">46.4 Where, Oh Where Did That Packet Go?</h3>
+<p class="docText"><i>ping</i>is a very simple tool and often the first used to 
+diagnose a network problem. <i>ping</i> sends one or more
+<span class="docEmphBold">ICMP</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-1">Section 
+46.1</a>) Echo Request messages to a particular IP address. If there is a 
+machine at that IP address listening for ICMP messages (and no firewall 
+filtering out packets in the middle), <i>ping</i> gets back Echo Reply messages, 
+thus telling you that basic IP communication is functional between the two 
+machines. If you can't <i>ping</i> something close by and you know you don't 
+have a <span class="docEmphBold">firewall</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-12">Section 
+46.12</a>) filtering out your packets, it's generally not worth trying anything 
+more complex; start looking for <span class="docEmphBold">interfaces down or 
+routing problems</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-3">Section 
+46.3</a>) or, possibly, unplugged cables or the like. </p>
+<p class="docText"><i>traceroute</i> does what you might expect from the name: 
+it traces the route between your machine and another machine, using ICMP 
+messages, and shows you each step of the way. Sometimes, when you can't get to 
+another machine that's far away, you can use <i>traceroute</i> to see what's 
+going on. </p>
+<p class="docText"><i>mtr</i> stands for Matt's <span class="docEmphasis">
+traceroute</span> and is a more sophisticated <span class="docEmphasis">
+traceroute</span>. Not only does it show you each hop along the way, but it also 
+sends multiple messages and gives you an ongoing display of latency at each hop. 
+I use <i>mtr</i> instead of <i>traceroute</i> pretty exclusively. It's available 
+at <a class="docLink" href="http://www.bitwizard.nl/mtr/" target="_blank">
+http://www.bitwizard.nl/mtr/</a>, or your Unix may have a binary package of it 
+available. </p>
+<p class="docText">For serious network debugging, take a look at <i>tcpdump</i> 
+and <i>ethereal</i>. <i>tcpdump</i> can take apart packets as they go by and 
+show you what's going on in excruciating detail, and <i>ethereal</i> provides a 
+nice GUI on top of <i>tcpdump</i>. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-5">46.5 The Director of Operations: inetd</h3>
+<p class="docText"><i>inetd</i> is the primary manager of Internet services on 
+most Unix installations. Its job is to listen on a selection of
+<span class="docEmphBold">ports</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-1">Section 
+46.1</a>) and start up the appropriate server when a connection comes in. This 
+frees servers that run under <span class="docEmphasis">inetd</span> from having 
+to deal directly with networking issues and sockets. </p>
+<p class="docText"><i>inetd</i> is configured via <i>/etc/inetd.conf</i> , which 
+lists all the ports <i>inetd</i> should manage, the server associated with each 
+port, and any special options for that server. For specific details, read the 
+manpage, <i>inetd.conf</i>(5). As an example, here are a few fairly standard 
+entries from <i>inetd.conf</i> on my FreeBSD system: </p>
+<pre>ftp     stream  tcp  nowait       root    /usr/libexec/ftpd      ftpd -l
+telnet  stream  tcp  nowait       root    /usr/libexec/telnetd   telnetd
+finger  stream  tcp  nowait/3/10  nobody  /usr/libexec/fingerd   fingerd -s
+tftp    dgram   udp  wait         nobody  /usr/libexec/tftpd     tftpd /tftpboot</pre>
+<p class="docText">A common package included in many <i>inetd</i> distributions 
+(and easily added to others) is called <i>tcp_wrappers</i> . <i>tcp_wrappers</i> 
+allows you to create access rules to control incoming connections (generally 
+stored in <i>/etc/hosts.allow</i>) and deny connections from unauthorized hosts. 
+This can be very handy even for machines behind a <span class="docEmphBold">
+firewall</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-12">Section 
+46.12</a>), as it provides extra security by guaranteeing that certain kind of 
+connections will not be allowed into your machine. As an example, my home 
+firewall allows <span class="docEmphBold">SMTP</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-8">Section 
+46.8</a>) and <span class="docEmphBold">SSH</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-6">Section 
+46.6</a>) connections in, but my <i>hosts.allow</i> denies connections from 
+hosts that cannot be <span class="docEmphBold">reverse resolved</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-9">Section 
+46.9</a>), thus requiring a certain level of legitimacy before my machine will 
+talk to a host. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-6">46.6 Secure Shell (SSH)</h3>
+<p class="docText"><i>telnet</i> was the original application for connecting to 
+a remote machine via the Internet. (<i>rsh</i> was developed as a quick hack 
+because <i>telnet</i> wasn't quite ready, and so became popular enough to be 
+included in distributions going forward, but <i>telnet</i> was always supposed 
+to be the &quot;real&quot; application.) In its normal mode, <i>telnet</i> connects to an
+<span class="docEmphBold">inetd</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-5">Section 
+46.5</a>)-managed daemon called <i>telnetd</i>, which manages the login process.
+</p>
+<p class="docText">Unfortunately, the login process happens entirely in 
+cleartext, as does all interaction with the remote shell program. Anyone tapping 
+into the connection could get access to the user's password and thus gain 
+illicit access to the remote system. To prevent this, Secure Shell (SSH) was 
+developed. SSH uses Secure Sockets Layer (SSL), the same security mechanism that 
+web browsers use. All interactions between your machine and the remote machine 
+are encrypted, thus protecting your passwords and any other sensitive 
+information. Its syntax is much like <i>rsh</i>'s: </p>
+<pre>% <b>ssh gabriel </b>
+  <i> Logs into gabriel using your local username.</i>
+% <b>ssh deb@bits.oreilly.com </b>
+  <i> Logs into bits.oreilly.com using the login name deb.</i>
+% <b>ssh michael ls /tmp </b>
+  <i> Runs </i>ls /tmp <i> on michael.</i>
+% <b>ssh deb@eli grep deb /etc/passwd </b>
+  <i> Runs </i>grep deb /etc/passwd <i> on eli, using the login name deb</i>.</pre>
+<p class="docText">SSL uses public key encryption, which means that connections 
+are protected with operations based on a public/private key pair. Information 
+encrypted with the public key can be decoded with the private key and vice 
+versa. A server runs <i>sshd</i>, which, much like <i>telnetd</i>, accepts 
+connections and manages the login process. (Unlike <i>telnetd</i>, <i>sshd</i> 
+is generally not managed by <i>inetd</i>, because <i>sshd</i>'s startup is 
+complex and thus too slow to do every single time a connection is created. 
+Because of this limitation, <i>sshd</i> has access rules much like <i>
+tcp_wrappers</i>' built in — generally by just linking with <i>tcp_wrappers</i>.) 
+Each server has its own public/private key pair, allowing a user connecting to 
+that server to verify its identity. This allows you to be sure that someone 
+hasn't managed to redirect your connection to their machine instead (where they 
+could collect your password, for example). </p>
+<p class="docText">You can also set up your own keypair using <i>ssh-keygen</i>, 
+which will create an identity for you. Usually this identity is stored in <i>
+$HOME/.ssh/identity</i> (for the private key) and <i>$HOME/.ssh/identity.pub</i> 
+(for the public key). Some newer versions of SSH have different keytypes and so 
+use <i>id_rsa</i>/<i>id_rsa.pub</i>, and <i>id_dsa</i>/<i>id_dsa.pub</i> 
+instead. The advantage to having an identity set up is that you can then allow 
+that identity to log in to other machines without a password, much like <i>.rhosts</i> 
+allowed with <i>rsh</i>, only more securely. Simply add your public key to the
+<i>$HOME/.ssh/authorized_keys</i> file on the remote host. </p>
+<p class="docText">SSH also provides a simple file copy mechanism, <i>scp</i>. 
+Login is the same as with <i>ssh</i>; identities are used if available, or 
+password exchanges are encrypted. <i>scp</i>'s syntax is much like <i>cp</i>'s, 
+except that an account specification can be prepended to a filename: </p>
+<pre>% <b>scp gabriel:buffoon.txt .</b>
+% <b>scp frobnitz deb@michael:/tmp</b></pre>
+<p class="docText">The first command copies <i>buffoon.txt</i> from my home 
+directory on <span class="docEmphasis">gabriel</span> into the current 
+directory. The second copies <i>frobnitz</i> in the current directory into
+<span class="docEmphasis">michael</span>'s <i>/tmp</i> directory, logging in as
+<span class="docEmphasis">deb</span>. </p>
+<p class="docText">I configure my machines to disallow <i>telnet</i> and <i>rsh</i> 
+access, and I use SSH exclusively. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-7">46.7 Configuring an Anonymous FTP Server</h3>
+<p class="docText">Providing an anonymous FTP server allows anyone to 
+anonymously download (and possibly upload) files. Normally, logging into an FTP 
+server requires an account. Anonymous FTP creates an anonymous account and 
+carefully limits its capabilities, so that you don't have to create a full 
+account for everyone you might want to allow access to. </p>
+<p class="docText">An anonymous FTP connection operates within a
+<span class="docEmphasis">chroot</span>, that is, an isolated area (see the 
+manpage for <i>chroot</i>(8) and <i>chroot</i>(2) for more details on what a 
+chroot is). A few basic things need to be provided within the chroot: a copy of
+<i>ls</i>, minimal versions of <i>/etc/passwd</i> (sans passwords) and <i>
+/etc/group</i> to allow <i>ls</i> to display files properly, and so forth. </p>
+<p class="docText">Some platforms provide a simple anonymous FTP setup. RedHat 
+has an RPM called <tt>anonftp-*</tt> that installs a proper chroot. FreeBSD's 
+install tool can set up an anonymous FTP chroot for you. Check your platform 
+documentation to see if it has a simple setup for you. Failing that, refer to 
+CERT's guide on safely setting up anonymous FTP at
+<a class="docLink" href="http://www.cert.org/tech_tips/anonymous_ftp_config.html" target="_blank">
+http://www.cert.org/tech_tips/anonymous_ftp_config.html</a>. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-8">46.8 Mail — SMTP, POP, and IMAP</h3>
+<p class="docText">Email is one of the most well-known and commonly used 
+Internet services. The core of Internet email is the Simple Message Transfer 
+Protocol (SMTP), which defines a simple, extensible mechanism by which hosts can 
+exchange mail messages. SMTP is spoken by programs known as Message Transfer 
+Agents (MTAs); <i>sendmail</i> is the most well known of these and is included 
+with the vast majority of Unixes. <i>qmail</i> , <i>postfix</i>, and <i>exim</i> 
+are other common MTAs (I use <i>qmail</i> on all of my systems). Configuring an 
+MTA generally involves telling it your default domain name for outgoing email, 
+setting up whether it allows relaying and if so, under what limits (see below), 
+possibly setting up spam filtering, and the like. It may also involve setting up
+<span class="docEmphBold">MX records</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-9">Section 
+46.9</a>) for your domain(s). </p>
+<p class="docText">Relaying is when an MTA allows someone to connect and send an 
+email to an email address not served by that MTA. If you want to allow someone 
+on your local machine or local subnet to send outgoing email via your MTA, this 
+is a very good thing. An <span class="docEmphasis">open relay</span> allows
+<span class="docEmphasis">anyone</span> to send outgoing email, and this allows 
+spammers to use your machine to send their spam. As you might guess, this is a 
+Very Bad Thing. All MTAs have ways of limiting relaying so that local users can 
+send email but spammers can't use your machine. Check your MTA's documentation, 
+or take a peek at <i>http://www.mail-abuse.org</i> for more information. </p>
+<p class="docText">Mail User Agents (MUAs or just UAs) provide the interface 
+between users and MTAs. On Unix, these include programs such as <i>mail</i>, <i>
+mailx</i>, <i>elm</i>, and <i>mutt</i>, all of which work directly with the 
+filesystem. Webmail clients are also MUAs, but they run under a webserver to 
+provide networked access to mail. Often, though, you want to be able to use a 
+MUA on another workstation that may or may not be a Unix machine, in which case 
+you need some sort of MUA proxy to manage the mail and communicate with the 
+remote MUA. </p>
+<p class="docText">Post Office Protocol (POP or POP3) and Internet Message 
+Access Protocol (IMAP) are two different ways of providing access to remote MUAs. 
+POP is focused on retrieving messages from a mail server and having the MUA 
+store them, where IMAP is focused on managing mail on a mail server remotely 
+rather than copying it to the client machine. Freely available POP servers 
+include <i>qmail-pop3d</i> (which comes with <i>qmail</i>) and <i>qpopper</i> 
+(the Berkeley POP3 server, now maintained by Qualcomm), along with a wide 
+variety of others, depending what you're looking for. Freely available IMAP 
+servers include <i>courier-imap</i> and the University of Washington IMAP server 
+(<i>imap-uw</i>). </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-9">46.9 Domain Name Service (DNS)</h3>
+<p class="docText">Usually, when you want to refer to a machine, you want to use 
+its <span class="docEmphasis">hostname</span>, rather than having to remember 
+its <span class="docEmphBold">IP address</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-1">Section 
+46.1</a>). However, IP only understands IP addresses, not hostnames, so some 
+mapping from hostname to IP address is necessary. <i>/etc/hosts</i> provides a 
+simple mapping from hostname to IP address, but it has the disadvantage of being 
+local to your machine. It would be impossible to maintain an <i>/etc/hosts</i> 
+file that actually reflected the constantly changing reality of the Internet. 
+(In fact, historically, <i>/etc/hosts</i> was a list of every single machine on 
+the Internet, downloaded regularly from a central source. This system broke down 
+when the number of hosts on the Internet surpassed a few hundred.) </p>
+<p class="docText">The Domain Name Service (DNS) is a specification for a 
+loosely coordinated, distributed database mapping host names to IP addresses. 
+Generally, it's implemented by the Berkeley Internet Name Daemon (<i>bind</i>), 
+running on hundreds of hosts. Each DNS server has authority over a small piece 
+of the database, and coordination is accomplished through delegation. The
+<span class="docEmphasis">root servers</span> know which DNS servers have 
+authority over the <span class="docEmphasis">top-level domains</span> (TLDs), 
+such as <tt>.com</tt>, <tt>.net</tt>, <tt>.org</tt>, and so forth. Each of those 
+DNS servers knows which DNS server has authority over each subdomain, and so on. 
+DNS servers also cache information, so that a full, time-intensive search 
+through the large distributed database isn't necessary every time you want to 
+access a host's IP address. </p>
+<p class="docText">DNS also stores other records, including Mail Exchanger (MX) 
+records for routing <span class="docEmphBold">mail</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-8">Section 
+46.8</a>). MTAs use MX records when resolving where to send an email by looking 
+up MX records on the domain for which the email is destined. Typically a DNS 
+administrator creates an address record for <tt>mail.<i>domain.com</i></tt>, 
+points it at a machine configured to catch mail for <tt><i>domain.com</i></tt>, 
+and then adds an MX record pointing to <tt>mail</tt>.<tt><i>domain.com </i></tt>
+on each host within <tt><i>domain.com</i></tt>. </p>
+<p class="docText">DNS can affect you in a few obvious ways. The first is that 
+you might need to diagnose problems if for some reason your machine can't look 
+up hostnames. <i>host</i> is a simple tool for making DNS queries.
+<span class="docEmphasis">host hostname.domain.com</span> will return the IP 
+address for <tt>hostname.domain.com</tt>. While <i>host</i> can do slightly more 
+complicated queries, I recommend <span class="docEmphBold">dig</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-3">Section 
+46.3</a>) for anything more complicated than a quick query. <i>whois</i> can 
+show you registration information for a domain; comparing this information to a
+<i>dig</i> on that domain can tell you if your DNS cache is stale (or if the 
+root servers haven't been updated): </p>
+<pre>% <b>whois oreilly.com</b>
+...
+Registrant:
+O'Reilly &amp; Associates (OREILLY6-DOM)
+   101 Morris Street
+   Sebastopol, CA 95472
+   US
+
+   Domain Name: OREILLY.COM
+...
+   Record last updated on 20-Mar-2002.
+   Record expires on 28-May-2003.
+   Record created on 27-May-1997.
+   Database last updated on 28-Mar-2002 15:33:00 EST.
+
+   Domain servers in listed order:
+
+   NS.OREILLY.COM               209.204.146.21
+   NS1.SONIC.NET                208.201.224.11
+
+% <b>dig oreilly.com ns</b>
+...
+;; ANSWER SECTION:
+oreilly.com.            3h42m10s IN NS  ns2.sonic.net.
+oreilly.com.            3h42m10s IN NS  ns.oreilly.com.
+oreilly.com.            3h42m10s IN NS  ns1.sonic.net.
+...</pre>
+<p class="docText">You might also want to set up a local DNS cache by 
+configuring <i>bind</i> to resolve only. (You can also use <i>dnscache</i>, 
+available at
+<a class="docLink" href="http://cr.yp.to/djbdns.html" target="_blank">
+http://cr.yp.to/djbdns.html</a>.) To do this, make sure you have <i>bind</i> 
+installed and then put these lines into your <i>named.conf</i> : </p>
+<pre>options {
+    ...
+    allow-query { localnets; };
+    allow-transfer { none; };
+    allow-recursion { localnets; };
+    ...
+}
+zone &quot;.&quot; {
+        type hint;
+        file &quot;named.root&quot;;
+};
+
+zone &quot;0.0.127.IN-ADDR.ARPA&quot; {
+        type master;
+        file &quot;localhost.rev&quot;;
+};</pre>
+<p class="docText">This allows machines on your local network to query this <i>
+bind</i> and will look up queries for them (which is what <tt>allow-recursion</tt> 
+means). It also provides the normal basic root servers list (necessary for <i>
+bind</i> to do full DNS queries for its clients) and the reverse lookup for 
+127.0.0.1/localhost. </p>
+<p class="docText">If you need to run your own DNS server, you'll want to 
+configure <i>bind</i> to be authoritative for your domain or domains. An example 
+is beyond the scope of this book, though; refer to the <i>bind</i> documentation 
+or to O'Reilly's <i>DNS and Bind</i>. </p>
+<p class="docText"><span class="docEmphasis">— DJPH </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-10">46.10 Dynamic Host Configuration Protocol (DHCP)</h3>
+<p class="docText">Most servers have one or more static IP addresses, which are 
+generally set in one of the boot configuration files. However, it's not uncommon 
+to have one or more workstations on your network, and its often convenient to 
+configure their addresses in a central place. DHCP allows workstations to 
+dynamically discover their IP addresses. </p>
+<p class="docText">If you have a cable modem, it's quite possible you get your 
+IP address via DHCP. Your cable provider has a DHCP server, and any machine you 
+plug into your cable modem becomes a DHCP client, automatically getting an IP 
+address from your provider's DHCP server.
+<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-11">
+Section 46.11</a> describes NAT, which can let you run multiple machines on your 
+home network in a case like this. </p>
+<p class="docText">To run your own DHCP server, you need a DHCP daemon. <i>
+isc-dhcpd</i> is available at
+<a class="docLink" href="http://www.isc.org/products/DHCP/" target="_blank">
+http://www.isc.org/products/DHCP/</a> and allows a variety of configurations. I 
+have a variety of machines on my network at home, including servers with static 
+IP addresses, workstations that use DHCP but always get the same IP address, and 
+a few IP addresses dynamically allocated to random machines plugged into my 
+network (handy for building a new machine or for friends visiting with their 
+laptops). </p>
+<p class="docText">Fixed dynamic addresses are extremely useful. Most of the 
+normal workstations I have at home are configured to have fixed dynamic 
+addresses: they get their IP addresses from the DHCP server, but the server 
+recognizes each machine's Ethernet address (otherwise known as its MAC address) 
+and hands out the same IP address each time. This allows me to have a 
+centralized database of workstation addresses and makes configuration of those 
+workstations trivial, while still giving me consistent IP addresses for all of 
+my workstations. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-11">46.11 Gateways and NAT</h3>
+<p class="docText">For two separate networks to communicate, a
+<span class="docEmphasis">gateway</span> is needed. A gateway has two network 
+interfaces (two network cards, a network card and a modem, or so forth) and 
+routes packets between the two networks as appropriate. Routers and cable modems 
+both function as gateways. </p>
+<p class="docText">Unix machines can also function as gateways. There are 
+several reasons to use your Unix machine as your gateway: it is generally more 
+flexible than the built-in gateways in cable modems and DSL routers; it can 
+function as a <span class="docEmphBold">firewall</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-12">Section 
+46.12</a>); and if you have a limited number of IP addresses, it can perform 
+Network Address Translation (NAT) for you. </p>
+<p class="docText">NAT allows the machines on your LAN to use
+<span class="docEmphasis">private addresses</span>, that is, the address ranges 
+set out in RFC1918 as reserved for private networks. These include 192.168.0.0 
+with netmask 255.255.0.0 (also known as 192.168.0.0/16), 172.16.0.0 with netmask 
+255.240.0.0 (also known as 172.16.0.0/12), and 10.0.0.0 with netmask 255.0.0.0 
+(also known as 10.0.0.0/8). Within the private network, you can have as many IP 
+addresses as you need. The gateway runs a NAT server, which translates all the 
+private addresses into a single public address (the address of the public side 
+of the gateway) on the way out and back into the correct private addresses on 
+the way back in. If you use <span class="docEmphBold">DHCP</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-10">Section 
+46.10</a>) to configure your workstations, you can easily configure your gateway 
+and NAT server to be your DHCP server also and hand out private addresses to 
+your LAN. </p>
+<p class="docText">Note that you can really only use private NAT for 
+workstations. Servers that need to be externally accessible will need public IP 
+addresses. If you are using a private network on your internal network, you can 
+configure your NAT server to map a particular public address to a particular 
+private address, allowing access to your server while still keeping the server 
+behind your gateway/firewall. However, for a straightforward setup, each server 
+will still need its own distinct public IP address, plus the main public IP 
+address for the gateway. At the very least, you will need one public static IP 
+address for the gateway; it is possible to configure <i>natd</i> to direct 
+specific ports on the gateway to ports on private servers. This way you can have 
+a private web server and a private mail server and direct incoming port 80 
+(HTTP) requests to the web server and incoming port 25 (SMTP) requests to the 
+mail server. Read the <i>natd</i> documentation for more details on how to do 
+complex configuration like this. </p>
+<p class="docText">In FreeBSD, enabling gatewaying is as simple as putting the 
+line <tt>gateway_enable=&quot;YES&quot;</tt> in your <i>/etc/rc.conf</i>. Most Linux 
+distributions provide a simple way to adjust the proper <i>sysctl</i> variable (<tt>net/ipv4/ip_forward</tt>) 
+during startup as well. On other architectures you may need to
+<span class="docEmphBold">recompile your kernel</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-3">Section 
+44.3</a>) to turn on IP forwarding, or it may be on by default. </p>
+<p class="docText">Generally all that's required to run <i>natd</i> is to add it 
+to your startup files and tell it which network device it should consider to be 
+the &quot;outside world&quot;: </p>
+<pre>natd -interface rl0</pre>
+<p class="docText">Linux doesn't use <i>natd</i> for NAT. Instead, it uses
+<span class="docEmphasis">IP masquerading</span>. Read the masquerading HOWTO at
+<a class="docLink" href="http://www.linuxdoc.org/HOWTO/IP-Masquerade-HOWTO/" target="_blank">
+http://www.linuxdoc.org/HOWTO/IP-Masquerade-HOWTO/</a> for more information on 
+how to deal with NAT on Linux. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-12">46.12 Firewalls</h3>
+<p class="docText"><span class="docEmphBold">Gateways</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-11">Section 
+46.11</a>) route packets from one network to another. Firewalls prevent some 
+packets from being routed, based on a set of rules. Generally these rules are 
+based on which direction the packet is going, to which <span class="docEmphBold">
+port</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-1">Section 
+46.1</a>) it is destined or from which port it came, which protocol the packet 
+is using (TCP, UDP, or ICMP for low-level protocols, though sometimes firewalls 
+also recognize higher-level protocols like HTTP), and so forth. </p>
+<p class="docText">A fairly standard firewall ruleset would allow outgoing 
+packets from all machines on the LAN, disallow incoming packets that weren't 
+part of an established connection (which allows machines on the LAN to establish 
+connections going out, but keeps outsiders from establishing incoming 
+connections), and then specifically allow things like incoming connections to 
+port 25 (the <span class="docEmphBold">SMTP</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-8">Section 
+46.8</a>) port) on the mail server machine, ports 80 and 443 (the HTTP and HTTPS 
+ports) on the web server machine, and port 22 (the <span class="docEmphBold">SSH</span> 
+(<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-6">Section 
+46.6</a>) port) on any server that should be able to receive SSH logins. </p>
+<p class="docText">Cable modems and DSL routers generally have simple firewalls 
+built in; a Unix machine functioning as a gateway can also firewall and often 
+has much more complex capabilities. Firewall software varies enough that 
+detailed configuration of a firewall is beyond the scope of this book; things to 
+look for include the documentation for <i>ipfw</i>, <i>ipchains</i> (Linux 2.2 
+kernel), or <i>iptables</i> (Linux 2.4 kernel). </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-46-SECT-13">46.13 Gatewaying from a Personal LAN over a Modem</h3>
+<p class="docText">Often you have only dialup access but would like your home 
+network to be able to access the Internet. A simple way to do this is to 
+configure one Unix machine as a <span class="docEmphBold">gateway</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-11">Section 
+46.11</a>), with one side of the gateway your LAN and the other side the modem 
+connection. If you then set up the modem connection to dial on demand, you have 
+a simple way to share your connection between all of the machines on the LAN.
+</p>
+<p class="docText">All that's required is that you <span class="docEmphBold">set 
+up your PPP connection</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-11">Section 
+44.11</a>), turn on PPP's <span class="docEmphBold">NAT</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-11">Section 
+46.11</a>) handling and then <span class="docEmphBold">turn on gatewaying</span> 
+(<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-11">Section 
+46.11</a>). Make sure that all your LAN machines point to the gateway as their 
+default gateway (handing out addresses via <span class="docEmphBold">DHCP</span> 
+(<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-10">Section 
+46.10</a>) is an easy way to ensure this). Any attempt to access the Internet by 
+any machine on the LAN will then cause your gateway to dial up your ISP, if the 
+modem isn't currently connected. </p>
+<p class="docText">Note that I said that you had to turn on NAT handling. A 
+dialup almost always means that your dialup machine will be getting a dynamic 
+address, and the only way to have multiple machines behind a dynamic address is 
+NAT. Because this is so common, some PPP clients have NAT built in; no 
+configuration is required and no separate <i>natd</i> needs to be run. NAT 
+simply has to be enabled, generally with the <i>-nat</i> option. (Linux's <i>
+pppd</i> does not support NAT by itself. Read the masquerading HOWTO at
+<a class="docLink" href="http://www.linuxdoc.org/HOWTO/IP-Masquerade-HOWTO/" target="_blank">
+http://www.linuxdoc.org/HOWTO/IP-Masquerade-HOWTO/</a> for more information on 
+how to deal with NAT on Linux.) </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span> </p>
+
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 45.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 47.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

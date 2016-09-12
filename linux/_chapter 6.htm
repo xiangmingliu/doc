@@ -1,0 +1,958 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 6</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 5.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 7.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 6. Your X Environment</h2>
+
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-6-SECT-1">6.1 Defining Keys and Button Presses with xmodmap</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-6-SECT-2">6.2 Using xev to Learn Keysym Mappings</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-6-SECT-3">6.3 X Resource Syntax</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-6-SECT-4">6.4 X Event Translations</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-6-SECT-5">6.5 Setting X Resources: Overview</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-6-SECT-6">6.6 Setting Resources with the -xrm Option</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-6-SECT-7">6.7 How -name Affects Resources</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-6-SECT-8">6.8 Setting Resources with xrdb</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-6-SECT-9">6.9 Listing the Current Resources for a Client: appres</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-6-SECT-10">6.10 Starting Remote X Clients</a></li>
+</ul>
+
+
+<h3 class="docSection1Title" id="upt3-CHP-6-SECT-1">6.1 Defining Keys and Button Presses with xmodmap</h3>
+<p class="docText">If you have a Linux system, you may want to use <i>loadkeys</i> 
+instead of <i>xmodmap</i>. <i>loadkeys</i> is designed to set the keymap used by 
+the system as a whole, particularly the console, so use your own judgment. 
+Whatever is done in <i>xmodmap</i> will affect X but not the system console. </p>
+<p class="docText">An important piece to the X Window System puzzle is filled by 
+the <i>xmodmap</i> client. When the user performs any action — such as typing a 
+key or moving the mouse — the server sends a packet of information to the client 
+called an <span class="docEmphasis">event</span>. These events are then 
+translated into actions by the client. You can use the <i>xmodmap</i> utility to 
+effectively change the event that is reported to the client. </p>
+<p class="docText"><span class="docEmphasis">Keysym mappings</span> are mappings 
+of keyboard events at the server level, before the event is sent to the client.
+<span class="docEmphasis">Keysyms</span> are the symbols used for each key on 
+the keyboard. </p>
+<p class="docText">The X server maintains a <span class="docEmphasis">keymap 
+table</span>, which contains a listing of keys on the keyboard and how they 
+should be interpreted. A client gets the keymap table from the server upon 
+client startup. In most cases, the keymap table is used to interpret keys 
+literally — when you press the letter &quot;a,&quot; a key code is sent to the client that 
+corresponds to the letter &quot;a&quot; in the keymap table. </p>
+<p class="docText">You can use the <i>xmodmap</i> client to reassign key codes 
+within the keymap table. <i>xmodmap</i> can therefore be used to redefine how 
+the key is interpreted by the client. You probably wouldn't want to translate 
+the alphanumeric keys on the keyboard, but you may want to translate others. For 
+example, you might want to change the BACKSPACE key to DELETE: </p>
+<pre>% xmodmap -e &quot;keysym BackSpace = Delete&quot;</pre>
+<p class="docText">Another example is if you mistakenly hit the CAPS LOCK key a 
+bit too often, you can disable it completely. Some people might disable CAPS 
+LOCK the low-tech way (by just removing the key from the keyboard!), but you can 
+also render it harmless with the command: </p>
+<pre>% xmodmap -e &quot;keysym Caps_Lock = &quot;</pre>
+<p class="docText">effectively disabling the CAPS LOCK key entirely. Note that 
+the symbol is now gone and can't be redefined without using the hardware key 
+code. </p>
+<p class="docText">If you are a DVORAK typist, you can use <i>xmodmap</i> to 
+translate every key on the keyboard and so your QWERTY keyboard behaves like a 
+DVORAK keyboard. </p>
+<p class="docText">If it ever seems that keystrokes are not working correctly, 
+you can check current keysym settings by running <i>xmodmap</i> with the <i>-pk</i> 
+argument. Use the <i>xev</i> client to determine exactly which key code a key 
+generates on your display. There is also a public domain client called <i>
+xkeycaps</i> that can be used to display the keysyms for selected keyboards. </p>
+<p class="docText">You can use <i>xmodmap</i> to add or remove keysyms, or even 
+to redefine the key code associated with that keysym. You can also use it to 
+redefine the mouse buttons, using the <tt>pointer</tt> keyword. For example, to 
+have the second and third mouse button switch places, you can enter: </p>
+<pre>% xmodmap -e &quot;pointer = 1 3 2&quot;</pre>
+<p class="docText">If you have a large number of keys to remap, you can put the 
+commands in a file that is read when your X session starts. For example, create 
+a file called <span class="docEmphasis">.Xmodmap</span>: </p>
+<pre>! my .Xmodmap file
+remove Lock = Caps_Lock
+remove Control = Control_L
+keysym Control_L = Caps_Lock
+keysym Caps_Lock = Control_L
+add Lock = Caps_Lock
+add Control = Control_L
+  ...</pre>
+<p class="docText">These commands effectively reverse your CTRL and CAPS LOCK 
+keys. (CTRL and CAPS LOCK are &quot;switched&quot; on PC and Macintosh keyboards, which 
+can be exceedingly frustrating.) This file can then be read automatically in a X 
+startup script: </p>
+<pre>  ...
+xset b 10 100 10
+xrdb $HOME/.Xdefaults
+<b>xmodmap $HOME/.Xmodmap</b>
+fvwm &amp;
+  ...</pre>
+<p class="docText">Alternately, you might want to assign different functions to 
+little-used keys, such as making the tiny &quot;enter&quot; key on Powerbook keyboards 
+into another command key. Remember, too, that some keys may have different names 
+than what you're used to. Sun keyboards, for example, often come with a &quot;meta&quot; 
+key; Macintosh keyboards have an &quot;option&quot; key where PC users expect to find 
+&quot;alt&quot; (though they act the same); and so forth. </p>
+<p class="docText">On Linux systems, the <i>loadkeys</i> command is often used 
+to make system-level changes to key mappings; it's common to see a variety of 
+keytables already defined and a system default chosen from among them. The 
+system default is often found in <i>/etc/sysconfig/keytable</i> (Red Hat 6 and 
+earlier) or <i>/etc/sysconfig/keyboard</i> (Red Hat 7) or otherwise defined in a 
+directory such as <i>/usr/share/keymaps</i> or <i>/usr/lib/kbd/keymaps</i>. On 
+Debian, the keytable is simply set in <i>/etc/console-tools/default.kmap.gz</i>.
+</p>
+<p class="docText">If you have a physical keyboard on which you've switched 
+certain keys, you may want to modify the system-level key mappings as well, so 
+that they are always loaded properly for those times when you need the console 
+to work without any special user-level configuration. For example, on my Red Hat 
+systems, I always modify my keymap (in 6.* and earlier, found in <i>/usr/lib/kbd/keymaps/i386/qwerty/us.kmap.gz</i>, 
+and in 7.*, found in <i>/lib/kbd/keymaps/i386/qwerty/us.kmap.gz</i>) to reflect 
+the fact that the keyboard I carry with me to the co-lo has swapped CAPS LOCK 
+and CTRL keys. Just <i>gunzip</i> the file, edit, and then <i>gzip</i> it back 
+up again. Alternately, you can create a new file from an existing one, make your 
+edits, and specify the new file in your <i>/etc/sysconfig/keytable</i> or <i>
+/etc/syscongig/keyboard</i> file, as appropriate. </p>
+<p class="docText">The keymaps directory tree is broken down by the platform 
+(Amiga, Atari, i386, Mac, Sun) and then by the layout type of the keyboard 
+(DVORAK, QWERTY, and various other layouts) and finally by the language or 
+character set. So, there is a U.S. keymap, a U.K. keymap, a Hebrew keymap, and 
+dozens of various others, for all of the systems on which Linux is supported. 
+The files are in a relatively straightforward format: </p>
+<pre>keycode  54 = Shift
+keycode  56 = Alt
+keycode  57 = space
+        control keycode  57 = nul
+keycode  58 = Control
+keycode  86 = less             greater          bar
+keycode  97 = Control</pre>
+<p class="docText">First comes the <tt>keycode</tt> keyword, followed by the 
+numeric value of the keysym generated when the key is pressed, and then a 
+keyword (or several) describing the character to be generated when a given 
+keysym is received. Modifiers may precede the <tt>keycode</tt> keyword, binding 
+the combination of modifier key and keysym to another character value. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">One danger of using <i>xmodmap</i> is that anything 
+        set with <i>xmodmap</i> might remain in effect after you have logged 
+        out. This isn't a problem if you use the same X server every day, but be 
+        aware that if you use a coworker's X terminal in his absence, he may 
+        come back complaining that you broke his CAPS LOCK key. This might 
+        happen if you use <i>xdm</i>, since the server is not restarted after 
+        every X session. On some X terminals, you can fix this problem by 
+        toggling &quot;Retain X Settings&quot; on the X terminal setup menu. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">—LM, EP, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-6-SECT-2">6.2 Using xev to Learn Keysym Mappings</h3>
+<p class="docText">The <i>xev</i> client is essential for debugging X Window 
+System <span class="docEmphBold">keysym mappings</span> (<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-1">Section 
+6.1</a>). When you start up <i>xev</i>, a small &quot;event window&quot; appears. All 
+events that take place within that window are shown on standard output. This 
+means screenfuls of output, but it also means that when you type a key, you can 
+immediately trace the resulting event. For example, if you need to know what 
+keysym is sent when you type the DELETE key on the keyboard, just run <i>xev</i> 
+and type the DELETE key in the event window. Typical output might be the 
+following: </p>
+<pre>KeyPress event, serial 13, synthetic NO, window 0x800001,
+   root 0x8006d, subw 0x800002, time 1762968270, (50,36),
+   root:(190,176), state 0x0, keycode 27 (keysym 0xffff, Delete),
+   same_screen YES, XLookupString gives 1 characters: &quot;^?&quot;
+
+KeyRelease event, serial 15, synthetic NO, window 0x800001,
+   root 0x8006d, subw 0x800002, time 1762968336, (50,36),
+   root:(190,176), state 0x0, keycode 27 (keysym 0xffff, Delete),
+   same_screen YES, XLookupString gives 1 characters: &quot;^?&quot;</pre>
+<p class="docText">This tells you that the DELETE key (keycode 27) is 
+interpreted as keysym <tt>0xffff</tt>, which is <tt>Delete</tt> and character
+<tt>^?</tt>. If you do an <tt>xmodmap -pk</tt> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-1">Section 
+5.1</a>), you should see a line resembling:<span id="ENB6-1"><a class="docLink" href="#EN6-1"><sup>[1]</sup></a></span>
+</p>
+<pre>27      0xffff (Delete)</pre>
+<p class="docText">If you redefine the DELETE key as the BACKSPACE key and do 
+the same exercise (run <i>xev</i> and press the DELETE key), you should see 
+something like this: </p>
+<pre>% <b>xmodmap -e &quot;keysym Delete = BackSpace&quot;</b>
+% <b>xev</b>
+        ...
+KeyPress event, serial 13, synthetic NO, window 0x800001,
+   root 0x8006d, subw 0x800002, time 1763440073, (44,39),
+   root:(240,235), state 0x0, keycode 27 (keysym 0xff08, BackSpace),
+   same_screen YES, XLookupString gives 1 characters: &quot;^H&quot;
+
+KeyRelease event, serial 15, synthetic NO, window 0x800001,
+   root 0x8006d, subw 0x800002, time 1763440139, (44,39),
+   root:(240,235), state 0x0, keycode 27 (keysym 0xff08, BackSpace),
+   same_screen YES, XLookupString gives 1 characters: &quot;^H&quot;</pre>
+<p class="docText">This tells you that now the DELETE key (still keycode 27) is 
+being interpreted as hexadecimal <tt>0xff08</tt>, keysym <tt>BackSpace</tt>, and 
+generates character &quot;<tt>^H</tt>.&quot; <tt>xmodmap -pk</tt> should show you the 
+following: </p>
+<pre>27      0xff08 (BackSpace)</pre>
+<p class="docText">For more information, see O'Reilly &amp; Associates' <i>X Window 
+System User's Guide</i>, Volume 3. </p>
+<p class="docText"><span class="docEmphasis">—LM, EP, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-6-SECT-3">6.3 X Resource Syntax</h3>
+<p class="docText">Virtually all X Window System clients are customizable.<span id="ENB6-2"><a class="docLink" href="#EN6-2"><sup>[2]</sup></a></span> 
+You can specify how a client looks on the screen — its size and placement, its 
+border and background color or pattern, whether the window has a scrollbar, and 
+so on. This article introduces X resources and shows their syntax. </p>
+<p class="docText">Traditional Unix applications rely on command-line options to 
+allow users to customize the way they work. X applications support command-line 
+options too, but often not for all features. Almost every feature of an X 
+program can be controlled by a variable called a <span class="docEmphasis">
+resource</span>; you can change the behavior or appearance of a program by 
+changing the <span class="docEmphasis">value</span> associated with a resource 
+variable. </p>
+<p class="docText">Resource variables may be Boolean (such as <tt>scrollBar: 
+True</tt>) or take a numeric or string value (<tt>borderWidth: 2</tt> or <tt>
+foreground: blue</tt>). What's more, in applications written with the X Toolkit 
+(or an Xt-based toolkit such as the Motif toolkit), resources may be associated 
+with separate <span class="docEmphasis">objects</span> (or &quot;widgets&quot;) within an 
+application. There is a syntax that allows for separate control over both a
+<span class="docEmphasis">class</span> of objects in the application and an 
+individual <span class="docEmphasis">instance</span> of an object. This is 
+illustrated by these resource specifications for a hypothetical application 
+called <i>xclient</i>: </p>
+<pre>xclient*Buttons.foreground:     blue
+xclient*help.foreground:        red</pre>
+<p class="docText">The first resource specification makes the foreground color 
+blue for all buttons in the <i>xclient</i> application (in the class <tt>Buttons</tt>); 
+the second resource specification makes the foreground color red for the <tt>
+help</tt> button in this application (an instance of the class <tt>Buttons</tt>). 
+Resource settings can be even simpler than this. </p>
+<p class="docText">The values of resources can be set as application defaults 
+using a number of different mechanisms, including resource files in your home 
+directory and a program called <i>xrdb</i> (X resource database manager). As 
+we'll see, the <i>xrdb</i> program stores resources directly in the X server, 
+making them available to all clients, regardless of the machine on which the 
+clients run.<span id="ENB6-3"><a class="docLink" href="#EN6-3"><sup>[3]</sup></a></span>
+</p>
+<p class="docText">Placing resources in files allows you to set many resources 
+at once without the restrictions encountered when using command-line options. In 
+addition to a primary resource file (often called <i>.Xdefaults</i>, <i>.Xresources</i>, 
+or <i>xrdb</i>) in your home directory, which determines defaults for the 
+clients you yourself run, the system administrator can create system-wide 
+resource files to set defaults for all instances of the application run on this 
+machine. It is also possible to create resource files to set some resources for 
+just the local machine, some for all machines in a network, and some for one or 
+more specific machines.<span id="ENB6-4"><a class="docLink" href="#EN6-4"><sup>[4]</sup></a></span>
+</p>
+<p class="docText">The various resource files are automatically read in and 
+processed in a certain order within an application by a set of routines called 
+the <span class="docEmphasis">resource manager</span>. The syntax for resource 
+specifications and the rules of precedence by which the resource manager 
+processes them are intended to give you the maximum flexibility in setting 
+resources with the minimum amount of text. You can specify a resource that 
+controls only one feature of a single application, such as the red <tt>help</tt> 
+button in the hypothetical <i>xclient</i> settings listed earlier. You can also 
+specify a resource that controls one feature of multiple objects within multiple 
+applications with a single line. </p>
+<p class="docText">Command-line options normally take precedence over any prior 
+resource settings; so you can set up the files to control the way you
+<span class="docEmphasis">normally</span> want your application to work and then 
+use command-line options (in an <span class="docEmphBold">alias or shell 
+function</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-1">Section 
+29.1</a>), for instance) to specify changes you need for only one or two 
+instances of the application. </p>
+<p class="docText">The basic syntax of a resource definition file is fairly 
+simple. Each client recognizes certain resource variables that can be assigned a 
+value; see the client's manpage for a list. </p>
+<p class="docText"><span class="docEmphasis">Toolkits</span> are a mechanism for 
+simplifying the design and coding of applications and making them operate in a 
+consistent way. Toolkits provide a standard set of objects or widgets, such as 
+menus, command buttons, dialog boxes, scrollbars, and so on. If a client was 
+built with the X Toolkit, this should be noted on its manual page. In addition 
+to certain application-specific resource variables, most clients that use the X 
+Toolkit recognize a common set of resource variables. </p>
+<p class="docText">The most basic line you can have in a resource definition 
+file consists of the name of a client, followed by a dot (.) or an asterisk (<tt>*</tt>), 
+and the name of a variable. A colon (:) and whitespace separate the client and 
+variable names from the actual value of the resource variable. The following 
+line gives a scrollbar to all instances of the <i>xterm</i> client: </p>
+<pre>xterm*scrollBar:        True</pre>
+<p class="docText">If the name of the client is omitted, the variable is
+<span class="docEmphasis">global</span>: it applies to all instances of all 
+clients (in this case, all clients that can have a scrollbar). If the same 
+variable is specified as a global variable and a client-specific variable, the 
+value of the client-specific variable takes precedence for that client. However, 
+if the name of the client is omitted, the line should generally begin with an 
+asterisk. </p>
+<p class="docText">Be sure not to omit the colon inadvertently at the end of a 
+resource specification. This is an easy mistake to make, and the resource 
+manager provides no error messages. If there is an error in a resource 
+specification (including a syntax error such as the omission of the colon or a 
+misspelling), the specification is ignored. The value you set will simply not 
+take effect. </p>
+<p class="docText">A line starting with an exclamation point (<tt>!</tt>) is 
+ignored as a comment. If the last character on a line is a backslash (<tt>\</tt>), 
+the resource definition on that line is assumed to continue on the next line.
+</p>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-6-SECT-4">6.4 X Event Translations</h3>
+<p class="docText">This article introduces event translations, which are special 
+X Window System resources that control actions of things like mouse clicks.
+<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-3">
+Section 6.3</a> introduces X resources and shows their syntax.
+<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-5">
+Section 6.5</a> through
+<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-9">
+Section 6.9</a> explain how to set and check resources — as you log in and 
+after. </p>
+<p class="docText">We've discussed the basics of resource-naming syntax. From 
+the sample resource settings, it appears that what many resource variables do is 
+self-evident or nearly so. Among the less obvious resource variables, there is 
+one type of specification, an event translation, that can be used with many 
+clients and warrants somewhat closer examination. </p>
+<p class="docText">User input and several other types of information pass from 
+the server to a client in the form of <span class="docEmphasis">events</span>. 
+An event is a packet of information that gives the client something to act on, 
+such as keyboard input. Moving the pointer or pressing a key causes
+<span class="docEmphasis">input</span> events to occur. When a program receives 
+a meaningful event, it responds with some sort of action. </p>
+<p class="docText">For many clients, the resource manager recognizes mappings 
+between certain input events (such as a pointer button click) and some sort of 
+action by the client program (such as selecting text). A mapping between one or 
+more events and an action is called a <span class="docEmphasis">translation</span>. 
+A resource containing a list of translations is called a
+<span class="docEmphasis">translation table</span>. </p>
+<p class="docText">Many event translations are programmed into an application 
+and are invisible to the user.<span id="ENB6-5"><a class="docLink" href="#EN6-5"><sup>[5]</sup></a></span> 
+For our purposes we are only concerned with very visible translations of certain 
+input events, primarily the translation of keystrokes and pointer button clicks 
+to particular actions by a client program. </p>
+<p class="docText">The operation of many clients, notably <i>xterm</i>, is 
+partly determined by default input event translations. For example, selecting 
+text with the first pointer button (an event) saves that text into memory (an 
+action). </p>
+<p class="docText">In this case, the input &quot;event&quot; is actually three separate X 
+events: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Pressing the first pointer button.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Moving the pointer while holding down the first button.<span id="ENB6-6"><a class="docLink" href="#EN6-6"><sup>[6]</sup></a></span>
+  </p>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Releasing the button.</span></li>
+</ol>
+</span>
+<p class="docText">Each of these input events performs a part of the action of 
+selecting text: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Unselects any previously selected text and begins selecting 
+  new text.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Extends the selection.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Ends the selection, saving the text into memory (both as 
+  the primary selection and CUT_BUFFER0). </span></li>
+</ol>
+</span>
+<p class="docText">The event and action mappings would be expressed in a 
+translation table as follows: </p>
+<pre>&lt;Btn1Down&gt;: select-start( )\n\
+&lt;Btn1Motion&gt;: select-extend( )\n\
+&lt;Btn1Up&gt;: select-end(primary,CUT_BUFFER0)</pre>
+<p class="docText">where each event is enclosed in angle brackets (&lt;&gt;) and 
+produces the action that follows the colon (:). A space or TAB generally 
+precedes the action, though this is not mandatory: </p>
+<pre>&lt;event&gt;: action</pre>
+<p class="docText">A translation table must be a continuous string. To link 
+multiple mappings as a continuous string, each event-action line should be 
+terminated by a newline character (<tt>\n</tt>), which is in turn followed by a 
+backslash (<tt>\</tt>) to escape the actual newline. </p>
+<p class="docText">These are default translations for <i>xterm</i>.<span id="ENB6-7"><a class="docLink" href="#EN6-7"><sup>[7]</sup></a></span> 
+All of the events are simple, comprised of a single button motion. As we'll see, 
+events can also have modifiers: i.e., additional button motions or keystrokes 
+(often CTRL or Meta) that must be performed with the primary event to produce 
+the action. (Events can also have modifiers that <span class="docEmphasis">must 
+not</span> accompany the primary event if the action is to take place.) </p>
+<p class="docText">As you can see, the default actions of keysym mappings are 
+hardly intuitive. The client's manpage usually lists the event-action mappings 
+that you can modify. </p>
+<p class="docText">You can specify nondefault translations using a translation 
+table (a resource containing a list of translations). Since actions are part of 
+the client application and cannot be modified, you are actually specifying 
+alternative events to perform an action.<span id="ENB6-8"><a class="docLink" href="#EN6-8"><sup>[8]</sup></a></span> 
+Keep in mind that only applications written with the X Toolkit (or an Xt-based 
+toolkit such as the Motif Toolkit) recognize translation-table syntax as 
+described here. </p>
+<p class="docText">The basic syntax for specifying a translation table as a 
+resource is as follows: </p>
+<pre>[<tt><i>object</i></tt>*[<tt><i>subobject</i></tt>...]]*translations:   #override\
+        [<tt><i>modifier</i></tt>]&lt;<tt><i>event</i></tt>&gt;:   <tt><i>action</i></tt></pre>
+<p class="docText">The first line is basically like any other resource 
+specification with a few exceptions. First, the final <tt><i>argument</i></tt> 
+is always <tt>translations</tt>, indicating that one (or more) of the 
+event-action bindings associated with the [<tt><i>object</i>*</tt>[<tt><i>subobject</i>..</tt>.]] 
+are being modified. </p>
+<p class="docText">Second, note that <tt>#override</tt> is not the <tt><i>value</i></tt> 
+of the resource; it is literal and indicates that what follows should override 
+any default translations. In effect, <tt>#override</tt> is no more than a 
+pointer to the true <tt><i>value</i></tt> of the resource: a new event-action 
+mapping (on the following line) where the event may take a modifier. </p>
+<p class="docText">A not-so-obvious principle behind overriding translations is 
+that you only literally &quot;override&quot; a default translation when the event(s) of 
+the new translation match the event(s) of a default translation
+<span class="docEmphasis">exactly</span>. If the new translation does not 
+conflict with any existing translation, it is merely appended to the defaults.
+</p>
+<p class="docText">To be specified as a resource, a translation table must be a 
+single string. The <tt>#override</tt> is followed by a backslash (<tt>\</tt>) to 
+indicate that the subsequent line should be a continuation of the first. </p>
+<p class="docText">In the previous basic syntax example, the <tt><i>value</i></tt> 
+is a single event-action mapping. The <tt><i>value</i></tt> could also be a list 
+of several mappings, linked by the characters <tt>\n\</tt> to make the resource 
+a continuous string. </p>
+<p class="docText">The following <i>xterm</i> translation table shows multiple 
+event-action mappings linked in this manner: </p>
+<pre>*VT100.Translations:   #override\
+        &lt;Btn1Down&gt;:    select-start( )\n\
+        &lt;Btn1Motion&gt;:  select-extend( )\n\
+        &lt;Btn1Up&gt;:      select-end(primary,CUT_BUFFER0)</pre>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-6-SECT-5">6.5 Setting X Resources: Overview</h3>
+<p class="docText">Learning to write resource specifications is a fairly 
+manageable task, once you understand the basic rules of syntax and precedence. 
+In contrast, the multiple ways you can set resources — for a single system, 
+multiple systems, a single user, or for all users — can be confusing. For our 
+purposes, we are primarily concerned with specifying resources for a single user 
+running applications both on the local system and on remote systems in a 
+network. </p>
+<p class="docText">As we've said, resources are generally specified in files. A 
+resource file can have any name you like. Resources are generally &quot;loaded&quot; into 
+the X server by the <span class="docEmphBold">xrdb</span> (<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-8">Section 
+56.8</a>) client, which is normally run from your startup file or run 
+automatically by <i>xdm</i> when you log in. Prior to Release 2 of X, there was 
+only one resource file called <i>.Xdefaults</i>, placed in the user's home 
+directory. If no resource file is loaded into the server by <i>xrdb</i>, the <i>
+.Xdefaults</i> file will still be read. </p>
+<p class="docText">Remember that X allows clients to run on different machines 
+across a network, not just on the machine that supports the X server. One 
+problem with the older <i>.Xdefaults</i> mechanism was that users who were 
+running clients on multiple machines had to maintain multiple <i>.Xdefaults</i> 
+files, one on each machine. By contrast, <i>xrdb</i> stores the application 
+resources directly in the server, thus making them available to all clients, 
+regardless of the machine on which the clients are running. As we'll see, <i>
+xrdb</i> also allows you to change resources without editing files. </p>
+<p class="docText">Of course, you may want certain resources to be set on all 
+machines and others to be set only on particular machines. For a complex setup, 
+check the detailed information in O'Reilly &amp; Associates' <i>X Window System 
+Guide, </i>Volume 3M,
+<a class="docLink" href="_chapter 11.htm">Chapter 
+11</a>. </p>
+<p class="docText">In addition to loading resource files, you can specify 
+defaults for a particular instance of an application from the command line using 
+two options: <i>-xrm</i> and <i>-name</i>. </p>
+<p class="docText">A sample resources file follows. This file sets the border 
+width for all clients to a default value of two pixels, and it sets other 
+specific variables for <i>xclock</i> and <i>xterm</i>. The meaning of each 
+variable is obvious from its name. (For example, <tt>xterm*scrollBar:</tt> <tt>
+True</tt> means that <i>xterm</i> windows should be created with a scrollbar.)
+</p>
+<p class="docText">Note that comments are preceded by an exclamation point (!).</p>
+<p class="docText">For a detailed description of each variable, see the X client 
+manpages. </p>
+<pre>*borderWidth:           2
+!
+! xclock resources
+!
+xclock*borderWidth:     5
+xclock*geometry:        64x64
+!
+! xterm resources
+!
+xterm*curses:           on
+xterm*cursorColor:      skyblue
+xterm*pointerShape:     pirate
+xterm*jumpScroll:       on
+xterm*saveLines:        300
+xterm*scrollBar:        True
+xterm*scrollKey:        on
+xterm*background:       black
+xterm*borderColor:      blue
+xterm*borderWidth:      3
+xterm*foreground:       white
+xterm*font:             8x13</pre>
+<p class="docText">
+<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-6">
+Section 6.6</a> takes a look at the use of the <i>-xrm</i> command-line option 
+in standard X clients;
+<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-7">
+Section 6.7</a> covers <i>-name</i>.
+<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-8">
+Section 6.8</a> discusses various ways you can load resources using the <i>xrdb</i> 
+program.
+<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-9">
+Section 6.9</a> shows how to list the resources for a client with <i>appres</i>.
+</p>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-6-SECT-6">6.6 Setting Resources with the -xrm Option</h3>
+<p class="docText">The <i>-xrm</i> command-line option, which is supported by 
+all X Window System clients written with the X Toolkit, can be useful in 
+specifying from the command line any specification that you would otherwise put 
+into a <span class="docEmphBold">resources file</span> (<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-5">Section 
+6.5</a>). For example: </p>
+<pre>% <b>xterm -xrm 'xterm*Foreground: blue' &amp;</b></pre>
+<p class="docText">Note that a resource specification on the command line must 
+be quoted using the single quotes. </p>
+<p class="docText">The <i>-xrm</i> option only specifies the resource(s) for the 
+current instance of the application. Resources specified in this way do not 
+become part of the resource database. </p>
+<p class="docText">The <i>-xrm</i> option is most useful for setting classes, 
+since most clients have command-line options that correspond to instance 
+variable names. For example, the <i>-fg</i> command-line option sets the <tt>
+foreground</tt> attribute of a window, but <i>-xrm</i> must be used to set <tt>
+Foreground</tt>. </p>
+<p class="docText">Note also that a resource specified with the <i>-xrm</i> 
+option will not take effect if a resource that takes precedence has already been 
+loaded with <i>xrdb</i>. For example, say you've loaded a resource file that 
+includes the specification: </p>
+<pre>xterm*pointerShape:  pirate</pre>
+<p class="docText">The command-line specification of another cursor will fail:</p>
+<pre>% <b>xterm -xrm '*pointerShape:  gumby' &amp;</b></pre>
+<p class="docText">because the resource <tt>xterm*pointerShape</tt> is more 
+specific than the resource <tt>*pointerShape</tt>. Instead, you'll get an <i>
+xterm</i> with the previously specified pirate cursor. </p>
+<p class="docText">To override the resource database (and get the Gumby cursor), 
+you'd need to use a resource equally (or more) specific, such as the following:
+</p>
+<pre>% <b>xterm -xrm 'xterm*pointerShape:  gumby' &amp;</b></pre>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-6-SECT-7">6.7 How -name Affects Resources</h3>
+<p class="docText">The command-line option <i>-name</i> lets you name one 
+instance of an application; the server identifies the single instance of the 
+application by this name. The name of an application affects how resources are 
+interpreted. This option is supported by all X Window System clients written 
+with the X Toolkit. </p>
+<p class="docText">For example, the following command sets the <i>xterm</i> 
+instance name to <tt>bigxterm</tt>: </p>
+<pre>% <b>xterm -name bigxterm &amp;</b></pre>
+<p class="docText">When this command is run, the client uses any resources 
+specified for <tt>bigxterm</tt> rather than for <tt>xterm</tt>. </p>
+<p class="docText">The <i>-name</i> option allows you to create different 
+instances of the same application, each using different resources. For example, 
+you could put the following entries into a resource file such as <i>.Xresources</i>:
+</p>
+<pre>XTerm*Font:          8x13
+smallxterm*Font:     6x10
+smallxterm*Geometry: 80x10
+bigxterm*Font:       9x15
+bigxterm*Geometry:   80x55</pre>
+<p class="docText">You could then use these commands to create <i>xterm</i>s of 
+different specifications. The command: </p>
+<pre>% <b>xterm &amp;</b></pre>
+<p class="docText">would create an <i>xterm</i> with the default specifications, 
+while: </p>
+<pre>% <b>xterm -name bigxterm &amp;</b></pre>
+<p class="docText">would create a big <i>xterm</i>, 80 characters across by 55 
+lines down, displaying in the font <tt>9x15</tt>. The command: </p>
+<pre>% <b>xterm -name smallxterm &amp;</b></pre>
+<p class="docText">would create a small <i>xterm</i>, 80 characters across by 10 
+lines down, displaying in the font <tt>6x10</tt>. </p>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-6-SECT-8">6.8 Setting Resources with xrdb</h3>
+<p class="docText">The <i>xrdb</i> program saves you from maintaining multiple 
+resource files if you run clients on multiple machines. It stores resources on 
+the X server, where they are accessible to all clients using that server. (This 
+property is also called the resource database.) </p>
+<p class="docText">Place the appropriate <i>xrdb</i> command line in your <i>.xinitrc</i> 
+file or <i>.xsession</i> file to initialize resources at login, although it can 
+also be invoked interactively. It has the following syntax: </p>
+<pre><b>xrdb </b> [<i>options </i>] [<i>filename </i>]</pre>
+<p class="docText">The <i>xrdb</i> client takes several options, all of which 
+are documented on its manual page. We'll discuss the most useful options. </p>
+<p class="docText">The optional <span class="docEmphasis">filename</span> 
+argument specifies the name of a file from which the values of client variables 
+(resources) will be read. If no filename is specified, <i>xrdb</i> will expect 
+to read its data from standard input. Note that whatever you type will override 
+the previous contents, so if you inadvertently type <i>xrdb</i> without a 
+filename argument and then quit with CTRL-d, you will delete any previous 
+values. (You can append new settings to current ones using the <i>-merge</i> 
+option discussed later in this article.) </p>
+<p class="docText">The resource <tt><i>filename</i></tt> can be anything you 
+want. Two commonly used names are <i>.Xresources</i> and <i>.Xdefaults</i>. </p>
+<p class="docText">You should load a resource file with the <i>xrdb</i> -<i>load</i> 
+option. For example, to load the contents of your <i>.Xresources</i> file into 
+the RESOURCE_MANAGER, you would type: </p>
+<pre>% <b>xrdb -load .Xresources</b></pre>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Querying the resource database</span></i>
+  </dt>
+  <dd>
+  <p class="docList">You can find out what options are currently set by using 
+  the <i>-query</i> option. For example: </p>
+  <pre>% <b>xrdb -query</b>
+XTerm*ScrollBar:     True
+bigxterm*font:       9x15
+bigxterm*Geometry:   80x55
+smallxterm*Font:     6x10
+smallxterm*Geometry: 80x10
+xterm*borderWidth:   3</pre>
+  <p class="docList">If <i>xrdb</i> has not been run, this command will produce 
+  no output. </dd>
+  <dt><i><span class="docPubcolor">Loading new values into the resource database</span></i>
+  </dt>
+  <dd>
+  <p class="docList">By default, <i>xrdb</i> reads its input (either a file or 
+  standard input) and stores the results into the resource database, replacing 
+  the previous values. If you simply want to merge new values with the currently 
+  active ones (perhaps by specifying a single value from standard input), you 
+  can use the <i>-merge</i> option. Only the new values will be changed; 
+  variables that were already set will be preserved rather than overwritten with 
+  empty values. </p>
+  <p class="docList">For example, let's say you wanted to add new resources 
+  listed in the file <i>new.values</i>. You could say: </p>
+  <pre>% <b>xrdb -merge new.values</b></pre>
+  <p class="docList">As another example, if you wanted all subsequently run <i>
+  xterm</i> windows to have scrollbars, you could use standard input and enter:
+  </p>
+  <pre>% <b>xrdb -merge</b>
+xterm*scrollBar:        True</pre>
+  <p class="docList">and then press CTRL-d to end the standard input. Note that 
+  because of precedence rules for resource naming, you may not get what you want 
+  automatically. For example, if you specify: </p>
+  <pre>xterm*scrollBar:        True</pre>
+  <p class="docList">and the more specific value:</p>
+  <pre>xterm*vt100.scrollBar:  False</pre>
+  <p class="docList">has already been set, your new, less specific setting will 
+  be ignored. The problem isn't that you used the <i>-merge</i> option 
+  incorrectly — you just got caught by the rules of precedence. </p>
+  <p class="docList">If your specifications don't seem to work, use the <i>
+  -query</i> option to list the values in the RESOURCE_MANAGER property, and 
+  look for conflicting specifications. </p>
+  <p class="docList">Note also that when you add new specifications, they won't 
+  affect any programs already running — only programs started after the new 
+  resource specifications are in effect. (This is also true even if you 
+  overwrite the existing specifications by loading a new resource file. Only 
+  programs run after this point will reflect the new specifications.) </dd>
+  <dt><i><span class="docPubcolor">Saving active resource definitions in a file</span></i>
+  </dt>
+  <dd>
+  <p class="docList">Assume that you've loaded the RESOURCE_MANAGER property 
+  from an <i>.Xresources</i> or other file. However, you've dynamically loaded a 
+  different value using the <i>-merge</i> option, and you'd like to make the new 
+  value your default. </p>
+  <p class="docList">You don't need to edit the file manually (although you 
+  certainly could.) The <i>-edit</i> option allows you to write the current 
+  value of the RESOURCE_MANAGER property to a file. If the file already exists, 
+  it is overwritten with the new values. However, <i>xrdb</i> is smart enough to 
+  preserve any comments and preprocessor declarations in the file being 
+  overwritten, replacing only the resource definitions. For example: </p>
+  <pre>% <b>xrdb -edit ~/.Xresources</b></pre>
+  <p class="docList">will save the current contents of the RESOURCE_MANAGER 
+  property in the file <i>.Xresources</i> in your home directory. </p>
+  <p class="docList">If you want to save a backup copy of an existing file, use 
+  the <i>-backup</i> option: </p>
+  <pre>% <b>xrdb -edit .mydefaults -backup old</b></pre>
+  <p class="docList">The string following the <i>-backup</i> option is an 
+  extension appended to the old filename. In the prior example, the previous 
+  copy of <i>.mydefaults</i> would be saved as <i>.mydefaults.old</i>. </dd>
+  <dt><i><span class="docPubcolor">Removing resource definitions</span></i> </dt>
+  <dd>
+  <p class="docList">You can delete the definition of the RESOURCE_MANAGER 
+  property from the server by calling <i>xrdb</i> with the <i>-remove</i> 
+  option. </p>
+  <p class="docList">There is no way to delete a single resource definition 
+  other than to read the current <i>xrdb</i> values into a file. For example:
+  </p>
+  <pre>% <b>xrdb -query &gt;  </b><i>filename </i></pre>
+  <p class="docList">Use an editor to edit the file, deleting the resource 
+  definitions you no longer want, and save the file: </p>
+  <pre>% <b>vi  </b><i>filename </i></pre>
+  <p class="docList">Then read the edited values back into the RESOURCE_MANAGER 
+  with <i>xrdb</i> (note that we're replacing the values, not merging them, so 
+  we use <i>-load</i>): </p>
+  <pre>% <b>xrdb -load  </b><i>filename </i>
+</pre>
+  </dd>
+</dl>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-6-SECT-9">6.9 Listing the Current Resources for a Client: 
+appres</h3>
+<p class="docText">The <i>appres</i> (<span class="docEmphasis">app</span>lication
+<span class="docEmphasis">res</span>ource) program lists the resources that 
+currently might apply to a client. These resources may be derived from several 
+sources, including the user's <i>.Xresources</i> file and a system-wide 
+application defaults file. The directory <i>/usr/lib/X11/app-defaults</i> 
+contains application-default files for several clients. (Note that it may be in 
+a different place depending on how your X11 is installed; on Mac OS X, which 
+does not come with X by default, you might find it in <i>/usr/X11R6/etc/app-defaults</i> 
+in one popular install or <i>/usr/local/lib/X11/app-defaults</i> in another.) 
+The function of these files is discussed in the next section. For now, be aware 
+that all of the resources contained in these files begin with the class name of 
+the application. </p>
+<p class="docText">Also be aware that <i>appres</i> has one serious limitation: 
+it cannot distinguish between valid and invalid resource specifications. It 
+lists all resources that might apply to a client, regardless of whether the 
+resources are correctly specified. </p>
+<p class="docText"><i>appres</i> lists the resources that apply to a client 
+having the <tt><i>class_name</i></tt> and/or <tt><i>instance_name</i></tt> you 
+specify. Typically, you would use <i>appres</i> before running a client program 
+to find out what resources the client program will access. </p>
+<p class="docText">For example, say you want to run <i>xterm</i>, but you can't 
+remember the latest resources you've specified for it, whether you've loaded 
+them, what some of the application defaults are, etc. You can use the <i>appres</i> 
+client to check the current <i>xterm</i> resources. If you specify only a class 
+name, as in this command line:<span id="ENB6-9"><a class="docLink" href="#EN6-9"><sup>[9]</sup></a></span>
+</p>
+<pre>% <b>appres XTerm</b></pre>
+<p class="docText"><i>appres</i> lists the resources that any <i>xterm</i> would 
+load. In the case of <i>xterm</i>, this is an extensive list, encompassing all 
+of the system-wide application defaults, as well as any other defaults you have 
+specified in a resource file. </p>
+<p class="docText">You can also specify an instance name to list the resources 
+that applies to a particular instance of the client, as in: </p>
+<pre>% <b>appres XTerm bigxterm</b></pre>
+<p class="docText">If you omit the class name, <i>xappres</i> assumes the class
+<tt>-NoSuchClass-</tt>, which has no defaults, and returns only the resources 
+that would be loaded by the particular instance of the client. </p>
+<p class="docText">Note that the instance can simply be the client name, e.g.,
+<tt>xterm</tt>. In that case none of the system-wide application defaults would 
+be listed, since all begin with the class name <tt>XTerm</tt>. For example, the 
+command: </p>
+<pre>% <b>appres xterm</b></pre>
+<p class="docText">might return resources settings similar to these:</p>
+<pre>xterm.vt100.scrollBar:  True
+xterm*PhonyResource:    youbet
+xterm*pointerShape:     gumby
+xterm*iconGeometry:     +50+50
+*VT100.Translations:    #override\
+    Button1 &lt;Btn3Down&gt;:   select-end(CLIPBOARD)\n\
+    ~Ctrl ~Meta &lt;Btn2Up&gt;: insert-selection(primary,CLIPBOARD)</pre>
+<p class="docText">Most of these resources set obvious features of <i>xterm</i>. 
+The translation table sets up <i>xterm</i> to use the <i>xclipboard</i>. Notice 
+also that <i>appres</i> has returned an invalid resource called <tt>
+PhonyResource</tt> that we created for demonstration purposes. You can't rely on
+<i>appres</i> to tell you what resources a client will actually load because the
+<i>appres</i> program cannot distinguish a valid resource specification from an 
+invalid one. Still, it can be fairly useful to jog your memory as to the 
+defaults you've specified in your <i>.Xresources</i> file, as well as the 
+system-wide application defaults. </p>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-6-SECT-10">6.10 Starting Remote X Clients</h3>
+<p class="docText">One of the unique advantages of window systems such as X is 
+that you can run applications remotely and view them on the local display (as 
+opposed to systems that merely allow for the execution of shared applications by 
+the local host, such as Windows and the Mac OS prior to OS X). Even Mac OS X, 
+except insofar as it can run an X server, does not allow for a split between an 
+application's display and its execution. Only X-aware applications may be 
+executed in such a fashion. </p>
+<h4  id="upt3-CHP-6-SECT-10.1" class="docSection2Title">6.10.1 Starting Remote X Clients from Interactive 
+Logins</h4>
+<p class="docText">You can try this easily enough by doing an <i>rlogin</i> or
+<i>telnet</i><span id="ENB6-10"><a class="docLink" href="#EN6-10"><sup>[10]</sup></a></span> 
+to the remote host, setting the DISPLAY environment variable and starting up an 
+X client. Of course, it helps to have an X server already running on your local 
+machine. In the following example, we start up a new <i>xload</i> client running 
+on the host <span class="docEmphasis">ruby</span>: </p>
+<pre>sapphire:joan % <b>rlogin ruby</b>
+Password:
+Last login: Mon Mar 12 16:27:23 from sapphire.oreilly.com
+NetBSD 1.4.2A (ORA-GENERIC) #6: Wed May 31 06:12:46 EEST 2000
+
+TERM = (vt100) <b>xterm</b>
+
+ruby:joan % <b>setenv DISPLAY sapphire:0</b>
+ruby:joan % <b>xload &amp;</b></pre>
+<p class="docText">(You must, of course, have an account on the remote system.)</p>
+<p class="docText">The first thing that might go wrong is that you may run into 
+server access control. If you see the following error: </p>
+<pre>Xlib:  connection to &quot;sapphire:0&quot; refused by server
+Xlib:  Client is not authorized to connect to Server
+Error: Can't open display: sapphire:0</pre>
+<p class="docText">you can probably fix it by typing <tt>xhost +ruby</tt> in a
+<span class="docEmphasis">sapphire</span> window and running the command again 
+on <span class="docEmphasis">ruby</span>.<span id="ENB6-11"><a class="docLink" href="#EN6-11"><sup>[11]</sup></a></span>
+</p>
+<p class="docText">Once you have networking and access control issues solved, 
+you should be able to display clients from the remote machine. The next issue is 
+how to run remote clients <span class="docEmphasis">easily</span>. </p>
+<p class="docText">If you have <span class="docEmphBold">ssh</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), its X forwarding handles authorization (setting
+<span class="docEmphasis">DISPLAY</span>) and also encrypts the connection to 
+make it secure. Here's an example using <i>ssh</i> for an interactive login: </p>
+<pre>sapphire:joan % <b>ssh ruby</b>
+joan's passphrase:
+Last login: Mon Mar 12 16:27:23 from sapphire.oreilly.com
+NetBSD 1.4.2A (ORA-GENERIC) #6: Wed May 31 06:12:46 EEST 2000
+
+TERM = (vt100) <b>xterm</b>
+
+ruby:joan % <b>xload &amp;</b></pre>
+<h4  id="upt3-CHP-6-SECT-10.2" class="docSection2Title">6.10.2 Starting a Remote Client with rsh and ssh</h4>
+<p class="docText">If you have <i>ssh</i>, that's the easiest way to start a 
+remote client: </p>
+<pre>sapphire:joan % <b>ssh ruby -n xterm &amp;</b></pre>
+<p class="docText">If you aren't running an SSH agent, you'll need to enter your 
+password before the remote command can run. If you have trouble, try the <i>ssh</i> 
+-<i>f</i> option — with no ampersand (<tt>&amp;</tt>) at the end of the command 
+line. </p>
+<p class="docText">If you don't have <i>ssh</i>, the best way to start a remote 
+client is the same way you'd start any remote command: using the <i>rsh</i> 
+command: </p>
+<pre>sapphire:joan % <b>rsh ruby -n xterm -display sapphire:0</b></pre>
+<p class="docText">There are a few issues to be ironed out first, though.</p>
+<p class="docText">To run <i>rsh</i> successfully, make sure that you have 
+permission to run remote shells on the remote machine. This means that the local 
+machine must be listed either in the remote machine's <i>/etc/hosts.equiv</i> 
+file or in your personal <i>$HOME/.rhosts</i> file on the remote machine. For 
+example, an <i>.rhosts</i> file might read: </p>
+<pre>sapphire.ora.com
+harry.ora.com</pre>
+<p class="docText">If the host is properly set up on the remote machine, then <i>
+rsh</i> will execute properly, and <i>rlogin</i> will no longer ask for a 
+password when you try to connect to the remote machine. If it is not set up 
+properly, then <i>rlogin</i> will prompt for a password, and <i>rsh</i> will 
+fail with the message <tt>Permission denied</tt>. </p>
+<p class="docText">Using <i>.rhosts</i> or <i>/etc/hosts.equiv</i> for this 
+purpose might be considered a breach of security: it means that if someone 
+breaks into your account on one machine, he can break into your account on all 
+other machines as well. Clearly, you want to be careful what hosts you list in
+<i>.rhosts</i>. For that reason, it's better to use the fully qualified domain 
+name (i.e., <span class="docEmphasis">harry.ora.com</span> instead of just
+<span class="docEmphasis">harry</span>). </p>
+<p class="docText">There are a few more rules:</p>
+<ul>
+  <li>
+  <p class="docList">For security reasons, the <i>.rhosts</i> file will be 
+  ignored if it is publically writable. Make sure that the <i>.rhosts</i> file 
+  is writable only by you. </li>
+  <li>
+  <p class="docList">Make sure that you are running the correct <i>rsh</i> 
+  command. Some systems have a <span class="docEmphasis">restricted</span> 
+  shell, also named <i>rsh</i>. If you get the following error: </p>
+  <pre>ruby: ruby: No such file or directory</pre>
+  <p class="docList">or:</p>
+  <pre>ruby: ruby: cannot open</pre>
+  <p class="docList">where <tt>ruby</tt> is the name of the system that you 
+  wanted to run the remote shell on, the problem is probably that you are using 
+  the wrong <i>rsh</i> command. Use the <span class="docEmphBold">which</span> (
+  <a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-6">
+  Section 1.6</a>) or <span class="docEmphBold">whereis</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-3">Section 
+  1.3</a>) command to see which <i>rsh</i> you are using: </p>
+  <pre>sapphire:joan % <b>which rsh</b>
+/bin/rsh
+sapphire:joan % <b>echo $path</b>
+/bin /usr/bin /usr/bin/X11 /usr/bsd</pre>
+  <p class="docList">On some System V-derived systems such as IRIX, the 
+  restricted shell <i>rsh</i> might live in <i>/bin</i>, while the remote shell
+  <i>rsh</i> (the one you want) resides in <i>/usr/bsd</i> . <i>/bin</i> often 
+  shows up in search paths earlier than <i>/usr/bsd</i>, so on those systems you 
+  need to redefine your path explicitly so that <i>/usr/bsd</i> is searched 
+  before <i>/bin</i>. Alternately, you can supply the full path to the command 
+  when you invoke it. </li>
+  <li>
+  <p class="docList">You may need to append the <i>-n</i> option to <i>rsh</i> 
+  to avoid a <tt>Stopped</tt> error message on some machines. </li>
+  <li>
+  <p class="docList">You need to be sure that the directory containing X 
+  binaries is defined in your search path in your <span class="docEmphBold">
+  shell setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+  3.3</a>) on the remote system. </li>
+  <li>
+  <p class="docList">If you are using host-based access control, you need to 
+  execute the <i>xhost</i> client to extend access to the remote host before the
+  <i>rsh</i> command is run. Otherwise, clients from the remote host will not 
+  have permission to access your display. If you are using user-based access 
+  control, you may need to run the <i>xauth</i> command to copy your access code 
+  to the remote machine. </li>
+  <li>
+  <p class="docList">You have to use the <i>-display</i> option in calling a 
+  remote shell, or the <tt>Can't</tt> <tt>Open display</tt> error will be 
+  returned. (Alternatively, you can have your DISPLAY environment variable 
+  hard-coded into your <span class="docEmphBold">shell setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+  3.3</a>) on the remote machine, but this is a <span class="docEmphasis">very 
+  bad idea</span>.) See
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-8">
+  Section 35.8</a> for more information on setting your display. </li>
+  <li>
+  <p class="docList">Be careful not to use <tt>unix:0.0</tt> or <tt>:0.0</tt> as 
+  the display name! Otherwise, the client will display the window on the local 
+  display of the remote host. If this succeeds, the user on that display could 
+  either become very annoyed or take advantage of the sudden access to your 
+  account by reading personal files and sending nasty mail to your boss. You 
+  would have no warning; all you would know is that your window didn't appear. 
+  So, before running <span class="docEmphasis">another</span> client, you may 
+  want to log in to the remote system and do a <i>ps</i> to ensure that you're 
+  not already running the application on the remote display. </li>
+</ul>
+<p class="docText"><i>ssh</i> expects slightly different files than does <i>rsh</i>, 
+although the server may be configured to allow the use of both <i>.rhosts</i> 
+and <i>.shosts</i>, as well as the system-level <i>/etc/hosts.equiv</i> and <i>
+/etc/ssh/shosts.equiv</i> files. Many administrators have wisely chosen to avoid
+<i>rsh</i> and related commands altogether, even to the point of disallowing 
+fallback to <i>rsh</i> from a <i>ssh</i> login attempt. More information about 
+the peculiarities of <i>ssh</i> may be found in
+<a class="docLink" href="_chapter_51.htm">Chapter 
+51</a>. </p>
+<p class="docText"><span class="docEmphasis">—LM, EP, JP, and SJC</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN6-1"><a class="docLink" href="#ENB6-1">[1]</a>&nbsp;&nbsp;The keycode numbers may vary from system to system, depending on how your key 
+mappings are configured. For example, under a Debian 2.2 install running inside 
+VirtualPC on a Powerbook G3, DELETE is keycode 107, whereas under OroborusX on 
+the same machine, the same keypress produces keycode 59, the BACKSPACE 
+character. On both systems, however, the hexadecimal keysym values for DELETE 
+and BACKSPACE are the same: <tt>0xffff</tt> and <tt>0xff08</tt>, respectively.</p><p class="docFootnote" id="EN6-2"><a class="docLink" href="#ENB6-2">[2]</a>&nbsp;&nbsp;Not to be confused with the 
+  extensive customization of window decorations and the like now possible with 
+  window managers such as Enlightenment, Afterstep, FVWM, or Sawfish. If you 
+  have a difficult time visualizing what is affected by these resource 
+  assignments apart from the fancy decoration around the windows themselves, try 
+  killing your window manager and viewing just the X clients themselves, in all 
+  of their sparse glory.</p><p class="docFootnote" id="EN6-3"><a class="docLink" href="#ENB6-3">[3]</a>&nbsp;&nbsp;Remember, in X the client 
+  server model is the inverse of what you may be used to; the server is local, 
+  and displays clients that may be running remotely.</p><p class="docFootnote" id="EN6-4"><a class="docLink" href="#ENB6-4">[4]</a>&nbsp;&nbsp;While this is often okay for 
+  applications such as <i>xterm</i> that have not been modified much since the 
+  early nineties, app-defaults files can be more trouble than they're worth in a 
+  rapid application development environment, as they can quickly get out of sync 
+  with changes in the application itself from one version to the next.</p><p class="docFootnote" id="EN6-5"><a class="docLink" href="#ENB6-5">[5]</a>&nbsp;&nbsp;For more information on 
+  events and translations, see O'Reilly &amp; Associates' <i>X Window System Guide,
+  </i>Volume 4.</p><p class="docFootnote" id="EN6-6"><a class="docLink" href="#ENB6-6">[6]</a>&nbsp;&nbsp;<span style="FONT-WEIGHT: bold">
+<span style="FONT-WEIGHT: normal">
+Actually, if there is no 
+    text to select, motion is recorded as a series of <span class="docEmphasis">
+    MotionNotify</span> events.</span></span></p><p class="docFootnote" id="EN6-7"><a class="docLink" href="#ENB6-7">[7]</a>&nbsp;&nbsp;They are actually slightly 
+  simplified versions of default translations. Before you can understand the 
+  actual translations listed in the <i>xterm</i> manual page, you must learn 
+  more about the syntax of translations. We cover the basics here; for more 
+  information, see O'Reilly &amp; Associates' <i>X Window System Guide, </i>Volume 
+  3M, Appendix F.</p><p class="docFootnote" id="EN6-8"><a class="docLink" href="#ENB6-8">[8]</a>&nbsp;&nbsp;As we'll see, in certain 
+  cases you may be able to supply an alternative <span class="docEmphasis">
+  argument</span> (such as a selection name) to an action. These changes
+  <span class="docEmphasis">are</span> interpreted by the resource manager.</p><p class="docFootnote" id="EN6-9"><a class="docLink" href="#ENB6-9">[9]</a>&nbsp;&nbsp;The class name of <i>xterm</i> 
+  starts with <span class="docEmphasis">two</span> uppercase letters; this is 
+  contrary to the naming scheme followed by most other application classes.</p><p class="docFootnote" id="EN6-10"><a class="docLink" href="#ENB6-10">[10]</a>&nbsp;&nbsp;Most of the recent 
+  distributions of Unix default to the use of <i>ssh</i> as a secure replacement 
+  for the various r* command, (rsh, rcp, rlogin, et al.), so you may want to 
+  skip ahead to
+  <a class="docLink" href="_chapter 5.htm">Chapter 5</a>.</p><p class="docFootnote" id="EN6-11"><a class="docLink" href="#ENB6-11">[11]</a>&nbsp;&nbsp;The security-conscious may 
+  prefer to use the fully qualified domain name on the <i>xhost</i> command line 
+  (such as <tt>xhost +ruby.oreilly.com</tt>).</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 5.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 7.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

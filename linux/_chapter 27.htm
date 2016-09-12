@@ -1,0 +1,2471 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 27</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 26.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 28.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 27. Shell Interpretation</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-1">27.1 What the Shell Does</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-2">27.2 How the Shell Executes Other Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-3">27.3 What's a Shell, Anyway?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-4">27.4 Command Evaluation and Accidentally Overwriting Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-5">27.5 Output Command-Line Arguments One by One</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-6">27.6 Controlling Shell Command Searches</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-7">27.7 Wildcards Inside Aliases</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-8">27.8 eval: When You Need Another Chance</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-9">27.9 Which One Will bash Use?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-10">27.10 Which One Will the C Shell Use?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-11">27.11 Is It &quot;2&gt;&amp;1 file&quot; or &quot;&gt; file 2&gt;&amp;1&quot;? Why?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-12">27.12 Bourne Shell Quoting</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-13">27.13 Differences Between Bourne and C Shell Quoting</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-14">27.14 Quoting Special Characters in Filenames</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-15">27.15 Verbose and Echo Settings Show Quoting</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-16">27.16 Here Documents</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-17">27.17 &quot;Special&quot; Characters and Operators</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-27-SECT-18">27.18 How Many Backslashes?</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-1">27.1 What the Shell Does</h3>
+<p class="docText">As we've said, the shell is just another program. It's 
+responsible for interpreting the commands you type. There are several commonly 
+used shells, primarily based on two or three major families and a wide variety 
+of other projects: </p>
+<ul>
+  <li>
+  <p class="docList">The Bourne shell (<i>sh</i>) and its derivatives and 
+  progeny (including <i>bash</i>, <i>ash</i>, and even the Korn shell <i>ksh</i>)
+  </li>
+  <li>
+  <p class="docList">The C shell (<i>csh</i>) and its progeny (including <i>tcsh</i>)
+  </li>
+  <li>
+  <p class="docList">The Korn shell (<i>ksh</i>) and variants (including <i>
+  pdksh</i> and <i>zsh</i><span id="ENB27-1"><a class="docLink" href="#EN27-1"><sup>[1]</sup></a></span>)
+  </li>
+  <li>
+  <p class="docList">Specialized shells based on languages such as Python, TCL,
+  <i>perl</i>, and so on. </li>
+  <li>
+  <p class="docList">Shells invented to meet specific needs such as restricted 
+  command access (<i>rsh</i>), recovery after a system failure (<i>sash</i>), 
+  and downloading, installing, and configuring software libraries. </li>
+</ul>
+<p class="docText">If you can think of a reason to have a specialized shell, 
+someone probably has already written one to meet that need. </p>
+<p class="docText">Interpreting your commands might seem simple enough, but a 
+lot of things happen between the time you press RETURN and the time the computer 
+actually does what you want. The process of interpretation is very complex: the 
+shell has to break the command into words and expand <span class="docEmphBold">
+aliases</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+29.2</a>), <span class="docEmphBold">history operators</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+30.8</a>), and <span class="docEmphBold">shell and environment variables</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+Section 35.9</a>). It also <span class="docEmphBold">sets up standard input and 
+output streams</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>) and performs a lot of other tasks. Indeed, if a command looks right 
+but doesn't work right, the cause is probably either one of the following: </p>
+<ul>
+  <li>
+  <p class="docList">File permissions are set incorrectly. </li>
+  <li>
+  <p class="docList">You don't understand how the shell is processing your 
+  command line. </li>
+</ul>
+<p class="docText">I'd say that file permission problems are more common, but 
+it's a close call. File permission problems are usually easy to understand, once 
+you know what to look for, but the rules by which a shell interprets your 
+command line are another thing altogether. Lest I scare you, we'll try to go 
+slow with this material. Although it's difficult, understanding how the shell 
+parses your commands is important to becoming a power user. </p>
+<p class="docText">In this chapter, we'll look at how a Unix shell interprets 
+commands. Shells have similar interpretation rules. The C shell can be tricky at 
+times, mostly because its behavior isn't as well defined as the others. And <i>
+zsh</i> has some twists that others don't — they're included by design, but they 
+can surprise users of other shells. However, there's nothing &quot;magical&quot; about 
+these rules. Tomorrow morning, you may grab some new shell from the Net and find 
+out that it has a new and different way of interpreting commands. For better or 
+worse, that's what Unix is all about. </p>
+<p class="docText">As part of this discussion, we'll cover quoting, which is the 
+mechanism by which you can turn off the special meanings that the shell assigns 
+to some characters. Quoting is an integral part of command-line processing; it 
+allows you to control what the shell will do to your commands. </p>
+<p class="docText"><span class="docEmphasis">—ML and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-2">27.2 How the Shell Executes Other Commands</h3>
+<p class="docText">When the shell executes an <span class="docEmphBold">external 
+command</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+1.9</a>), what happens? </p>
+<p class="docText">Unix programs are executed through a combination of two 
+system calls (low-level requests to the operating system) called
+<span class="docEmphasis">fork</span> and <span class="docEmphasis">exec</span>.
+</p>
+<p class="docText">The <span class="docEmphasis">exec</span> system call tells 
+the kernel to execute another program. However, the kernel replaces the calling 
+program with the new one being called. This doesn't work too well if you want to 
+return to the original program after the new one has done its job. </p>
+<p class="docText">To get around this problem, programs that want to stick 
+around first copy themselves with the <span class="docEmphasis">fork</span> 
+system call. Then the copied program <span class="docEmphasis">exec</span>s the 
+new program, terminating itself in the process. </p>
+<p class="docText">You don't really need to know this little tidbit about what 
+goes on behind the scenes, but it sure helps to know about
+<span class="docEmphasis">fork</span> and <span class="docEmphasis">exec</span> 
+when reading some Unix manuals.
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">
+Section 24.2</a> has more information. </p>
+<p class="docText"><span class="docEmphasis">—TOR and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-3">27.3 What's a Shell, Anyway?</h3>
+<p class="docText">A <span class="docEmphasis">shell</span> is a program that 
+interprets your command lines and runs other programs. Another name for the 
+shell is &quot;command interpreter.&quot; This article covers the two major Unix shell 
+families, including discussion about how shells run, search for programs, and 
+read shell script files. </p>
+<h4  id="upt3-CHP-27-SECT-3.1" class="docSection2Title">27.3.1 How Shells Run Other Programs</h4>
+<p class="docText">For each command it runs, a shell performs a series of steps. 
+First, if the shell is reading commands from a terminal (interactively), it 
+prints a prompt (such as <tt>%</tt> or <tt>$</tt>) and waits for you to type 
+something. Next, the shell reads the command line (like
+<span class="docEmphasis">cat -v afile bfile &gt; cfile</span>),
+<span class="docEmphBold">interprets it</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-1">Section 
+27.1</a>), and runs the result. When the command finishes running (unless the 
+command is <span class="docEmphBold">in the background</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-2">Section 
+23.2</a>)), the shell is ready to read another command line. </p>
+<h4  id="upt3-CHP-27-SECT-3.2" class="docSection2Title">27.3.2 Interactive Use Versus Shell Scripts</h4>
+<p class="docText">A shell can read command lines from a terminal or it can read 
+them from a file. When you put command lines into a file, that file is called a
+<span class="docEmphBold">shell script</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-1">Section 
+35.1</a>) or shell program. The shell handles the shell script just as it 
+handles the commands you type from a terminal (though the shell uses its
+<span class="docEmphBold">non-interactive mode</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">Section 
+3.4</a>), which means, basically, that it doesn't print the <tt>%</tt> or <tt>$</tt> 
+prompts, among other things). With this information, you already know how to 
+write simple shell scripts — just put commands in a file and feed them to the 
+shell! </p>
+<p class="docText">In addition, though, there are a number of programming 
+constructs that make it possible to write shell programs that are much more 
+powerful than just a list of commands. </p>
+<h4  id="upt3-CHP-27-SECT-3.3" class="docSection2Title">27.3.3 Types of Shells</h4>
+<p class="docText">There are two main shell families in Unix: </p>
+<ul>
+  <li>
+  <p class="docList">The <span class="docEmphasis">C shell</span> and its 
+  derivatives (<i>csh</i>, <i>tcsh</i>) are considered very powerful for 
+  situations where you are interactively working on a terminal. <i>csh</i> will 
+  read shell scripts and has some useful features for programmers. 
+  Unfortunately, it has some quirks that can make shell programming tough. </li>
+  <li>
+  <p class="docList">The <span class="docEmphasis">Bourne shell</span> (<i>sh</i>) 
+  and shells like it are probably used more often for shell programming. (Some 
+  newer <i>sh</i>-like shells, including <i>ksh</i>, <i>zsh</i>, and
+  <span class="docEmphBold">bash</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-6">Section 
+  1.6</a>), combine handy interactive C shell-like features with Bourne shell 
+  syntax.) </li>
+</ul>
+<h4  id="upt3-CHP-27-SECT-3.4" class="docSection2Title">27.3.4 Shell Search Paths</h4>
+<p class="docText">As
+<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-6">
+Section 26.6</a> explains, if the shell is trying to run a command, and the 
+command isn't built-in to the shell itself, the shell looks in a list of 
+directories called a <span class="docEmphasis">search path</span>. Unix systems 
+have standard directories with names like <i>/bin</i> and <i>/usr/bin</i> that 
+hold standard Unix programs. Almost everyone's search path includes these 
+directories. </p>
+<p class="docText">If you do much shell programming, you should make a directory 
+on your account for executable files. Most people name theirs <i>bin</i> and put 
+it under their home directory. See
+<a class="docLink" href="_chapter 7.htm#upt3-CHP-7-SECT-4">
+Section 7.4</a>. </p>
+<h4  id="upt3-CHP-27-SECT-3.5" class="docSection2Title">27.3.5 Bourne Shell Used Here</h4>
+<p class="docText">Most serious shell programmers write their scripts for the 
+Bourne shell or its variants, such as <i>bash</i> or <i>ksh</i>. So do we. </p>
+<p class="docText">Newer Bourne shells have features — such as
+<span class="docEmphBold">shell functions</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>), an <i>unset</i> command for shell variables, and others — that the 
+earlier Version 7 Bourne shell didn't. Most scripts in this book are written to 
+work on all Bourne shells — for the sake of portability, some scripts don't use 
+these new features. It's pretty rare to find such old shells around nowadays, 
+though, so use your own judgment. It is pretty unlikely that if you're writing a 
+shell script for your own use on a new system you will ever need to back-port it 
+to run on a V7 system. </p>
+<p class="docText">For the rest of these introductory articles, it may be easier 
+if you have a terminal close by so you can try the examples. If your account 
+uses the Bourne shell or one of its relatives (<i>ksh</i>, <i>bash</i>, etc.), 
+your prompt probably has a dollar sign (<tt>$</tt>) in it somewhere, unless 
+you've <span class="docEmphBold">modified the prompt yourself</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-1">Section 
+4.1</a>). If your account isn't running the Bourne shell, start one by typing
+<tt>sh</tt>. Your prompt should change to a dollar sign (<tt>$</tt>). You'll be 
+using the Bourne shell until you type CTRL-d at the start of a line: </p>
+<pre>% <b>sh </b>
+$
+$ <i> ...Enter commands...</i>
+$ CTRL-d
+%</pre>
+<h4  id="upt3-CHP-27-SECT-3.6" class="docSection2Title">27.3.6 Default Commands</h4>
+<p class="docText">One more thing to note is that when dealing with shell 
+scripts, which store sequences of commands that you want to be able to run at 
+one time, you will likely need to specify the shell or other program that will 
+run the commands by default. This is normally done using the
+<span class="docEmphBold">special #! notation</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-2">Section 
+36.2</a>) in the first line of the script. </p>
+<pre>#!/bin/sh
+# everything in this script will be run under the Bourne shell
+
+...
+
+#!/bin/tcsh
+# everything in this script will be run under tcsh
+
+...
+
+#!/usr/bin/perl
+# everything in this script will be interpreted as a perl command
+
+...</pre>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-4">27.4 Command Evaluation and Accidentally 
+Overwriting Files</h3>
+<p class="docText">Before getting into the details of command interpretation, I 
+thought I'd give a very simple example of why it's important. Here's an error 
+that occurs all the time. Let's say you have two files, called <i>file1</i> and
+<i>file2</i>. You want to create a new version of <i>file1</i> that has <i>file2</i> 
+added to the end of it. That's what <i>cat</i> is all about, so you give the 
+command: </p>
+<pre>% <b>cat file1 file2 &gt; file1 </b>          <i> ...wrong</i></pre>
+<p class="docText">This looks like it should work. If you've ever tried it, you 
+know it doesn't; it erases <i>file1</i>, and then dumps <i>file2</i> into it. 
+Why? The shell (not <i>cat</i>) handles standard input and output: </p>
+<ul>
+  <li>
+  <p class="docList">As the shell is processing the command, it sees that you're 
+  redirecting standard output into <i>file1</i>, so it opens the file for 
+  writing, destroying the data that's already in it. </li>
+  <li>
+  <p class="docList">Later, after it's finished interpreting the command line, 
+  the shell executes <i>cat</i>, passing <i>file1</i> and <i>file2</i> as 
+  arguments. But <i>file1</i> is already empty. </li>
+  <li>
+  <p class="docList"><i>cat</i> reads <i>file1</i> (which is empty) and writes 
+  it on standard output (which goes into <i>file1</i>). </li>
+  <li>
+  <p class="docList"><i>cat</i> reads <i>file2</i> (which also goes into <i>
+  file1</i>). At this point, <i>cat</i> is finished, so it exits. </li>
+</ul>
+<p class="docText"><i>file1</i> and <i>file2</i> are identical, which isn't what 
+you wanted. But it's what you got. </p>
+<p class="docText">Some versions of <i>cat</i> give you a warning message in 
+this situation (<tt>cat: file1:</tt> <tt>input file is output file</tt>). This 
+might lead you to believe that somehow <i>cat</i> was smart and managed to 
+protect you. Sadly, that's not true. By the time <i>cat</i> figures out that an 
+input file and an output file are the same, it's too late: <i>file1</i> is 
+already gone. This bit of <i>cat</i>ty cleverness does have a function, though: 
+it prevents commands like the following from creating infinitely long files: </p>
+<pre>% <b>cat file1 file2 &gt;&gt; file2</b></pre>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-5">27.5 Output Command-Line Arguments One by One</h3>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: showargs</p>
+<p class="docText">When you're experimenting with shell quoting, it's nice to be 
+able to see how arguments on a command line are quoted. Here's a demo of a 
+simple <i>bash</i> script<span id="ENB27-2"><a class="docLink" href="#EN27-2"><sup>[2]</sup></a></span> 
+named <i>showargs</i>; you might want to <span class="docEmphBold">save it in a 
+file and run it yourself</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-1">Section 
+35.1</a>). The script shows how many arguments were passed to it. Then it lists 
+the arguments, one per line, surrounded by <tt>&gt;&gt; &lt;&lt;</tt> to show leading or 
+trailing spaces. </p>
+<p class="docText"><tt>cat</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">
+Section 12.2</a>, <tt>&amp;&amp;</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+Section 35.14</a>, <tt>$#</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">
+Section 35.20</a>, <tt>path</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-7">
+Section 35.7</a></p>
+<pre>% <b>cat showargs</b>
+#!/bin/bash
+test $# -ne 1 &amp;&amp; s=s
+echo &quot;I got $# argument$s:&quot;
+for arg
+do echo -E &quot;&gt;&gt;$arg&lt;&lt;&quot;
+done
+% <b>showargs &quot;Start of path:&quot; $path[1-3] &quot;  that's it!  &quot;</b>
+I got 5 arguments:
+&gt;&gt;Start of path:&lt;&lt;
+&gt;&gt;/u/jpeek/bin&lt;&lt;
+&gt;&gt;/bin&lt;&lt;
+&gt;&gt;/usr/bin&lt;&lt;
+&gt;&gt;  that's it!  &lt;&lt;</pre>
+<p class="docText">The output from your shell may differ from that shown above, 
+which is the result of running <i>showargs</i> in <i>tcsh</i>. <i>bash</i> 
+doesn't have a <tt>$path</tt> variable, for example. And <i>zsh</i> expects a 
+comma, rather than a hyphen, to separate the range. But as long as the arguments 
+to <i>showargs</i> are quoted properly, you should get the result you're looking 
+for, with a little tweaking, of course! </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-6">27.6 Controlling Shell Command Searches</h3>
+<p class="docText">Your <span class="docEmphBold">search path</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+35.6</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-7">
+Section 35.7</a>) controls what directories — and in what order — the shell 
+searches for <span class="docEmphBold">external</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+1.9</a>) commands. You can set a search path that takes effect every time you 
+log in by editing your shell <span class="docEmphBold">setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>). You might also want to change the path temporarily. Most shells also 
+keep quick-reference lists of command locations that bypass the search path, so 
+you'll want to know how to manage these. </p>
+<p class="docText">Changing the path set when you log in is simple: just add the 
+new directory to the appropriate line in your <span class="docEmphBold">shell's 
+startup files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>). It's not recommended to redefine the path completely, though, as some 
+packages rely on their <span class="docEmphasis">PATH</span> being set 
+correctly. Usually, it is best simply to add the new directory's
+<span class="docEmphBold">absolute path</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-2">Section 
+31.2</a>) to the end of the existing <span class="docEmphasis">PATH</span> 
+variable: </p>
+<pre>PATH=$PATH:$HOME/bin      <i>zsh, sh, ksh, bash</i>
+set path=($path ~/bin)    <i>zsh (omit the</i> set<i>), csh, tcsh</i></pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">If you're configuring the superuser (<span class="docEmphasis">root</span>) 
+        account, be careful about using a path set by the parent process 
+        (through <tt>$PATH</tt> or <tt>$path</tt>). This path can be used in <i>
+        su</i> shells, giving you part or all the path of the user you <i>su</i>'ed 
+        from! Also watch out for a path set by a global setup file like
+        <span class="docEmphasis">/etc/profile</span>: if it's modified for 
+        other users and an insecure version of a system command is added, it 
+        could affect the superuser in unexpected ways. </p>
+        <p class="docText">Of course, there's the opposite danger: forgetting to 
+        update the superuser's path because you assume that changing the global 
+        path will do the job for <span class="docEmphasis">root</span> too. My 
+        advice is to think about it and decide what's best for your system. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">For Bourne-type shells, load the updated
+<span class="docEmphasis">PATH</span> by typing a command like: </p>
+<pre>$ <b>.' .profile </b>              <i> sh</i>
+$ <b>.' .bash_profile </b>         <i> bash</i></pre>
+<p class="docText">For the C shell, type one of these commands, depending on 
+which file you changed: </p>
+<pre>% <b>source' .cshrc</b>
+% <b>source' .tcshrc</b>
+% <b>source' .login</b></pre>
+<p class="docText">Sometimes you'll want to change the path in just your current 
+shell, though, which is as easy as modifying any other shell or environment 
+variable. Let's assume that for the current session, you want to be able to 
+execute commands being tested before deployment, and that those commands are in 
+your <span class="docEmphasis">$HOME/someprog/bin</span> directory. Simply add 
+that directory to the front of your existing path: </p>
+<pre>$ <b>PATH=$HOME/someprog/bin:$PATH </b>               <i> Bourne shells</i>
+$ <b>export PATH </b>
+
+$ <b>export PATH=$HOME/someprog/bin:$PATH </b>        <i> bash, ksh</i>
+
+% <b>set path=(~/xxx/alpha-test $path) </b>           <i> C shells</i></pre>
+<p class="docText">Searching the <span class="docEmphBold">path</span> (<a class="docLink" href="#upt3-CHP-27-SECT-6">Section 
+27.6</a>) takes time, especially if it's long or if some filesytems are slow or 
+mounted by a slow network link. Most shells have shortcuts to help them remember 
+the locations of commands. </p>
+<p class="docText">When the C shell starts, it builds a hash table of all the 
+commands in its path: each command name and its absolute pathname. So, after you 
+start a <i>csh</i> running, if new programs are added to directories along the 
+path, you need to use the shell's <i>rehash</i> command to rebuild its hash 
+table. (The hash table is internal. If you have multiple <i>csh</i> shells 
+running — say, in multiple windows — type <i>rehash</i> in each one.) </p>
+<p class="docText">In <i>bash</i>, the command location is automatically stored 
+the first time you use it. This means you don't need a <i>rehash</i>-type 
+command. If a program is moved to a new directory while <i>bash</i> is running, 
+however, you'll need to use the internal command <i>hash</i> <i>-r</i> to make
+<i>bash</i> &quot;forget&quot; the old location. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Running <i>hash -r</i> causes <i>bash</i> to forget
+        <span class="docEmphasis">all</span> of its hashed commands, but you may 
+        also invoke it with the name of a specific command whose hash should be 
+        forgotten: </p>
+        <pre>$ hash -r <tt><i>command</i></tt></pre>
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">The Korn shell uses tracked aliases to speed up command 
+locating. When it is turned on with <tt>set -o trackall</tt>, every time that <i>
+ksh</i> finds a new command by doing a path search, it creates an alias for the 
+command name whose value is the full pathname. In <i>ksh88</i>, you can turn 
+alias tracking on and off, and you can mark a command to have an alias defined 
+for it the first time it's executed by using: </p>
+<pre>$ alias -t COMMAND</pre>
+<p class="docText">In <i>ksh93</i>, even though you can run the command <tt>set 
++o trackall</tt>, which turns off alias tracking in <i>ksh88</i>, the shell 
+ignores the command, and alias tracking is always in effect. </p>
+<p class="docText">All tracked aliases are cleared when a new value is assigned 
+to the <span class="docEmphasis">PATH</span> variable. If all you wish to do is 
+remove tracked aliases, use <tt>PATH=$PATH</tt>. </p>
+<p class="docText">As you can see, shells' command tracking varies! Check your 
+shell's manual page. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-7">27.7 Wildcards Inside Aliases</h3>
+<p class="docText">Here's another example in which command-line parsing is 
+important. Consider this shell alias for counting the number of words in all 
+files: </p>
+<p class="docText"><tt>wc</tt>
+<a class="docLink" href="_chapter 16.htm#upt3-CHP-16-SECT-6">
+Section 16.6</a></p>
+<pre>% <b>alias words &quot;wc -w *&quot; </b> <i> csh, tcsh</i>
+$ <b>alias words=&quot;wc -w *&quot; </b> <i> ksh, bash</i></pre>
+<p class="docText">Right away, we can see one effect of command-line parsing. 
+The shell sees the quotation marks and knows not to expand wildcards inside 
+them. Therefore, <tt>words</tt> is aliased to <tt>wc -w *</tt>; the <tt>*</tt> 
+isn't evaluated when you create the alias. (If wildcards were processed before 
+quotes, this wouldn't work.) </p>
+<p class="docText">Now, think about what happens when you execute the alias. You 
+type:</p>
+<pre>% <b>words</b></pre>
+<p class="docText">The shell starts working through its steps and eventually 
+performs alias substitution. When this happens, it converts your command into:
+</p>
+<pre>wc -w *</pre>
+<p class="docText">Now, watch carefully. The shell continues working through the 
+process of interpretation (redirection, variable substitution, command 
+substitution) and eventually gets to filename expansion. At this point, the 
+shell sees the <tt>*</tt> on the command line, expands it, and substitutes the 
+files in the current directory. Seems simple enough. But think: you didn't type 
+this <tt>*</tt>; the shell put it there when it expanded the wildcard. What 
+would have happened if the shell expanded wildcards before substituting aliases? 
+The <tt>*</tt> would never have been expanded; by the time the shell put it on 
+the command line, the wildcard expansion stage would be over, and you'd just 
+count the words in a file named <tt>*</tt> (which probably doesn't exist). </p>
+<p class="docText">To me, the amazing thing is that all this works — and works 
+well! The workings of the command line are intricate and complex, but the shell 
+almost always does what you want — and without a lot of thought. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-8">27.8 eval: When You Need Another Chance</h3>
+<p class="docText">If you read the <span class="docEmphBold">previous article</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-7">Section 
+27.7</a>), you saw that, most of the time, the shell evaluates the command line 
+&quot;in the right order.&quot; But what about when it doesn't? Here's a situation that 
+the shell can't handle. It's admittedly contrived, but it's not too different 
+from what you might find in a <span class="docEmphBold">shell program</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-8">Section 
+1.8</a>): </p>
+<pre>% <b>set b=\$a</b>
+% <b>set a=foo</b>
+% <b>echo $b</b>
+$a</pre>
+<p class="docText">When we use the variable <tt>$b</tt>, we'd like to get the 
+variable <tt>$a</tt>, read it, and use its value. But that doesn't happen. 
+Variable substitution happens once, and it isn't recursive. The value of <tt>$b</tt> 
+is <tt>$a</tt>, and that's it. You don't go any further. </p>
+<p class="docText">But there's a loophole. The <i>eval</i> command says, in 
+essence, &quot;Give me another chance. Re-evaluate this line and execute it.&quot; Here's 
+what happens if we stick <i>eval</i> before the <i>echo</i>: </p>
+<pre>% <b>eval echo $b</b>
+foo</pre>
+<p class="docText">The shell converts <tt>$b</tt> into <tt>$a</tt>; then <i>eval</i> 
+runs through the command-line evaluation process again, converting <tt>echo</tt>
+<tt>$a</tt> into <tt>echo</tt> <tt>foo</tt> — which is what we wanted in the 
+first place! </p>
+<p class="docText">Here's a more realistic example; you see code like this 
+fairly often in Bourne shell scripts: </p>
+<pre>...
+command='grep $grepopts $searchstring $file'
+for opt
+do
+   case &quot;$opt&quot; in
+      file) output=' &gt; $ofile' ;;
+      read) output=' | more'   ;;
+      sort) postproc=' | sort $sortopts';;
+   esac
+done
+...
+eval $command $postproc $output</pre>
+<p class="docText">Do you see what's happening? We're constructing a command 
+that will look something like: </p>
+<pre>grep $grepopts $searchstring $file | sort $sortopts &gt; $ofile</pre>
+<p class="docText">But the entire command is &quot;hidden&quot; in shell variables, 
+including the I/O redirectors and various options. If the <i>eval</i> isn't 
+there, this command will blow up in all sorts of bizarre ways. You'll see 
+messages like <tt>| not found</tt>, because variable expansion occurs after 
+output redirection. The &quot;nested&quot; variables (like <tt>$ofile</tt>, which is used 
+inside <tt>$output</tt>) won't be expanded either, so you'll also see <tt>$ofile 
+not found</tt>. Putting an <i>eval</i> in front of the command forces the shell 
+to process the line again, guaranteeing that the variables will be expanded 
+properly and that I/O redirection will take place. </p>
+<p class="docText"><i>eval</i> is incredibly useful if you have shell variables 
+that include other shell variables, aliases, I/O redirectors, or all sorts of 
+perversities. It's commonly used within shell scripts to &quot;evaluate&quot; commands 
+that are built during execution. There are more examples of <i>eval</i> in
+<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-3">
+Section 5.3</a> and others. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-9">27.9 Which One Will bash Use?</h3>
+<p class="docText"><i>bash</i>, like all shells, performs a series of steps when 
+evaluating a command line. (Sorry, we don't cover all of the Unix shells; we 
+explain <i>bash</i> because it's one of the most common. For other shells, check 
+their manual pages.) This article takes a closer look at how you can control one 
+part of those steps in <i>bash</i>: whether the shell will choose a
+<span class="docEmphBold">shell function</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>), a <span class="docEmphBold">built-in command</span> (
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">
+Section 1.9</a>), or an <span class="docEmphBold">external command</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+1.9</a>). </p>
+<p class="docText">Let's say that you want to write shell functions named <i>cd</i>,
+<i>pushd</i>, and <i>popd</i>. They will run the shell's built-in <i>cd</i>, <i>
+pushd</i>, or <i>popd</i> command, respectively, each using the command-line 
+arguments that were passed (via the <tt>$@</tt> array reference). Next they 
+execute another shell function named <i>setvars</i> to do some setup in the new 
+directory: </p>
+<pre>cd( ) {            pushd( ) {         popd( ) {
+  cd &quot;$@&quot;           pushd &quot;$@&quot;        popd &quot;$@&quot;
+  setvars           setvars           setvars
+}                 }                 }</pre>
+<p class="docText">But which <i>cd</i> will <i>bash</i> use when you type <i>cd</i>: 
+the built-in <i>cd</i> or your <i>cd</i> function? (The same question goes for
+<i>pushd</i> and <i>popd</i>.) Worse, what if the <tt>cd &lt;&quot;&gt;$@&lt;&quot;&gt;</tt> command 
+inside the function makes <i>bash</i> call your <i>cd</i> function again, and 
+that starts an endless loop? Well, that actually <span class="docEmphasis">will</span> 
+start a loop — and you need to know how to prevent it. </p>
+<p class="docText">Typing <i>command</i> before the name of a command disables 
+shell function lookup. <i>bash</i> will execute only a built-in command or an 
+external command with that name. So, you could keep the functions from 
+re-executing themselves by defining them this way: </p>
+<pre>cd( ) {                    pushd( ) {                popd( ) {
+    command cd &quot;$@&quot;       command pushd &quot;$@&quot;       command popd &quot;$@&quot;
+    setvars               setvars                  setvars
+}                         }                        }</pre>
+<p class="docText">In the same way, if you don't want to run your new <i>pushd</i> 
+function for some reason, here's how to use the built-in <i>pushd</i> once: </p>
+<pre>bash$ <b>command pushd <tt><i>somewhere</i></tt></b></pre>
+<p class="docText">The <i>command</i> command still allows <i>bash</i> to run an 
+external command (from your <span class="docEmphBold">PATH</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+35.6</a>)) with the name you give. To force <i>bash</i> to use a built-in 
+command — but not a shell function or an external command — type <i>builtin</i> 
+before the command name. Although <i>bash</i> will always choose a built-in 
+command before an external command, you can specify the built-in <i>echo</i> 
+unambiguously with: </p>
+<pre>builtin echo -n 'What next? '</pre>
+<p class="docText">What if you want the external <i>echo</i> command? The 
+easiest way is probably to type its absolute pathname. For example, once I 
+wanted to test four (!) different external versions of <i>echo</i> on a System V 
+machine — and not get the built-in <i>bash</i> version. So I typed commands like 
+this: </p>
+<pre>bash$ <b>/bin/echo hi \\ there</b></pre>
+<p class="docText">Finally, you can enable or disable specific built-in <i>bash</i> 
+commands with the <i>enable</i> command. Unlike <i>command</i> and <i>builtin</i>, 
+the effect of <i>enable</i> lasts until you exit the shell. The command
+<span class="docEmphasis">enable -n</span> disables one or more built-in 
+commands; give the command names as arguments. For example, in my experiments 
+mentioned above, I could have made sure that I'd get an external <i>echo</i> 
+every time by typing this first command once: </p>
+<pre>bash$ <b>enable -n echo</b>
+bash$ <b>type echo</b>
+echo is hashed (/bin/echo)</pre>
+<p class="docText">The <tt>-n</tt> disables the built-in command named as the 
+following argument. The <i>bash</i> <i>type</i> command confirms that I'll now 
+be using the external <i>echo</i>. You can re-enable a disabled built-in with
+<tt>enable</tt> <tt><i>command-name</i></tt>. And <span class="docEmphasis">
+enable -a</span> lists the status of all <i>bash</i> built-ins. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-10">27.10 Which One Will the C Shell Use?</h3>
+<p class="docText">[<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-9">Section 
+27.9</a> shows how to control whether <i>bash</i> uses a built-in command, a 
+shell function, or an external command. The way you do that in the C shell is a 
+little, errr, different. Chris Torek explains why, for example, <tt>\rm</tt> 
+disables an alias for <i>rm</i> and <tt>\cd</tt> disables the built-in <i>cd</i> 
+command. He starts with a fairly complex explanation, then gives some practical 
+guidelines. At the end is a &quot;review&quot; that's easy to follow and fun too. — JP]
+</p>
+<p class="docText">The C shell first breaks each input line into a
+<span class="docEmphasis">word vector</span>. It then matches against aliases. 
+Since <tt>\rm</tt> does not match <tt>rm</tt>, any alias is ignored. Eventually 
+the C shell fully applies any quoting (since an alias can include quotes, some 
+of this work must be deferred; since an alias can include multiple words, more 
+word vector work must be done as well; it all gets rather hairy). </p>
+<p class="docText">The C shell implements quoting by setting the eighth bit (bit 
+7) of each byte of a quoted character. Since <tt>'*'|0x80</tt> [a character
+<span class="docEmphasis">OR</span>ed with 80 hex, a.k.a. 10000000 binary —
+<span class="docEmphasis">JP</span>] is not the same character as <tt>'*'</tt>, 
+this prevents filename expansion, further word breaking, and so on. </p>
+<p class="docText">Eventually, the shell has a fully &quot;parsed&quot; line. It then 
+compares <tt>word[0]</tt> [the first word on the command line —
+<span class="docEmphasis">JP</span>] against all the built-ins. If there is a 
+match, it runs the corresponding built-in command (and it is up to that command 
+to expand any remaining words; for instance, <tt>ls *</tt> in a directory 
+containing only the file <span class="docEmphasis">-l</span> produces a long 
+listing, but <tt>jobs *</tt> produces a usage message). If not, the shell 
+performs globbing on the current word list, producing a new word list, and then:
+</p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Strips the eighth bit of each byte of each word</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList"><span class="docEmphasis">exec</span>( )s the resulting 
+  command.</span></li>
+</ol>
+</span>
+<p class="docText">This means that <tt>\cd</tt> not only bypasses any alias, but 
+also reaches the built-in scanner as: </p>
+<pre>'c'|0x80, 'd', '\0'</pre>
+<p class="docText">which does not match the built-in command:</p>
+<pre>'c', 'd', '\0'</pre>
+<p class="docText">and so does not run the <i>cd</i> builtin. It is later 
+stripped, and the shell looks for an external program called <i>cd</i>. </p>
+<p class="docText">If you want to avoid alias substitution but not built-in 
+matching, you can replace: </p>
+<pre>\cd foo    <i>or</i>   \rm foo</pre>
+<p class="docText">with:</p>
+<pre>''cd foo   <i>or</i>   &quot;&quot;rm foo</pre>
+<p class="docText">These do not match the aliases — during alias scanning they 
+have quote pairs in front of them — but they do match any builtin because the 
+quotes have by then been stripped (setting bit 7 of all the characters contained 
+between the two quotes, here none). </p>
+<p class="docText">Incidentally, since alias expansion occurs early, you can do 
+some peculiar things with it: </p>
+<pre>% <b>[ </b>
+Missing ].            <i>  . . . on some systems, there is a command named [, sometimes standalone,
+                       and sometimes symlinked to test.</i>
+% <b>alias [ echo foo </b>
+% <b>[ </b>
+foo                             <i>  . . . alias expansion occurs before globbing</i>
+
+% <b>unalias [ </b>
+unalias: Missing ].             <i>  . . . unalias globs its arguments!</i>
+
+% <b>unalias \[ </b>
+% <b>alias unalias echo foo </b>
+unalias: Too dangerous to alias that.             <i>  . . . the C shell attempts caution...</i>
+
+% <b>alias \unalias echo foo </b>
+% <b>alias </b>
+unalias   (echo foo)
+% <b>unalias unalias </b>
+foo unalias                     <i>  . . . but fails!</i>
+
+% <b>''unalias unalias </b>
+% <b>alias </b>
+%                               <i>  . . . Fortunately, there is an exit.</i></pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">On some systems, there is a command named [, 
+        sometimes standalone, and sometimes symlinked to <i>test</i>. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— CT</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-11">27.11 Is It &quot;2&gt;&amp;1 file&quot; or &quot;&gt; file 2&gt;&amp;1&quot;? Why?</h3>
+<p class="docText">One of the common questions about Bourne-type shells is why 
+only the second command shown below will redirect both <span class="docEmphBold">
+stdout and stderr</span> (
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">
+Section 43.1</a>) to a file: </p>
+<pre>$ <b>cat food 2&gt;&amp;1 &gt;file</b>
+cat: can't open food
+$ <b>cat food &gt;file 2&gt;&amp;1</b>
+$</pre>
+<p class="docText">Although some manual pages don't mention this, the shell 
+processes I/O redirections from left to right: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">On the first command line, the shell sees <tt>2&gt;&amp;1</tt> 
+  first. That means &quot;make the standard error (file descriptor 2) go to the same 
+  place that the standard output (fd1) is going.&quot; There's no effect because both 
+  fd2 and fd1 are already going to the terminal. Then <tt>&gt;file</tt> redirects 
+  fd1 (<span class="docEmphasis">stdout</span>) to <tt>file</tt>. But fd2 (<span class="docEmphasis">stderr</span>) 
+  is still going to the terminal. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">On the second command line, the shell sees <tt>&gt;file</tt> 
+  first and redirects <span class="docEmphasis">stdout</span> to <tt>file</tt>. 
+  Next <tt>2&gt;&amp;1</tt> sends fd2 (<span class="docEmphasis">stderr</span>) to the 
+  same place fd1 is going — that's to the file. And that's what you want. </span>
+  </li>
+</ol>
+</span>
+<p class="docText">
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+Section 36.16</a> has much more about the <tt><i>m</i>&gt;&amp;<i>n</i></tt> operator.
+</p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-12">27.12 Bourne Shell Quoting</h3>
+<p class="docText">I can't understand why some people see Bourne shell quoting 
+as a scary, mysterious set of many rules. Quoting on Bourne-type shells is 
+simple. (C shell quoting is slightly more complicated. See
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">
+Section 27.13</a>.) </p>
+<p class="docText">The overall idea is this: <span class="docEmphasis">quoting 
+turns off (disables) the special meaning of characters</span>. There are three 
+quoting characters: single quote (<tt>'</tt>), double quote (<tt>&quot;</tt>), and 
+backslash (<tt>\</tt>). Note that a backquote (<tt>`</tt>) is
+<span class="docEmphasis">not</span> a quoting character — it does
+<span class="docEmphBold">command substitution</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>). </p>
+<h4  id="upt3-CHP-27-SECT-12.1" class="docSection2Title">27.12.1 Special Characters</h4>
+<p class="docText">Listed below are the characters that are special to the 
+Bourne shell. You've probably already used some of them. Quoting these 
+characters turns off their special meaning. (Yes, the last three characters are 
+quoting characters. You can quote quoting characters; more on that later.) </p>
+<pre># &amp; * ? [ ] ( ) = | ^ ; &lt; &gt; ` $ &quot; ' \</pre>
+<p class="docText">Space, tab, and newline also have special meaning as argument 
+separators. A slash (<tt>/</tt>) has special meaning to Unix itself, but not to 
+the shell, so quoting doesn't change the meaning of slashes. </p>
+<p class="docText">Newer shells have a few other special characters. For 
+instance, <i>bash</i> has <tt>!</tt> for <span class="docEmphBold">history 
+substitution</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+30.8</a>). It's similar to <span class="docEmphBold">the C shell !</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">Section 
+27.13</a>) except that, in <i>bash</i>, <tt>!</tt> loses its special meaning 
+inside single quotes. To find particular differences in your Bourne-type shell, 
+see the quoting section of its manual page. In general, though, the rules below 
+apply to all Bourne-type shells. </p>
+<h4  id="upt3-CHP-27-SECT-12.2" class="docSection2Title">27.12.2 How Quoting Works</h4>
+<p class="docText"><a class="docLink" href="#upt3-CHP-27-TABLE-1">Table 27-1</a> 
+summarizes the rules; you might want to look back at it while you read the 
+examples. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-27-TABLE-1" class="docTableTitle">Table 27-1. Bourne shell quoting characters </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Quoting character</th>
+    <th class="docTableHeader">
+    <p class="docText">Explanation</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">'<tt><i>xxx</i></tt>'</td>
+    <td class="docTableCell">
+    <p class="docText">Disable all special characters in <tt><i>xxx</i></tt>.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">&quot;<tt><i>xxx</i></tt>&quot;</td>
+    <td class="docTableCell">
+    <p class="docText">Disable all special characters in <tt><i>xxx</i></tt> 
+    except <tt>$</tt>, <tt>'</tt>, and <tt>\</tt>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">\<tt><i>x</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText">Disable the special meaning of character <tt><i>x</i></tt>. 
+    At end of line, a <tt>\</tt> removes the newline character (continues line).
+    </td>
+  </tr>
+</table>
+<p class="docText">To understand which characters will be quoted, imagine this: 
+the Bourne shell reads what you type at a prompt, or the lines in a shell 
+script, character by character from first to last. (It's actually more 
+complicated than that, but not for the purposes of quoting.) </p>
+<p class="docText">When the shell reads one of the three quoting characters, it 
+does the following: </p>
+<ul>
+  <li>
+  <p class="docList">Strips away that quoting character</li>
+  <li>
+  <p class="docList">Turns off (disables) the special meaning of some or all 
+  other character(s) until the end of the quoted section, by the rules in
+  <a class="docLink" href="#upt3-CHP-27-TABLE-1">Table 27-1</a> </li>
+</ul>
+<p class="docText">You also need to know how many characters will be quoted. The 
+next few sections have examples to demonstrate those rules. Try typing the 
+examples at a Bourne shell prompt, if you'd like. (Don't use C shell;
+<span class="docEmphBold">it's different</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">Section 
+27.13</a>).) If you need to start a Bourne-type shell, type <i>sh</i>; type <i>
+exit</i> when you're done. </p>
+<ul>
+  <li>
+  <p class="docList">A <span class="docEmphBold">backslash</span> (<tt>\</tt>) 
+  turns off the special meaning (if any) of the next character. For example, <tt>
+  \*</tt> is a literal asterisk, not a <span class="docEmphBold">filename 
+  wildcard</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+  1.13</a>). So, the first <span class="docEmphBold">expr</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-21">Section 
+  36.21</a>) command gets the three arguments <tt>79 * 45</tt> and multiplies 
+  those two numbers: </p>
+  <pre>$ <b>expr 79 \* 45</b>
+3555
+$ <b>expr 79 * 45</b>
+expr: syntax error</pre>
+  <p class="docList">In the second example, without the backslash, the shell 
+  expanded <tt>*</tt> into a list of filenames — which confused <i>expr</i>. (If 
+  you want to see what I mean, repeat those two examples using
+  <span class="docEmphBold">echo</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-5">Section 
+  27.5</a>) instead of <i>expr</i>.) </li>
+  <li>
+  <p class="docList">A <span class="docEmphBold">single quote</span> (<tt>'</tt>) 
+  turns off the special meaning of all characters until the next single quote is 
+  found. So, in the command line below, the words between the two single quotes 
+  are quoted. The quotes themselves are removed by the shell. Although this mess 
+  is probably not what you want, it's a good demonstration of what quoting does:
+  </p>
+  <pre>$ <b>echo Hey!       What's next?  Mike's #1 friend has $$.</b>
+Hey! Whats next?  Mikes</pre>
+  <p class="docList">Let's take a close look at what happened. Spaces outside 
+  the quotes are treated as argument separators; the shell ignores the multiple 
+  spaces. <i>echo</i> prints a single space between each argument it gets. 
+  Spaces inside the quotes are passed on to <i>echo</i> literally. The question 
+  mark (<tt>?</tt>) is quoted; it's given to <i>echo</i> as is, not used as a 
+  wildcard. </p>
+  <p class="docList">So, <i>echo</i> printed its first argument <tt>Hey!</tt> 
+  and a single space. The second argument to <i>echo</i> is <tt>Whats next? 
+  Mikes</tt>; it's all a single argument because the single quotes surrounded 
+  the spaces (notice that <i>echo</i> prints the two spaces after the question 
+  mark: <tt>?</tt> ). The next argument, <tt>#1</tt>, starts with a hash mark, 
+  which is a <span class="docEmphBold">comment character</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-1">Section 
+  35.1</a>). That means the shell will ignore the rest of the string; it isn't 
+  passed to <i>echo</i>. </p>
+  <p class="docList">(<i>zsh</i> users: The <tt>#</tt> isn't treated as a 
+  comment character at a shell prompt unless you've run <tt>setopt 
+  interactive_comments</tt> first.) </li>
+  <li>
+  <p class="docList"><span class="docEmphBold">Double quotes</span> (&quot;) work 
+  almost like single quotes. The difference is that double quoting allows the 
+  characters <tt>$</tt> (dollar sign), <tt>'</tt> (backquote), and <tt>\</tt> 
+  (backslash) to keep their special meanings. That lets you do
+  <span class="docEmphBold">variable substitution</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+  35.9</a>,
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">
+  Section 35.3</a>) and <span class="docEmphBold">command substitution</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+  28.14</a>) inside double quotes — and also stop that substitution where you 
+  need to. </p>
+  <p class="docList">For now, let's repeat the example above. This time, put 
+  double quotes around the single quotes (actually, around the whole string):
+  </p>
+  <pre>$ <b>echo &quot;Hey!       What's next?  Mike's #1 friend has $$.&quot;</b>
+Hey!       What's next?  Mike's #1 friend has 18437.</pre>
+  <p class="docList">The opening double quote isn't matched until the end of the 
+  string. So, all the spaces between the double quotes lose their special 
+  meaning, and the shell passes the whole string to <i>echo</i> as one argument. 
+  The single quotes also lose their special meaning because double quotes turn 
+  off the special meaning of single quotes! Thus, the single quotes aren't 
+  stripped off as they were in the previous example; <i>echo</i> prints them.
+  </p>
+  <p class="docList">What else lost its special meaning? The hash mark (<tt>#</tt>) 
+  did; notice that the rest of the string was passed to <i>echo</i> this time 
+  because it wasn't &quot;commented out.&quot; But the dollar sign (<tt>$</tt>) didn't 
+  lose its meaning; the <tt>$$</tt> was expanded into the shell's
+  <span class="docEmphBold">process ID number</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+  24.3</a>) (in this shell, <tt>18437</tt>). </li>
+</ul>
+<p class="docText">In the previous example, what would happen if you put the <tt>
+$</tt> inside the single quotes? (Single quotes turn off the meaning of <tt>$</tt>, 
+remember.) Would the shell still expand <tt>$$</tt> to its value? Yes, it would: 
+the single quotes have lost their special meaning, so they don't affect any 
+characters between them: </p>
+<pre>$ <b>echo &quot;What's next?  How many $$ did Mike's friend bring?&quot;</b>
+What's next?  How many 18437 did Mike's friend bring?</pre>
+<p class="docText">How can you make both the <tt>$$</tt> and the single quotes 
+print literally? The easiest way is with a backslash, which still works inside 
+double quotes: </p>
+<pre>$ <b>echo &quot;What's next?  How many \$\$ did Mike's friend bring?&quot;</b>
+What's next?  How many $$ did Mike's friend bring?</pre>
+<p class="docText">Here's another way to solve the problem. A careful look at 
+this will show a lot about shell quoting: </p>
+<pre>$ <b>echo &quot;What's next?  How many &quot;'$$'&quot; did Mike's friend bring?&quot;</b>
+What's next?  How many $$ did Mike's friend bring?</pre>
+<p class="docText">To read that example, remember that a double quote quotes 
+characters until the next double quote is found. The same is true for single 
+quotes. So, the string <tt>What's next? How many</tt> (including the space at 
+the end) is inside a pair of double quotes. The <tt>$$</tt> is inside a pair of 
+single quotes. The rest of the line is inside another pair of double quotes. 
+Both of the double-quoted strings contain a single quote; the double quotes turn 
+off its special meaning and the single quote is printed literally. </p>
+<h4  id="upt3-CHP-27-SECT-12.3" class="docSection2Title">27.12.3 Single Quotes Inside Single Quotes?</h4>
+<p class="docText">You can't put single quotes inside single quotes. A single 
+quote turns off <span class="docEmphasis">all</span> special meaning until the 
+next single quote. Use double quotes and backslashes. </p>
+<h4  id="upt3-CHP-27-SECT-12.4" class="docSection2Title">27.12.4 Multiline Quoting</h4>
+<p class="docText">Once you type a single quote or double quote, everything is 
+quoted. The quoting can stretch across many lines. (The C shell doesn't work 
+this way.) </p>
+<p class="docText">For example, in the short script shown in
+<a class="docLink" href="#upt3-CHP-27-FIG-1">Figure 27-1</a>, you might think 
+that the <tt>$1</tt> is inside quotes, but it isn't. </p>
+<center>
+<h5 id="upt3-CHP-27-FIG-1" class="docFigureTitle">Figure 27-1. Matching quotes</h5>
+<p>
+<img alt="figs/upt3_2701.gif" src="upt3_2701.gif" border="0" width="256" height="91"></p>
+</center>
+<p class="docText">Actually, all argument text <span class="docEmphasis">except</span>
+<tt>$1</tt> is in quotes. The gray shaded area shows the quoted parts. So <tt>$1</tt> 
+is expanded by the Bourne shell, not by <i>awk</i>. </p>
+<p class="docText">Here's another example. Let's store a
+<span class="docEmphBold">shell variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>) with a multiline message, the kind that might be used in a shell 
+program. A shell variable must be stored as a single argument; any argument 
+separators (spaces, etc.) must be quoted. Inside double quotes, <tt>$</tt> and
+<tt>'</tt> are interpreted (<span class="docEmphasis">before</span> the variable 
+is stored, by the way). The opening double quote isn't closed by the end of the 
+first line; the Bourne shell prints <span class="docEmphBold">secondary prompts</span> 
+(<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-12">Section 
+28.12</a>) (<tt>&gt;</tt>) until all quotes are closed: </p>
+<pre>$ <b>greeting=&quot;Hi, $USER.</b>
+<b>&gt; The date and time now</b>
+<b>&gt; are:  `date`.&quot;</b>
+$ <b>echo &quot;$greeting&quot;</b>
+Hi, jerry.
+The date and time now
+are:  Fri Sep  1 13:48:12 EDT 2000.
+$ <b>echo $greeting</b>
+Hi, jerry. The date and time now are: Fri Sep 1 13:48:12 EDT 2000.
+$</pre>
+<p class="docText">The first <i>echo</i> command line uses double quotes, so the 
+shell variable is expanded, but the shell doesn't use the spaces and newlines in 
+the variable as argument separators. (Look at the extra spaces after the word
+<tt>are</tt>:.) The second <i>echo</i> doesn't use double quotes. The spaces and 
+newlines are treated as argument separators; the shell passes 14 arguments to <i>
+echo</i>, which prints them with single spaces between. </p>
+<p class="docText">A backslash has a quirk you should know about. If you use it 
+outside quotes, at the end of a line (just before the newline), the newline will 
+be <span class="docEmphasis">deleted</span>. Inside single quotes, though, a 
+backslash at the end of a line is copied as is. Here are examples. I've numbered 
+the prompts (<tt>1$</tt>, <tt>2$</tt>, and so on): </p>
+<pre>1$ <b>echo &quot;a long long long long long long</b>
+&gt; <b>line or two&quot;</b>
+a long long long long long long
+line or two
+2$ <b>echo a long long long long long long\</b>
+&gt; <b>line</b>
+a long long long long long longline
+3$ <b>echo a long long long long long long \</b>
+&gt; <b>line</b>
+a long long long long long long line
+4$ <b>echo &quot;a long long long long long long\</b>
+&gt; <b>line&quot;</b>
+a long long long long long longline
+5$ <b>echo 'a long long long long long long\</b>
+&gt; <b>line'</b>
+a long long long long long long\
+line</pre>
+<p class="docText">You've seen an example like example 1 before. The newline is 
+in quotes, so it isn't an argument separator; <i>echo</i> prints it with the 
+rest of the (single, two-line) argument. In example 2, the backslash before the 
+newline tells the shell to delete the newline; the words <tt>long</tt> and <tt>
+line</tt> are passed to <i>echo</i> as one argument. Example 3 is usually what 
+you want when you're typing long lists of command-line arguments: Type a space 
+(an argument separator) before the backslash and newline. In example 4, the 
+backslash inside the double quotes is ignored (compare to example 1). Inside 
+single quotes, as in example 5, the backslash has no special meaning; it's 
+passed on to <i>echo</i>. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-13">27.13 Differences Between Bourne and C Shell 
+Quoting</h3>
+<p class="docText">This article explains quoting in C-type shells by comparing 
+them to Bourne-type shell quoting. If you haven't read
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">
+Section 27.12</a> about Bourne shell quoting, please do so now. </p>
+<p class="docText">As in the Bourne shell, the overall idea of C shell quoting 
+is this: <span class="docEmphasis">quoting turns off (disables) the special 
+meaning of characters</span>. There are three quoting characters: a single quote 
+(<tt>'</tt>), a double quote (<tt>&quot;</tt>), and a backslash (<tt>\</tt>). </p>
+<h4  id="upt3-CHP-27-SECT-13.1" class="docSection2Title">27.13.1 Special Characters</h4>
+<p class="docText">The C shell has a few more special characters in addition to 
+the original Bourne shell: </p>
+<pre>! { } ~</pre>
+<h4  id="upt3-CHP-27-SECT-13.2" class="docSection2Title">27.13.2 How Quoting Works</h4>
+<p class="docText"><a class="docLink" href="#upt3-CHP-27-TABLE-2">Table 27-2</a> 
+summarizes the rules; you might want to look back at it while you read the 
+examples. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-27-TABLE-2" class="docTableTitle">Table 27-2. C shell quoting characters </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Quoting character</th>
+    <th class="docTableHeader">
+    <p class="docText">Explanation</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">'<tt><i>xxx</i></tt>'</td>
+    <td class="docTableCell">
+    <p class="docText">Disable all special characters in <tt><i>xxx</i></tt> 
+    except <tt>!</tt>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">&quot;<tt><i>xxx</i></tt>&quot;</td>
+    <td class="docTableCell">
+    <p class="docText">Disable all special characters in <tt><i>xxx</i></tt> 
+    except <tt>$</tt>, ', and <tt>!</tt>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">\<tt><i>x</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText">Disable special meaning of character <tt><i>x</i></tt>. 
+    At end of line, a <tt>\</tt> treats the newline character like a space 
+    (continues line). </td>
+  </tr>
+</table>
+<p class="docText">The major differences between C and Bourne shell quoting are 
+the following: </p>
+<ul>
+  <li>
+  <p class="docList">The exclamation point (<tt>!</tt>) character can be quoted 
+  only with a backslash. That's true inside and outside single or double quotes. 
+  So you can use <span class="docEmphBold">history substitution</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+  30.8</a>) inside quotes. For example: </p>
+  <pre>% <b>grep intelligent engineering file*.txt</b>
+grep: engineering: No such file or directory
+% <b>grep '!:1-2' !:3</b>
+grep 'intelligent engineering' file*.txt
+    ...</pre>
+  </li>
+  <li>
+  <p class="docList">In the Bourne shell, inside double quotes, a backslash (<tt>\</tt>) 
+  stops variable and command substitution (it turns off the special meaning of
+  <tt>$</tt> and <tt>'</tt>). </p>
+  <p class="docList">In the C shell, you can't disable the special meaning of
+  <tt>$</tt> or <tt>'</tt> inside double quotes. You'll need a mixture of single 
+  and double quotes. For example, searching for the string
+  <span class="docEmphasis">use the `-c' switch</span> takes some work: </p>
+  <pre>% <b>fgrep &quot;use the \`-c' switch&quot; *.txt</b>
+Unmatched \`.
+% <b>fgrep 'use the \`-c\' switch' *.txt</b>
+Unmatched '.
+% <b>fgrep &quot;use the &quot;'`-c'&quot;' switch&quot; *.txt</b>
+hints.txt:Be sure to use the `-c' switch.</pre>
+  <p class="docList">
+  <a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-10">
+  Section 29.10</a> shows an amazing pair of aliases that automate complicated C 
+  shell quoting problems like this. </li>
+  <li>
+  <p class="docList">In the Bourne shell, single and double quotes include 
+  newline characters. Once you open a single or double quote, you can type 
+  multiple lines before the closing quote. </p>
+  <p class="docList">In the C shell, if the quotes on a command line don't 
+  match, the shell will print an error unless the line ends with a backslash. In 
+  other words, to quote more than one line, type a backslash at the end of each 
+  line before the last line. Inside single or double quotes, the backslash-newline 
+  becomes a newline. Unquoted, backslash-newline is an argument separator: </p>
+  <pre>% <b>echo &quot;one\</b>
+? <b>two&quot; three\</b>
+? <b>four</b>
+one
+two three four</pre>
+  </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-14">27.14 Quoting Special Characters in Filenames</h3>
+<p class="docText">If you want to work with files that have spaces or special 
+characters in the filenames, you may have to use quotes. For instance, if you 
+wanted to create a file that has a space in the name, you could use the 
+following: </p>
+<p class="docText"><tt>/dev/null</tt>
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">
+Section 43.12</a></p>
+<pre>% <b>cp /dev/null 'a file with spaces in the name'</b></pre>
+<p class="docText">Normally, the shell uses spaces to determine the end of each 
+argument. <span class="docEmphBold">Quoting</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>,
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">
+Section 27.13</a>) changes that — for example, the <i>cp</i> command above has 
+only two arguments. You can also use a backslash (<tt>\</tt>) before a special 
+character. The example below will rename a file with a space in the name, 
+changing the space to an underscore ( <tt>_</tt> ): </p>
+<pre>% <b>mv a\ file a_file</b></pre>
+<p class="docText">Using the same techniques, you can deal with any character in 
+a filename: </p>
+<pre>% <b>mv '$a' a</b></pre>
+<p class="docText">At worst, a space in a filename makes the filename difficult 
+to use as an argument. Other characters are dangerous to use in a filename. In 
+particular, using <tt>?</tt> and <tt>*</tt> in a filename is playing with fire. 
+If you want to delete the file <span class="docEmphasis">a?</span>, you may end 
+up deleting more than the single file. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-15">27.15 Verbose and Echo Settings Show Quoting</h3>
+<p class="docText">C-type shells have two variables that, when set, will help 
+you follow the convoluted trail of variable and metacharacter expansion. This 
+command will echo every command line before shell variables have been evaluated:
+</p>
+<p class="docText"><tt>set</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+Section 35.9</a></p>
+<pre>% <b>set verbose</b></pre>
+<p class="docText">This command will display each line after the variables and 
+metacharacters have been substituted: </p>
+<pre>% <b>set echo</b></pre>
+<p class="docText">If you wish to turn the options off, use
+<span class="docEmphBold">unset</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>) instead of <i>set</i>. </p>
+<p class="docText">Bourne-type shell syntax is different. To turn on the verbose 
+flag, use: </p>
+<pre>$ <b>set -v</b></pre>
+<p class="docText">The command <tt>set</tt> <tt>-x</tt> turns on the echo flag. 
+You can also type them together: <tt>set</tt> <tt>-xv</tt>. </p>
+<p class="docText">If your version of Unix understands scripts that start with
+<tt>#!</tt>, and nearly all do, here's a convenient way to turn these variables 
+on from the first line of a script: </p>
+<pre>#!/bin/sh -xv</pre>
+<p class="docText">It is not necessary to modify the program. You can enable 
+variable tracing in Bourne shell scripts by typing the shell name and options on 
+the command line: </p>
+<pre>$ <b>sh -v <tt><i>script</i></tt></b>
+$ <b>sh -x <tt><i>script</i></tt></b></pre>
+<p class="docText">Not all Bourne shells let you turn these options off. If 
+yours does (and it probably does), you can do it by using a plus sign instead of 
+a minus sign: </p>
+<pre>set +xv</pre>
+<p class="docText"><span class="docEmphasis">— BB </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-16">27.16 Here Documents</h3>
+<p class="docText">So far, we've talked about three different kinds of quoting: 
+backslashes (<tt>\</tt>), single quotes (<tt>'</tt>), and double quotes (<tt>&quot;</tt>). 
+The shells support yet one more kind of quoting, called
+<span class="docEmphasis">here documents</span>. A here document is useful when 
+you need to read something from standard input, but you don't want to create a 
+file to provide that input; you want to put that input right into your shell 
+script (or type it directly on the command line). To do so, use the <tt>&lt;&lt;</tt> 
+operator, followed by a special word: </p>
+<pre>sort &gt;file &lt;&lt;EndOfSort
+zygote
+abacus
+EndOfSort</pre>
+<p class="docText">This is very useful because <span class="docEmphBold">
+variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">
+Section 35.3</a>) are evaluated during this operation. Here is a way to transfer 
+a file using anonymous <span class="docEmphBold">ftp</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>)<span id="ENB27-3"><a class="docLink" href="#EN27-3"><sup>[3]</sup></a></span> from 
+a shell script: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: ftpfile</p>
+<pre>#!/bin/sh
+# Usage:
+#     ftpfile machine file
+# set -x
+SOURCE=$1
+FILE=$2
+GETHOST=&quot;uname -n&quot;
+BFILE=`basename $FILE`
+ftp -n $SOURCE &lt;&lt;EndFTP
+ascii
+user anonymous $USER@`$GETHOST`
+get $FILE /tmp/$BFILE
+EndFTP</pre>
+<p class="docText">As you can see, variable and <span class="docEmphBold">
+command substitutions</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) are done. If you don't want those to be done, put a backslash in 
+front of the name of the word: </p>
+<pre>cat &gt;file &lt;&lt;\FunkyStriNG</pre>
+<p class="docText">Notice the funky string. This is done because it is very 
+unlikely that I will want to put that particular combination of characters in 
+any file. You should be warned that the C shell expects the matching word (at 
+the end of the list) to be escaped the same way, i.e., <tt>\FunkyStriNG</tt>, 
+while the Bourne shell does not. See
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-19">
+Section 36.19</a>. </p>
+<p class="docText">Most Bourne shells also have the <tt>&lt;&lt;-</tt> operator. The 
+dash (<tt>-</tt>) at the end tells the shell to strip any TAB characters from 
+the beginning of each line. Use this in shell scripts to indent a section of 
+text without passing those TABs to the command's standard input. </p>
+<p class="docText">Other shells, notably <i>zsh</i> and later versions of <i>ksh</i>, 
+but in the future possibly also <i>bash</i>, support a method for taking input 
+from a string: </p>
+<pre>$ tr ... &lt;&lt;&lt; &quot;$xyzzy&quot; | ...</pre>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-17">27.17 &quot;Special&quot; Characters and Operators</h3>
+<p class="docText">Before you learn about <span class="docEmphBold">regular 
+expressions</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-1">Section 
+32.1</a>), you should understand how <span class="docEmphBold">quoting</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) works in Unix. </p>
+<p class="docText">Regular expressions use metacharacters. The shells also have 
+metacharacters. Metacharacters are simply characters that have a special 
+meaning. The problem occurs when you want to use a regular expression in a shell 
+script. Will the shell do something special with the character? Or will it be 
+passed unchanged to the program? The <tt>$</tt> character is a good example of a 
+regular expression metacharacter that is also used by the shell, but whose 
+meaning is different depending upon who interprets it, the shell or other 
+programs. <span class="docEmphBold">It could be the beginning of a variable name 
+or it could be part of a regular expression</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-2">Section 
+32.2</a>). If you need a regular expression, you must know whether any of the 
+characters of the expression are metacharacters, and must know the right way to 
+quote that character so that it is passed to the program without being modified 
+by the shell. </p>
+<p class="docText"><a class="docLink" href="#upt3-CHP-27-TABLE-3">Table 27-3</a> 
+is a table of special characters and operators in the shells covered by this 
+book. (Because <i>zsh</i> acts basically like both C-type and Bourne-type 
+shells, its name would show up in every entry. So we don't list it here unless 
+an entry applies only to <i>zsh</i> — or one or two other shells.) The chart 
+also includes several combinations of characters just to be complete. But, to 
+keep things simple, it doesn't include: </p>
+<ul>
+  <li>
+  <p class="docList">Arithmetic operators like <tt>+</tt>, <tt>-</tt>, and so 
+  on; see the articles on built-in arithmetic for a list. </li>
+  <li>
+  <p class="docList">History substitution like <tt>!!</tt>, <tt>!$</tt>, and so 
+  on; see
+  <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">
+  Section 30.8</a> instead. </li>
+</ul>
+<p class="docText">As in other parts of this book, the <i>sh</i> entries apply 
+to <i>ksh</i> and <i>bash</i>; the <i>csh</i> entries apply to <i>tcsh</i>. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-27-TABLE-3" class="docTableTitle">Table 27-3. Special characters and their meanings
+  </h5>
+  </caption>
+  <colgroup span="4">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Character</th>
+    <th class="docTableHeader">
+    <p class="docText">Where</th>
+    <th class="docTableHeader">
+    <p class="docText">Meaning</th>
+    <th class="docTableHeader">
+    <p class="docText">Articles</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>ESC</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh</td>
+    <td class="docTableCell">
+    <p class="docText">Filename completion.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-6">
+    Section 28.6</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>RETURN</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Execute command.</td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>space</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Argument separator.</td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>TAB</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Argument separator.</td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>TAB</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">bash</td>
+    <td class="docTableCell">
+    <p class="docText">Completion (in interactive shells).</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-6">
+    Section 28.6</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>#</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Start a comment.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-1">
+    Section 35.1</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>`</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Command substitution (backquotes).</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+    Section 28.14</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&quot;</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Weak quotes.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">
+    Section 27.12</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&quot;</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh</td>
+    <td class="docTableCell">
+    <p class="docText">Weak quotes.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">
+    Section 27.13</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$<tt><i>var</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Expand variable <tt><i>var</i></tt>.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">
+    Section 35.3</a>,
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+    Section 35.9</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Same as <tt>$<i>var</i></tt>.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+    Section 35.9</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$<tt><i>var</i></tt>:<tt><i>mod</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh</td>
+    <td class="docTableCell">
+    <p class="docText">Edit <tt><i>var</i></tt> with modifier <tt><i>mod</i></tt>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-5">
+    Section 28.5</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>-<tt><i>default</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">If <tt><i>var</i></tt> not set, use <tt><i>default</i></tt>.
+    </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+    Section 36.7</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>:-<tt><i>default</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">bash</td>
+    <td class="docTableCell">
+    <p class="docText">If <tt><i>var</i></tt> not set or null, use <tt><i>
+    default</i></tt>. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+    Section 36.7</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>=<tt><i>default</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">If <tt><i>var</i></tt> not set, set it to <tt><i>default</i></tt> 
+    and use that value. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+    Section 36.7</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>:=<tt><i>default</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">bash</td>
+    <td class="docTableCell">
+    <p class="docText">If <tt><i>var</i></tt> not set or null, set it to <tt><i>
+    default</i></tt> and use that value. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+    Section 36.7</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>+<tt><i>instead</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">If <tt><i>var</i></tt> set, use <tt><i>instead</i></tt>. 
+    Otherwise, null string. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+    Section 36.7</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>:+<tt><i>instead</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">bash</td>
+    <td class="docTableCell">
+    <p class="docText">If <tt><i>var</i></tt> set or not null, use <tt><i>
+    instead</i></tt>. Otherwise, null string. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+    Section 36.7</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>?<tt><i>message</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">If <tt><i>var</i></tt> set, use its value. Else print <tt>
+    <i>message</i></tt> (or default) and exit. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+    Section 36.7</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>:?<tt><i>message</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">bash</td>
+    <td class="docTableCell">
+    <p class="docText">If <tt><i>var</i></tt> set or not null, use its value. 
+    Else print <tt><i>message</i></tt> (or default) and exit. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+    Section 36.7</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>#<tt><i>pat</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">ksh, bash</td>
+    <td class="docTableCell">
+    <p class="docText">Value of <tt><i>var</i></tt> with smallest <tt><i>pat</i></tt> 
+    deleted from start. </td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>##<tt><i>pat</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">ksh, bash</td>
+    <td class="docTableCell">
+    <p class="docText">Value of <tt><i>var</i></tt> with largest <tt><i>pat</i></tt> 
+    deleted from start. </td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>%<tt><i>pat</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">ksh, bash</td>
+    <td class="docTableCell">
+    <p class="docText">Value of <tt><i>var</i></tt> with smallest <tt><i>pat</i></tt> 
+    deleted from end. </td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${<tt><i>var</i></tt>%%<tt><i>pat</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">ksh, bash</td>
+    <td class="docTableCell">
+    <p class="docText">Value of <tt><i>var</i></tt> with largest <tt><i>pat</i></tt> 
+    deleted from end. </td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${^<tt><i>array</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">zsh</td>
+    <td class="docTableCell">
+    <p class="docText">Expand <tt><i>array</i></tt> in place, like
+    <span class="docEmphasis">rc_expand_param</span> option. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+    Section 35.9</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${=<tt><i>spec</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">zsh</td>
+    <td class="docTableCell">
+    <p class="docText">Turn on <span class="docEmphasis">sh_word_split</span> 
+    option while evaluating <tt><i>spec</i></tt>. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+    Section 35.9</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>${~<tt><i>array</i></tt>}</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">zsh</td>
+    <td class="docTableCell">
+    <p class="docText">Turn on <span class="docEmphasis">glob_subst</span> 
+    option while evaluating <tt><i>spec</i></tt>. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+    Section 35.9</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>|</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Pipe standard output.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-5">
+    Section 1.5</a>,
+    <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">
+    Section 43.1</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>|&amp;</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh</td>
+    <td class="docTableCell">
+    <p class="docText">Pipe standard output and standard error.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-5">
+    Section 43.5</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>|&amp;</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">ksh</td>
+    <td class="docTableCell">
+    <p class="docText">Coroutine.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">
+    Section 24.4</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>^</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh <span class="docEmphasis">only</span></td>
+    <td class="docTableCell">
+    <p class="docText">Pipe character (obsolete).</td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>^</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, bash</td>
+    <td class="docTableCell">
+    <p class="docText">Edit previous command line.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-5">
+    Section 30.5</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&amp;</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Run program in background.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-2">
+    Section 23.2</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&amp;!</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">zsh</td>
+    <td class="docTableCell">
+    <p class="docText">Run program in background without job control.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-11">
+    Section 23.11</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&amp;|</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">zsh</td>
+    <td class="docTableCell">
+    <p class="docText">Run program in background without job control.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-11">
+    Section 23.11</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>?</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Match one character.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">
+    Section 1.13</a>,
+    <a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">
+    Section 33.2</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>*</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Match zero or more characters.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">
+    Section 1.13</a>,
+    <a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">
+    Section 33.2</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>;</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Command separator.</td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>;;</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">End of <span class="docEmphasis">case</span> element.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">
+    Section 35.10</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>~</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, ksh, bash</td>
+    <td class="docTableCell">
+    <p class="docText">Home directory.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">
+    Section 31.11</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>~<tt><i>user</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, ksh, bash</td>
+    <td class="docTableCell">
+    <p class="docText">Home directory of <tt><i>user</i></tt>.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">
+    Section 31.11</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>!</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, bash</td>
+    <td class="docTableCell">
+    <p class="docText">Command history.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-2">
+    Section 30.2</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>!</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">bash, ksh93, zsh</td>
+    <td class="docTableCell">
+    <p class="docText">Toggle exit status.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">
+    Section 35.12</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>-</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">zsh</td>
+    <td class="docTableCell">
+    <p class="docText">Make a login shell.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-19">
+    Section 3.19</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>=</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Assignment.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+    Section 35.9</a>,</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$#</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Number of shell arguments or words in an array.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">
+    Section 35.20</a>,</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&quot;$@&quot;</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Original script arguments.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">
+    Section 35.20</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$*</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Original script arguments, broken into words.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">
+    Section 35.20</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$?</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Status of previous command.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">
+    Section 35.12</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$$</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Process identification number.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">
+    Section 27.12</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$!</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Process identification number of last background job.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-15">
+    Section 4.15</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$&lt;</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh</td>
+    <td class="docTableCell">
+    <p class="docText">Read input from terminal.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">
+    Section 28.9</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$_</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">bash, ksh, zsh</td>
+    <td class="docTableCell">
+    <p class="docText">Last argument of previous command.</td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$<tt><i>n</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Argument <tt><i>n</i></tt>. 1 &lt;= n &lt;= 9 for most shells; 
+    bash and ksh93 support ${n} for n &gt;= 10. </td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$0</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Name of the shell or shell script.</td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre><tt><i>cmd1</i></tt> &amp;&amp; <tt><i>cmd2</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Execute <tt><i>cmd2</i></tt> if <tt><i>cmd1</i></tt> 
+    succeeds. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+    Section 35.14</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre><tt><i>cmd1</i></tt> || <tt><i>cmd2</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Execute <tt><i>cmd2</i></tt> if <tt><i>cmd1</i></tt> 
+    fails. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+    Section 35.14</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>$(..)</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">ksh, bash</td>
+    <td class="docTableCell">
+    <p class="docText">Command substitution.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-24">
+    Section 36.24</a>,
+    <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+    Section 28.14</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>. <tt><i>file</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Execute commands from <tt><i>file</i></tt> in this shell.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">
+    Section 35.29</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>:</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Evaluate arguments, return true.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">
+    Section 35.6</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>:</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Separate values in paths.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-5">
+    Section 31.5</a>,
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">
+    Section 35.6</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>:</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh</td>
+    <td class="docTableCell">
+    <p class="docText">Variable modifier.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-5">
+    Section 28.5</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>[ ]</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Match range of characters.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">
+    Section 1.13</a>,
+    <a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">
+    Section 33.2</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>[ ]</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Test.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">
+    Section 35.26</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>%<tt><i>n</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, ksh, bash, zsh</td>
+    <td class="docTableCell">
+    <p class="docText">Job number <tt><i>n</i></tt>.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">
+    Section 23.3</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>(<tt><i>cmd</i></tt>;<tt><i>cmd</i></tt>)</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Run <tt><i>cmd</i>;<i>cmd</i></tt> in a subshell. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">
+    Section 43.7</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>{ }</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, bash</td>
+    <td class="docTableCell">
+    <p class="docText">In-line expansions.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">
+    Section 28.4</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&gt;<tt><i>file</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Redirect standard output.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">
+    Section 43.1</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&gt;! <tt><i>file</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh</td>
+    <td class="docTableCell">
+    <p class="docText">Output to <tt><i>file</i></tt>, even if
+    <span class="docEmphasis">noclobber</span> set and <tt><i>file</i></tt> 
+    exists. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-6">
+    Section 43.6</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&gt;| <tt><i>file</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">ksh, bash</td>
+    <td class="docTableCell">
+    <p class="docText">Output to <tt><i>file</i></tt>, even if
+    <span class="docEmphasis">noclobber</span> set and <tt><i>file</i></tt> 
+    exists. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-6">
+    Section 43.6</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&gt;&gt;<tt><i>file</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Append standard output.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">
+    Section 43.1</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&gt;&gt;! <tt><i>file</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh</td>
+    <td class="docTableCell">
+    <p class="docText">Append to <tt><i>file</i></tt>, even if
+    <span class="docEmphasis">noclobber</span> set and <tt><i>file</i></tt> 
+    doesn't exist. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-6">
+    Section 43.6</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&lt;<tt><i>file</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Redirect standard input.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">
+    Section 43.1</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&lt;&lt;<tt><i>word</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Read until <tt><i>word</i></tt>, do command and variable 
+    substitution. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-16">
+    Section 27.16</a>,
+    <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-13">
+    Section 28.13</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&lt;&lt;\<tt><i>word</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, sh</td>
+    <td class="docTableCell">
+    <p class="docText">Read until <tt><i>word</i></tt>, no substitution.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-16">
+    Section 27.16</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&lt;&lt;-<tt><i>word</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Read until <tt><i>word</i></tt>, ignoring leading TABs.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-16">
+    Section 27.16</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&lt;&gt; <tt><i>file</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">ksh, bash, zsh</td>
+    <td class="docTableCell">
+    <p class="docText">Open <tt><i>file</i></tt> for writing and reading.</td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&gt;&amp; <tt><i>file</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">csh, bash</td>
+    <td class="docTableCell">
+    <p class="docText">Redirect standard output and standard error to <tt><i>
+    file</i></tt>. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-5">
+    Section 43.5</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre><tt><i>m</i></tt>&gt; <tt><i>file</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Redirect output file descriptor <tt><i>m</i></tt> to <tt>
+    <i>file</i></tt>. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+    Section 36.16</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre><tt><i>m</i></tt>&gt;&gt; <tt><i>file</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Append output file descriptor <tt><i>m</i></tt> to <tt>
+    <i>file</i></tt>. </td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre><tt><i>m</i></tt>&lt; <tt><i>file</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Redirect input file descriptor <tt><i>m</i></tt> from <tt>
+    <i>file</i></tt>. </td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&lt;&amp;<tt><i>m</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Take standard input from file descriptor <tt><i>m</i></tt>.</td>
+    <td class="docTableCell">&nbsp;</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&gt;&amp;<tt><i>m</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Use file descriptor <tt><i>m</i></tt> as standard output.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+    Section 36.16</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre>&gt;&amp; -</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Close standard output.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+    Section 36.16</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre><tt><i>m</i></tt>&lt;&amp; -</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Close input file descriptor <tt><i>m</i></tt>.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+    Section 36.16</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre><tt><i>n</i></tt>&gt;&amp;<tt><i>m</i></tt></pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Connect output file descriptor <tt><i>n</i></tt> to file 
+    descriptor <tt><i>m</i></tt>. </td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+    Section 36.16</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <pre><tt><i>m</i></tt>&gt;&amp; -</pre>
+    </td>
+    <td class="docTableCell">
+    <p class="docText">sh</td>
+    <td class="docTableCell">
+    <p class="docText">Close output file descriptor <tt><i>m</i></tt>.</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+    Section 36.16</a></td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— BB and JP </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-27-SECT-18">27.18 How Many Backslashes?</h3>
+<p class="docText">The problem with backslashes is that many different programs 
+use them as quoting characters. As a result, it's difficult to figure out how 
+many backslashes you need in any situation. </p>
+<p class="docText">Here's an example, taken from System V Release 4. (Notice 
+that I'm using the standard System V version of <i>echo</i> from <i>/bin/echo</i>. 
+SVR4 has four versions of <i>echo</i>!) </p>
+<pre>% <b>/bin/echo hi \ there</b>
+hi  there
+% <b>/bin/echo hi \\ there</b>
+hi \ there
+% <b>/bin/echo hi \ there</b>
+hi \ there</pre>
+<p class="docText">In the first case, the shell uses the backslash to
+<span class="docEmphBold">quote</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) the following space character. The space before the backslash is a 
+word separator. So <i>echo</i> gets two arguments: &quot;<tt>hi</tt>&quot; and &quot;<tt>·</tt>there&quot; 
+(without the quotes) — where <tt>·</tt> is the space character that was quoted 
+by the backslash. As always, <i>echo</i> prints a single space between each 
+argument. The first space you see in the output is echo's argument-separating 
+space, and the second space came along with the second argument (thanks to the 
+backslash). </p>
+<p class="docText">In the second case, the shell converts <tt>\\</tt> to <tt>\</tt>; 
+the first backslash tells the shell to <span class="docEmphBold">quote</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) (turn off the special meaning of) the second backslash. The <i>echo</i> 
+command gets three arguments, &quot;<tt>hi</tt>&quot;, &quot;<tt>\</tt>&quot;, and &quot;<tt>there</tt>&quot;, 
+and it echoes those arguments with a single space between each. (I've heard 
+claims that, on some systems, this command wouldn't print any backslashes, but I 
+wasn't able to reconstruct that situation.) </p>
+<p class="docText">In the third case, the shell converts each pair of 
+backslashes into a backslash, and runs the command <tt>echo hi \\ there</tt>. 
+But this is System V, and System V's <i>echo</i> interprets backslashes as 
+special characters. So when <i>echo</i> sees the remaining two backslashes, it 
+converts them into a single backslash. So you see only a single backslash, even 
+though you typed four. On BSD systems and on Linux, <i>echo</i> doesn't do this; 
+you'd see two backslashes. For that matter, if you're using SVR4's C shell, with 
+its built-in <i>echo</i> command, you'll see the BSD/Linux behavior. You'll also 
+see the BSD/Linux behavior if you're using SVR4's <i>/usr/ucb/echo</i>. </p>
+<p class="docText">The terminal driver is also capable of &quot;eating&quot; backslashes 
+if they appear before special characters. If a backslash precedes the &quot;erase&quot; 
+character (normally CTRL-h) or the &quot;kill&quot; character (normally CTRL-u), the 
+terminal driver will pass the control character to the shell, rather than 
+interpreting it as an editing character. In the process, it &quot;eats&quot; the 
+backslash. So if you type: </p>
+<pre>% <b>echo \</b>CTRL-u</pre>
+<p class="docText">The shell receives the line <tt>echo CTRL-u</tt>. There are 
+certainly system-dependent variations, though. If your system has the
+<span class="docEmphasis">termio</span>(7) manual page, read it for more 
+information. </p>
+<p class="docText">What's the point of this article? Well, backslashes are 
+messy. The shell, the terminal driver, <i>echo</i> (sometimes), and several 
+other utilities use them. If you think very carefully, you can figure out 
+exactly what's consuming them. If you're not of a rigorous frame of mind, you 
+can just add backslashes until you get what you want. (But, obviously, the 
+nonrigorous approach has pitfalls.) I've seen situations in <i>troff</i> (which 
+is another story altogether) where you need eight backslashes in order to have a 
+single backslash left at the point where you want it! </p>
+<p class="docText">(Extra credit: What happens when you put quotes (<tt>&quot;</tt> 
+or <tt>'</tt>) around the strings in the <i>echo</i> commands above? Especially, 
+should quotes affect the way <tt>\</tt>CTRL-u is interpreted?) </p>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<blockquote>
+<p class="docFootnote" id="EN27-1"><a class="docLink" href="#ENB27-1">[1]</a>&nbsp;&nbsp;It&#39;s difficult to trace the development of all these shells in a simple manner. 
+Their authors have borrowed ideas and syntax from the others — and sometimes 
+code — and sometimes a shell starts out trying to emulate another but evolves 
+away from its original inspiration (or the inspiration evolves away from the 
+aspirant).</p><p class="docFootnote" id="EN27-2"><a class="docLink" href="#ENB27-2">[2]</a>&nbsp;&nbsp;The script uses <i>bash</i> 
+  because, as this article explains later, its built-in
+  <span class="docEmphBold">echo</span> (<a class="docLink" href="#upt3-CHP-27-SECT-5">Section 
+  27.5</a>) command has the <i>-E</i> option to prevent interpretation of 
+  special characters.</p><p class="docFootnote" id="EN27-3"><a class="docLink" href="#ENB27-3">[3]</a>&nbsp;&nbsp;You might be better off 
+  using <i>wget</i> or <i>curl</i> for downloads, but this method can be useful 
+  for automated uploads.</p>
+</blockquote>
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 26.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 28.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

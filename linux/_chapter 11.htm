@@ -1,0 +1,879 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 11</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 10.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 12.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 11. Comparing Files</h2>
+
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-11-SECT-1">11.1 Checking Differences with diff</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-11-SECT-2">11.2 Comparing Three Different Versions with diff3</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-11-SECT-3">11.3 Context diffs</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-11-SECT-4">11.4 Side-by-Side diffs: sdiff</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-11-SECT-5">11.5 Choosing Sides with sdiff</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-11-SECT-6">11.6 Problems with diff and Tabstops</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-11-SECT-7">11.7 cmp and diff</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-11-SECT-8">11.8 Comparing Two Files with comm</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-11-SECT-9">11.9 More Friendly comm Output</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-11-SECT-10">11.10 make Isn't Just for Programmers!</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-11-SECT-11">11.11 Even More Uses for make</a></li>
+</ul>
+
+
+<h3 class="docSection1Title" id="upt3-CHP-11-SECT-1">11.1 Checking Differences with diff</h3>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: diff</p>
+<p class="docText">The <i>diff</i> command displays different versions of lines 
+that are found when comparing two files. It prints a message that uses <i>ed</i>-like 
+notation (<span class="docEmphasis">a</span> for append,
+<span class="docEmphasis">c</span> for change, and <span class="docEmphasis">d</span> 
+for delete) to describe how a set of lines has changed. The lines themselves 
+follow this output. The <tt>&lt;</tt> character precedes lines from the first file 
+and <tt>&gt;</tt> precedes lines from the second file. </p>
+<p class="docText">Let's create an example to explain the output produced by <i>
+diff</i>. Look at the contents of three sample files: </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">test1</th>
+    <th class="docTableHeader">
+    <p class="docText">test2</th>
+    <th class="docTableHeader">
+    <p class="docText">test3</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">apples</td>
+    <td class="docTableCell">
+    <p class="docText">apples</td>
+    <td class="docTableCell">
+    <p class="docText">oranges</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">oranges</td>
+    <td class="docTableCell">
+    <p class="docText">oranges</td>
+    <td class="docTableCell">
+    <p class="docText">walnuts</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">walnuts</td>
+    <td class="docTableCell">
+    <p class="docText">grapes</td>
+    <td class="docTableCell">
+    <p class="docText">chestnuts</td>
+  </tr>
+</table>
+<p class="docText">When you run <i>diff</i> on <span class="docEmphasis">test1</span> 
+and <span class="docEmphasis">test2</span>, the following output is produced:
+</p>
+<pre>$ <b>diff test1 test2</b>
+3c3
+&lt; walnuts
+--
+&gt; grapes</pre>
+<p class="docText">The <i>diff</i> command displays the only line that differs 
+between the two files. To understand the report, remember that <i>diff</i> is 
+prescriptive, describing what changes need to be made to the first file to make 
+it the same as the second file. This report specifies that only the third line 
+is affected, exchanging <tt>walnuts</tt> for <tt>grapes</tt>. This is more 
+apparent if you use the <i>-e</i> option, which produces an editing script that 
+can be submitted to <i>ed</i>, the Unix line editor. (You must
+<span class="docEmphBold">redirect standard output</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>) to capture this script in a file.) </p>
+<pre>$ <b>diff -e test1 test2</b>
+3c
+grapes
+.</pre>
+<p class="docText">This script, if run on <span class="docEmphasis">test1</span>, 
+will bring <span class="docEmphasis">test1</span> into agreement with
+<span class="docEmphasis">test2</span>. (To do this, feed the script to the 
+standard input of <span class="docEmphBold">ed</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-6">Section 
+20.6</a>) or <i>ex</i>; add a <span class="docEmphBold">w command</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-4">Section 
+20.4</a>) at the end of the script to write the changes, if you want to.) </p>
+<p class="docText">If you compare the first and third files, you find more 
+differences:</p>
+<pre>$ <b>diff test1 test3</b>
+1dO
+&lt; apples
+3a3
+&gt; chestnuts</pre>
+<p class="docText">To make <span class="docEmphasis">test1</span> the same as
+<span class="docEmphasis">test3</span>, you'd have to delete the first line (<tt>apples</tt>) 
+and append the third line from <span class="docEmphasis">test3</span> after the 
+third line in <span class="docEmphasis">test1</span>. Again, this can be seen 
+more clearly in the editing script produced by the <i>-e</i> option. Notice that 
+the script specifies editing lines in reverse order; otherwise, changing the 
+first line would alter all subsequent line numbers. </p>
+<pre>$ <b>diff -e test1 test3</b>
+3a
+chestnuts
+.
+1d</pre>
+<p class="docText">So what's this good for? Here's one example. </p>
+<p class="docText">When working on a document, it is common practice to make a 
+copy of a file and edit the copy rather than the original. This might be done, 
+for example, if someone other than the writer is inputing edits from a written 
+copy. The <i>diff</i> command can be used to compare the two versions of a 
+document. A writer could use it to proof an edited copy against the original.
+</p>
+<pre>$ <b>diff brochure brochure.edits</b>
+49c43,44
+&lt; environment for program development and communications,
+--
+&gt; environment for multiprocessing, program development
+&gt; and communications, programmers
+56c51
+&lt; offering even more power and productivity for commericial
+--
+&gt; offering even more power and productivity for commercial
+76c69
+&lt; Languages such as FORTRAN, COBOL, Pascal, and C can be
+--
+&gt; Additional languages such as FORTRAN, COBOL, Pascal, and</pre>
+<p class="docText">Using <i>diff</i> in this manner is a simple way for a writer 
+to examine changes without reading the entire document. By redirecting <i>diff</i> 
+output to a file, you can keep a record of changes made to any document. In 
+fact, just that technique is used by both <span class="docEmphBold">RCS and CVS</span> 
+(<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-4">Section 
+39.4</a>) to manage multiple revisions of source code and documents. </p>
+<p class="docText"><span class="docEmphasis">—DD, from Unix Text Processing 
+(Hayden Books, 1987)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-11-SECT-2">11.2 Comparing Three Different Versions with diff3</h3>
+<p class="docText">You can use the <i>diff3</i> command to look at differences 
+between three files. Here are three sample files, repeated from
+<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-1">
+Section 11.1</a>: </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">test1</th>
+    <th class="docTableHeader">
+    <p class="docText">test2</th>
+    <th class="docTableHeader">
+    <p class="docText">test3</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">apples</td>
+    <td class="docTableCell">
+    <p class="docText">apples</td>
+    <td class="docTableCell">
+    <p class="docText">oranges</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">oranges</td>
+    <td class="docTableCell">
+    <p class="docText">oranges</td>
+    <td class="docTableCell">
+    <p class="docText">walnuts</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">walnuts</td>
+    <td class="docTableCell">
+    <p class="docText">grapes</td>
+    <td class="docTableCell">
+    <p class="docText">chestnuts</td>
+  </tr>
+</table>
+<p class="docText">For each set of differences, <i>diff3</i> displays a row of 
+equal signs (<tt>====</tt>) followed by 1, 2, or 3, indicating which file is 
+different; if no number is specified, then all three files differ. Then, using
+<span class="docEmphBold">ed-like notation</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-1">Section 
+11.1</a>), the differences are described for each file: </p>
+<pre>$ <b>diff3 test1 test2 test3</b>
+====3
+1:1c
+2:1c
+  apples
+3:0a
+====
+1:3c
+  walnuts
+2:3c
+  grapes
+3:2,3c
+  walnuts
+  chestnuts</pre>
+<p class="docText">With the output of <i>diff3</i>, it is easy to keep track of 
+which file is which; however, the prescription given is a little harder to 
+decipher. To bring these files into agreement, the first range of text (after
+<tt>====3</tt>) shows that you would have to add <tt>apples</tt> at the 
+beginning of the third file (<tt>3:0a</tt>). The second range tells you to 
+change line 3 of the second file to line 3 of the first file — change lines 2 
+and 3 of the third file, effectively dropping the last line. </p>
+<p class="docText">The <i>diff3</i> command also has a <i>-e</i> option for 
+creating an editing script for <i>ed</i>. It doesn't work quite the way you 
+might think. Basically, it creates a script for building the first file from the 
+second and third files. </p>
+<pre>$ <b>diff3 -e test1 test2 test3</b>
+3c
+walnuts
+chestnuts
+.
+1d
+.
+w
+q</pre>
+<p class="docText">If you reverse the second and third files, a different script 
+is produced: </p>
+<pre>$ <b>diff3 -e test1 test3 test2</b>
+3c
+grapes
+.
+w
+q</pre>
+<p class="docText">As you might guess, this is basically the same output as 
+doing a <i>diff</i> on the first and third files. </p>
+<p class="docText"><span class="docEmphasis">— DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-11-SECT-3">11.3 Context diffs</h3>
+<p class="docText">The <i>diff</i> examples in
+<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-1">
+Section 11.1</a> and
+<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-2">
+Section 11.2</a> show compact formats with just the differences between the two 
+files. But, in many cases, context <i>diff</i> listings are more useful. Context
+<i>diff</i>s show the changed lines and the lines around them. (This can be a 
+headache if you're trying to read the listing on a terminal and there are many 
+changed lines fairly close to one another: the context will make a huge &quot;before&quot; 
+section, with the &quot;after&quot; section several screenfuls ahead. In that case, the 
+more compact <i>diff</i> formats can be useful.) A related format, unified <i>
+diff</i>, shows context but doesn't take as much space. </p>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: rcs</p>
+<p class="docText">The <i>rcsdiff</i> command shows differences between 
+revisions in an <span class="docEmphBold">RCS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+39.5</a>) file (and will only be available if you have RCS installed). We'll use 
+it here instead of <i>diff</i> — but the concepts are the same. Incidentally, 
+these examples would also work with <span class="docEmphBold">cvs diff</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-7">Section 
+39.7</a>), if you have CVS installed. </p>
+<p class="docText">The <i>-c</i> option shows before-and-after versions of each 
+changed section of a file. By itself, <i>-c</i> shows three lines above and 
+below each change. Here's an example of a C file before and after some edits; 
+the <tt>-c2</tt> option shows two lines of context. The <i>-u</i> option shows 
+changed lines next to each other, not in separate before-and-after sections. 
+Again, an option like <tt>-u2</tt> shows two lines of context around a change 
+instead of the default three lines. </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Start of a listing</span></i> </dt>
+  <dd>
+  <p class="docList">A <span class="docEmphasis">diff -c</span> listing starts 
+  with the two filenames and their last-modified dates (&quot;timestamps&quot;). The first 
+  filename (here, <span class="docEmphasis">atcat.c</span> revision 1.1) has 
+  three asterisks (<tt>***</tt>) before it; the second name (<span class="docEmphasis">atcat.c</span> 
+  revision 1.2) has three dashes (<tt>---</tt>). These markers identify the two 
+  files in the difference listings below: </p>
+  <pre>*** atcat.c 1987/09/19 12:00:44 1.1
+--- atcat.c 1987/09/19 12:08:41 1.2</pre>
+  <p class="docList">A <span class="docEmphasis">diff -u</span> listing also 
+  starts with the two filenames and their last-modified dates (&quot;timestamps&quot;). 
+  The first filename (here, <span class="docEmphasis">atcat.c</span> revision 
+  1.1) has three minus signs (<tt>---</tt>) before it, meaning &quot;from&quot; or 
+  &quot;before.&quot; The second name (<span class="docEmphasis">atcat.c</span> revision 
+  1.2) has three plus signs (<tt>+++</tt>). Again, these markers identify the 
+  two files in the difference listings that follow: </p>
+  <pre>--- atcat.c 1987/09/19 12:00:44 1.1
++++ atcat.c 1987/09/19 12:08:41 1.2</pre>
+  </dd>
+  <dt><i><span class="docPubcolor">Start of a section</span></i> </dt>
+  <dd>
+  <p class="docList">Each difference section in a <span class="docEmphasis">diff 
+  -c</span> listing starts with a row of asterisks: </p>
+  <pre>***************</pre>
+  <p class="docList">In a <span class="docEmphasis">diff -u</span> listing, each 
+  difference section starts with a line that has a pair of line numbers and line 
+  counts. This one means that the first version of the file (with a <tt>-</tt> 
+  before it) starts at line 14 and contains 5 lines; the second version of the 
+  file (with a <tt>+</tt>) also starts at line 14 and has 5 lines: </p>
+  <pre>@@ -14,5 +14,5 @@</pre>
+  </dd>
+  <dt><i><span class="docPubcolor">Changes</span></i> </dt>
+  <dd>
+  <p class="docList">In a <span class="docEmphasis">diff -c</span> listing, 
+  changed lines that exist in both files are marked with an <tt>!</tt> 
+  (exclamation point) character in the left margin. So, one of the lines between 
+  lines 15-19 was changed. Other lines in the section weren't changed: </p>
+  <pre>*** 15, 19 ****
+  #ifndef lint
+  static char rcsid[ ] = 
+!     &quot;$Id: ch11.xml,v 1.33 2002/10/13 03:51:58 troutman Exp troutman $&quot;;
+  #endif not lint
+--- 15,19 ----
+  #ifndef lint
+  static char rcsid[ ] = 
+!     &quot;$Id: ch11.xml,v 1.33 2002/10/13 03:51:58 troutman Exp troutman $&quot;;
+  #endif not lint
+  /* end of Identification */</pre>
+  <p class="docList">A <span class="docEmphasis">diff -u</span> listing always 
+  shows lines that are marked with a minus (<tt>-</tt>) only in the first 
+  version and lines marked with a plus (<tt>+)</tt> in the second version. Here, 
+  one line was changed: </p>
+  <pre>@@ -15,5 +15,5 @@
+ #ifndef lint
+ static char rcsid[ ] = 
+-     &quot;$Id: ch11.xml,v 1.33 2002/10/13 03:51:58 troutman Exp troutman $&quot;;
+ static char rcsid[ ] = 
++     &quot;$Id: ch11.xml,v 1.33 2002/10/13 03:51:58 troutman Exp troutman $&quot;;
+ #endif not lint
+ /* end of Identification */</pre>
+  </dd>
+  <dt><i><span class="docPubcolor">Deletions</span></i> </dt>
+  <dd>
+  <p class="docList">In a <span class="docEmphasis">diff -c</span> listing, a 
+  line that exists in the first version but not the second version is marked 
+  with a minus sign (<tt>-</tt>). None of the lines from the second version are 
+  shown. So, line 62 in the first version (lines 64-68) was deleted, leaving 
+  lines 64-67 in the second version: </p>
+  <pre>*** 64,68 ****
+  {
+    int i;              /* for loop index */
+-   int userid;         /* uid of owner of file */
+    int isuname;        /* is a command line argv a user name? */
+    int numjobs;        /* # of jobs in spooling area */
+--- 64,67 ----</pre>
+  <p class="docList">A <span class="docEmphasis">diff -u</span> listing simply 
+  shows the deleted line with a minus (<tt>-</tt>) sign before it. The section 
+  started at line 64 and had 5 lines; after the change, it starts at line 64 and 
+  has 4 lines: </p>
+  <pre>@@ -64,5 +64,4 @@
+ {
+    int i;              /* for loop index */
+-   int userid;         /* uid of owner of file */
+    int isuname;        /* is a command line argv a user name? */
+    int numjobs;        /* # of jobs in spooling area */</pre>
+  </dd>
+  <dt><i><span class="docPubcolor">Additions</span></i> </dt>
+  <dd>
+  <p class="docList">In a <span class="docEmphasis">diff -c</span> listing, 
+  lines that are added are marked with an exclamation point (!) and only appear 
+  in the second version. So, one of the lines between lines 111-116 was changed, 
+  and two other lines were added, leaving lines 111-118 in the second version:
+  </p>
+  <pre>*** 111,116 ****
+     * are given, print usage info and exit.
+     */
+!   if (allflag &amp;&amp; argc)
+        usage( );
+
+    /*
+--- 111,118 ----
+     * are given, print usage info and exit.
+     */
+!   if (allflag &amp;&amp; argc) {
+        usage( );
++       exit(1);
++   }
+
+    /*</pre>
+  <p class="docList">In a <span class="docEmphasis">diff -u</span> listing, 
+  lines that are only in the second version are always marked with a <tt>+</tt>. 
+  Here, one line was changed, and two lines were added. The original version 
+  started at line 111 and had 6 lines; the changed version started at line 111 
+  and has 8 lines: </p>
+  <pre>@@ -111,6 +111,8 @@
+     * are given, print usage info and exit.
+     */
+-   if (allflag &amp;&amp; argc)
++   if (allflag &amp;&amp; argc) {
+        usage( );
++       exit(1);
++   }
+
+    /*</pre>
+  </dd>
+</dl>
+<p class="docText">Context <i>diff</i>s aren't just nice for reading. The
+<span class="docEmphBold">patch</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-9">Section 
+20.9</a>) program reads context <i>diff</i> listings and uses them to update 
+files automatically. For example, if I had the first version of
+<span class="docEmphasis">atcat.c</span>, someone could send me either of the 
+previous <i>diff</i> listings (called a &quot;patch&quot;). From the original and the 
+patch, <i>patch</i> could create the second version of <span class="docEmphasis">
+atcat.c</span>. The advantage of a context <i>diff</i> over the formats in
+<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-1">
+Section 11.1</a> and
+<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-2">
+Section 11.2</a> is that context <i>diff</i>s let <i>patch</i> locate the 
+changed sections even if they've been moved somewhat. In this case, it's 
+probably <span class="docEmphasis">not</span> a good idea to save space by 
+reducing the number of context lines (with <tt>-c2</tt> or <tt>-u2</tt>, as I 
+did here); giving all three lines of context can help <i>patch</i> locate the 
+changed sections. </p>
+<p class="docText"><span class="docEmphasis">— JP </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-11-SECT-4">11.4 Side-by-Side diffs: sdiff</h3>
+<p class="docText">After you've used <i>diff</i> for a while, the output is easy 
+to read. Sometimes, though, it's just easier to see two files side-by-side. The
+<i>sdiff</i> command does that. Between the files, it prints <tt>&lt;</tt> to point 
+to lines that are only in the first file, <tt>&gt;</tt> for lines only in the 
+second file, and <tt>|</tt> for lines that are in both, but different. By 
+default, <i>sdiff</i> shows all the lines in both files. Here's a fairly bogus 
+example that compares two files that contain the output of
+<span class="docEmphBold">who</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-8">Section 
+2.8</a>) at different times: </p>
+<pre>$ <b>sdiff -w75 who1 who2</b>
+jake     vt01      Sep 10 10:37      jake     vt01      Sep 10 10:37
+uunmv    ttyi1i    Sep 16 11:43   &lt;
+jerry    ttyi1j    Sep 15 22:38      jerry    ttyi1j    Sep 15 22:38
+jake     ttyp1     Sep  9 14:55      jake     ttyp1     Sep  9 14:55
+jake     ttyp2     Sep  9 15:19   |  ellen    ttyp2     Sep 16 12:07
+                                  &gt;  carolo   ttyp5     Sep 16 13:03
+alison   ttyp8     Sep  9 12:49      alison   ttyp8     Sep  9 12:49</pre>
+<p class="docText">To see only lines that are different, use <i>-s</i> (silent):
+</p>
+<pre>$ <b>sdiff -s -w75 who1 who2</b>
+2d1
+uunmv    ttyi1i    Sep 16 11:43   &lt;
+5c4,5
+jake     ttyp2     Sep  9 15:19   |  ellen    ttyp2     Sep 16 12:07
+                                  &gt;  carolo   ttyp5     Sep 16 13:03</pre>
+<p class="docText">The output lines are usually 130 characters long. That's too 
+long for 80-column-wide screens; if you can put your terminal in 132-column mode 
+or stretch your window, fine. If you can't, use the <i>-w</i> option to set a 
+narrower width, like <i>-w80</i> for 80-column lines; <i>sdiff</i> will show the 
+first 37 characters from each line (it doesn't write quite all 80 columns). If 
+you can set your printer to compressed type or have a very wide window, use an 
+option like <i>-w170</i> to get all of each line. </p>
+<p class="docText">
+<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-5">
+Section 11.5</a> explains a very useful feature of <i>sdiff</i>: building one 
+file interactively from two files you compare. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-11-SECT-5">11.5 Choosing Sides with sdiff</h3>
+<p class="docText">One problem you might be tempted to tackle with
+<span class="docEmphBold">diff3</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-2">Section 
+11.2</a>) is sorting out the mess resulting if two people make copies of the 
+same file, and then make changes to their copies. You often find that one 
+version has some things right and another version has other things right. What 
+if you wanted to compile a single version of this document that reflects the 
+changes made to each copy? You want to select which version is correct for each 
+set of differences. An effective way to do this would be to use
+<span class="docEmphBold">sdiff</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-4">Section 
+11.4</a>). (Of course, the best thing to do is to prevent the problem in the 
+first place, by using <span class="docEmphBold">RCS or CVS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-4">Section 
+39.4</a>).) </p>
+<p class="docText">One of the most powerful uses of <i>sdiff</i> is to build an 
+output file by choosing between different versions of two files interactively. 
+To do this, specify the <i>-o</i> option and the name of an output file to be 
+created. The <i>sdiff</i> command then displays a <tt>%</tt> prompt after each 
+set of differences. </p>
+<p class="docText">You can compare the different versions and select the one 
+that will be sent to the output file. Some of the possible responses are <tt>l</tt> 
+to choose the left column, <tt>r</tt> to choose the right column, and <tt>q</tt> 
+to exit the program. </p>
+<p class="docText"><span class="docEmphasis">—TOR and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-11-SECT-6">11.6 Problems with diff and Tabstops</h3>
+<p class="docText">The <span class="docEmphBold">diff</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-1">Section 
+11.1</a>) utility adds extra characters (<tt>&gt;</tt>, <tt>&lt;</tt>, <tt>+</tt>, and 
+so on) to the beginning of lines. That can cause you real grief with tabstops 
+because the extra characters added by <i>diff</i> can shift lines enough to make 
+the indentation look wrong. The <span class="docEmphasis">diff -t</span> option 
+expands TABs to 8-character tabstops and solves the problem. </p>
+<p class="docText">If you use nonstandard tabstops, though, piping <i>diff</i>'s 
+output through <i>expand</i> or <span class="docEmphasis">pr -e</span> doesn't 
+help because <i>diff</i> has already added the extra characters. </p>
+<p class="docText">The best answers I've seen are the <tt>&lt;( )</tt> 
+process-substitution operator and the <tt>!</tt> (exclamation point) script. You 
+can expand TABs before <i>diff</i> sees them. For example, to show the 
+differences between two files with 4-column tabstops: </p>
+<pre>$ <b>diff &lt;(expand -4 afile) &lt;(expand -4 bfile) </b>    <i> process substitution</i>
+% <b>diff `! expand -4 afile` `! expand -4 bfile` </b>  <i> other shells</i></pre>
+<p class="docText">Of course, nonstandard tabstops cause lots more problems than 
+just with <i>diff</i>. If you can, you're better off using 8-space TABs and 
+using spaces instead of tabs for indentation. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-11-SECT-7">11.7 cmp and diff</h3>
+<p class="docText"><i>cmp</i> is another program for comparing files. It's a lot 
+simpler than <span class="docEmphBold">diff</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-1">Section 
+11.1</a>); it tells you whether the files are equivalent and the byte offset at 
+which the first difference occurs. You don't get a detailed analysis of where 
+the two files differ. For this reason, <i>cmp</i> is often faster, particularly 
+when you're comparing ASCII files: it doesn't have to generate a long report 
+summarizing the differences. If all you want to know is whether two files are 
+different, it's the right tool for the job. </p>
+<p class="docText">It's worth noting, though, that <i>cmp</i> isn't
+<span class="docEmphasis">always</span> faster. Some versions of <i>diff</i> 
+make some simple checks first, such as comparing file length. If two binary 
+files have different lengths, they are obviously different; some <i>diff</i> 
+implementations will tell you so without doing any further processing. </p>
+<p class="docText">Both <i>diff</i> and <i>cmp</i> return an
+<span class="docEmphBold">exit status</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>) that shows what they found: </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Exit status</th>
+    <th class="docTableHeader">
+    <p class="docText">Meaning</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">0</td>
+    <td class="docTableCell">
+    <p class="docText">The files were the same.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">1</td>
+    <td class="docTableCell">
+    <p class="docText">The files differed.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">2</td>
+    <td class="docTableCell">
+    <p class="docText">An error occurred.</td>
+  </tr>
+</table>
+<p class="docText">Within a shell script, the exit status from <i>diff</i> and
+<i>cmp</i> is often more important than their actual output. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-11-SECT-8">11.8 Comparing Two Files with comm</h3>
+<p class="docText">The <i>comm</i> command can tell you what information is 
+common to two lists and what information appears uniquely in one list or the 
+other. For example, let's say you're compiling information on the favorite 
+movies of critics Ebert and Roeper. The movies are listed in separate files (and 
+must be <span class="docEmphBold">sorted</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-1">Section 
+22.1</a>)). For the sake of illustration, assume each list is short: </p>
+<pre>% <b>cat roeper</b>
+Citizen Kane
+Halloween VI
+Ninja III
+Rambo II
+Star Trek V
+Zelig
+% <b>cat ebert</b>
+Cat People
+Citizen Kane
+My Life as a Dog
+Q
+Z
+Zelig</pre>
+<p class="docText">To compare the favorite movies of your favorite critics, 
+type:</p>
+<pre>% <b>comm roeper ebert</b>
+                  Cat People
+                                         Citizen Kane
+Halloween VI
+                  My Life as a Dog
+Ninja III
+                  Q
+Rambo II
+Star Trek V
+                  Z
+                                         Zelig</pre>
+<p class="docText">Column 1 shows the movies that only Roeper likes; column 2 
+shows those that only Ebert likes; and column 3 shows the movies that they both 
+like. You can suppress one or more columns of output by specifying that column 
+as a command-line option. For example, to suppress columns 1 and 2 (displaying 
+only the movies <span class="docEmphasis">both</span> critics like), you would 
+type: </p>
+<pre>% <b>comm -12 roeper ebert</b>
+Citizen Kane
+Zelig</pre>
+<p class="docText">As another example, say you've just received a new software 
+release (Release 4), and it's your job to figure out which library functions 
+have been added so that they can be documented along with the old ones. Let's 
+assume you already have a list of the Release 3 functions (<span class="docEmphasis">r3_list</span>) 
+and a list of the Release 4 functions (<span class="docEmphasis">r4_list</span>). 
+(If you didn't, you could create them by changing to the directory that has the 
+function manual pages, listing the files with <i>ls</i>, and saving each list to 
+a file.) In the following lists, we've used letters of the alphabet to represent 
+the functions: </p>
+<pre>% <b>cat r3_list</b>
+b
+c
+d
+f
+g
+h
+
+% <b>cat r4_list</b>
+a
+b
+c
+d
+e
+f</pre>
+<p class="docText">You can now use the <i>comm</i> command to answer several 
+questions you might have: </p>
+<ul>
+  <li>
+  <p class="docList">Which functions are new to Release 4? Answer:</p>
+  <pre>% <b>comm -13 r3_list r4_list     </b><i> Show 2nd column, which is &quot;Release 4 only&quot;</i>
+a
+e</pre>
+  </li>
+  <li>
+  <p class="docList">Which Release 3 functions have been dropped in Release 4? 
+  Answer:</p>
+  <pre>% <b>comm -23 r3_list r4_list     </b><i> Show 1st column, which is &quot;Release 3 only&quot;</i>
+g
+h</pre>
+  </li>
+  <li>
+  <p class="docList">Which Release 3 functions have been retained in Release 4? 
+  Answer:</p>
+  <pre>% <b>comm -12 r3_list r4_list     </b><i> Show 3rd column, which is &quot;common functions&quot;</i>
+b
+c
+d
+f</pre>
+  </li>
+</ul>
+<p class="docText">You can create partial lists by saving the previous output to 
+three separate files. </p>
+<p class="docText"><i>comm</i> can only compare sorted files. In the GNU 
+version, the option <i>-l</i> (lowercase L) means the input files are sorted 
+using the LC_COLLATE collating sequence. If you have non-ASCII characters to 
+sort, check your manual page for details. </p>
+<p class="docText"><span class="docEmphasis">— DG</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-11-SECT-9">11.9 More Friendly comm Output</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-8">
+Section 11.8</a> didn't show one of my least-favorite <i>comm</i> features. The 
+default output (with text in &quot;columns&quot;) confuses me if the lines of output have 
+much text (especially text with spaces). For example, if I'm looking at two
+<span class="docEmphBold">who</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-8">Section 
+2.8</a>) listings to compare who was logged on at particular times, the columns 
+in the <i>who</i> output are jumbled: </p>
+<pre>$ <b>comm who1 who2</b>
+                root     tty1     Oct 31 03:13
+                jpeek    tty2     Oct 31 03:15
+jpeek    pts/0    Oct 31 03:19
+                jpeek    pts/1    Oct 31 03:19
+                jpeek    pts/2    Oct 31 03:19
+ally     pts/4    Oct 31 03:19
+                jpeek    pts/3    Oct 31 03:19
+        xena     pts/5    Nov  3 08:41</pre>
+<p class="docText">The <i>commer</i> script (see later) filters the <i>comm</i> 
+output through <i>sed</i>. It converts <i>comm</i>'s indentation characters (one 
+TAB for lines in &quot;column 2&quot; and two TABs for lines in &quot;column 3&quot;) into labels at 
+the start of each output line. The default output looks like this: </p>
+<pre>$ <b>commer who1 who2</b>
+BOTH&gt;root     tty1     Oct 31 03:13
+BOTH&gt;jpeek    tty2     Oct 31 03:15
+ TWO&gt;jpeek    pts/0    Oct 31 03:19
+BOTH&gt;jpeek    pts/1    Oct 31 03:19
+BOTH&gt;jpeek    pts/2    Oct 31 03:19
+ TWO&gt;ally     pts/4    Oct 31 03:19
+BOTH&gt;jpeek    pts/3    Oct 31 03:19
+ ONE&gt;xena     pts/5    Nov  3 08:41</pre>
+<p class="docText">With the <i>-i</i> option, the script uses both labels and 
+columns: </p>
+<pre>$ <b>commer -i who1 who2</b>
+BOTH&gt;           root     tty1     Oct 31 03:13
+BOTH&gt;           jpeek    tty2     Oct 31 03:15
+ TWO&gt;jpeek    pts/0    Oct 31 03:19
+BOTH&gt;           jpeek    pts/1    Oct 31 03:19
+BOTH&gt;           jpeek    pts/2    Oct 31 03:19
+ TWO&gt;ally     pts/4    Oct 31 03:19
+BOTH&gt;           jpeek    pts/3    Oct 31 03:19
+ ONE&gt;   xena     pts/5    Nov  3 08:41</pre>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: commer</p>
+<p class="docText">Here's the script. The <i>sed</i> substitute (<tt>s</tt>) 
+commands have one or two TABs between the first pair of slashes. Note that the
+<i>sed</i> script is inside double quotes (<tt>&quot;</tt>), so the shell can 
+substitute the value of <tt>$indent</tt> with an ampersand (<tt>&amp;</tt>) into the
+<i>sed</i> script if the <i>-i</i> option was used: </p>
+<pre>#!/bin/sh
+# commer - label columns in &quot;comm&quot; output
+# Usage: commer [-i] file1 file2
+#   -i option indents output lines into columns as &quot;comm&quot; does
+#
+# Note that script WILL FAIL if any input lines start with a TAB.
+
+case &quot;$1&quot; in
+-i) indent='&amp;'; shift ;;
+-*|&quot;&quot;) echo &quot;Usage: `basename $0` [-i] file1 file2&quot; 1&gt;&amp;2; exit 1 ;;
+esac
+
+# In &quot;comm&quot; output, column 1 (lines in file 1) has no leading TAB.
+# Column 2 (lines in file 2) has one leading TAB.
+# Column 3 (lines in both files) has two leading TABs.
+# Search for these tabs and use them to label lines.
+# (You could replace ONE and TWO with the filenames $1 and $2)
+comm &quot;$1&quot; &quot;$2&quot; |
+sed &quot;{
+/^              / {s//BOTH&gt;$indent/; b}
+/^      / {s// ONE&gt;$indent/; b}
+s/^/ TWO&gt;/
+}&quot;</pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">The <i>commer</i> script will be fooled by lines that 
+        already have TAB characters at the start. If this might be a problem, 
+        you can modify the script to search the files (<tt>grep &quot;^TAB&quot; 
+        &gt;/dev/null</tt>) before starting <i>comm</i>. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-11-SECT-10">11.10 make Isn't Just for Programmers!</h3>
+<p class="docText">The <i>make</i> program is a Unix facility for describing 
+dependencies among a group of related files, usually ones that are part of the 
+same project. This facility has enjoyed widespread use in software-development 
+projects. Programmers use <i>make</i> to describe how to &quot;make&quot; a program — 
+which source files need to be compiled, which libraries must be included, and 
+which object files need to be linked. By keeping track of these relationships in 
+a single place, individual members of a software-development team can make 
+changes to a single module, run <i>make</i>, and be assured that the program 
+reflects the latest changes made by others on the team. </p>
+<p class="docText">Only by a leap of the imagination do we group <i>make</i> 
+with the other commands for keeping track of differences between files. However, 
+although it does not compare two versions of the same source file, it can be 
+used to compare versions of a source file and to the formatted output. </p>
+<p class="docText">Part of what makes Unix a productive environment for text 
+processing is discovering other uses for standard programs. The <i>make</i> 
+utility has many possible applications for a documentation project. One such use 
+is to maintain up-to-date copies of formatted files — which make up a single 
+manual and provide users with a way of obtaining a printed copy of the entire 
+manual without having to know which <span class="docEmphBold">preprocessors or 
+formatting options</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-13">Section 
+45.13</a>) need to be used. </p>
+<p class="docText">The basic operation that <i>make</i> performs is to compare 
+two sets of files — for example, formatted and unformatted files — and determine 
+if any members of one set, the unformatted files, are more recent than their 
+counterpart in the other set, the formatted files. This is accomplished by 
+simply comparing the <span class="docEmphBold">last-modification date</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-2">Section 
+8.2</a>) (&quot;timestamp&quot;) of pairs of files. If the unformatted source file has 
+been modified since the formatted file was made, <i>make</i> executes the 
+specified command to &quot;remake&quot; the formatted file. </p>
+<p class="docText">To use <i>make</i>, you have to write a description file, 
+usually named <span class="docEmphasis">Makefile</span> (or
+<span class="docEmphasis">makefile</span>), that resides in the working 
+directory for the project. The <span class="docEmphasis">Makefile</span> 
+specifies a hierarchy of dependencies among individual files, called components. 
+At the top of this hierarchy is a target. For our example, you can think of the 
+target as a printed copy of a book; the components are formatted files generated 
+by processing an unformatted file with <span class="docEmphBold">nroff</span>
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-12">
+Section 45.12</a>). </p>
+<p class="docText">Here's the <span class="docEmphasis">Makefile</span> that 
+reflects these dependencies: </p>
+<p class="docText"><tt>lp</tt>
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">
+Section 45.2</a></p>
+<pre>manual: ch01.fmt ch02.fmt ch03.fmt
+        lp ch0[1-3].fmt
+ch01.fmt: ch01
+        nroff -mm ch01 &gt; ch01.fmt
+ch02.fmt: ch02
+        tbl ch02 | nroff -mm &gt; ch02.fmt
+ch03.fmt: ch03a ch03b ch03c
+        nroff -mm ch03[abc] &gt; ch03.fmt</pre>
+<p class="docText">This hierarchy is represented in
+<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-FIG-1">
+Figure 10-1</a>.</p>
+<center>
+<h5 id="upt3-CHP-11-FIG-1" class="docFigureTitle">Figure 11-1. What Makefile describes: Files and 
+commands to make manual</h5>
+<p><img alt="figs/upt3_1101.gif" src="upt3_1101.gif" border="0" width="414" height="282"></p>
+</center>
+<p class="docText">The target is <span class="docEmphasis">manual</span>, which 
+is made up of three formatted files whose names appear after the colon. Each of 
+these components has its own dependency line. For instance,
+<span class="docEmphasis">ch01.fmt</span> is dependent upon a coded file named
+<span class="docEmphasis">ch01</span>. Underneath the dependency line is the 
+command that generates <span class="docEmphasis">ch01.fmt</span>. Each command 
+line must begin with a TAB. </p>
+<p class="docText">When you enter the command <tt>make</tt>, the end result is 
+that the three formatted files are spooled to the printer. However, a sequence 
+of operations is performed before this final action. The dependency line for 
+each component is evaluated, determining if the coded file has been modified 
+since the last time the formatted file was made. The formatting command will be 
+executed only if the coded file is more recent. After all the components are 
+made, the <span class="docEmphBold">lp</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">Section 
+45.2</a>) command is executed. </p>
+<p class="docText">As an example of this process, we'll assume that all the 
+formatted files are up-to-date. Then by editing the source file
+<span class="docEmphasis">ch03a</span>, we change the modification time. When 
+you execute the <i>make</i> command, any output files dependent on
+<span class="docEmphasis">ch03a</span> are reformatted: </p>
+<pre>$ <b>make</b>
+nroff -mm ch03[abc] &gt; ch03.fmt
+lp ch0[1-3].fmt</pre>
+<p class="docText">Only <span class="docEmphasis">ch03.fmt</span> needs to be 
+remade. As soon as that formatting command finishes, the command underneath the 
+target <span class="docEmphasis">manual</span> is executed, spooling the files 
+to the printer. </p>
+<p class="docText">Although this example has actually made only limited use of
+<i>make</i>'s facilities, we hope it suggests more ways to use <i>make</i> in a 
+documention project. You can keep your <span class="docEmphasis">Makefiles</span> 
+just this simple, or you can go on to learn additional notation, such as 
+internal macros and suffixes, in an effort to generalize the description file 
+for increased usefulness. </p>
+<p class="docText"><span class="docEmphasis">—TOR, from Unix Text Processing 
+(Hayden Books, 1987)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-11-SECT-11">11.11 Even More Uses for make</h3>
+<p class="docText">Thinking about <i>make</i> will pay off in many ways. One way 
+to get ideas about how to use it is to look at other <span class="docEmphasis">
+Makefiles</span>. </p>
+<p class="docText">One of my favorites is the <span class="docEmphBold">Makefile 
+for NIS</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) (formerly called YP, or &quot;Yellow Pages&quot;). I like this
+<span class="docEmphasis">Makefile</span> because it does something that you'd 
+never think of doing (even though it suits <i>make</i> perfectly): updating a 
+distributed database. </p>
+<p class="docText">The <span class="docEmphasis">Makefile</span> is fairly 
+complicated, so I don't want to get into a line-by-line explication; but I will 
+give you a sketch of how it works. Here's the problem: a system administrator 
+updates one or more files (we'll say the <span class="docEmphasis">passwd</span> 
+file) and wants to get her changes into the NIS database. So you need to check 
+whether the new password file is more recent than the database. Unfortunately, 
+the database isn't represented by a single file, so there's nothing to &quot;check&quot; 
+against. The NIS <span class="docEmphasis">Makefile</span> handles this 
+situation by creating empty files that serve as timestamps. There's a separate 
+timestamp file for every database that NIS serves. When you type <i>make</i>, <i>
+make</i> checks every master file against the corresponding timestamp. If a 
+master file is newer than the timestamp, <i>make</i> knows that it has to 
+rebuild part of the database. After rebuilding the database, the
+<span class="docEmphasis">Makefile</span> &quot;touches&quot; the timestamp, so that it 
+reflects the time at which the database was built. </p>
+<p class="docText">The <span class="docEmphasis">Makefile</span> looks something 
+like this:</p>
+<pre>passwd: passwd.time
+passwd.time:  /etc/master/passwd
+         @ <tt><i>lots of commands that rebuild the database</i></tt>
+         @ touch passwd.time
+         @ <tt><i>more commands to distribute the new database</i></tt>
+
+hosts: hosts.time
+hosts.time:  <tt><i>similar stuff</i></tt></pre>
+<p class="docText">You may never need to write a <span class="docEmphasis">
+Makefile</span> this complicated, but you should look for situations in which 
+you can use <i>make</i> profitably. It isn't just for programming. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 10.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 12.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

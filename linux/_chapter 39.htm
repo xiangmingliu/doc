@@ -1,0 +1,771 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 39</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 38.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 40.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 39. Creating and Reading Archives</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-39-SECT-1">39.1 Packing Up and Moving</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-39-SECT-2">39.2 Using tar to Create and Unpack Archives</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-39-SECT-3">39.3 GNU tar Sampler</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-39-SECT-4">39.4 Managing and Sharing Files with RCS and CVS</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-39-SECT-5">39.5 RCS Basics</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-39-SECT-6">39.6 List RCS Revision Numbers with rcsrevs</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-39-SECT-7">39.7 CVS Basics</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-39-SECT-8">39.8 More CVS</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-39-SECT-1">39.1 Packing Up and Moving</h3>
+<p class="docText">The worst part of living in a nice big house is the headache 
+of moving. The more stuff you've got room for, the more trouble it is to pack it 
+up and take it with you. </p>
+<p class="docText">The Unix operating system is a little bit like that. One of 
+its real advantages is a filesystem that lets you organize your personal files 
+into a hierarchical directory tree just like the much bigger tree that 
+encompasses the entire filesystem. You can squirrel away all kinds of useful 
+information into neat pigeonholes. </p>
+<p class="docText">While your personal directory hierarchy is usually only two 
+or three levels deep, for all practical purposes it can have as many levels as 
+you like. And, as is true of any powerful and flexible tool, problems lie in 
+wait for the sorcerer's apprentice. Directories and files grow increasingly 
+complex the longer you use the system, with more forgotten files and more 
+detailed organization. </p>
+<p class="docText">This chapter will tackle the problems that can arise when you 
+want to move a block of files (in one or many directories) from one place to 
+another. </p>
+<p class="docText">Maybe you're <span class="docEmphBold">writing the files to a 
+tape for safety</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-3">Section 
+38.3</a>). In many cases though, this is a &quot;backup and restore&quot; problem. For 
+example, if you were moving your account to another system, you might just ask 
+the system administrator (if there is one) to archive your files to tape or 
+floppy and restore them in the new location. Many new users are less aware that 
+you can use the backup program <span class="docEmphBold">tar</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-2">Section 
+38.2</a>) to create online archives that you can move from one place to another.
+</p>
+<p class="docText">This situation is most likely to arise in a networked 
+environment. You might be packaging files to ship as a package to another user. 
+The files might be going to Usenet or an archive site on the Internet, for 
+distribution to many users. Whether you're distributing an archive to lots of 
+people or using it for yourself, though, most of the topics we cover in this 
+chapter will apply. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-39-SECT-2">39.2 Using tar to Create and Unpack Archives</h3>
+<p class="docText"><span class="docEmphBold">tar</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-2">Section 
+38.2</a>) is a general-purpose archiving utility capable of packing many files 
+into a single archive file, retaining information such as file permissions and 
+ownership. The name <i>tar</i> stands for <span class="docEmphasis">tape archive</span>, 
+because the tool was originally used to archive files as backups on tape. 
+However, use of <i>tar</i> is not at all restricted to making tape backups, as 
+we'll see. </p>
+<p class="docText">The format of the <i>tar</i> command is: </p>
+<pre>tar <tt><i>functionoptions</i></tt> <tt><i>files...</i></tt></pre>
+<p class="docText">where <tt><i>function</i></tt> is a single letter indicating 
+the operation to perform, <tt><i>options</i></tt> is a list of (single-letter) 
+options to that function, and <tt><i>files</i></tt> is the list of files to pack 
+or unpack in an archive. (Note that <tt><i>function</i></tt> is not separated 
+from <tt><i>options</i></tt> by any space.) </p>
+<p class="docText"><tt><i>function</i></tt> can be one of:</p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docEmphasis">c</span></span> </dt>
+  <dd>
+  <p class="docList">Create a new archive.</dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">x</span></span> </dt>
+  <dd>
+  <p class="docList">Extract files from an archive.</dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">t</span></span> </dt>
+  <dd>
+  <p class="docList">List the contents of an archive.</dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">r</span></span> </dt>
+  <dd>
+  <p class="docList">Append files to the end of an archive.</dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">u</span></span> </dt>
+  <dd>
+  <p class="docList">Update files that are newer than those in the archive.</dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">d</span></span> </dt>
+  <dd>
+  <p class="docList">Compare files in the archive to those in the filesystem.</dd>
+</dl>
+<p class="docText">The most commonly used functions are
+<span class="docEmphasis">c</span> reate, e<span class="docEmphasis">x</span>tract, 
+and <span class="docEmphasis">t</span>able-of-contents. </p>
+<p class="docText">The most common <span class="docEmphasis">options</span> are:</p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docEmphasis">v</span></span> </dt>
+  <dd>
+  <p class="docList">Prints verbose information when packing or unpacking 
+  archives. This makes <i>tar</i> show the files it is archiving or restoring. 
+  It is good practice to use this option so that you can see what actually 
+  happens, though if you're using <i>tar</i> in a shell script you might skip it 
+  so as to avoid spamming the user of your script. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">k</span></span> </dt>
+  <dd>
+  <p class="docList">Keeps any existing files when extracting — that is, 
+  prevents overwriting any existing files contained within the tar file. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">f</span> <tt><i>
+  filename</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Specifies that the tar file to be read or written is <i>
+  filename</i>. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">z</span></span> </dt>
+  <dd>
+  <p class="docList">Specifies that the data to be written to the tar file 
+  should be compressed or that the data in the tar file is compressed with <i>
+  gzip</i>. (Not available on all <i>tar</i>s.) </dd>
+</dl>
+<p class="docText">There are other options, which we cover in
+<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-5">
+Section 38.5</a>.
+<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-12">
+Section 38.12</a> has more information about the order of <i>tar</i> options, 
+and
+<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-3">
+Section 39.3</a> has a lot more about GNU <i>tar</i>. </p>
+<p class="docText">Although the <i>tar</i> syntax might appear complex at first, 
+in practice it's quite simple. For example, say we have a directory named <i>mt</i>, 
+containing these files: </p>
+<pre>rutabaga% <b>ls -l mt</b>
+total 37
+-rw-r--r--   1 root     root           24 Sep 21  1993 Makefile
+-rw-r--r--   1 root     root          847 Sep 21  1993 README
+-rwxr-xr-x   1 root     root         9220 Nov 16 19:03 mt
+-rw-r--r--   1 root     root         2775 Aug  7  1993 mt.1
+-rw-r--r--   1 root     root         6421 Aug  7  1993 mt.c
+-rw-r--r--   1 root     root         3948 Nov 16 19:02 mt.o
+-rw-r--r--   1 root     root        11204 Sep  5  1993 st_info.txt</pre>
+<p class="docText">We wish to pack the contents of this directory into a single
+<i>tar</i> archive. To do this, we use the following command: </p>
+<pre>tar cf mt.tar mt</pre>
+<p class="docText">The first argument to <i>tar</i> is the function (here, <tt>c</tt>, 
+for create) followed by any options. Here, we use the one option <i>f</i>
+<span class="docEmphasis">mt.tar</span>, to specify that the resulting tar 
+archive be named <i>mt.tar</i>. The last argument is the name of the file or 
+files to archive; in this case, we give the name of a directory, so <i>tar</i> 
+packs all files in that directory into the archive. </p>
+<p class="docText">Note that the first argument to <i>tar</i> must be a function 
+letter followed by a list of options. Because of this, there's no reason to use 
+a hyphen (<tt>-</tt>) to precede the options as many Unix commands require. <i>
+tar</i> allows you to use a hyphen, as in: </p>
+<pre>tar -cf mt.tar mt</pre>
+<p class="docText">but it's really not necessary. In some versions of <i>tar</i>, 
+the first letter must be the function, as in <i>c</i>, <i>t</i>, or <i>x</i>. In 
+other versions, the order of letters does not matter as long as there is one and 
+only one function given. </p>
+<p class="docText">The function letters as described here follow the so-called 
+&quot;old option style.&quot; There is also a newer &quot;short option style,&quot; in which you 
+precede the function options with a hyphen. On some versions of <i>tar</i>, a 
+&quot;long option style&quot; is available, in which you use long option names with two 
+hyphens. See the <i>manpage</i> or <span class="docEmphBold">info page</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-9">Section 
+2.9</a>) for <i>tar</i> for more details if you are interested. </p>
+<p class="docText">It is often a good idea to use the <i>v</i> option with <i>
+tar</i> to list each file as it is archived. For example: </p>
+<pre>rutabaga% <b>tar cvf mt.tar mt</b>
+mt/
+mt/st_info.txt
+mt/README
+mt/mt.1
+mt/Makefile
+mt/mt.c
+mt/mt.o
+mt/mt</pre>
+<p class="docText">On some <i>tar</i>s, if you use <i>v</i> multiple times, 
+additional information will be printed, as in: </p>
+<pre>rutabaga% <b>tar cvvf mt.tar mt</b>
+drwxr-xr-x root/root         0 Nov 16 19:03 1994 mt/
+-rw-r--r-- root/root     11204 Sep  5 13:10 1993 mt/st_info.txt
+-rw-r--r-- root/root       847 Sep 21 16:37 1993 mt/README
+-rw-r--r-- root/root      2775 Aug  7 09:50 1993 mt/mt.1
+-rw-r--r-- root/root        24 Sep 21 16:03 1993 mt/Makefile
+-rw-r--r-- root/root      6421 Aug  7 09:50 1993 mt/mt.c
+-rw-r--r-- root/root      3948 Nov 16 19:02 1994 mt/mt.o
+-rwxr-xr-x root/root      9220 Nov 16 19:03 1994 mt/mt</pre>
+<p class="docText">This is especially useful as it lets you verify that <i>tar</i> 
+is doing the right thing. </p>
+<p class="docText">In some versions of <i>tar</i>, <i>f</i> must be the last 
+letter in the list of options. This is because <i>tar</i> expects the <i>f</i> 
+option to be followed by a filename — the name of the tar file to read from or 
+write to. If you don't specify <i>f</i> <tt><i>filename</i></tt> at all, <i>tar</i> 
+uses a default tape device (some versions of <i>tar</i> use <i>/dev/rmt0</i> for 
+historical reasons regardless of the OS; some have a slightly more specific 
+default).
+<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-5">
+Section 38.5</a> talks about using <i>tar</i> in conjunction with a tape drive 
+to make backups. </p>
+<p class="docText">Now we can give the file <i>mt.tar</i> to other people, and 
+they can extract it on their own system. To do this, they would use the command:
+</p>
+<pre>tar xvf mt.tar</pre>
+<p class="docText">This creates the subdirectory <i>mt</i> and places all the 
+original files into it, with the same permissions as found on the original 
+system. The new files will be owned by the user running <tt>tar xvf</tt> (you) 
+unless you are running as <span class="docEmphasis">root</span>, in which case 
+the original owner is generally preserved. Some versions require the <i>o</i> 
+option to set ownership. The <i>x</i> option stands for &quot;extract.&quot; The <i>v</i> 
+option is used again here to list each file as it is extracted. This produces:
+</p>
+<pre>courgette% <b>tar xvf mt.tar</b>
+mt/
+mt/st_info.txt
+mt/README
+mt/mt.1
+mt/Makefile
+mt/mt.c
+mt/mt.o
+mt/mt</pre>
+<p class="docText">We can see that <i>tar</i> saves the pathname of each file 
+relative to the location where the tar file was originally created. That is, 
+when we created the archive using <tt>tar</tt> <tt>cf mt.tar mt</tt>, the only 
+input filename we specified was <i>mt</i>, the name of the directory containing 
+the files. Therefore, <i>tar</i> stores the directory itself and all of the 
+files below that directory in the tar file. When we extract the tar file, the 
+directory <i>mt</i> is created and the files are placed into it, which is the 
+exact inverse of what was done to create the archive. </p>
+<p class="docText">If you were to pack up the contents of your <i>/bin</i> 
+directory with the command: </p>
+<pre>tar cvf bin.tar /bin</pre>
+<p class="docText">you can cause terrible mistakes when extracting the tar file. 
+Extracting a tar file packed as <i>/bin</i> could trash the contents of your <i>
+/bin</i> directory when you extract it. If you want to archive <i>/bin</i>, you 
+should create the archive from the root directory, <i>/</i>, using the
+<span class="docEmphBold">relative pathname</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>) <span class="docEmphasis">bin</span> (with no leading slash) — and if 
+you really want to overwrite <i>/bin</i>, extract the tar file by <i>cd</i>ing 
+to <i>/</i> first.
+<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-11">
+Section 38.11</a> explains and lists workarounds. </p>
+<p class="docText">Another way to create the tar file <i>mt.tar</i> would be to
+<i>cd</i> into the <i>mt</i> directory itself, and use a command such as: </p>
+<pre>tar cvf mt.tar *</pre>
+<p class="docText">This way the <i>mt</i> subdirectory would not be stored in 
+the tar file; when extracted, the files would be placed directly in your current 
+working directory. One fine point of <i>tar</i> etiquette is always to pack tar 
+files so that they contain a subdirectory, as we did in the first example with
+<tt>tar cvf mt.tar mt</tt>. Therefore, when the archive is extracted, the 
+subdirectory is also created and any files placed there. This way you can ensure 
+that the files won't be placed directly in your current working directory; they 
+will be tucked out of the way and prevent confusion. This also saves the person 
+doing the extraction the trouble of having to create a separate directory 
+(should they wish to do so) to unpack the tar file. Of course, there are plenty 
+of situations where you wouldn't want to do this. So much for etiquette. </p>
+<p class="docText">When creating archives, you can, of course, give <i>tar</i> a 
+list of files or directories to pack into the archive. In the first example, we 
+have given <i>tar</i> the single directory <i>mt</i>, but in the previous 
+paragraph we used the wildcard <tt>*</tt>, which the shell expands into the list 
+of filenames in the current directory. </p>
+<p class="docText">Before extracting a tar file, it's usually a good idea to 
+take a look at its table of contents to determine how it was packed. This way 
+you can determine whether you do need to create a subdirectory yourself where 
+you can unpack the archive. A command such as: </p>
+<pre>tar tvf <tt><i>tarfile</i></tt></pre>
+<p class="docText">lists the table of contents for the named <tt><i>tarfile</i></tt>. 
+Note that when using the <i>t</i> function, only one <i>v</i> is required to get 
+the long file listing, as in this example: </p>
+<pre>courgette% <b>tar tvf mt.tar</b>
+drwxr-xr-x root/root         0 Nov 16 19:03 1994 mt/
+-rw-r--r-- root/root     11204 Sep  5 13:10 1993 mt/st_info.txt
+-rw-r--r-- root/root       847 Sep 21 16:37 1993 mt/README
+-rw-r--r-- root/root      2775 Aug  7 09:50 1993 mt/mt.1
+-rw-r--r-- root/root        24 Sep 21 16:03 1993 mt/Makefile
+-rw-r--r-- root/root      6421 Aug  7 09:50 1993 mt/mt.c
+-rw-r--r-- root/root      3948 Nov 16 19:02 1994 mt/mt.o
+-rwxr-xr-x root/root      9220 Nov 16 19:03 1994 mt/mt</pre>
+<p class="docText">No extraction is being done here; we're just displaying the 
+archive's table of contents. We can see from the filenames that this file was 
+packed with all files in the subdirectory <i>mt</i>, so that when we extract the 
+tar file, the directory <i>mt</i> will be created, and the files placed there.
+</p>
+<p class="docText">You can also extract individual files from a tar archive. To 
+do this, use the command: </p>
+<pre>tar xvf <tt><i>tarfile</i></tt> <tt><i>files</i></tt></pre>
+<p class="docText">where <tt><i>files</i></tt> is the list of files to extract. 
+As we've seen, if you don't specify any files, <i>tar</i> extracts the entire 
+archive. </p>
+<p class="docText">When specifying individual files to extract, you must give 
+the full pathname as it is stored in the tar file. For example, if we wanted to 
+grab just the file <i>mt.c</i> from the previous archive <i>mt.tar</i>, we'd use 
+the command: </p>
+<pre>tar xvf mt.tar mt/mt.c</pre>
+<p class="docText">This would create the subdirectory <i>mt</i> and place the 
+file <i>mt.c</i> within it. </p>
+<p class="docText"><i>tar</i> has many more options than those mentioned here. 
+These are the features that you're likely to use most of the time, but GNU <i>
+tar</i>, in particular, has extensions that make it ideal for creating backups 
+and the like. See the <i>tar</i> <i>manpage</i> or <span class="docEmphBold">
+info page</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-9">Section 
+2.9</a>) and the following chapter for more information. </p>
+<p class="docText"><span class="docEmphasis">MW, MKD, and LK</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-39-SECT-3">39.3 GNU tar Sampler</h3>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: tar</p>
+<p class="docText">GNU <i>tar</i> has plenty of features; some people would say 
+&quot;too many.&quot; I don't agree. GNU <i>tar</i> has features I wish I'd had for years 
+in more &quot;standard&quot; versions. This article lists my favorites. For a complete 
+list, check the <i>info</i> documentation for <i>tar</i>. </p>
+<ul>
+  <li>
+  <p class="docList">
+  <a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-7">
+  Section 15.7</a> describes how to compress an archive file you've created. If 
+  you're using GNU <i>tar</i>, this is even easier, since <i>tar</i> itself can 
+  do the compression. Simply use the <span class="docEmphasis">z</span> option 
+  when writing or reading archives. For example, to make the <i>gzip</i>ped tar 
+  archive <span class="docEmphasis">progs.tar.gz</span> from all &quot;.c&quot; and &quot;.h&quot; 
+  files: </p>
+  <pre>% <b>tar cvzf progs.tar.gz *.c *.h</b></pre>
+  <p class="docList">You can also use the long option <i>- -gzip</i> to get <i>
+  gzip</i> compression, and the long option <i>- -bzip2</i> to get <i>bzip2</i> 
+  compression. </li>
+  <li>
+  <p class="docList">I've made the classic mistake of <span class="docEmphBold">
+  archiving files with their absolute pathnames</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-11">Section 
+  38.11</a>). GNU <i>tar</i> saves you from that goof. It always stores absolute 
+  pathnames as relative paths unless you add the <span class="docEmphasis">- 
+  -absolute-names</span> option. </li>
+  <li>
+  <p class="docList">Often I want to make a tape backup of my most recent work 
+  on a big project, but not all the thousands of files in a directory tree. The 
+  clumsy way to do that is by using <span class="docEmphasis">find -mtime</span> 
+  to make an include-file for the standard <span class="docEmphasis">tar -I</span> 
+  option. GNU tar to the rescue: its <span class="docEmphasis">- -after-date</span> 
+  option lets me tell it what directories to look in and how recently the files 
+  should have been changed. </li>
+  <li>
+  <p class="docList">When I extract an archive, I may be writing into a 
+  directory that has other files. The <span class="docEmphasis">- 
+  -keep-old-files</span> option tells GNU <i>tar</i> not to overwrite existing 
+  files. </li>
+</ul>
+<p class="docText">One caution about GNU <i>tar</i>: it creates ANSI-format <i>
+tar</i> archives. Extracting one of these archives with the old V7 <i>tar</i> 
+can cause warning messages like &quot;tar: unexpected EOF.&quot; But, of course, GNU <i>
+tar</i> has an option to create old-format archives: <span class="docEmphasis">- 
+-old-archive</span>. </p>
+<p class="docText"><span class="docEmphasis">—JP and TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-39-SECT-4">39.4 Managing and Sharing Files with RCS and CVS</h3>
+<p class="docText">How many times have you wished that you could get a copy of a 
+file the way it looked an hour ago, or yesterday, or last year? That includes 
+times when you just deleted the file — and, especially, when the file is too new 
+for your computer's backup system to have made any copies of it. (You
+<span class="docEmphasis">do</span> have regular backups of your system, don't 
+you? <tt>;-)</tt>) RCS (Revision Control System) and CVS (Concurrent Version 
+System) let you recover a previous version of a file from an archive. Many 
+systems come with either RCS, CVS, or both installed already; if they don't 
+appear to be on your system either install the appropriate package or grab the 
+most current versions from FSF's website (<a class="docLink" href="http://www.fsf.org" target="_blank">http://www.fsf.org</a>).
+</p>
+<p class="docText">How does the archive get there? As you work, you periodically 
+put a &quot;snapshot&quot; of the file into the archive. (The archive systems save the
+<span class="docEmphasis">changes</span> — not the whole file — so this doesn't 
+take as much disk space as it might.) The archive remembers the date and time 
+you store each version. You can enter a log message to describe what's changed 
+since the last time you archived the file. You can do much more, but those are 
+the basics. </p>
+<p class="docText">When you need a previous version of the file, you read the 
+archive log to decide which version is best (by date and time or by the log 
+message). Then you use one command to get back that version. You don't have to 
+wait for the system manager to load a tape. </p>
+<p class="docText">Of course, these tools can't protect you from a disk crash or 
+another disaster; that's what reliable backups are for. RCS and CVS are best for 
+protecting you from accidentally deleting or corrupting files. But they're also 
+great for group development projects: controlling who's working on a file, who 
+did what when, and so on. That's especially true of CVS, which was designed to 
+handle software developers from around the world collaborating on a project over 
+a network — as well as a group of developers in the same office. One of my 
+favorite features is the ability to see <span class="docEmphBold">diff</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-1">Section 
+11.1</a>) listings of what's changed between versions. </p>
+<p class="docText">Once you get started with these tools, you'll wonder how you 
+ever did without them.
+<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">
+Section 39.5</a> explains how to protect your files with RCS. See
+<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-7">
+Section 39.7</a> for an introduction to CVS. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-39-SECT-5">39.5 RCS Basics</h3>
+<p class="docText">The Revision Control System (RCS) is a straightforward, 
+file-based source-control system. It allows you to keep track of multiple 
+snapshots or <span class="docEmphasis">revisions</span> of a file, so that you 
+can back up to any previous version. It also allows you to note particular 
+versions, so that you can do things such as reproduce the version of a file that 
+you gave to someone else or released as part of a software release. Of course, 
+it's useful for more than just software development; any time you want to change 
+a file or set of files, revision control can be useful. To place a file under 
+revision control using RCS: </p>
+<pre>% <b>ci </b> <i>filename </i></pre>
+<p class="docText">The <i>ci</i> (checkin) program will prompt you for a short 
+description of the file and commit your changes. It will by default also delete 
+the working copy; if you want to keep a read-only copy, use the <i>-u</i> 
+(unlocked) option. </p>
+<p class="docText">To then get a <span class="docEmphasis">working copy</span> 
+of the file from scratch: </p>
+<pre>% <b>co </b> <i>filename </i>
+% <b>co -l </b> <i>filename </i></pre>
+<p class="docText">The <i>co</i> (checkout) command will get a read-only copy of 
+the file from RCS. If you want to edit the file, use the
+<span class="docEmphasis">co -l</span> command (the option is a lowercase L and 
+stands for <span class="docEmphasis">l</span>ock). While you have the file 
+checked out and locked, no one else can edit it. When you're done, return the 
+file to RCS (check it in) using <i>ci</i> again. If you use the <i>-l</i> option 
+to <i>ci</i>, it checks in your changes and checks out a new working copy, as if 
+you did <span class="docEmphasis">co -l</span> again. When you check in the 
+file, <i>ci</i> asks for a brief description of your changes. These can be very 
+useful, later, to learn the history of revisions and to find a particular 
+revision you might want to recover; the command <tt>rlog<i> filename</i></tt> 
+gives all of the stored change descriptions. </p>
+<p class="docText">If you create a subdirectory called <i>RCS</i> in the 
+directory where you keep the code or other text files you want to protect, the 
+RCS files will be put there for you, rather than cluttering up your main 
+directory. </p>
+<p class="docText">It's a good idea (but not required) to add the characters <tt>
+$Id $</tt> somewhere in the file you want to place under RCS. Put this in a 
+comment field. That is, use <tt>/* $Id $ */</tt> in a C program and <tt># $Id $</tt> 
+in a shell or Perl script. RCS will substitute the revision of the file and 
+other useful information wherever you put <tt>$Id$</tt> any time you check the 
+file out; this allows you to look at a file later and know what revision it was.
+</p>
+<p class="docText">If you check out a file for editing and later on decide you 
+didn't want to change it, unlock the file using: </p>
+<pre>% <b>rcs -u </b> <i>filename </i>
+% <b>rm </b> <i>filename </i></pre>
+<p class="docText">If you want a list of all files currently checked out, use:</p>
+<pre>% <b>rlog -L -R RCS/*</b></pre>
+<p class="docText">(If you don't use RCS often, you may want to store those 
+command lines in <span class="docEmphBold">aliases or shell functions</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-1">Section 
+29.1</a>) with names like <span class="docEmphasis">Checkout</span>,
+<span class="docEmphasis">Checkedout</span>, and so on.) That's all there is to 
+it! </p>
+<p class="docText">If you are not using RCS or CVS, you should. They are an 
+easy, ongoing way to protect yourself and do not require dozens of tapes. It is 
+much easier just to type: </p>
+<pre>% <b>co -r1.12 </b> <i>filename </i></pre>
+<p class="docText">than it is to try to restore that version from backup tapes 
+after you've deleted it. With one command, version 1.12 is restored. If it's not 
+the right one, restore the version before or after the one you just grabbed. (If 
+you would just like to see the file rather than get a copy, you can add the <i>
+-p</i> option to send the file to standard output. Don't forget to pipe the
+<span class="docEmphasis">co -p</span> output to <i>less</i> or something 
+similar, unless it is really short.) </p>
+<p class="docText">If you are worried that you are keeping 12 versions of the 
+file on the disk and that this will use up a lot of disk space, don't be. RCS 
+stores the differences between versions, not 12 separate copies of the file. It 
+recovers earlier versions of the file on request by starting from a known point 
+and applying patches, rather than just keeping every single revision. </p>
+<p class="docText">Suppose you delete a file by accident. If the file is just 
+checked out with <i>co</i>, it will be retrieved and marked read-only, so trying 
+to delete the file will cause <i>rm</i> to ask you for confirmation. If you do 
+delete it, you can just recover it with another <i>co</i> command. Suppose, 
+however, you checked out a file with <span class="docEmphasis">co -l</span>, 
+because you planned to change it. If this file gets deleted accidentally, you 
+would lose the most recent changes. This is why you should check your files back 
+into RCS frequently — several times a day or even more. Checking in a version 
+whenever you make significant changes to the file, or if you make changes that 
+would be difficult to remember, is the best insurance. Making hundreds of 
+changes to a file without checking it back into the system is just begging for 
+trouble. </p>
+<p class="docText">This brief overview left out a lot of features and helpful 
+information. For example, RCS can: </p>
+<ul>
+  <li>
+  <p class="docList">Merge two or more peoples' work into one with <i>rcsmerge</i> 
+  and <span class="docEmphasis">co -j</span>. </li>
+  <li>
+  <p class="docList">Build a tree of revisions with multiple branches and 
+  sub-branches. This lets you make and store multiple independent revisions.
+  </li>
+  <li>
+  <p class="docList">Assign an arbitrary &quot;state&quot; to certain revisions — for 
+  example, <span class="docEmphasis">alpha</span>, <span class="docEmphasis">
+  released</span>, <span class="docEmphasis">stable</span>. </li>
+  <li>
+  <p class="docList">Name some or all revisions and refer to revisions by name 
+  instead of number. This is particularly good for naming files that went into a 
+  release. </li>
+  <li>
+  <p class="docList">Keep a list of users who are allowed to manipulate a 
+  particular RCS file. </li>
+</ul>
+<p class="docText">To find out more, see the RCS manual pages.
+<span class="docEmphasis">rcsintro</span>(1) gives a more complete overview; 
+manpages like <span class="docEmphasis">ci</span>(1) have details on the many 
+other useful features. Finally, O'Reilly &amp; Associates' <span class="docEmphasis">
+Applying RCS and SCCS</span> is packed with tips and techniques for using 
+revision control in group projects (where you'll need it even more).
+<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-7">
+Section 13.7</a> and
+<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-6">
+Section 39.6</a> explain tools for searching RCS files. </p>
+<p class="docText">If you're doing a larger project, take a look at
+<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-7">
+Section 39.7</a>, which discusses CVS. CVS is much better at large project 
+coordination and provides a whole suite of useful features beyond the simple 
+source control RCS provides. </p>
+<p class="docText">—<span class="docEmphasis">DJPH and BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-39-SECT-6">39.6 List RCS Revision Numbers with rcsrevs</h3>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: rcsrevs</p>
+<p class="docText">The <i>rcsrevs</i> script tells you all the revision numbers 
+that are stored in an <span class="docEmphBold">RCS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+39.5</a>) file. For instance: </p>
+<pre>% <b>rcsrevs myprog</b>
+1.3
+1.2
+1.1
+1.2.1.1</pre>
+<p class="docText">What good is that? Here are two examples.</p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList"><span class="docEmphBold">rcsgrep -a</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-7">Section 
+  13.7</a>) uses <i>rcsrevs</i> when it's searching all revisions of an RCS 
+  file. If you want to print all revisions, run a program across all revisions 
+  to do some kind of check, and so on, <i>rcsrevs</i> can give you the revision 
+  numbers to use in a <span class="docEmphBold">loop</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">Section 
+  28.9</a>). The shell loop below gets all the revision numbers and stores them 
+  in the <i>revnum</i> shell variable one by one; it runs
+  <span class="docEmphBold">co -p</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+  39.5</a>) to send each revision to the <span class="docEmphBold">pr -h</span> 
+  (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-6">Section 
+  45.6</a>) command for formatting with a custom header; the output of the 
+  commands in the loop goes to the printer. </p>
+  <p class="docList"><tt>'...'</tt>
+  <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-14">
+  Section 28.14</a>, <tt>&gt;</tt>
+  <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-12">
+  Section 27.12</a></p>
+  <pre>$ <b>for revnum in `rcsrevs  </b><i>somefile </i><b>` </b>
+&gt; <b>do </b>
+&gt;   <b>co -p -r$revnum  </b>
+<b> | pr -h &quot; </b><i>somefile </i><b> revision #$revnum&quot; </b>
+&gt; <b>done | lpr </b></pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">You'd like to compare the two most recent revisions of 
+  several RCS files to see what the last change was, but the revision numbers in 
+  each file are different. (One file's latest revision might be 2.4, another 
+  file could be at 1.7, etc.) Use <span class="docEmphBold">head</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-12">Section 
+  12.12</a>) to grab the two highest revision numbers from the <i>rcsrevs</i> 
+  output, <span class="docEmphBold">tail -r</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-9">Section 
+  12.9</a>) to reverse the order (put the older revision number first), and <i>
+  sed</i> to make the revision numbers into a pair of <i>-r</i> options (like
+  <tt>-r1.6</tt>' <tt>-r1.7</tt>). Then run <i>rcsdiff</i> to do the comparisons 
+  and <span class="docEmphBold">email</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+  1.21</a>) them to <span class="docEmphasis">bigboss</span>: </p>
+  <p class="docList"><tt>?</tt>
+  <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-12">
+  Section 28.12</a></p>
+  <pre>% <b>foreach file (*.cc *.h Makefile)</b>
+? <b>set revs=`rcsrevs $f | head -2 | tail -r | sed 's/^/-r/'`</b>
+? <b>rcsdiff $revs $f | mail -s &quot;changes to $file&quot; bigboss</b>
+? <b>end</b></pre>
+  </span></li>
+</ol>
+</span>
+<p class="docText"><i>rcsrevs</i> accepts <i>rlog</i> options to control what 
+revisions are shown. So <span class="docEmphasis">rcsrevs -r2 somefile</span> 
+would list only revisions 2.0 and above, <span class="docEmphasis">rcsrevs -sbeta</span> 
+would list the revisions in <span class="docEmphasis">beta</span> state, and so 
+on. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-39-SECT-7">39.7 CVS Basics</h3>
+<p class="docText">The Concurrent Version System, or CVS, is a version control 
+system designed to support complex project structures or groups of people who 
+are working together on a common set of files. Where <span class="docEmphBold">
+RCS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+39.5</a>) deals only with individual files, CVS allows you to work with entire 
+projects as a whole. As we have mentioned before, while source control systems 
+were originally developed primarily for use in developing software, they make a 
+great deal of sense any time you want to keep track of changes to files. CVS is 
+good for keeping track of changes to source files for a book or configuration 
+files for <i>qmail</i> or <i>apache</i>, or for any number of other day-to-day 
+tasks. </p>
+<p class="docText">CVS stores its archives in a directory called a
+<span class="docEmphasis">cvsroot</span>. You tell CVS where to find the 
+repository you want to use by setting the <span class="docEmphasis">CVSROOT</span> 
+environment variable or using the <i>-d</i> option: </p>
+<pre>% <b>setenv CVSROOT /home/cvsroot</b>
+% <b>cvs checkout conf</b>
+
+% <b>cvs -d /home/deb/cvs checkout book</b></pre>
+<p class="docText">Within a cvsroot are one or more <span class="docEmphasis">
+repositories</span>. Each repository is associated with a particular project (or 
+in the case of a very complex project, a piece of a project). To work on a 
+project, you much check out its repository to create a <span class="docEmphasis">
+working area</span> using <span class="docEmphasis">cvs checkout</span>, as in 
+the example above. CVS is helpful and remembers which cvsroot you used for a 
+particular checkout; future commands within that working area automatically use 
+the right repository. For the record, the working area's cvsroot overrides the
+<span class="docEmphasis">CVSROOT</span> environment variable; the <i>-d</i> 
+option overrides them both. </p>
+<p class="docText">Once you have a working area, you have a writable copy of 
+every file in that project. Edit to your heart's content. To incorporate changes 
+made by other people, or see what you've changed, use <span class="docEmphasis">
+cvs update</span>: </p>
+<pre>% <b>cd book</b>
+% <b>cvs update</b>
+cvs update: Updating .
+U ch18.sgm
+M ch39.sgm</pre>
+<p class="docText">CVS update tells you a bit of information about each file 
+that it touched or needs to touch. A <tt>U</tt> means that it updated your 
+working copy from the repository; if you had also changed that file, it means 
+that CVS successfully merged their changes with yours. A <tt>M</tt> means that 
+you've modified that file in your working area. </p>
+<p class="docText">To push your modifications into the repository, you use
+<span class="docEmphasis">cvs commit</span>. As the name suggests, this commits 
+your changes. Generally you'll want to do this often, so that you aren't set 
+back very far if you delete a file accidentally or make a change you later 
+decide you don't want. </p>
+<p class="docText">CVS does more, of course. For example,
+<span class="docEmphasis">cvs log</span> lets you read the log that shows 
+differences between two revisions. <i>cvs diff</i> lets you see the differences 
+between two revisions by comparing them with <span class="docEmphBold">diff</span> 
+(<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-1">Section 
+11.1</a>). <span class="docEmphasis">cvs add</span> (followed by
+<span class="docEmphasis">cvs commit</span>) adds a new file or directory to the 
+repository. <span class="docEmphasis">cvs remove</span> removes a file or 
+directory; be sure to remove any local copy first, or use
+<span class="docEmphasis">cvs remove -f</span> to have CVS remove your local 
+copy for you. <span class="docEmphasis">cvs init</span> initializes a new 
+cvsroot, and <span class="docEmphasis">cvs import</span> creates a new 
+repository. Notifications can be emailed automatically when a file is changed. 
+Part or all of the repository can be made read-only for all but a few users — so 
+you can share files freely but prevent unauthorized changes. O'Reilly's <i>CVS 
+Pocket Reference</i> gives a summary of all this and much more about CVS. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-39-SECT-8">39.8 More CVS</h3>
+<p class="docText">Here's a slightly more complex example of how to use CVS. I'm 
+working on this book, via CVS, with my two main coauthors (who are on the east 
+and west coasts of the United States). The repository, which has almost 1,000 
+files, is on a computer in the O'Reilly office in Massachusetts. </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">From the command line or in a <span class="docEmphBold">
+  shell setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+  3.3</a>), I need to set an <span class="docEmphBold">environment variable</span> 
+  (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+  35.3</a>) named <span class="docEmphasis">CVSROOT</span> that tells CVS where 
+  the repository is and what my username is on that machine. In the C shell, for 
+  instance, I'd execute a command that sets my username to
+  <span class="docEmphasis">jpeek</span>, the server hostname to
+  <span class="docEmphasis">bserver.east.oreilly.com</span>, and the repository 
+  to <span class="docEmphasis">/books/cvs</span>. I'm also using <i>ssh</i> for 
+  secure access to the server, so I need to set the <span class="docEmphasis">
+  CVS_RSH</span> environment variable and tell CVS to use the &quot;ext&quot; connection 
+  method: </p>
+  <pre>setenv CVSROOT :ext:jpeek@bserver.east.oreilly.com:/books/cvs
+setenv CVS_RSH ssh</pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">I have a directory where I keep my local copies of the book 
+  files. To start, I check out my copy of the <span class="docEmphasis">ulpt3</span> 
+  repository from the server: </p>
+  <p class="docList"><tt>!$</tt>
+  <a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-3">
+  Section 30.3</a></p>
+  <pre>% <b>cd books </b>
+% <b>cvs checkout ulpt3 </b>
+cvs checkout: updating ulpt3
+U ulpt3/0001.sgm
+U ulpt3/0007.sgm
+U ulpt3/0023.sgm
+   <i> ...more...</i>
+% <b>cd !$ </b>
+cd ulpt3</pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Now my <span class="docEmphasis">ulpt3</span> subdirectory 
+  has the same files that the repository does. I can edit any of them, just as 
+  I'd edit files that aren't in CVS — but my changes don't make it back to the 
+  repository until I use the CVS command to do that. </p>
+  <p class="docList">Let's say I edit the file <span class="docEmphasis">
+  0123.sgm</span>. I'd like to write it back to the repository, where the other 
+  authors can grab it in case they're printing that part of the book. First I 
+  should update my workspace. This brings in any changes by other authors. If 
+  another author has updated <span class="docEmphasis">0123.sgm</span> and put 
+  it in the archive before I do, CVS will merge the two files and expect me to 
+  resolve the differences: </p>
+  <pre>% <b>vi 0123.sgm </b>
+   <i> ...edit the file...</i>
+% <b>cvs update </b>
+cvs update: updating .
+U ulpt/0075.sgm
+RCS file: /books/cvs/ulpt3/0123.sgm,v
+retrieving revision 3.6
+retrieving revision 3.7
+Merging differences between 3.6 and 3.7 into 0123.sgm
+rcsmerge: warning: conflicts during merge
+cvs update: conflicts found in 0123.sgm
+C 0123.sgm
+%</pre>
+  <p class="docList">The <tt>U</tt> line shows that another author changed file
+  <span class="docEmphasis">0075.sgm</span>; CVS is updating my copy of it. As 
+  it happens, another author edited <span class="docEmphasis">0123.sgm</span> 
+  while I did — and committed his changes to the repository before I got there. 
+  CVS sees that the copy in the repository is newer than the one I fetched a 
+  while ago, so it merges the two versions. If the changes had been to different 
+  parts of the file, CVS wouldn't have complained, just warned me that
+  <span class="docEmphasis">0123.sgm</span> had been merged. As luck would have 
+  it (something to do with this being an example, I think <tt>;-)</tt>) both 
+  changes were in the same place and CVS warned me that the merge failed; there 
+  was a conflict. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">This step only applies if there was a conflict during the 
+  update. Edit the file and search for a string of less-than signs (<tt>&lt;&lt;&lt;&lt;</tt>). 
+  You'll see something like this: </p>
+  <pre>  &lt;para&gt;
+  &lt;indexterm&gt;&lt;primary&gt;serial line modes&lt;/primary&gt;&lt;/indexterm&gt;
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; 0123.sgm
+  But there is some overlap. For example, a terminal can be unusable
+  because a program has left either the serial line modes or the
+  terminal itself in an unexpected state. For this reason,
+  &lt;link linkend=&quot;UPT-ART-0079&quot;&gt;terminal initialization&lt;/link&gt;,
+  as performed by the &lt;command&gt;tset&lt;/command&gt; and
+=======
+  But there is some overlap. For example, a terminal can be unusable
+  because a program has left the terminal in an &quot;wedged&quot;
+  or unexpected state. The serial modes may be wrong too. This is why
+  &lt;link linkend=&quot;UPT-ART-0079&quot;&gt;terminal initialization&lt;/link&gt;,
+  as performed by the &lt;command&gt;tset&lt;/command&gt; and
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; 3.7
+  &lt;command&gt;tput&lt;/command&gt; programs,
+  initializes both the terminal and the serial line interface.</pre>
+  <p class="docList">The text from your working file is at the top, after the
+  <tt>&lt;&lt;&lt;&lt;</tt> characters. The conflicting text is after the <tt>====</tt> 
+  characters. You decide that your text is better written, so you simply delete 
+  the markers and the second chunk of text. [In a slightly less contrived 
+  example, there would probably be a process for this. You might use
+  <span class="docEmphasis">cvs log</span> to look at the log message on the 
+  conflicting change, talk to the author of the conflicting change or both. 
+  Sometimes you might have to look at <span class="docEmphasis">cvs log</span> 
+  to figure out who checked in the conflicting change, because there may have 
+  been several changes. — DJPH] </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Things look good. Now tell CVS to put all your changes from 
+  your local workspace into the repository by <span class="docEmphasis">
+  committing</span>. You should give a message that describes the changes you 
+  made. You can give the message either as an argument to the <i>-m</i> option 
+  or by typing it into your text editor, like this: </p>
+  <pre>% <b>cvs commit </b>
+cvs commit: Examining .
+  <i> ...your text editor runs...</i>
+Checking in 0123.sgm;
+/books/cvs/ulpt3/0123.sgm,v &lt;-- 0123.sgm
+new revision: 3.8; previous revision: 3.7
+done</pre>
+  </span></li>
+</ol>
+</span>
+<p class="docText"><span class="docEmphasis">—JP and DJPH</span> </p>
+
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 38.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 40.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

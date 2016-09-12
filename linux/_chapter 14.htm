@@ -1,0 +1,849 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 14</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 13.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 15.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 14. Removing Files</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-1">14.1 The Cycle of Creation and Destruction</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-2">14.2 How Unix Keeps Track of Files: Inodes</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-3">14.3 rm and Its Dangers</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-4">14.4 Tricks for Making rm Safer</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-5">14.5 Answer &quot;Yes&quot; or &quot;No&quot; Forever with yes</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-6">14.6 Remove Some, Leave Some</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-7">14.7 A Faster Way to Remove Files Interactively</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-8">14.8 Safer File Deletion in Some Directories</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-9">14.9 Safe Delete: Pros and Cons</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-10">14.10 Deletion with Prejudice: rm -f</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-11">14.11 Deleting Files with Odd Names</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-12">14.12 Using Wildcards to Delete Files with Strange Names</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-13">14.13 Handling a Filename Starting with a Dash (-)</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-14">14.14 Using unlink to Remove a File with a Strange Name</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-15">14.15 Removing a Strange File by its i-number</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-16">14.16 Problems Deleting Directories</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-17">14.17 Deleting Stale Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-18">14.18 Removing Every File but One</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-14-SECT-19">14.19 Using find to Clear Out Unneeded Files</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-1">14.1 The Cycle of Creation and Destruction</h3>
+<p class="docText">As a computer user, you spend lots of time creating files. 
+Just as the necessary counterpart of life is death, the other side of file 
+creation is deletion. If you never delete any files, you soon have a computer's 
+equivalent of a population explosion: your disks get full, and you must either 
+spend money (buy and install more disk drives) or figure out which files you 
+don't really need. </p>
+<p class="docText">In this chapter, we'll talk about ways to get rid of files: 
+how to do it safely, how to get rid of files that don't want to die, and how to 
+find &quot;stale&quot; files — or unused files that have been around for a long time. 
+&quot;Safe&quot; deletion is a particularly interesting topic, because Unix's <i>rm</i> 
+command is extreme: once you delete a file, it's gone permanently. There are 
+several solutions for working around this problem, letting you (possibly) 
+reclaim files from the dead. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-2">14.2 How Unix Keeps Track of Files: Inodes</h3>
+<p class="docText">The ability to mumble about <span class="docEmphasis">inodes</span> 
+is the key to social success at a Unix gurus' cocktail party. This may not seem 
+attractive to you, but sooner or later you will need to know what an inode is.
+</p>
+<p class="docText">Seriously, inodes are an important part of the Unix 
+filesystem. You don't need to worry about them most of the time, but it does 
+help to know what they are. </p>
+<p class="docText">An inode is a data structure on the disk that describes a 
+file. It holds most of the important information about the file, including the 
+on-disk address of the file's data blocks (the part of the file that you care 
+about). Each inode has its own identifying number, called an
+<span class="docEmphasis">i-number</span>. </p>
+<p class="docText">You really don't care about where a file is physically 
+located on a disk. You usually don't care about the i-number — unless you're 
+trying to <span class="docEmphBold">find the links</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-24">Section 
+9.24</a>,
+<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-3">
+Section 10.3</a>) to a file. But you do care about the following information, 
+all of which is stored in a file's inode: </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">The file's ownership</span></i> </dt>
+  <dd>
+  <p class="docList">The user and the group that own the file</dd>
+  <dt><span class="docPubcolor">The file's <span class="docEmphBold">access mode</span> 
+  (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-17">Section 
+  1.17</a>,
+  <a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">
+  Section 50.2</a>)</span> </dt>
+  <dd>
+  <p class="docList">Whether various users and groups are allowed to read, 
+  write, or execute the file </dd>
+  <dt><span class="docPubcolor">The file's <span class="docEmphBold">timestamps</span> 
+  (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-2">Section 
+  8.2</a>)</span> </dt>
+  <dd>
+  <p class="docList">When the file itself was last modified, when the file was 
+  last accessed, and when the inode was last modified </dd>
+  <dt><i><span class="docPubcolor">The file's type</span></i> </dt>
+  <dd>
+  <p class="docList">Whether the file is a regular file, a special file, or some 
+  other kind of abstraction <span class="docEmphBold">masquerading</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-19">Section 
+  1.19</a>) as a file </dd>
+</dl>
+<p class="docText">Each filesystem has a set number of inodes that are created 
+when the filesystem is first created (usually when the disk is first 
+initialized). This number is therefore the maximum number of files that the 
+filesystem can hold. It cannot be changed without reinitializing the filesystem, 
+which destroys all the data that the filesystem holds. It is possible, though 
+rare, for a filesystem to run out of inodes, just as it is possible to run out 
+of storage space — this can happen on filesystems with many, many small files.
+</p>
+<p class="docText">The <span class="docEmphBold">ls -l</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+50.2</a>) command shows much of this information. The <span class="docEmphBold">
+ls -i option</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>) shows a file's i-number. The <i>stat</i> command lists almost 
+everything in an inode. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-3">14.3 rm and Its Dangers</h3>
+<p class="docText">Under Unix, you use the <i>rm</i> command to delete files. 
+The command is simple enough; you just type <tt>rm</tt> followed by a list of 
+files. If anything, <i>rm</i> is too simple. It's easy to delete more than you 
+want, and once something is gone, it's permanently gone. There are a few hacks 
+that make <i>rm</i> somewhat safer, and we'll get to those momentarily. But 
+first, here's a quick look at some of the dangers. </p>
+<p class="docText">To understand why it's impossible to reclaim deleted files, 
+you need to know a bit about how the Unix filesystem works. The system contains 
+a &quot;free list,&quot; which is a list of disk blocks that aren't used. When you delete 
+a file, its directory entry (which gives it its name) is removed. If there are 
+no more <span class="docEmphBold">links</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-3">Section 
+10.3</a>) to the file (i.e., if the file only had one name), its
+<span class="docEmphBold">inode</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-2">Section 
+14.2</a>) is added to the list of free inodes, and its datablocks are added to 
+the free list. </p>
+<p class="docText">Well, why can't you get the file back from the free list? 
+After all, there are DOS utilities that can reclaim deleted files by doing 
+something similar. Remember, though, Unix is a multitasking operating system. 
+Even if you think your system is a single-user system, there are a lot of things 
+going on &quot;behind your back&quot;: daemons are writing to log files, handling network 
+connections, processing electronic mail, and so on. You could theoretically 
+reclaim a file if you could &quot;freeze&quot; the filesystem the instant your file was 
+deleted — but that's not possible. With Unix, everything is always active. By 
+the time you realize you made a mistake, your file's data blocks may well have 
+been reused for something else. </p>
+<p class="docText">When you're deleting files, it's important to use wildcards 
+carefully. Simple typing errors can have disastrous consequences. Let's say you 
+want to delete all your object (<span class="docEmphasis">.o</span>) files. You 
+want to type: </p>
+<pre>% <b>rm *.o</b></pre>
+<p class="docText">But because of a nervous twitch, you add an extra space and 
+type: </p>
+<pre>% <b>rm * .o</b></pre>
+<p class="docText">It looks right, and you might not even notice the error. But 
+before you know it, all the files in the current directory will be gone, 
+irretrievably. </p>
+<p class="docText">If you don't think this can happen to you, here's something 
+that actually did happen to me. At one point, when I was a relatively new Unix 
+user, I was working on my company's business plan. The executives thought, so as 
+to be &quot;secure,&quot; that they'd set a business plan's permissions so you had to be
+<span class="docEmphBold">root</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-18">Section 
+1.18</a>) to modify it. (A mistake in its own right, but that's another story.) 
+I was using a terminal I wasn't familiar with and accidentally created a bunch 
+of files with four control characters at the beginning of their name. To get rid 
+of these, I typed (as <span class="docEmphasis">root</span>): </p>
+<pre># <b>rm ????*</b></pre>
+<p class="docText">This command took a <span class="docEmphasis">long</span> 
+time to execute. When about two-thirds of the directory was gone, I realized 
+(with horror) what was happening: I was deleting all files with four or more 
+characters in the filename. </p>
+<p class="docText">The story got worse. They hadn't made a backup in about five 
+months. (By the way, this article should give you plenty of reasons for making 
+regular <span class="docEmphBold">backups</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-3">Section 
+38.3</a>).) By the time I had restored the files I had deleted (a several-hour 
+process in itself; this was on an ancient version of Unix with a horrible
+<span class="docEmphasis">backup</span> utility) and checked (by hand) all the 
+files against our printed copy of the business plan, I had resolved to be
+<span class="docEmphasis">very careful</span> with my <i>rm</i> commands. </p>
+<p class="docText">[Some shells have safeguards that work against Mike's first 
+disastrous example — but not the second one. Automatic safeguards like these can 
+become a crutch, though . . . when you use another shell temporarily and don't 
+have them, or when you type an expression like Mike's very destructive second 
+example. I agree with his simple advice: check your <i>rm</i> commands 
+carefully! — <span class="docEmphasis">JP</span>] </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-4">14.4 Tricks for Making rm Safer</h3>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 class="docSidebarTitle">Summary Box</h2>
+      <p class="docText">Here's a summary of ways to protect yourself from 
+      accidentally deleting files: </p>
+      <ul>
+        <li>
+        <p class="docList">Use <span class="docEmphasis">rm -i</span>, possibly 
+        as an alias (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-8">Section 
+        14.8</a>). </li>
+        <li>
+        <p class="docList">Make <span class="docEmphasis">rm -i</span> less 
+        painful (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-7">Section 
+        14.7</a>). </li>
+        <li>
+        <p class="docList">Write a &quot;delete&quot; script that moves &quot;deleted&quot; files to 
+        a temporary directory (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-9">Section 
+        14.9</a>). </li>
+        <li>
+        <p class="docList"><i>tcsh</i> has an <span class="docEmphasis">rmstar</span> 
+        variable that makes the shell ask for confirmation when you type 
+        something like <tt>rm *</tt>. In <i>zsh</i>, this protection is 
+        automatic unless you set the <tt>RM_STAR_SILENT</tt> shell option to 
+        stop it. </li>
+        <li>
+        <p class="docList">Use revision control (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-4">Section 
+        39.4</a>). </li>
+        <li>
+        <p class="docList">Make your own backups, as explained in
+        <a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-3">
+        Section 38.3</a>. </li>
+        <li>
+        <p class="docList">Prevent deletion (or renaming or creating) of files 
+        by making the <span class="docEmphasis">directory</span> (not 
+        necessarily the files in it!) unwritable (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+        50.2</a>). </li>
+      </ul>
+      <p class="docText">If you want to delete with wild abandon, use
+      <span class="docEmphasis">rm -f</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-10">Section 
+      14.10</a>). </p>
+      <p class="docText"><span class="docEmphasis">— ML</span></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-5">14.5 Answer &quot;Yes&quot; or &quot;No&quot; Forever with yes</h3>
+<p class="docText">Some commands — like <span class="docEmphasis">rm -i</span>,
+<span class="docEmphasis">find -ok</span>, and so on — ask users to answer a &quot;do 
+it or not?&quot; question from the keyboard. For example, you might have a 
+file-deleting program or alias named <i>del</i> that asks before deleting each 
+file: </p>
+<pre>% <b>del *</b>
+Remove file1? <b>y</b>
+Remove file2? <b>y</b>
+   ...</pre>
+<p class="docText">If you answer <tt>y</tt>, then the file will be deleted.</p>
+<p class="docText">What if you want to run a command that will ask you 200 
+questions and you want to answer <tt>y</tt> to all of them, but you don't want 
+to type all those <tt>y</tt>s from the keyboard? Pipe the output of <tt>yes</tt> 
+to the command; it will answer <tt>y</tt> for you: </p>
+<pre>% <b>yes | del *</b>
+Remove file1?
+Remove file2?
+   ...</pre>
+<p class="docText">If you want to answer <tt>n</tt> to all the questions, you 
+can do: </p>
+<pre>% <b>yes n | del *</b></pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Not all Unix commands read their standard input for 
+        answers to prompts. If a command opens your terminal (<span class="docEmphBold">/dev/tty</span> 
+        (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">Section 
+        36.15</a>)) directly to read your answer, <tt>yes</tt> won't work. Try
+        <span class="docEmphBold">expect</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-18">Section 
+        28.18</a>) instead. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-6">14.6 Remove Some, Leave Some</h3>
+<p class="docText">Most people use <span class="docEmphasis">rm -i</span> for 
+safety: so they're always asked for confirmation before removing a particular 
+file. Mike Loukides told me about another way he uses <span class="docEmphasis">
+rm -i</span>. When he has several files to remove, but the
+<span class="docEmphBold">wildcards</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+1.13</a>) would be too painful to type with a plain <i>rm</i>, Mike gives
+<span class="docEmphasis">rm -i</span> a bigger list of filenames and answers 
+&quot;n&quot; to filenames he doesn't want deleted. For instance: </p>
+<pre>% <b>ls</b>
+aberrant    abhorred    abnormal     abominate   acerbic
+aberrate    abhorrent   abominable   absurd      acrimonious
+    ...
+% <b>rm -i ab*</b>
+rm: remove aberrant (y/n)? <b>y</b>
+rm: remove aberrate (y/n)? <b>n</b>
+rm: remove abhorred (y/n)? <b>y</b>
+rm: remove abhorrent (y/n)? <b>n</b>
+    ...</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-7">14.7 A Faster Way to Remove Files Interactively</h3>
+<p class="docText">The <i>rm -i</i> command asks you about each file, 
+separately. The method in this article can give you the safety without the 
+hassle of typing <tt>y</tt> as much. </p>
+<p class="docText">Another approach, which I recommend, is that you create a new 
+script or alias, and use that alias whenever you delete files. Call the alias <i>
+del</i> or <i>Rm</i>, for instance. This way, if you ever execute your special 
+delete command when it doesn't exist, no harm is done — you just get an error. 
+If you get into this habit, you can start making your delete script smarter. 
+Here is one that asks you about each file if there are three or fewer files 
+specified. For more than three files, it displays them all and asks you once if 
+you wish to delete them all: </p>
+<pre>#!/bin/sh
+case $# in
+0)     echo &quot;`basename $0`: you didn't say which file(s) to delete&quot;; exit 1;;
+[123]) /bin/rm -i &quot;$@&quot; ;;
+*)     echo &quot;$*&quot;
+       echo do you want to delete these files\?
+       read a
+       case &quot;$a&quot; in
+       [yY]*) /bin/rm &quot;$@&quot; ;;
+       esac
+       ;;
+esac</pre>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-8">14.8 Safer File Deletion in Some Directories</h3>
+<p class="docText">Using <span class="docEmphBold">noclobber</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-6">Section 
+43.6</a>) and read-only files only protects you from a few occasional mistakes. 
+A potentially catastrophic error is typing: </p>
+<pre>% <b>rm * .o</b></pre>
+<p class="docText">instead of:</p>
+<pre>% <b>rm *.o</b></pre>
+<p class="docText">In the blink of an eye, all of your files would be gone. A 
+simple, yet effective, preventive measure is to create a file called -<span class="docEmphasis">i</span> 
+in the particular directory in which you want extra protection: </p>
+<p class="docText"><tt>./-</tt>
+<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-13">
+Section 14.13</a></p>
+<pre>% <b>touch ./-i</b></pre>
+<p class="docText">In this case, the <tt>*</tt> is expanded to match all of the 
+filenames in the directory. Because the file -<span class="docEmphasis">i</span> 
+is alphabetically listed before any file except those that start with one of the 
+characters <tt>!</tt>, <tt>#</tt>, <tt>$</tt>, <tt>%</tt>, <tt>&amp;</tt>, <tt>'</tt>,
+<tt>(</tt> , <tt>)</tt>, <tt>*</tt>, <tt>+</tt>, or <tt>,</tt>, the <i>rm</i> 
+command sees the -<span class="docEmphasis">i</span> file as a command-line 
+argument. When <i>rm</i> is executed with its <i>-i</i> option, files will not 
+be deleted unless you verify the action. This still isn't perfect, though. If 
+you have a file that starts with a comma (,) in the directory, it will come 
+before the file starting with a dash, and <i>rm</i> will not get the <i>-i</i> 
+argument first. </p>
+<p class="docText">The <span class="docEmphasis">-i</span> file also won't save 
+you from errors like this: </p>
+<pre>% <b>rm [a-z]* .o</b></pre>
+<p class="docText">If lots of users each make a <span class="docEmphasis">-i</span> 
+file in each of their zillions of subdirectories, that could waste a lot of disk
+<span class="docEmphBold">inodes</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-2">Section 
+14.2</a>). It might be better to make one <span class="docEmphasis">-i</span> 
+file in your home directory and <span class="docEmphBold">hard link</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-4">Section 
+15.4</a>) the rest to it, like this: </p>
+<p class="docText"><tt>~</tt>
+<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-11">
+Section 30.11</a></p>
+<pre>% <b>cd </b>
+% <b>touch ./-i </b>
+% <b>cd </b><i> somedir </i>
+% <b>ln ~/-i . </b>
+   ...</pre>
+<p class="docText">Second, to save disk blocks, make sure the
+<span class="docEmphasis">-i</span> file is zero-length — use the <i>touch</i> 
+command, not <i>vi</i> or some other command that puts characters in the file.
+</p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-9">14.9 Safe Delete: Pros and Cons</h3>
+<p class="docText">To protect themselves from accidentally deleting files, some 
+users create a &quot; trash&quot; directory somewhere and then write a &quot;safe delete&quot; 
+program that, instead of <i>rm</i>ing a file, moves it into the
+<span class="docEmphasis">trash</span> directory. The implementation can be 
+quite complex, but a simple alias or shell function will do most of what you 
+want: </p>
+<pre>alias del &quot;mv \!* ~/trash/.&quot;</pre>
+<p class="docText">Or, for Bourne-type shells: </p>
+<pre>del ( ) { mv &quot;$@&quot; $HOME/trash/.; }</pre>
+<p class="docText">Of course, now your deleted files collect in your
+<span class="docEmphasis">trash</span> directory, so you have to clean that out 
+from time to time. You can do this either by hand or automatically, via a
+<span class="docEmphBold">cron</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-2">Section 
+25.2</a>) entry like this: </p>
+<p class="docText"><tt>&amp;&amp;</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+Section 35.14</a>, <tt>-r</tt>
+<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-16">
+Section 14.16</a> </p>
+<pre>23 2 * * * cd $HOME/trash &amp;&amp; rm -rf *</pre>
+<p class="docText">This deletes everything in the trash directory at 2:23 a.m. 
+daily. To restore a file that you deleted, you have to look through your trash 
+directory by hand and put the file back in the right place. That may not be much 
+more pleasant than poking through your garbage to find the tax return you threw 
+out by mistake, but (hopefully) you don't make lots of mistakes. </p>
+<p class="docText">There are plenty of problems with this approach. Obviously, 
+if you delete two files with the same name in the same day, you're going to lose 
+one of them. A shell script could (presumably) handle this problem, though you'd 
+have to generate a new name for the deleted file. There are also lots of nasty 
+side effects and &quot;gotchas,&quot; particularly if you want an
+<span class="docEmphasis">rm -r</span> equivalent, if you want this approach to 
+work on a network of workstations, or if you use it to delete files that are 
+shared by a team of users. </p>
+<p class="docText">Unfortunately, this is precisely the problem. A &quot;safe delete&quot; 
+that isn't really safe may not be worth the effort. Giving people a safety net 
+with holes in it is only good if you can guarantee in advance that they won't 
+land in one of the holes, believing themselves protected. You can patch some of 
+the holes by replacing this simple alias with a shell script; but you can't fix 
+all of them. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-10">14.10 Deletion with Prejudice: rm -f</h3>
+<p class="docText">The <i>-f</i> option to <i>rm</i> is the extreme opposite of
+<i>-i</i>. It says, &quot;Just delete the file; don't ask me any questions.&quot; The &quot;f&quot; 
+stands (allegedly) for &quot;force,&quot; but this isn't quite right.
+<span class="docEmphasis">rm -f</span> won't force the deletion of something 
+that you aren't allowed to delete. (To understand what you're allowed to delete, 
+you need to understand <span class="docEmphBold">directory access permissions</span> 
+(<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+50.2</a>).) </p>
+<p class="docText">What, then, does <span class="docEmphasis">rm -f</span> do, 
+and why would you want to use it? </p>
+<ul>
+  <li>
+  <p class="docList">Normally, <i>rm</i> asks you for confirmation if you tell 
+  it to delete files to which you don't have write access — you'll get a message 
+  like <tt>Override protection</tt> <tt>444 for foo?</tt> (The Unix filesystem 
+  allows you to delete read-only files, provided you have write access to the 
+  directory.) With <i>-f</i>, these files will be deleted silently. </li>
+  <li>
+  <p class="docList">Normally, <i>rm</i>'s <span class="docEmphBold">exit status</span> 
+  (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+  35.12</a>) is 0 if it succeeded and 1 if it failed to delete the file. With <i>
+  -f</i>, <i>rm</i>'s return status is always 0. </li>
+</ul>
+<p class="docText">I find that I rarely use <span class="docEmphasis">rm -f</span> 
+on the Unix command line, but I almost always use it within shell scripts. In a 
+shell script, you (probably) don't want to be interrupted by lots of prompts 
+should <i>rm</i> find a bunch of read-only files. </p>
+<p class="docText">You probably also don't want to be interrupted if
+<span class="docEmphasis">rm -f</span> tries to delete files that don't exist 
+because the script never created them. Generally, <span class="docEmphasis">rm 
+-f</span> keeps quiet about files that don't exist; if the desired end result is 
+for the file to be gone, it not existing in the first place is just as good. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-11">14.11 Deleting Files with Odd Names</h3>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 class="docSidebarTitle">Summary Box</h2>
+      <p class="docText">A perennial problem is deleting files that have strange 
+      characters (or other oddities) in their names. The next few articles 
+      contain some hints for the following: </p>
+      <ul>
+        <li>
+        <p class="docList">Deleting files with random control characters in 
+        their names (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-12">Section 
+        14.12</a>). </li>
+        <li>
+        <p class="docList">Deleting files whose names start with a dash (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-13">Section 
+        14.13</a>). </li>
+        <li>
+        <p class="docList">Deleting files with &quot;unprintable&quot; filenames (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-14">Section 
+        14.14</a>). </li>
+        <li>
+        <p class="docList">Deleting files by using the inode number (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-15">Section 
+        14.15</a>). </li>
+        <li>
+        <p class="docList">Deleting directories and problems that can arise as a 
+        result (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-16">Section 
+        14.16</a>). </li>
+      </ul>
+      <p class="docText">We'll also give hints for these:</p>
+      <ul>
+        <li>
+        <p class="docList">Deleting unused (or rarely used) files (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-17">Section 
+        14.17</a>). </li>
+        <li>
+        <p class="docList">Deleting all the files in a directory, except for one 
+        or two (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-18">Section 
+        14.18</a>). </li>
+      </ul>
+      <p class="docText">Most tips for deleting files also work for renaming the 
+      files (if you want to keep them): just replace the <i>rm</i> command with
+      <i>mv</i>. </p>
+      <p class="docText"><span class="docEmphasis">— ML</span></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-12">14.12 Using Wildcards to Delete Files with Strange 
+Names</h3>
+<p class="docText">Filenames can be hard to handle if their names include 
+control characters or characters that are special to the shell. Here's a 
+directory with three oddball filenames: </p>
+<pre>% <b>ls</b>
+What now
+a$file
+prog|.c
+program.c</pre>
+<p class="docText">When you type those filenames on the command line, the shell 
+interprets the special characters (space, dollar sign, and vertical bar) instead 
+of including them as part of the filename. There are <span class="docEmphBold">
+several ways</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-11">Section 
+14.11</a>) to handle this problem. One is with <span class="docEmphBold">
+wildcards</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">Section 
+33.2</a>). Type a part of the filename without the weird characters, and use a 
+wildcard to match the rest. The shell doesn't scan the filenames for other 
+special characters after it interprets the wildcards, so you're (usually) safe 
+if you can get a wildcard to match. For example, here's how to rename
+<span class="docEmphasis">What now</span> to <span class="docEmphasis">Whatnow</span>, 
+remove <span class="docEmphasis">a$file</span>, and rename
+<span class="docEmphasis">prog|.c</span> to <span class="docEmphasis">prog.c</span>:
+</p>
+<pre>% <b>mv What* Whatnow</b>
+% <b>rm -i a*</b>
+rm: remove a$file? <b>y</b>
+% <b>mv prog?.c prog.c</b></pre>
+<p class="docText">Filenames with control characters are just another version of 
+the same problem. Use a wildcard to match the part of the name that's troubling 
+you. The real problem with control characters in filenames is that some control 
+characters do weird things to your screen. Once I accidentally got a file with a 
+CTRL-L in its name. Whenever I ran <i>ls</i>, it erased the screen before I 
+could see what the filename was!
+<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-12">
+Section 8.12</a> explains how, depending on your version of <i>ls</i>, you can 
+use the <i>-q</i> or <i>-b</i> options to spot the offensive file and construct 
+a wildcard expression to rename or delete it. (<span class="docEmphasis">ls -q</span> 
+is the default on most Unix implementations these days, so you will probably 
+never see this particular problem.) </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-13">14.13 Handling a Filename Starting with a Dash (-)</h3>
+<p class="docText">Sometimes you can slip and create a file whose name starts 
+with a dash (<i>-</i>), like <span class="docEmphasis">-output</span> or
+<span class="docEmphasis">-f</span>. That's a perfectly legal filename. The 
+problem is that Unix command options usually start with a dash. If you try to 
+type that filename on a command line, the command might think you're trying to 
+type a command option. </p>
+<p class="docText">In almost every case, all you need to do is &quot;hide&quot; the dash 
+from the command. Start the filename with <tt>./</tt> (dot slash). This doesn't 
+change anything as far as the command is concerned; <tt>./</tt> just means
+<span class="docEmphBold">&quot;look in the current directory&quot;</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>). So here's how to remove the file <span class="docEmphasis">-f</span>:
+</p>
+<pre>% <b>rm ./-f</b></pre>
+<p class="docText">(Most <i>rm</i> commands have a special option for dealing 
+with filenames that start with a dash, but this trick should work on
+<span class="docEmphasis">all</span> Unix commands.) </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-14">14.14 Using unlink to Remove a File with a Strange 
+Name</h3>
+<p class="docText">Some versions of Unix have a lot of trouble with eight-bit 
+filenames — that is, filenames that contain non-ASCII characters. The
+<span class="docEmphBold">ls -q</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-12">Section 
+8.12</a>) command shows the nonASCII characters as question marks (<tt>?</tt>), 
+but usual tricks like <span class="docEmphBold">rm -i *</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-12">Section 
+14.12</a>) skip right over the file. You can see exactly what the filename is by 
+using <span class="docEmphBold">ls -b</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-12">Section 
+8.12</a>): </p>
+<pre>% <b>ls -q</b>
+    ????
+afile
+bfile
+% <b>rm -i *</b>
+afile: ? <b>n</b>
+bfile: ? <b>n</b>
+% <b>ls -b</b>
+\t\360\207\005\254
+afile
+bfile</pre>
+<p class="docText">On older Unixes, the <i>-b</i> option to <i>ls</i> might not 
+be supported, in which case you can use <span class="docEmphBold">od -c</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">Section 
+12.4</a>) to dump the current directory, using its relative pathname
+<span class="docEmphBold">. (dot)</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>), character by character. It's messier, and isn't supported on all Unix 
+platforms, but it's worth a try: </p>
+<pre>% <b>od -c .</b>
+   ...
+00.....   \t 360 207 005 254  \0  \0  \0  \0  ...</pre>
+<p class="docText">If you can move all the other files out of the directory, 
+then you'll probably be able to remove the leftover file and directory with
+<span class="docEmphBold">rm -rf</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-16">Section 
+14.16</a>,
+<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-10">
+Section 14.10</a>). Moving files and removing the directory is a bad idea, 
+though, if this is an important system directory like <span class="docEmphasis">
+/bin</span>. Otherwise, if you use the escaped name <span class="docEmphasis">ls 
+-b</span> gave you, you might be able to remove it directly by using the system 
+call <span class="docEmphasis">unlink</span> (2) in Perl. Use the same escape 
+characters in Perl that <span class="docEmphasis">ls -b</span> displayed. (Or, 
+if you needed to use <span class="docEmphasis">od -c</span>, find the filename 
+in the <i>od</i> listing of the directory — it will probably end with a series 
+of NUL characters, like <tt>\0 \0 \0</tt>.) </p>
+<pre>perl -e 'unlink(&quot;\t\360\207\005\254&quot;);'</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-15">14.15 Removing a Strange File by its i-number</h3>
+<p class="docText"><span class="docEmphBold">If</span> <span class="docEmphBold">
+wildcards don't work</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-12">Section 
+14.12</a>) to remove a file with a strange name, try getting the file's
+<span class="docEmphBold">i-number</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-2">Section 
+13.2</a>). Then use <span class="docEmphBold">find's -inum operator</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-9">Section 
+9.9</a>) to remove the file. </p>
+<p class="docText">Here's a directory with a weird filename. <i>ls</i> (with its 
+default <span class="docEmphBold">-q option</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-12">Section 
+8.12</a>) on most versions) shows that the name has three unusual characters. 
+Running <span class="docEmphasis">ls -i</span> shows each file's i-number. The 
+strange file has i-number 6239. Give the i-number to <i>find</i>, and the file 
+is gone: </p>
+<pre>% <b>ls</b>
+adir      afile     b???file  bfile     cfile     dfile
+% <b>ls -i</b>
+  6253 adir        6239 b???file    6249 cfile
+  9291 afile       6248 bfile       9245 dfile
+% <b>find . -inum 6239 -exec rm {} \;</b>
+% <b>ls</b>
+adir   afile  bfile  cfile  dfile</pre>
+<p class="docText">Instead of deleting the file, I also could have renamed it to
+<span class="docEmphasis">newname</span> with the command: </p>
+<pre>% <b>find . -inum 6239 -exec mv {} newname \;</b></pre>
+<p class="docText">If the current directory has large subdirectories, you'll 
+probably want to keep <i>find</i> from recursing down into them by using the <i>
+-maxdepth 1</i> operator. (<i>find</i>s that don't support <i>-maxdepth</i> can 
+use <span class="docEmphBold">-prune</span> (
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-25">
+Section 9.25</a>) for speed.) </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-16">14.16 Problems Deleting Directories</h3>
+<p class="docText">What if you want to get rid of a directory? The standard — 
+and safest — way to do this is to use the Unix <i>rmdir</i> &quot;remove directory&quot; 
+utility: </p>
+<pre>% <b>rmdir files</b></pre>
+<p class="docText">The <i>rmdir</i> command often confuses new users. It will
+<span class="docEmphasis">only</span> remove a directory if it is completely 
+empty; otherwise, you'll get an error message: </p>
+<pre>% <b>rmdir files</b>
+rmdir: files: Directory not empty
+% <b>ls files</b>
+%</pre>
+<p class="docText">As in the example, <i>ls</i> will often show that the 
+directory is empty. What's going on? </p>
+<p class="docText">It's common for editors and other programs to create &quot; 
+invisible&quot; files (files with names beginning with a dot). The <i>ls</i> command 
+normally doesn't list them; if you want to see them, you have to use
+<span class="docEmphBold">ls -A</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-9">Section 
+8.9</a>):<span id="ENB14-1"><a class="docLink" href="#EN14-1"><sup>[1]</sup></a></span> </p>
+<pre>% <b>rmdir files</b>
+rmdir: files: Directory not empty
+% <b>ls -A files</b>
+.BAK.textfile2</pre>
+<p class="docText">Here, we see that the directory wasn't empty after all: 
+there's a backup file that was left behind by some editor. You may have used <tt>
+rm *</tt> to clean the directory out, but that won't work: <i>rm</i> also 
+ignores files beginning with dots, unless you explicitly tell it to delete them. 
+We really need a wildcard pattern like <tt>.??*</tt> or <tt>.[a-zA-Z0-9]*</tt> 
+to catch normal dotfiles without catching the directories <tt>.</tt> and <tt>..</tt>:
+</p>
+<pre>% <b>rmdir files</b>
+rmdir: files: Directory not empty
+% <b>ls -A files</b>
+.BAK.textfile2
+% <b>rm files/.??*</b>
+% <b>rmdir files</b>
+%</pre>
+<p class="docText">Other pitfalls might be files whose names consist of 
+nonprinting characters or blank spaces — sometimes these get created by accident 
+or by malice (yes, some people think this is funny). Such files will usually 
+give you <span class="docEmphBold">&quot;suspicious&quot; ls output</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-11">Section 
+8.11</a>) (like a blank line). </p>
+<p class="docText">If you don't want to worry about all these special cases, 
+just use <span class="docEmphasis">rm -r</span>: </p>
+<pre>% <b>rm -r files</b></pre>
+<p class="docText">This command removes the directory and everything that's in 
+it, including other directories. A lot of people warn you about it; it's 
+dangerous because it's easy to delete more than you realize. Personally, I use 
+it all the time, and I've never made a mistake. I <span class="docEmphasis">
+never</span> bother with <i>rmdir</i>. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-17">14.17 Deleting Stale Files</h3>
+<p class="docText">Sooner or later, a lot of junk collects in your directories: 
+files that you don't really care about and never use. It's possible to write
+<span class="docEmphBold">find</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-1">Section 
+9.1</a>) commands that will automatically clean these up. If you want to clean 
+up regularly, you can add some <i>find</i> commands to your
+<span class="docEmphBold">crontab file</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-2">Section 
+25.2</a>). </p>
+<p class="docText">Basically, all you need to do is write a <i>find</i> command 
+that locates files based on their last access time (<span class="docEmphBold">-atime</span> 
+(<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-5">Section 
+9.5</a>)) and use <span class="docEmphBold">-ok or -exec</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-9">Section 
+9.9</a>) to delete them. Such a command might look like this: </p>
+<pre>% <b>find . -atime +60 -ok rm -f {} \;</b></pre>
+<p class="docText">This locates files that haven't been accessed in the last 60 
+days, asks if you want to delete the file, and then deletes the file. (If you 
+run it from <i>cron</i>, make sure you use <i>-exec</i> instead of <i>-ok</i>, 
+and make <span class="docEmphasis">absolutely sure</span> that the <i>find</i> 
+won't delete files that you think are important.) </p>
+<p class="docText">Of course, you can modify this <i>find</i> command to exclude 
+(or select) files with particular names; for example, the following command 
+deletes old core dumps and GNU Emacs backup files (whose names end in <tt>~</tt>), 
+but leaves all others alone: </p>
+<pre>% <b>find . \( -name core -o -name &quot;*~&quot; \) -atime +60 -ok rm -f {} \;</b></pre>
+<p class="docText">If you take an automated approach to deleting stale files, 
+watch out for these things: </p>
+<ul>
+  <li>
+  <p class="docList">There are plenty of files (for example, Unix utilities and 
+  log files) that should <span class="docEmphasis">never</span> be removed. 
+  Never run any &quot;automatic deletion&quot; script on <span class="docEmphasis">/usr</span> 
+  or <tt>/</tt> or any other &quot;system&quot; directory. </li>
+  <li>
+  <p class="docList">On some systems, executing a binary executable doesn't 
+  update the last access time. Since there's no reason to read these files, you 
+  can expect them to get pretty stale, even if they're used often. But you don't 
+  want to delete them. If you cook up a complicated enough <i>find</i> command, 
+  you should be able to handle this automatically. Something like this should 
+  (at least partially) do the trick: </p>
+  <p class="docList"><tt>!</tt>
+  <a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-6">
+  Section 9.6</a>, <tt>-perm</tt>
+  <a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-15">
+  Section 9.15</a> </p>
+  <pre>% <b>find . -atime +30 ! -perm -111 ... -exec rm {} \;</b></pre>
+  </li>
+  <li>
+  <p class="docList">Along the same lines, you'd probably never want to delete C 
+  source code, so you might modify your <i>find</i> command to look like this:
+  </p>
+  <pre>% <b>find . -atime +30 ! -perm -111 ! -name &quot;*.c&quot; ... -exec rm {} \;</b></pre>
+  </li>
+  <li>
+  <p class="docList">I personally find that automatically deleting files is an 
+  extreme and bizarre solution. I can't imagine deleting files without knowing 
+  exactly what I've deleted or without (somehow) saving the &quot;trash&quot; somewhere 
+  just in case I accidentally removed something important. To archive the 
+  deleted files on tape, you can use the <i>find</i> -<i>cpio</i> operator if 
+  your system has it. Otherwise, try a little shell script with GNU <i>tar</i>; 
+  the following script writes the list of files to a temporary file and then, if 
+  that succeeds, reads the list of files, writes them to tape, and removes the 
+  files if the tape write succeeds: </p>
+  <pre>umask 077
+files=/tmp/CLEANUP$$</pre>
+  <p class="docList"><tt>if</tt>
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">
+  Section 35.13</a>, <tt>&amp;&amp;</tt>
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+  Section 35.14</a></p>
+  <pre>if find ... -print &gt; $files</pre>
+  <pre>then tar -c -T $files --remove &amp;&amp; rm $files
+else echo &quot;cleanup aborted because find returned nonzero status&quot;
+fi</pre>
+  </li>
+</ul>
+<p class="docText">Okay, I've said that I don't really think that automated 
+deletion scripts are a good idea. However, I don't have a good comprehensive 
+solution. I spend a reasonable amount of time (maybe an hour a month) going 
+through directories and deleting stale files by hand. I also have a <i>clean</i> 
+alias that I type whenever I think about it. It looks like this: </p>
+<pre>alias clean &quot;rm *~ junk *.BAK core #*&quot;</pre>
+<p class="docText">That is, this alias deletes all of my
+<span class="docEmphBold">Emacs</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-1">Section 
+19.1</a>) backup files, Emacs autosave files (risky, I know), files named
+<span class="docEmphasis">junk</span>, some other backup files, and core dumps. 
+I'll admit that since I <span class="docEmphasis">never</span> want to save 
+these files, I could probably live with something like this: </p>
+<pre>% <b>find ~ \( -name &quot;*~&quot; -o -name core \) -atime +1 -exec rm {} \;</b></pre>
+<p class="docText">But stil, automated deletion commands make me really nervous, 
+and I'd prefer to live without them. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-18">14.18 Removing Every File but One</h3>
+<p class="docText">One problem with Unix: it's not terribly good at &quot;excluding&quot; 
+things. There's no option to <i>rm</i> that says, &quot;Do what you will with 
+everything else, but please don't delete these files.&quot; You can sometimes create 
+a <span class="docEmphBold">wildcard expression</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">Section 
+33.2</a>) that does what you want — but sometimes that's a lot of work, or maybe 
+even impossible. </p>
+<p class="docText">Here's one place where Unix's <span class="docEmphBold">
+command substitution</span> (
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a>) operators (backquotes) come to the rescue. You can use <i>ls</i> 
+to list all the files, pipe the output into a <span class="docEmphBold">grep -v 
+or egrep -v</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-3">Section 
+13.3</a>) command, and then use backquotes to give the resulting list to <i>rm</i>. 
+Here's what this command would look like: </p>
+<pre>% <b>rm -i `ls -d *.txt | grep -v '^john\.txt$'`</b></pre>
+<p class="docText">This command deletes all files whose names end in
+<span class="docEmphasis">.txt</span>, except for <span class="docEmphasis">
+john.txt</span>. I've probably been more careful than necessary about making 
+sure there aren't any extraneous matches; in most cases,
+<span class="docEmphasis">grep -v john</span> would probably suffice. Using
+<span class="docEmphBold">ls -d</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-5">Section 
+8.5</a>) makes sure that <i>ls</i> doesn't look into any subdirectories and give 
+you those filenames. The <span class="docEmphasis">rm -i</span> asks you before 
+removing each file; if you're sure of yourself, omit the <i>-i</i>. </p>
+<p class="docText">Of course, if you want to exclude two files, you can do that 
+with <i>egrep</i>: </p>
+<pre>% <b>rm `ls -d *.txt | egrep -v 'john|mary'`</b></pre>
+<p class="docText">(Don't forget to quote the vertical bar (<tt>|</tt>), as 
+shown earlier, to prevent the shell from piping <i>egrep</i>'s output to
+<span class="docEmphasis">mary</span>.) </p>
+<p class="docText">Another solution is the <span class="docEmphBold">nom</span> 
+(<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-8">Section 
+33.8</a>) script. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-14-SECT-19">14.19 Using find to Clear Out Unneeded Files</h3>
+<p class="docText">Do you run <i>find</i> on your machine every night? Do you 
+know what it has to go through just to find out if a file is three days old and 
+smaller than ten blocks or owned by &quot;fred&quot; or setuid root? This is why I tried 
+to combine all the things we need done for removal of files into one big <i>find</i> 
+script: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: cleanup</p>
+<p class="docText"><tt>2&gt;&amp;1</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">
+Section 36.16</a></p>
+<pre>#! /bin/sh
+#
+# cleanup - find files that should be removed and clean them
+# out of the file system.
+
+find / \(    \( -name '#*'                 -atime +1 \)  \
+        -o   \( -name ',*'                 -atime +1 \)  \
+        -o   \( -name rogue.sav            -atime +7 \)  \
+        -o   \(      \( -name '*.bak'                    \
+                     -o -name '*.dvi'                    \
+                     -o -name '*.CKP'                    \
+                     -o -name '.*.bak'                   \
+                     -o -name '.*.CKP' \)  -atime +3 \)  \
+        -o   \( -name '.emacs_[0-9]*'      -atime +7 \)  \
+        -o   \( -name core                           \)  \
+        -o   \( -user guest                -atime +9 \)  \
+\) -print -exec rm -f {} \; &gt; /tmp/.cleanup 2&gt;&amp;1</pre>
+<p class="docText">This is an example of using a single <i>find</i> command to 
+search for files with different names and last-access times (see
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-5">
+Section 9.5</a>). Doing it all with one <i>find</i> is much faster — and less 
+work for the disk — than running a lot of separate <i>find</i>s. The parentheses 
+group each part of the expression. The neat indentation makes this big thing 
+easier to read. The <tt>-print</tt> <tt>-exec</tt> at the end removes each file 
+and also writes the filenames to standard output, where they're collected into a 
+file named <span class="docEmphasis">/tmp/.cleanup</span> — people can read it 
+to see what files were removed. You should probably be aware that printing the 
+names to <span class="docEmphasis">/tmp/.cleanup</span> lets everyone see 
+pathnames, such as <span class="docEmphasis">/home/joe/personal/resume.bak</span>, 
+which some people might consider sensitive. Another thing to be aware of is that 
+this <i>find</i> command starts at the root directory; you can do the same thing 
+for your own directories. </p>
+<p class="docText">—<span class="docEmphasis">CT and JP</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN14-1"><a class="docLink" href="#ENB14-1">[1]</a>&nbsp;&nbsp;If your version of <i>ls</i> doesn&#39;t have the <i>-A</i> option, use <i>-a</i> 
+instead. You&#39;ll see the two <span class="docEmphBold">special directory entries</span>
+<span class="docEmphBold">. and ..</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-9">Section 
+8.9</a>), which you can ignore.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 13.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 15.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

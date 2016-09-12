@@ -1,0 +1,279 @@
+BODY {
+	COLOR: black; BACKGROUND-COLOR: white
+}
+.hdr {
+	FONT-WEIGHT: bold; FONT-SIZE: 10pt; COLOR: #000000; LINE-HEIGHT: 16px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.hdr1 {
+	BORDER-RIGHT: 0px solid; BORDER-TOP: #ffffff 1px solid; PADDING-LEFT: 2px; FONT-SIZE: 8pt; VERTICAL-ALIGN: middle; BORDER-LEFT: #ffffff 1px solid; COLOR: #0a0a0a; LINE-HEIGHT: 12px; BORDER-BOTTOM: 0px solid; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-ALIGN: center
+}
+.hdr2 {
+	FONT-WEIGHT: bold; FONT-SIZE: 11pt; COLOR: #000000; LINE-HEIGHT: 16px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.v1 {
+	FONT-SIZE: 8pt; COLOR: #0000cc; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.v1:link {
+	COLOR: #0000cc; TEXT-DECORATION: none
+}
+.v2 {
+	FONT-SIZE: 8pt; COLOR: #000000; LINE-HEIGHT: 16px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.v2:link {
+	COLOR: #000000; TEXT-DECORATION: none
+}
+.v3 {
+	FONT-SIZE: 10px; COLOR: #4b4b4b; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.v3:link {
+	COLOR: #303030; TEXT-DECORATION: none
+}
+.v4 {
+	FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #303030; LINE-HEIGHT: 16px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.v4:link {
+	FONT-WEIGHT: bold; COLOR: #303030; TEXT-DECORATION: none
+}
+.a1 {
+	FONT-SIZE: 7.5pt; COLOR: #4b4b4b; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: underline
+}
+.a1:link {
+	COLOR: #4b4b4b; TEXT-DECORATION: underline
+}
+.a2 {
+	FONT-SIZE: 8pt; COLOR: #4b4b4b; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.a2:link {
+	COLOR: #4b4b4b; TEXT-DECORATION: underline
+}
+.a3 {
+	FONT-SIZE: 7.5pt; COLOR: #4b4b4b; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.a3:link {
+	COLOR: #4b4b4b; TEXT-DECORATION: underline
+}
+.a4 {
+	FONT-SIZE: 10pt; COLOR: #222222; LINE-HEIGHT: 18px; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.entrybox1 {
+	BORDER-RIGHT: #e7d68e 1px solid; BORDER-TOP: #e7d68e 1px solid; FONT-SIZE: 12px; BORDER-LEFT: #e7d68e 1px solid; BORDER-BOTTOM: #e7d68e 1px solid; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.navbtn {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #333333; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #faf9e7; TEXT-DECORATION: none
+}
+.navbtnSel {
+	FONT-WEIGHT: bold; FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #ffcc33; TEXT-DECORATION: none
+}
+.logout {
+	FONT-SIZE: 10px; COLOR: #333333; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #faf9e7; TEXT-DECORATION: none
+}
+.n1 {
+	PADDING-RIGHT: 7px; PADDING-LEFT: 7px; FONT-SIZE: 8pt; PADDING-BOTTOM: 7px; COLOR: #303030; LINE-HEIGHT: 16px; PADDING-TOP: 7px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.t1 {
+	FONT-WEIGHT: bold; FONT-SIZE: 12pt; COLOR: #000000; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.t2 {
+	FONT-WEIGHT: bold; FONT-SIZE: 9pt; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.t3 {
+	FONT-WEIGHT: bold; FONT-SIZE: 8.5pt; COLOR: #ffffff; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #9d3036; TEXT-DECORATION: none
+}
+.t3b {
+	FONT-WEIGHT: bold; FONT-SIZE: 8.5pt; COLOR: #000000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #efe0af; TEXT-DECORATION: none
+}
+.t4 {
+	FONT-WEIGHT: bold; FONT-SIZE: 8pt; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; TEXT-DECORATION: none
+}
+.t5 {
+	FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #990000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #f3e7bd; TEXT-DECORATION: none
+}
+.dlg {
+	BACKGROUND-COLOR: #faf9e7
+}
+.bg {
+	BACKGROUND-COLOR: #ffffff
+}
+.menuRight {
+	BACKGROUND-COLOR: #f1e5b5
+}
+.toplogo {
+	BACKGROUND-COLOR: #990000
+}
+.topmenu {
+	BACKGROUND-COLOR: #990000
+}
+.toc {
+	BACKGROUND-COLOR: #faf9e7
+}
+.menuLeft {
+	BACKGROUND-COLOR: #cccc66
+}
+.Top5Border {
+	BACKGROUND-COLOR: #000066
+}
+.Top5EvenRows {
+	
+}
+.Top5OddRows {
+	
+}
+.Top5TableHeading {
+	
+}
+.NewThisWeekBorder {
+	BACKGROUND-COLOR: #006666
+}
+.NewThisWeekEvenRows {
+	
+}
+.NewThisWeekOddRows {
+	
+}
+.NewThisWeekTableHeading {
+	
+}
+.MyRecentPagesBorder {
+	BACKGROUND-COLOR: #330066
+}
+.MyRecentPagesEvenRows {
+	
+}
+.MyRecentPagesOddRows {
+	
+}
+.MyRecentPagesTableHeading {
+	BACKGROUND-COLOR: #eeeeee
+}
+.RecommendedTitlesBorder {
+	BACKGROUND-COLOR: #000066
+}
+.RecommendedTitlesEvenRows {
+	
+}
+.RecommendedTitlesOddRows {
+	
+}
+.RecommendedTitlesTableHeading {
+	
+}
+.MyBookshelfBorder {
+	BACKGROUND-COLOR: #e5bbbc
+}
+.MyBookshelfSpacer {
+	BACKGROUND-COLOR: #eddfdf
+}
+.MyBookshelfEvenRows {
+	
+}
+.MyBookshelfOddRows {
+	
+}
+.MyBookshelfTableHeading {
+	
+}
+.MyRecentSearchesBorder {
+	BACKGROUND-COLOR: #990066
+}
+.MyRecentSearchesEvenRows {
+	
+}
+.MyRecentSearchesOddRows {
+	
+}
+.MyRecentSearchesTableHeading {
+	BACKGROUND-COLOR: #eeeeee
+}
+.MyBookmarksBorder {
+	BACKGROUND-COLOR: #000099
+}
+.MyBookmarksEvenRows {
+	BACKGROUND-COLOR: #edd1d1
+}
+.MyBookmarksOddRows {
+	
+}
+.MyBookmarksTableHeading {
+	BACKGROUND-COLOR: #eeeeee
+}
+.GroupNotesBorder {
+	BACKGROUND-COLOR: #009999
+}
+.GroupNotesEvenRows {
+	
+}
+.GroupNotesOddRows {
+	
+}
+.GroupNotesTableHeading {
+	BACKGROUND-COLOR: #eeeeee
+}
+.PublicNotesBorder {
+	BACKGROUND-COLOR: #660099
+}
+.PublicNotesEvenRows {
+	
+}
+.PublicNotesOddRows {
+	
+}
+.PublicNotesTableHeading {
+	BACKGROUND-COLOR: #eeeeee
+}
+.MyNotesBorder {
+	BACKGROUND-COLOR: #ff6600
+}
+.MyNotesEvenRows {
+	
+}
+.MyNotesOddRows {
+	
+}
+.MyNotesTableHeading {
+	BACKGROUND-COLOR: #eeeeee
+}
+.ListByCatBorder {
+	BACKGROUND-COLOR: #faf9e7
+}
+.ListByCatEvenRows {
+	FONT-SIZE: 8pt
+}
+.ListByCatOddRows {
+	
+}
+.ListByCatTableHeading {
+	BACKGROUND-COLOR: #f1e5b5
+}
+.SearchResultBorder {
+	BACKGROUND-COLOR: #bccedc
+}
+.SearchResultEvenRows {
+	BACKGROUND-COLOR: #ffffff
+}
+.SearchResultOddRows {
+	BACKGROUND-COLOR: #f5f8fd
+}
+.SearchResultTableHeading {
+	BORDER-RIGHT: 0px solid; BORDER-TOP: #ffffff 1px solid; PADDING-LEFT: 2px; FONT-SIZE: 8pt; VERTICAL-ALIGN: middle; BORDER-LEFT: #ffffff 1px solid; COLOR: #0a0a0a; LINE-HEIGHT: 12px; BORDER-BOTTOM: 0px solid; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #dde6ed; TEXT-ALIGN: center
+}
+.SectionSearchResultBorder {
+	BACKGROUND-COLOR: #b4c8c9
+}
+.SectionSearchResultEvenRows {
+	BACKGROUND-COLOR: #ffffff
+}
+.SectionSearchResultOddRows {
+	BACKGROUND-COLOR: #f1f6f2
+}
+.SectionSearchResultTableHeading {
+	BORDER-RIGHT: 0px solid; BORDER-TOP: #ffffff 1px solid; PADDING-LEFT: 2px; FONT-SIZE: 8pt; VERTICAL-ALIGN: middle; BORDER-LEFT: #ffffff 1px solid; COLOR: #0a0a0a; LINE-HEIGHT: 12px; BORDER-BOTTOM: 0px solid; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #dfeae4; TEXT-ALIGN: center
+}
+.TextFrame {
+	BACKGROUND-COLOR: #d1c8a1
+}
+.printhdr {
+	FONT-SIZE: 12pt; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.AdvancedSearchTextHighlight {
+	BACKGROUND-COLOR: #f7e583
+}

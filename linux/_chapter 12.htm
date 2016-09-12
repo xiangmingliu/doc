@@ -1,0 +1,788 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 12</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 11.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 13.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 12. Showing What's in a File</h2>
+
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-1">12.1 Cracking the Nut</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-2">12.2 What Good Is a cat?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-3">12.3 &quot;less&quot; is More</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-4">12.4 Show Nonprinting Characters with cat -v or od -c</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-5">12.5 What's in That Whitespace?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-6">12.6 Finding File Types</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-7">12.7 Squash Extra Blank Lines</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-8">12.8 How to Look at the End of a File: tail</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-9">12.9 Finer Control on tail</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-10">12.10 How to Look at Files as They Grow</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-11">12.11 GNU tail File Following</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-12">12.12 Printing the Top of a File</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-12-SECT-13">12.13 Numbering Lines</a></li>
+</ul>
+
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-1">12.1 Cracking the Nut</h3>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 class="docSidebarTitle">Summary Box</h2>
+      <p class="docText">This chapter talks about the many ways of dumping a 
+      file to the screen. Most users know the brute force approach provided by
+      <span class="docEmphBold">cat</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">Section 
+      12.2</a>), but there's more to it than that: </p>
+      <ul>
+        <li>
+        <p class="docList">Pagers such as <span class="docEmphBold">more and 
+        less</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+        12.3</a>) that give you more control when looking through long files.
+        </li>
+        <li>
+        <p class="docList">Finding out what type of data a file contains before 
+        opening it (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-6">Section 
+        12.6</a>). </li>
+        <li>
+        <p class="docList">Looking at just the beginning or end of a file (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-8">Section 
+        12.8</a> through
+        <a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-12">
+        Section 12.12</a>). </li>
+        <li>
+        <p class="docList">Numbering lines (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-13">Section 
+        12.13</a>).</li>
+      </ul>
+      <p class="docText"><span class="docEmphasis">— TOR</span></td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-2">12.2 What Good Is a cat?</h3>
+<p class="docText">The <i>cat</i> command may well be the first command new 
+users hear about, if only because of its odd name. <i>cat</i> stands for con<span class="docEmphasis">cat</span>enate 
+or, as some would say, catenate. Both words mean the same thing: to connect in a 
+series. The <i>cat</i> command takes its filename arguments and strings their 
+contents together. Essentially, <i>cat</i> takes its input and spits it out 
+again. </p>
+<p class="docText"><i>cat</i> has many uses, but the four most basic 
+applications are described in the following list. In many ways, they don't 
+illustrate <i>cat</i> so much as they illustrate the shell's
+<span class="docEmphBold">output redirection</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>) mechanism. </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">First form:</p>
+  <pre>% <b>cat  </b><i>file </i>
+% <b>cat  </b><i>file1 file2 file ... </i></pre>
+  <p class="docList">Use this form to display one or more files on the screen. 
+  The output doesn't pause when the screen is full. As a result, if your files 
+  are more than one screenful long, the output will whiz by without giving you a 
+  chance to read it. To read output by screenfuls, use a pager such as
+  <span class="docEmphBold">less</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+  12.3</a>).<span id="ENB12-1"><a class="docLink" href="#EN12-1"><sup>[1]</sup></a></span>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Second form:</p>
+  <pre>% <b>cat  </b><i>file(s) &gt; new_file </i></pre>
+  <p class="docList">Use this form when you want to combine several smaller 
+  files into one large file. Be sure the destination file does not already 
+  exist; otherwise, it will be replaced by the new contents (effectively 
+  destroying the original). For example, the command: </p>
+  <pre>% <b>cat chap1 chap2 chap3 &gt; book</b></pre>
+  <p class="docList">creates a new file, <span class="docEmphasis">book</span>, 
+  composed of three files, one after the other. The three component files still 
+  exist as <span class="docEmphasis">chap1</span>, <span class="docEmphasis">
+  chap2</span>, and <span class="docEmphasis">chap3</span>. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Third form:</p>
+  <pre>% <b>cat  </b><i>file &gt;&gt; existing_file </i>
+% <b>cat  </b><i>files &gt;&gt; existing_file </i></pre>
+  <p class="docList">Use this form to add one or more files to the end of an 
+  existing file. For example: </p>
+  <pre>% <b>cat note1 note2 &gt; note_list</b>
+% <b>cat note3 &gt;&gt; note_list</b></pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Fourth form:</p>
+  <pre>% <b>cat &gt;  </b><i>newfile </i></pre>
+  <p class="docList">Use this form as a quick-and-dirty way to create a new 
+  file. This is useful when you aren't yet familiar with any of the standard 
+  text editors. With this command, everything you type at the keyboard goes into 
+  the new file. (You won't be able to back up to a previous line.) To finish 
+  your input, enter CTRL-d on a line by itself. </span></li>
+</ol>
+</span>
+<p class="docText">Well, that was just in case there are some beginners on 
+board.
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">
+Section 12.4</a>,
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-7">
+Section 12.7</a>, and
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-13">
+Section 12.13</a> give some more useful tips about <i>cat</i> options. </p>
+<p class="docText"><span class="docEmphasis">— DG</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-3">12.3 &quot;less&quot; is More</h3>
+<p class="docText">The most popular pager for Unix systems was once the <i>more</i> 
+command, so named because it gave you &quot;one more screen.&quot; <i>more</i> is 
+ubiquitous, but also somewhat limited in its capability. The <i>less</i> command 
+(so named because, of course, &quot;less is more!&quot;) is more commonly used. <i>less</i> 
+is a full-featured text pager that emulates <i>more</i> but offers an extended 
+set of capabilities. </p>
+<p class="docText">One particularly important feature of <i>less</i> is that it 
+does not read all of its input before starting, which makes it faster than an 
+editor for large input. <i>less</i> also offers many useful features and is 
+available for almost every operating environment. As an extra bonus, it is 
+installed by default on most free Unixes. </p>
+<p class="docText"><i>less</i> begins execution by first examining the 
+environment in which it is running. It needs to know some things about the 
+terminal (or window) in which its output will be displayed. Once that's known,
+<i>less</i> formats the text and displays the first screen's output. The last 
+line of the screen is reserved for user interaction with the program. <i>less</i> 
+will display a colon (:) on the first column of the last line and leave the 
+cursor there. This colon is a command prompt, awaiting command input from the 
+user. Most commands to <i>less</i> are single-character entries, and <i>less</i> 
+will act upon them immediately and without a subsequent carriage return (this is 
+known as <span class="docEmphasis">cbreak</span> mode). The most basic command 
+to <i>less</i> (and <i>more</i>) is a single space, which instructs the pager to 
+move ahead in the text by one screen.
+<a class="docLink" href="#upt3-CHP-12-TABLE-1">Table 12-1</a> lists commonly 
+used <i>less</i> commands. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-12-TABLE-1" class="docTableTitle">Table 12-1. Commonly used less commands </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Command</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Space</td>
+    <td class="docTableCell">
+    <p class="docText">Scroll forward one screen.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>d</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Scroll forward one-half screen.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">RETURN</td>
+    <td class="docTableCell">
+    <p class="docText">Scroll forward one line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>b</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Scroll backward one screen. Unlike <i>more</i>, while <i>
+    less</i> is reading from <span class="docEmphBold">pipes</span>
+    <a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-5">
+    Section 1.5</a>), it can redraw the screen and read previous pages. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>u</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Scroll backward one-half screen.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>y</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Scroll backward one line.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>g</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Go to the beginning of the text (could be slow with large 
+    amounts of text). </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>G</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Go to the end of the text (could be slow with large 
+    amounts of text).</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>/<i>pattern</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText">Search forward for <tt><i>pattern</i></tt>, which can be 
+    a regular expression. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>?<i>pattern</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText">Search backward for <tt><i>pattern</i></tt>, which can be 
+    a regular expression. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>n</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Search for the next occurance of the last search, in the 
+    same direction: forward in the file if the previous search was using <tt>/</tt> 
+    and backwards in the file if the previous search was using <tt>?</tt>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>N</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Search for the previous occurance of the last search. See 
+    earlier.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>h</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Display a help screen.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:n</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Display next file from command line (two-character 
+    command).</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>:p</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Display previous file from command line (two-character 
+    command).</td>
+  </tr>
+</table>
+<p class="docText"><i>less</i> has a rich command set, and its behavior can be 
+modified as needed for your use. The <i>lesskey</i> program lets you make custom 
+key definitions, and you can store your favorite setup options in the
+<span class="docEmphasis">LESS</span> <span class="docEmphBold">environment 
+variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>). See the <i>less</i> manpage for further details. </p>
+<p class="docText">One of the big advantages of <i>less</i> is that it doesn't 
+require any relearning; <i>less</i> does the right thing when you use <i>more</i>,
+<span class="docEmphBold">vi</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-2">Section 
+17.2</a>), or <span class="docEmphBold">emacs</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-1">Section 
+19.1</a>) file-browsing commands. Incidentally, it also protects you from 
+terminal control sequences and other obnoxious things that happen when you try 
+to view a binary file, because it <span class="docEmphBold">escapes nonprinting 
+characters</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">Section 
+12.4</a>). </p>
+<p class="docText"><span class="docEmphasis">— JD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-4">12.4 Show Nonprinting Characters with cat -v or od 
+-c</h3>
+<p class="docText">Especially if you use an ASCII-based terminal, files can have 
+characters that your terminal can't display. Some characters will lock up your 
+communications software or hardware, make your screen look strange, or cause 
+other weird problems. So if you'd like to look at a file and you aren't sure 
+what's in there, it's not a good idea to just <i>cat</i> the file! </p>
+<p class="docText">Instead, try <span class="docEmphasis">cat -v</span>. It 
+shows an ASCII (&quot;printable&quot;) representation of unprintable and non-ASCII 
+characters. In fact, although most manual pages don't explain how, you can read 
+the output and see what's in the file. Another utility for displaying 
+nonprintable files is <i>od</i>. I usually use its <i>-c</i> option when I need 
+to look at a file character by character. </p>
+<p class="docText">Let's look at a file that's almost guaranteed to be 
+unprintable: a directory file. This example is on a standard V7 (Unix Version 7) 
+filesystem. (Unfortunately, some Unix systems won't let you read a directory. If 
+you want to follow along on one of those systems, try a
+<span class="docEmphBold">compressed file</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-6">Section 
+15.6</a>) or an executable program from <span class="docEmphasis">/bin</span>.) 
+A directory usually has some long lines, so it's a good idea to pipe <i>cat</i>'s 
+output through <i>fold</i>: </p>
+<pre>% <b>ls -fa</b>
+.
+..
+comp
+% <b>cat -v . | fold -62</b>
+M-^?^N.^@^@^@^@^@^@^@^@^@^@^@^@^@&gt;^G..^@^@^@^@^@^@^@^@^@^@^@^@
+M-a
+comp^@^@^@^@^@^@^@^@^@^@^@^@MassAveFood^@^@^@^@^@hist^@^@^
+@^@^@^@^@^@^@^@
+% <b>od -c .</b>
+0000000 377 016   .  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+0000020   &gt; 007   .   .  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+0000040 341  \n   c   o   m   p  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+0000060  \0  \0   M   a   s   s   A   v   e   F   o   o   d  \0  \0  \0
+0000100  \0  \0   h   i   s   t  \0  \0  \0  \0  \0  \0  \0  \0  \0  \0
+0000120</pre>
+<p class="docText">Each entry in a V7-type directory is 16 bytes long (that's 
+also 16 characters, in the ASCII system). The <span class="docEmphasis">od -c</span> 
+command starts each line with the number of bytes, in octal, shown since the 
+start of the file. The first line starts at byte 0. The second line starts at 
+byte 20 octal (that's byte 16 in decimal, the way most people count). And so on. 
+Enough about <i>od</i> for now, though. We'll come back to it in a minute. Time 
+to dissect the <span class="docEmphasis">cat -v</span> output: </p>
+<ul>
+  <li>
+  <p class="docList">You've probably seen sequences like <tt>^N</tt> and <tt>^G</tt>. 
+  Those are control characters. </p>
+  <p class="docList">Another character like this is <tt>^@</tt>, the character 
+  NUL (ASCII 0). There are a lot of NULs in the directory; more about that 
+  later. A DEL character (ASCII 177 octal) is shown as <tt>^?</tt>. Check an 
+  ASCII chart. </li>
+  <li>
+  <p class="docList"><span class="docEmphasis">cat -v</span> has its own symbol 
+  for characters outside the ASCII range with their high bits set, also called 
+  metacharacters. <span class="docEmphasis">cat -v</span> prints those as <tt>M-</tt> 
+  followed by another character. There are two of them in the
+  <span class="docEmphasis">cat -v</span> output: <tt>M-^?</tt> and <tt>M-a</tt>.
+  </p>
+  <p class="docList">To get a metacharacter, you add 200 octal. For an example, 
+  let's look at <tt>M-a</tt>. The octal value of the letter <tt>a</tt> is 141. 
+  When <span class="docEmphasis">cat -v</span> prints <tt>M-a</tt>, it means the 
+  character you get by adding 141+200, or 341 octal. </p>
+  <p class="docList">You can decode that the character <i>cat</i> prints as <tt>
+  M-^?</tt> in the same way. The <tt>^?</tt> stands for the DEL character, which 
+  is octal 177. Add 200+177 to get 377 octal. </li>
+  <li>
+  <p class="docList">If a character isn't <tt>M-<i>something</i></tt> or <tt>^<i>something</i></tt>, 
+  it's a regular printable character. The entries in the directory (<tt>.</tt>,
+  <tt>..</tt>, <tt>comp</tt>, <tt>MassAveFood</tt>, and <tt>hist</tt>) are all 
+  made of regular ASCII characters. </p>
+  <p class="docList">If you're wondering where the entries <tt>MassAveFood</tt> 
+  and <tt>hist</tt> are in the <i>ls</i> listing, the answer is that they 
+  aren't. Those entries have been deleted from the directory. Unix puts two NUL 
+  (ASCII 0, or <tt>^@</tt>) bytes in front of the names of deleted V7 directory 
+  entries. </li>
+</ul>
+<p class="docText"><i>cat</i> has two options, <i>-t</i> and <i>-e</i>, for 
+displaying whitespace in a line. The <i>-v</i> option doesn't convert TAB and 
+trailing-space characters to a visible form without those options. See
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-5">
+Section 12.5</a>. </p>
+<p class="docText">Next, <span class="docEmphasis">od -c</span>. It's easier to 
+explain than <span class="docEmphasis">cat -v</span>: </p>
+<ul>
+  <li>
+  <p class="docList"><span class="docEmphasis">od -c</span> shows some 
+  characters starting with a backslash (<tt>\</tt>). It uses the standard Unix 
+  and C abbreviations for control characters where it can. For instance, <tt>\n</tt> 
+  stands for a newline character, <tt>\t</tt> for a tab, etc. There's a newline 
+  at the start of the <tt>comp</tt> entry — see it in the
+  <span class="docEmphasis">od -c</span> output? That explains why the
+  <span class="docEmphasis">cat -v</span> output was broken onto a new line at 
+  that place: <span class="docEmphasis">cat -v</span> doesn't translate newlines 
+  when it finds them. </p>
+  <p class="docList">The <tt>\0</tt> is a NUL character (ASCII 0). It's used to 
+  pad the ends of entries in V7 directories when a name isn't the full 14 
+  characters long. </li>
+  <li>
+  <p class="docList"><span class="docEmphasis">od -c</span> shows the octal 
+  value of other characters as three digits. For instance, the <tt>007</tt> 
+  means &quot;the character 7 octal.&quot; <span class="docEmphasis">cat -v</span> shows 
+  this as <tt>^G</tt> (CTRL-g). </p>
+  <p class="docList">Metacharacters, the ones with octal values 200 and higher, 
+  are shown as <tt>M-<i>something</i></tt> by <span class="docEmphasis">cat -v</span>. 
+  In <span class="docEmphasis">od -c</span>, you'll see their octal values — 
+  such as <tt>341</tt>. </p>
+  <p class="docList">Each directory entry on a Unix Version 7 filesystem starts 
+  with a two-byte &quot;pointer&quot; to its location in the disk's inode table. When you 
+  type a filename, Unix uses this pointer to find the actual file information on 
+  the disk. The entry for this directory (named .) is <tt>377 016</tt>. Its 
+  parent (named <tt>..</tt>) is at <tt>&gt; 007</tt>. And <span class="docEmphasis">
+  comp</span>'s entry is <tt>341 \n</tt>. Find those in the
+  <span class="docEmphasis">cat -v</span> output, if you want; and compare the 
+  two outputs. </li>
+  <li>
+  <p class="docList">Like <span class="docEmphasis">cat -v</span>, regular 
+  printable characters are shown as is by <span class="docEmphasis">od -c</span>.
+  </li>
+</ul>
+<p class="docText">The <span class="docEmphBold">strings</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-15">Section 
+13.15</a>) program finds printable strings of characters (such as filenames) 
+inside mostly nonprintable files (such as executable binaries). </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-5">12.5 What's in That Whitespace?</h3>
+<p class="docText">The <span class="docEmphBold">cat -v option</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-4">Section 
+12.4</a>) shows an ASCII representation of unprintable and non-ASCII characters.
+<i>cat</i> has two options for displaying whitespace in a line. If you use the
+<i>-t</i> option with <i>-v</i>, TAB characters are shown as <tt>^I</tt>. The <i>
+-e</i> option combined with <i>-v</i> marks the end of each line with a <tt>$</tt> 
+character. Some versions of <i>cat</i> don't require the <i>-v</i> with those 
+options. Let's compare a one-line file without and with the
+<span class="docEmphasis">-t -e</span> (which may have to be typed separately, 
+by the way; <span class="docEmphasis">-te</span> won't work on some versions):
+</p>
+<pre>% <b>cat afile</b>
+This is a one-line file - boring, eh?
+% <b>cat -v -t -e afile</b>
+ThiS^Hs is^Ia one-line file^I- boring, eh?       $</pre>
+<p class="docText">Although you can't tell it from plain <i>cat</i>, there's a 
+backspace (CTRL-h) before the first <tt>s</tt>, two TABs that take up only one 
+column of whitespace each, and seven spaces at the end of the line. Knowing this 
+can help you debug problems in printing and displaying files. It's also a help 
+for shell programmers who need to parse or sort the output of other programs.
+</p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-6">12.6 Finding File Types</h3>
+<p class="docText">Many different kinds of files live on the typical Unix 
+system: database files, executable files, regular text files, files for 
+applications like StarOffice, <i>tar</i> files, mail messages, directories, font 
+files, and so on. </p>
+<p class="docText">You often want to check to make sure you have the right 
+&quot;kind&quot; of file before doing something. For example, you'd like to read the file
+<i>tar</i>. But before typing <tt>more tar</tt>, you'd like to know whether this 
+file is your set of notes on carbon-based sludge or the <i>tar</i> executable. 
+If you're wrong, the consequences might be unpleasant. Sending the <i>tar</i> 
+executable to your screen might screw up your terminal settings, log you off, or 
+do any number of unpleasant things. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: file</p>
+<p class="docText">The <i>file</i> utility tells you what sort of file something 
+is. It's fairly self-explanatory: </p>
+<pre>% <b>file /bin/sh</b>
+/bin/sh:       sparc demand paged executable
+% <b>file 2650</b>
+2650:          [nt]roff, tbl, or eqn input text
+% <b>file 0001,v</b>
+0001,v:        ascii text
+% <b>file foo.sh</b>
+foo.sh:        shell commands</pre>
+<p class="docText"><i>file</i> is actually quite clever though it isn't always 
+correct — some versions are better than others. It doesn't just tell you if 
+something's binary or text; it looks at the beginning of the file and tries to 
+figure out what it's doing. So, for example, you see that file
+<span class="docEmphasis">2650</span> is an <span class="docEmphBold">nroff</span> 
+(<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-12">Section 
+45.12</a>) file and <span class="docEmphasis">foo.sh</span> is a shell script. 
+It isn't quite clever enough to figure out that <span class="docEmphasis">0001,v</span> 
+is an <span class="docEmphBold">RCS</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">Section 
+39.5</a>) archive, but it does know that it's a plain ASCII text file. </p>
+<p class="docText">Many versions of <i>file</i> can be customized to recognize 
+additional file types. The file <span class="docEmphasis">/etc/magic</span> 
+tells <i>file</i> how to recognize different kinds of files. [My Linux system 
+has the <i>file</i> command from <span class="docEmphasis">ftp://ftp.astron.com/pub/file/</span>, 
+which uses a multiple-database format. It's updated fairly often to understand 
+new file formats. — <span class="docEmphasis">JP</span>] It's capable of a lot 
+(and should be capable of even more), but we'll satisfy ourselves with an 
+introductory explanation. Our goal will be to teach <i>file</i> to recognize RCS 
+archives. </p>
+<p class="docText"><span class="docEmphasis">/etc/magic</span> has four fields:</p>
+<blockquote>
+  <p class="docText"><tt><i>offset data-type value file-type</i></tt></p>
+</blockquote>
+<p class="docText">These are as follows:</p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><tt><i>offset</i></tt></span> </dt>
+  <dd>
+  <p class="docList">The offset into the file at which <span class="docEmphasis">
+  magic</span> will try to find something. If you're looking for something right 
+  at the beginning of the file, the offset should be <tt>0</tt>. (This is 
+  usually what you want.) </dd>
+  <dt><span class="docPubcolor"><tt><i>data-type</i></tt></span> </dt>
+  <dd>
+  <p class="docList">The type of test to make. Use <tt>string</tt> for text 
+  comparisons, <tt>byte</tt> for byte comparisons, <tt>short</tt> for two-byte 
+  comparisons, and <tt>long</tt> for four-byte comparisons. </dd>
+  <dt><span class="docPubcolor"><tt><i>value</i></tt></span> </dt>
+  <dd>
+  <p class="docList">The value you want to find. For string comparisons, any 
+  text string will do; you can use the standard Unix escape sequences (such as
+  <tt>\n</tt> for newline). For numeric comparisons (byte, short, long), this 
+  field should be a number, expressed as a C constant (e.g., <tt>0x77</tt> for 
+  the hexadecimal byte 77). </dd>
+  <dt><span class="docPubcolor"><tt><i>file-type</i></tt></span> </dt>
+  <dd>
+  <p class="docList">The string that <i>file</i> will print if this test 
+  succeeds. </dd>
+</dl>
+<p class="docText">So, we know that RCS archives begin with the word <tt>head</tt>. 
+This word is right at the beginning of the file (offset 0). Since we obviously 
+want a string comparison, we make the the following addition to
+<span class="docEmphasis">/etc/magic</span>: </p>
+<pre>0     string     head     RCS archive</pre>
+<p class="docText">This says, &quot;The file is an RCS archive if you find the string
+<tt>head</tt> at an offset of 0 bytes from the beginning of the file.&quot; Does it 
+work? </p>
+<pre>% <b>file RCS/0001,v</b>
+RCS/0001,v:        RCS archive</pre>
+<p class="docText">As I said, the tests can be much more complicated, 
+particularly if you're working with binary files. To recognize simple text 
+files, this is all you need to know. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-7">12.7 Squash Extra Blank Lines</h3>
+<p class="docText">Reading output with lots of empty lines can be a waste of 
+screen space. For instance, some versions of <span class="docEmphBold">man</span> 
+(<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+2.1</a>) show all the blank lines between manual pages. To stop that, read your 
+file or pipe it through <span class="docEmphasis">cat -s</span>. ( Many versions 
+of <span class="docEmphBold">less</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>) and <i>more</i> have a similar <i>-s</i> option.) The <i>-s</i> option 
+replaces multiple blank lines with a single blank line. (If your <i>cat</i> 
+doesn't have <i>-s</i>, see the <i>sed</i> alternative at the end.) </p>
+<p class="docText"><span class="docEmphasis">cat -s</span> might not always seem 
+to work. The problem is usually that the &quot;empty&quot; lines have SPACE, TAB, or 
+CTRL-m characters on them. The fix is to let <i>sed</i> &quot;erase&quot; lines with those 
+invisible characters on them: </p>
+<pre>% <b>sed 's/^[ </b>SPACE TAB CTRL-v CTRL-m]*$//' <i>file </i><b> | cat -s </b></pre>
+<p class="docText">In <span class="docEmphBold">vi</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-6">Section 
+18.6</a>) and many terminal drivers, the CTRL-v character quotes the CTRL-m 
+(RETURN) so that character doesn't end the current line. </p>
+<p class="docText">If you don't have <span class="docEmphasis">cat -s</span>, 
+then <i>sed</i> can do both jobs: </p>
+<pre>% <b>sed -e 's/^[ </b>SPACE TAB CTRL-v CTRL-m]*$//' -e '/./,/^$/!d' <i>file </i></pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-8">12.8 How to Look at the End of a File: tail</h3>
+<p class="docText">Let's say that you want to look at the end of some large 
+file. For example, you've just sent some mail and want to find out whether it 
+was handled correctly. But when you look at your mail logs, you find out that 
+the log file is 30 or 40 KB long, and you don't care about the whole thing — you 
+certainly don't want to page through it until you get to the end. How do you 
+handle this? </p>
+<p class="docText">The <i>tail</i> command is just what you need in this 
+situation. <i>tail</i> reads its input and discards everything except for the 
+last ten lines (by default). Therefore, if you're pretty sure that the 
+information you want is at the end of the file, you can use <i>tail</i> to get 
+rid of the junk that you don't want. To see just the end of that mail log (in 
+this case, <i>qmail</i>'s log): </p>
+<pre>% <b>tail /var/log/maillog</b>
+Feb 19 10:58:45 yyy qmail: 1014141525.474209 delivery 6039: success: did_0+0+1/
+Feb 19 10:58:45 yyy qmail: 1014141525.491370 status: local 0/10 remote 0/20
+Feb 19 10:58:45 yyy qmail: 1014141525.492211 end msg 111214
+Feb 19 11:11:15 yyy qmail: 1014142275.469000 new msg 111214
+Feb 19 11:11:15 yyy qmail: 1014142275.469631 info msg 111214: bytes 281 from
+&lt;xxx@yyy.zyzzy.com&gt; qp 51342 uid 1000
+Feb 19 11:11:15 yyy qmail: 1014142275.562074 starting delivery 6040: msg 111214
+to remote xyz@frob.com
+Feb 19 11:11:15 yyy qmail: 1014142275.562630 status: local 0/10 remote 1/20
+Feb 19 11:11:30 yyy qmail: 1014142290.110546 delivery 6040: success:
+64.71.166.115_accepted_message./Remote_host_said:_250_Ok:_queued_as_C0EC73E84D/
+Feb 19 11:11:30 yyy qmail: 1014142290.127763 status: local 0/10 remote 0/20
+Feb 19 11:11:30 yyy qmail: 1014142290.128381 end msg 111214</pre>
+<p class="docText">For another common example, to see the latest entries from 
+the BSD or Linux kernel ring buffer: </p>
+<pre>% <b>dmesg | tail</b>
+lpt0: &lt;Printer&gt; on ppbus0
+lpt0: Interrupt-driven port
+ppi0: &lt;Parallel I/O&gt; on ppbus0
+IPsec: Initialized Security Association Processing.
+ad0: 19569MB &lt;ST320430A&gt; [39761/16/63] at ata0-master UDMA66
+afd0: 239MB &lt;IOMEGA ZIP 250 ATAPI&gt; [239/64/32] at ata0-slave using PIO3
+acd0: CDROM &lt;ATAPI CDROM&gt; at ata1-master using PIO4
+Mounting root from ufs:/dev/ad0s1a
+pid 50882 (fetch), uid 0: exited on signal 10 (core dumped)
+pid 88041 (smbd), uid 1000 on /usr: file system full</pre>
+<p class="docText">This will give you the last ten lines from the <i>dmesg</i> 
+command. If you need more or less than ten lines, look at
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-9">
+Section 12.9</a>. </p>
+<p class="docText">Althought the GNU version is better behaved, some older 
+versions of <i>tail</i> accept one (and <span class="docEmphasis">only</span> 
+one!) filename: </p>
+<pre>% <b>tail  </b><i>somefile </i></pre>
+<p class="docText">There are many other situations in which <i>tail</i> is 
+useful: I've used it to make sure that a job that produces a big output file has 
+finished correctly, to remind me what the last piece of mail in my mailbox was 
+about, and so on. You'll find <i>tail</i> important whenever you're interested 
+only in the end of something. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-9">12.9 Finer Control on tail</h3>
+<p class="docText">What if you need to look at the last 11 lines of the file? 
+The command <tt>tail -<i>n</i></tt> shows the final <tt><i>n</i></tt> lines. The 
+command <tt>tail +<i>n</i></tt> discards the first <tt><i>n</i></tt>-1 lines, 
+giving you line <tt><i>n</i></tt> and everything that follows it. </p>
+<p class="docText">You can also tell <i>tail</i> to count the number of 
+characters or the number of 512-byte blocks. To do so, use the <i>-c</i> option 
+(count characters) or the <i>-b</i> option (count blocks). If you want to state 
+explicitly that you're interested in lines, give the <i>-l</i> option. </p>
+<p class="docText">Your <i>tail</i> probably has a <i>-r</i> option that shows 
+the file in reverse order, starting from the last line. </p>
+<p class="docText">Many versions of Unix limit the maximum number of lines that
+<i>tail</i>, especially <span class="docEmphasis">tail -r</span>, can display.
+</p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-10">12.10 How to Look at Files as They Grow</h3>
+<p class="docText">One of the best things that you can do with <i>tail</i> is to 
+look at a file as it is growing. For example, I once was debugging a program 
+named <i>totroff</i> that converted a manual from a plain text format to <i>
+troff</i>. It was rather slow, so that you didn't want to wait until the program 
+finished before looking at the output. But you didn't want to be typing <tt>more</tt> 
+every 20 seconds either, to find out whether the part of the file that you were 
+debugging had made it through yet. (<i>more</i> quits when you &quot;run out&quot; of 
+file, so it can't really help you look for a part of a file that hasn't been 
+written yet.) The <span class="docEmphasis">tail -f</span> command solves this 
+problem. For example: </p>
+<p class="docText"><tt>&amp;</tt>
+<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">
+Section 23.3</a></p>
+<pre>% <b>totroff &lt; file.txt &gt; file.ms &amp;</b>
+[1] 12345
+% <b>tail -f file.ms</b>
+.LP
+Tail produces output as
+the file grows.
+   ...
+CTRL-c</pre>
+<p class="docText">Now suppose you want to monitor several files at once. 
+Administrators, for example, might want to keep track of several log files, such 
+as <span class="docEmphasis">/usr/adm/messages</span>, <span class="docEmphasis">
+/usr/adm/lpd-errs</span>, UUCP error files, etc. The GNU <i>tail</i> program 
+comes in useful for keeping an eye on several administrative log files at once. 
+But it also comes in useful for nonadministrators. </p>
+<p class="docText">For example, suppose you want to perform several <i>grep</i>s 
+through many files, saving the output in different files. You can then monitor 
+the files using <i>tail</i> -<i>f</i>. For example: </p>
+<pre>% <b>grep Berkeley ch?? &gt; Berkeley.grep &amp;</b>
+% <b>grep BSD ch?? &gt; BSD.grep &amp;</b>
+% <b>grep &quot;System V&quot; ch?? &gt; SystemV.grep &amp;</b>
+% <b>grep SysV ch?? &gt; SysV.grep &amp;</b>
+% <b>tail -f Berkeley.grep BSD.grep SystemV.grep SysV.grep</b></pre>
+<p class="docText">When new text appears in the files called with <i>tail</i> -<i>f</i>, 
+it also appears on the screen: </p>
+<pre>==&gt; SysV.grep &lt;==
+ch01:using a SysV-based UNIX system, you must
+
+==&gt; Berkeley.grep &lt;==
+ch01:at the University of California at Berkeley, where
+
+==&gt; BSD.grep &lt;==
+ch03:prefer BSD UNIX systems because they are less likely to
+ch04:who use a BSD-based UNIX systems must run the
+
+==&gt; SysV.grep &lt;==
+ch04:is a SysV derivative sold by Acme Products Inc.</pre>
+<p class="docText">(When text is written to a new file, the filename is printed 
+surrounded by <tt>==&gt;</tt> and <tt>&lt;==</tt>.) </p>
+<p class="docText">What's actually happening here?</p>
+<p class="docText">When you invoke <span class="docEmphasis">tail -f</span>, <i>
+tail</i> behaves just like it normally does: it reads the file and dumps the 
+last ten (or however many) lines to the screen. But, unlike most applications,
+<i>tail</i> doesn't quit at this point. Instead, <i>tail</i> goes into an 
+infinite loop. It sleeps for a second, then wakes up and looks to see if the 
+file is any longer, then sleeps again, and so on. Because this is an infinite 
+loop, you have to enter CTRL-c (or whatever your <span class="docEmphBold">
+interrupt key</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-11">Section 
+24.11</a>) is) when you've seen the data you're interested in, or when the file 
+you're watching has been completed. <i>tail</i> has no way of knowing when the 
+file has stopped growing. </p>
+<p class="docText"><i>tail</i> ignores the <i>-f</i> option when it is reading 
+from a pipe. For example, <span class="docEmphasis">totroff &lt; file.txt | tail -f</span> 
+wouldn't work. </p>
+<p class="docText">
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-11">
+Section 12.11</a> shows a useful feature of GNU <i>tail</i>: following files by 
+name or file descriptor. </p>
+<p class="docText"><span class="docEmphasis">—ML and LM</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-11">12.11 GNU tail File Following</h3>
+<p class="docText">I like to keep an <i>xterm</i> window open on my Linux system 
+so I can watch various log files. Although there are fancier log-file-monitoring 
+programs (such as <i>swatch</i>), <span class="docEmphBold">tail -f</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-10">Section 
+12.10</a>) is perfect for me. </p>
+<p class="docText">I also run a weekly <span class="docEmphBold">cron</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-2">Section 
+25.2</a>) job to rotate log files (rename the files, compress and archive them). 
+When this job runs, the log files suddenly have new names — <i>messages</i> 
+becomes <i>messages.1</i>, for instance — so the system logger starts writing to 
+a different <i>messages</i> file. Then plain <i>tail</i> -<i>f</i> suddenly 
+stops showing the log because it doesn't realize that the same physical file on 
+the disk suddenly has a new name. When this happened, I had to remember to kill 
+and restart <i>tail</i> each Sunday morning . . . until I found the new version 
+of GNU <i>tail</i>, that is. </p>
+<p class="docText">The GNU <i>tail</i> <i>- -follow</i> option lets you choose 
+how the files you're watching should be followed. By default, GNU <i>tail</i> 
+acts like the standard <i>tail</i>: it opens a file for reading and gets a
+<span class="docEmphBold">file descriptor</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-15">Section 
+36.15</a>) number, which it constantly watches for changes. But if that file is 
+renamed and a new file with the old name (and a new inode) takes its place, the 
+file descriptor may point to a file that's not in use anymore. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: tail</p>
+<p class="docText">The GNU <i>tail</i> options, <i>- -follow=name</i> and <i>- 
+-retry</i>, tell it to watch the actual file name, not the open file descriptor. 
+Here's what happens Sunday mornings when I'm using this: </p>
+<p class="docText"><tt>{ }</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">
+Section 28.4</a></p>
+<pre>kludge# <b>tail --follow=name --retry ~jerry/tmp/startx.log \ </b>
+<b>  /var/log/{messages,maillog,secure} </b>
+   <i> ...lots of log messages...</i>
+tail: `/var/log/secure' has been replaced;  following end of new file
+tail: `/var/log/maillog' has been replaced;  following end of new file
+tail: `/var/log/messages' has been replaced;  following end of new file
+Dec 31 04:02:01 kludge syslogd 1.3-3: restart.
+Dec 31 04:02:01 kludge syslogd 1.3-3: restart.
+Dec 31 04:02:05 kludge anacron[8397]: Updated timestamp for job
+`cron.weekly' to 2000-12-31</pre>
+<p class="docText">It's just what I've always needed.</p>
+<p class="docText"><span class="docEmphasis">— JP </span></p>
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-12">12.12 Printing the Top of a File</h3>
+<p class="docText"><i>head</i> can be used to print the first few lines of one 
+or more files (the &quot;head&quot; of the file or files). When more than one file is 
+specified, a header is printed at the beginning of each file, and each is listed 
+in succession. </p>
+<p class="docText">Like <span class="docEmphBold">tail</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-9">Section 
+12.9</a>), <i>head</i> supports the <i>-</i><tt><i>n</i></tt> option to control 
+the number of lines displayed and the <i>-c</i> option to print characters/bytes 
+instead of lines. GNU <i>head</i> also supports an extention to <i>-c</i>: <i>-c
+</i><tt><i>n</i></tt>k prints the first <tt><i>n</i></tt> kilobytes of the file, 
+and <i>-c </i><tt><i>n</i></tt>m prints the first <tt><i>n</i></tt> megabytes of 
+the file. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-12-SECT-13">12.13 Numbering Lines</h3>
+<p class="docText">There are times when you want to print out a file with the 
+lines numbered — perhaps because you are showing a script or program in 
+documentation and want to refer to individual lines in the course of your 
+discussion. </p>
+<p class="docText">This is one of the handy things <i>cat</i> can do for you 
+with the <i>-n</i> option. </p>
+<p class="docText"><span class="docEmphasis">cat -n</span> precedes each line 
+with some leading spaces, the line number, and a TAB. How many leading spaces? 
+It depends on how high the line numbers go. The line numbers are right-justified 
+at column 6, which means that a 6-digit number will go all the way back to the 
+margin. I only belabor this point in case you're tempted to trim the leading 
+spaces with something like <span class="docEmphBold">cut</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-14">Section 
+21.14</a>). </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: nl</p>
+<p class="docText">If you have a version of <i>cat</i> that doesn't support <i>
+-n</i>, try <i>nl</i>, the line-numbering program. <span class="docEmphasis">nl 
+-ba</span> acts like <span class="docEmphasis">cat -n</span>. By itself, <i>nl</i> 
+numbers only lines with text. The GNU version is on the web site. </p>
+<p class="docText">You can achieve a similar effect with
+<span class="docEmphasis">pr -t -n</span>. (The <i>-t</i> keeps <i>pr</i> from 
+inserting the <span class="docEmphBold">header and footer</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-6">Section 
+45.6</a>) it normally uses to break its output into pages.) And as long as we're 
+giving you choices, here are five more: </p>
+<pre>less -N <tt><i>filename</i></tt>
+grep -n \^ <tt><i>filename</i></tt>
+awk '{print NR,$0}' <tt><i>filename</i></tt>
+sed = &lt; <tt><i>filename</i></tt> | sed 'N;s/\n/ /'
+ex - '+%#\|q' <tt><i>filename</i></tt></pre>
+<p class="docText"><span class="docEmphasis">—JP and TOR </span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN12-1"><a class="docLink" href="#ENB12-1">[1]</a>&nbsp;&nbsp;<span style="font-weight: bold"><span style="font-weight: normal">You may think 
+this command form is pointless. In truth, this form is rarely used in such a 
+basic way. More often, you&#39;ll use this form along with some of <i>cat</i>&#39;s 
+display options or connect this command to other Unix commands via a
+<span class="docEmphBold">pipe</span>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-5">
+Section 1.5</a>).</span></span></p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 11.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 13.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

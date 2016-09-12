@@ -1,0 +1,790 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 15</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 14.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 16.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 15. Optimizing Disk Space</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-15-SECT-1">15.1 Disk Space Is Cheap</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-15-SECT-2">15.2 Instead of Removing a File, Empty It</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-15-SECT-3">15.3 Save Space with &quot;Bit Bucket&quot; Log Files and Mailboxes</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-15-SECT-4">15.4 Save Space with a Link</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-15-SECT-5">15.5 Limiting File Sizes</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-15-SECT-6">15.6 Compressing Files to Save Space</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-15-SECT-7">15.7 Save Space: tar and compress a Directory Tree</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-15-SECT-8">15.8 How Much Disk Space?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-15-SECT-9">15.9 Compressing a Directory Tree: Fine-Tuning</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-15-SECT-10">15.10 Save Space in Executable Files with strip</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-15-SECT-11">15.11 Disk Quotas</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-15-SECT-1">15.1 Disk Space Is Cheap</h3>
+<p class="docText">Many of the techniques in this chapter aren't nearly as 
+applicable as they once were. At the time of this writing, EIDE disks are about 
+a dollar a gigabyte; even fast-wide SCSI isn't that expensive. Often the 
+solution to running low on disk space is just to buy more. </p>
+<p class="docText">That said, many of these techniques illustrate useful things 
+to know about Unix. It's common these days to run Unix on an old, spare machine 
+where it's not worth the trouble of upgrading the disks. You may also be dealing 
+with a Unix box at work or school that uses expensive, highly reliable disks 
+with expensive backup procedures in place, where more disk space just isn't an 
+option. It never hurts to know how to eke the last few bytes out of a partition.
+</p>
+<p class="docText">This chapter also has a lot of information about compressing 
+and decompressing files, which is fairly common. (These days, you may well 
+compress files to save network bandwidth rather than disk space, but the same 
+principles apply.) So enjoy exploring! </p>
+<p class="docText"><span class="docEmphasis">— DH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-15-SECT-2">15.2 Instead of Removing a File, Empty It</h3>
+<p class="docText">Sometimes you don't want to remove a file completely — you 
+just want to empty it: </p>
+<ul>
+  <li>
+  <p class="docList">If an active process has the file open (not uncommon for 
+  log files), removing the file and creating a new one will not affect the 
+  logging program; those messages will just keep going to the file that's no 
+  longer linked. Emptying the file doesn't break the association, and so it 
+  clears the file without affecting the logging program. </li>
+  <li>
+  <p class="docList">When you remove a file and create a new one with the same 
+  name, the new file will have your default permissions and
+  <span class="docEmphBold">ownership</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-3">Section 
+  50.3</a>). It's better to empty the file now, then add new text later; this 
+  won't change the permissions and ownership. </li>
+  <li>
+  <p class="docList">Completely empty files (ones that <span class="docEmphasis">
+  ls -l</span> says have zero characters) don't take any disk space to store 
+  (except the few bytes that the <span class="docEmphBold">directory entry</span> 
+  (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-2">Section 
+  10.2</a>) uses). </li>
+  <li>
+  <p class="docList">You can use the empty files as &quot;place markers&quot; to remind 
+  you that something was there or belongs there. Some Unix logging programs 
+  won't write errors to their log files unless the log files already exist. 
+  Empty files work fine for that. </li>
+  <li>
+  <p class="docList">Empty files hold a &quot;timestamp&quot; (just as files with text do) 
+  that shows when the file was last modified. I use empty files in some 
+  directories to remind me when I've last done something (backups, printouts, 
+  etc.). The <span class="docEmphBold">find -newer</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-8">Section 
+  9.8</a>) command can compare other files to a timestamp file. </li>
+</ul>
+<p class="docText">Well, you get the idea by now.</p>
+<p class="docText">How can you empty a file? Watch out: when some editors say 
+that a file has &quot;no lines,&quot; they may still append a newline character when 
+writing the file. Just one character still takes a block of disk space to store. 
+Here are some better ways to get a properly empty file: </p>
+<ul>
+  <li>
+  <p class="docList">In Bourne-type shells like <i>sh</i> and <i>bash</i>, the 
+  most efficient way is to redirect the output of a null command: </p>
+  <pre>$ <b>&gt; afile</b></pre>
+  </li>
+  <li>
+  <p class="docList">If the file already exists, that command will truncate the 
+  file without needing a subprocess. </li>
+  <li>
+  <p class="docList">Copy the Unix empty file, <span class="docEmphBold">
+  /dev/null</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">Section 
+  43.12</a>), on top of the file: </p>
+  <pre>% <b>cp /dev/null afile</b></pre>
+  </li>
+  <li>
+  <p class="docList">Or just <i>cat</i> it there:</p>
+  <pre>% <b>cat /dev/null &gt; afile</b></pre>
+  </li>
+</ul>
+<p class="docText">You can also &quot;almost&quot; empty the file, leaving just a few 
+lines, this way: </p>
+<p class="docText"><tt>tail</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-8">
+Section 12.8</a></p>
+<pre>% <b>tail afile &gt; tmpfile</b>
+% <b>cat tmpfile &gt; afile</b>
+% <b>rm tmpfile</b></pre>
+<p class="docText">That's especially good for log files that you never want to 
+delete completely. Use <i>cat</i> and <i>rm</i>, not <i>mv</i> -- <i>mv</i> will 
+break any other links to the original file (<tt>afile</tt>) and replace it with 
+the temporary file. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-15-SECT-3">15.3 Save Space with &quot;Bit Bucket&quot; Log Files and 
+Mailboxes</h3>
+<p class="docText">Some Unix programs — usually background or daemon programs — 
+insist on writing a log file. You might not want the log file itself as much as 
+you want the disk space that the log file takes. Here are a few tips: </p>
+<ul>
+  <li>
+  <p class="docList">Some programs will write to a log file only if the log file 
+  exists. If the program isn't running, try removing the log file. </li>
+  <li>
+  <p class="docList">If you remove a log file and the program recreates it, look 
+  for command-line options or a configuration-file setup that tells the program 
+  not to make the log file. </li>
+  <li>
+  <p class="docList">If you can't get the program to stop writing the log file, 
+  try replacing the log file with a symbolic link to<span class="docEmphBold"> 
+  /dev/null</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">Section 
+  43.12</a>): </p>
+  <pre># <b>rm logfile</b>
+# <b>ln -s /dev/null logfile</b></pre>
+  <p class="docList">The program won't complain, because it will happily write 
+  its log file to <i>/dev/null</i>, which discards everything written to it. 
+  (Writing to <i>/dev/null</i> is also known as &quot;throwing it in the bit bucket,&quot; 
+  since all the bits just go away.) Watch out for programs that run at reboot or 
+  those that run from the system <span class="docEmphBold">crontab</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-2">Section 
+  25.2</a>) to truncate and replace the log file. These programs might replace 
+  the symbolic link with a small regular file that will start growing again.
+  </li>
+  <li>
+  <p class="docList">Does a system mailbox for a user like
+  <span class="docEmphasis">bin</span> keep getting <span class="docEmphBold">
+  mail</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+  1.21</a>) that you want to throw away? You may be able to add a
+  <span class="docEmphasis">.forward</span> file to the account's home directory 
+  with this single line: </p>
+  <pre>/dev/null</pre>
+  <p class="docList">Or add an alias in the system mail alias file that does the 
+  same thing: </p>
+  <pre>bin: /dev/null</pre>
+  <p class="docList">If your system has a command like <i>newaliases</i> to 
+  rebuild the alias database, don't forget to use it after you make the change.
+  </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-15-SECT-4">15.4 Save Space with a Link</h3>
+<p class="docText">You might have copies of the same file in several directories 
+for the following reasons: </p>
+<ul>
+  <li>
+  <p class="docList">Several different users need to read it (a data file, a 
+  program setup file, a telephone list, etc.). </li>
+  <li>
+  <p class="docList">It's a program that more than one person wants to use. For 
+  some reason, you don't want to keep one central copy and put its directory in 
+  your <span class="docEmphBold">search path</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-6">Section 
+  27.6</a>). </li>
+  <li>
+  <p class="docList">The file has a strange name or it's in a directory you 
+  don't usually use. You want a name that's easier to type, but you can't use <i>
+  mv</i>. </li>
+</ul>
+<p class="docText">Instead of running <i>cp</i>, think about <i>ln</i>. There 
+are lots of advantages to <span class="docEmphBold">links</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-3">Section 
+10.3</a>). One big advantage of hard links is that they don't use any disk 
+space.<span id="ENB15-1"><a class="docLink" href="#EN15-1"><sup>[1]</sup></a></span> The 
+bigger the file, the more space you save with a link. A symbolic link always 
+takes some disk space, so a hard link might be better for ekeing the most space 
+out of your disk. Of course, you have to use a symbolic link if you want to link 
+across filesystems, and symbolic links are much more obvious to other people, so 
+a symlink is less likely to confuse people. Generally the clarity is worth the 
+little bit of extra disk space. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-15-SECT-5">15.5 Limiting File Sizes</h3>
+<p class="docText">Here are techniques to keep you from creating large files 
+(which can happen by accident, such as with runaway programs). Your shell may be 
+able to set process limits. If you're writing a program in C or another language 
+that has access to kernel system calls, you can set these limits yourself. And 
+there's one more trick you can use. </p>
+<p class="docText">These limits are passed to child processes. So, if your shell 
+sets a limit, all programs you start from that shell will inherit the limit from 
+their parent process. </p>
+<h4  id="upt3-CHP-15-SECT-5.1" class="docSection2Title">15.5.1 limit and ulimit</h4>
+<p class="docText">Many shells have a built-in command that uses system calls to 
+set resource limits. This is usually done from a <span class="docEmphBold">shell 
+setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>), but can also be done from the command line at a shell prompt. To set a 
+maximum file size in C-type shells and <i>zsh</i> , use the command <tt>limit 
+filesize</tt> <tt><i>max-size</i></tt>. In the Korn shell and <i>bash</i>, use
+<tt>ulimit -f</tt> <tt><i>max-size</i></tt>. For example, the following <i>csh</i> 
+and <i>ksh</i> commands keep you from creating any files larger than 2 MB: </p>
+<pre>% <b>limit filesize 2m</b>
+$ <b>ulimit -f 2000</b></pre>
+<p class="docText">Similarly, on many systems, you can use <i>limit</i> and <i>
+ulimit</i> to restrict the size of core dump files. Core dumps are generally 
+large files, and if you are not actively developing or debugging, they are often 
+not interesting or useful. To set a maximum size for core dumps, execute one of 
+these commands: </p>
+<pre>% <b>limit coredumpsize  </b><i>max-size </i>
+$ <b>ulimit -c  </b><i>max-size </i></pre>
+<p class="docText">To eliminate core dumps entirely, use <tt>0</tt> (zero) for
+<tt><i>max-size</i></tt>. Because core dumps are essential for effective 
+debugging, any users who actively debug programs should know the commands <tt>
+unlimit coredumpsize</tt> (which removes this restriction in <i>csh</i> ) and
+<tt>ulimit -c unlimited</tt> for <i>bash</i> and <i>ksh</i>. </p>
+<h4  id="upt3-CHP-15-SECT-5.2" class="docSection2Title">15.5.2 Other Ideas</h4>
+<p class="docText">File size limits only apply to processes that are invoked 
+from a shell where the limit is set. For instance, <i>at</i> and <i>cron</i> 
+jobs might not read the <span class="docEmphBold">shell setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) that sets your limit. One way to fix this is to set the limit 
+explicitly before you start the job. For instance, to keep your <i>cron</i> job 
+named <i>cruncher</i> from core-dumping, make the <i>crontab</i> entry similar 
+to one of these: </p>
+<p class="docText"><tt>;</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-16">
+Section 28.16</a></p>
+<pre>47 2 * * *   ulimit -c 0; cruncher
+47 2 * * *   bash -c 'ulimit -c 0; exec cruncher'</pre>
+<p class="docText">If you've written a <span class="docEmphBold">daemon</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-10">Section 
+1.10</a>) in C that starts as your workstation boots up (so no shell is 
+involved), have your program invoke a system call like <span class="docEmphasis">
+ulimit</span>(3) or <span class="docEmphasis">setrlimit</span>(2). </p>
+<p class="docText">If the unwanted files are created in a directory where you 
+can deny write permission to the directory itself — and the files are not 
+created by a process running as <span class="docEmphasis">root</span> (filesystem 
+permissions don't apply to <span class="docEmphasis">root</span>) — simply make 
+the directory unwritable. (If the process needs to write temporary files, have 
+it use <i>/tmp</i>. An environment variable such as <span class="docEmphasis">
+TMP</span> or <span class="docEmphasis">TMPDIR</span> may control this.) </p>
+<p class="docText">You can prevent the files from being created by putting a 
+zero-size unwritable file in the directory where the files are being created. 
+Because the file is zero-length, it doesn't take any disk space to store: </p>
+<p class="docText"><tt>chmod</tt>
+<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-5">
+Section 50.5</a></p>
+<pre>% <b>touch core</b>
+% <b>chmod 000 core</b></pre>
+<p class="docText">If all else fails, try making a symbolic link to
+<span class="docEmphBold">/dev/null</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">Section 
+43.12</a>). </p>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-15-SECT-6">15.6 Compressing Files to Save Space</h3>
+<p class="docText"><i>gzip</i> is a fast and efficient compression program 
+distributed by the GNU project. The basic function of <i>gzip</i> is to take a 
+file <span class="docEmphasis">filename</span>, compress it, save the compressed 
+version as <span class="docEmphasis">filename.gz</span>, and remove the 
+original, uncompressed file. The original file is removed only if <i>gzip</i> is 
+successful; it is very difficult to delete a file accidentally in this manner. 
+Of course, being GNU software, <i>gzip</i> has more options than you want to 
+think about, and many aspects of its behavior can be modified using command-line 
+options. </p>
+<p class="docText">First, let's say that we have a large file named <i>
+garbage.txt</i>: </p>
+<pre>rutabaga% <b>ls -l garbage.txt*</b>
+-rw-r--r--   1 mdw      hack       312996 Nov 17 21:44 garbage.txt</pre>
+<p class="docText">If we compress this file using <i>gzip</i>, it replaces <i>
+garbage.txt</i> with the compressed file <i>garbage.txt.gz</i>. We end up with 
+the following: </p>
+<pre>rutabaga% <b>gzip garbage.txt</b>
+rutabaga% <b>ls -l garbage.txt*</b>
+-rw-r--r--   1 mdw      hack       103441 Nov 17 21:48 garbage.txt.gz</pre>
+<p class="docText">Note that <i>garbage.txt</i> is removed when <i>gzip</i> 
+completes. </p>
+<p class="docText">You can give <i>gzip</i> a list of filenames; it compresses 
+each file in the list, storing each with a <span class="docEmphasis">.gz</span> 
+extension. (Unlike the <i>zip</i> program for Unix and MS-DOS systems, <i>gzip</i> 
+will not, by default, compress several files into a single
+<span class="docEmphasis">.gz</span> archive. That's what <i>tar</i> is for; see
+<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-7">
+Section 15.7</a>.) </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: gzip</p>
+<p class="docText">How efficiently a file is compressed depends upon its format 
+and contents. For example, many audio and graphics file formats (such as MP3 and 
+JPEG) are already well compressed, and <i>gzip</i> will have little or no effect 
+upon such files. Files that compress well usually include plain-text files and 
+binary files such as executables and libraries. You can get information on a <i>
+gzip</i> ped file using <i>gzip</i> -<i>l</i>. For example: </p>
+<pre>rutabaga% <b>gzip -l garbage.txt.gz</b>
+compressed  uncompr. ratio uncompressed_name
+   103115    312996  67.0% garbage.txt</pre>
+<p class="docText">To get our original file back from the compressed version, we 
+use <i>gunzip</i>, as in: </p>
+<pre>rutabaga% <b>gunzip garbage.txt.gz</b>
+rutabaga% <b>ls -l garbage.txt</b>
+-rw-r--r--   1 mdw      hack       312996 Nov 17 21:44 garbage.txt</pre>
+<p class="docText">which is identical to the original file. Note that when you
+<i>gunzip</i> a file, the compressed version is removed once the uncompression 
+is complete. </p>
+<p class="docText"><i>gzip</i> stores the name of the original, uncompressed 
+file in the compressed version. This allows the name of the compressed file to 
+be irrelevant; when the file is uncompressed it can be restored to its original 
+splendor. To uncompress a file to its original filename, use the <i>-N</i> 
+option with <i>gunzip</i>. To see the value of this option, consider the 
+following sequence of commands: </p>
+<pre>rutabaga% <b>gzip garbage.txt</b>
+rutabaga% <b>mv garbage.txt.gz rubbish.txt.gz</b></pre>
+<p class="docText">If we were to <i>gunzip rubbish.txt.gz</i> at this point, the 
+uncompressed file would be named <i>rubbish.txt</i>, after the new (compressed) 
+filename. However, with the <i>-N</i> option, we get the following: </p>
+<pre>rutabaga% <b>gunzip -N rubbish.txt.gz</b>
+rutabaga% <b>ls -l garbage.txt</b>
+-rw-r--r--   1 mdw      hack       312996 Nov 17 21:44 garbage.txt</pre>
+<p class="docText"><i>gzip</i> and <i>gunzip</i> can also compress or uncompress 
+data from standard input and output. If <i>gzip</i> is given no filenames to 
+compress, it attempts to compress data read from standard input. Likewise, if 
+you use the <i>-c</i> option with <i>gunzip</i>, it writes uncompressed data to 
+standard output. For example, you could pipe the output of a command to <i>gzip</i> 
+to compress the output stream and save it to a file in one step, as in: </p>
+<pre>rutabaga% <b>ls -laR $HOME | gzip &gt; filelist.gz</b></pre>
+<p class="docText">This will produce a recursive directory listing of your home 
+directory and save it in the compressed file <i>filelist.gz</i>. You can display 
+the contents of this file with the command: </p>
+<pre>rutabaga% <b>gunzip -c filelist.gz | less</b></pre>
+<p class="docText">This will uncompress <i>filelist.gz</i> and pipe the output 
+to the <span class="docEmphBold">less</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>) command. When you use <i>gunzip</i> -<i>c</i>, the file on disk 
+remains compressed. </p>
+<p class="docText">The <i>gzcat</i> command is identical to <i>gunzip</i> -<i>c</i>. 
+You can think of this as a version of <i>cat</i> for compressed files. Some 
+systems, including Linux, even have a version of the pager <i>less</i> for 
+compressed files: <i>zless</i>. </p>
+<p class="docText">When compressing files, you can use one of the options <i>-1</i>,
+<i>-2</i>, through <i>-9</i> to specify the speed and quality of the compression 
+used. <i>-1</i> (also <i>-</i> <i>-fast</i>) specifies the fastest method, which 
+compresses the files less compactly, while <i>-9</i> (also <i>- -best</i>) uses 
+the slowest, but best compression method. If you don't specify one of these 
+options, the default is <i>-6</i>. None of these options has any bearing on how 
+you use <i>gunzip</i>; <i>gunzip</i> can uncompress the file no matter what 
+speed option you use. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: bzip, bzip2</p>
+<p class="docText">Another compression/decompression program has emerged to take 
+the lead from <i>gzip</i>. <i>bzip2</i> is the new kid on the block and sports 
+even better compression (on the average about 10 to 20% better than <i>gzip</i>), 
+at the expense of longer compression times. You cannot use <i>bunzip2</i> to 
+uncompress files compressed with <i>gzip</i> and vice versa. Since you cannot 
+expect everybody to have <i>bunzip2</i> installed on their machine, you might 
+want to confine yourself to <i>gzip</i> for the time being if you want to send 
+the compressed file to somebody else (or, as many archives do, provide both <i>
+gzip</i>- and <i>bzip2</i>-compressed versions of the file). However, it pays to 
+have <i>bzip2</i> installed, because more and more FTP servers now provide <i>
+bzip2</i>-compressed packages to conserve disk space and, more importantly these 
+days, bandwidth. You can recognize <i>bzip2</i>-compressed files from their 
+typical <span class="docEmphasis">.bz2</span> file name extension. </p>
+<p class="docText">While the command-line options of <i>bzip2</i> are not 
+exactly the same as those of <i>gzip</i>, those that have been described in this 
+section are, except for <i>- -best</i> and <i>- -fast</i>, which <i>bzip2</i> 
+doesn't have. For more information, see the <i>bzip2</i> manual page. </p>
+<p class="docText">The bottom line is that you should use <i>gzip</i>/<i>gunzip</i> 
+or <i>bzip2</i>/<i>bunzip2</i> for your compression needs. If you encounter a 
+file with the extension <span class="docEmphasis">.Z</span>, it was probably 
+produced by <i>compress</i>, and <i>gunzip</i> can uncompress it for you. </p>
+<p class="docText">[These days, the only real use for <i>compress</i> — if you 
+have <i>gzip</i> and <i>bzip2</i> — is for creating compressed images needed by 
+some embedded hardware, such as older Cisco IOS images. — DJPH] </p>
+<p class="docText"><span class="docEmphasis">— MW, MKD, and LK</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-15-SECT-7">15.7 Save Space: tar and compress a Directory Tree</h3>
+<p class="docText">In the Unix filesystem, files are stored in blocks. Each 
+nonempty file, no matter how small, takes up at least one block.<span id="ENB15-2"><a class="docLink" href="#EN15-2"><sup>[2]</sup></a></span> 
+A directory tree full of little files can fill up a lot of partly empty blocks. 
+A big file is more efficient because it fills all (except possibly the last) of 
+its blocks completely. </p>
+<p class="docText">The <span class="docEmphBold">tar</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-2">Section 
+39.2</a>) command can read lots of little files and put them into one big file. 
+Later, when you need one of the little files, you can extract it from the <i>tar</i> 
+archive. Seems like a good space-saving idea, doesn't it? But <i>tar</i>, which 
+was really designed for magnetic <span class="docEmphasis">t</span>ape
+<span class="docEmphasis">ar</span>chives, adds &quot;garbage&quot; characters at the end 
+of each file to make it an even size. So, a big <i>tar</i> archive uses about as 
+many blocks as the separate little files do. </p>
+<p class="docText">Okay, then why am I writing this article? Because the
+<span class="docEmphBold">gzip</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-6">Section 
+15.6</a>) utility can solve the problems. It squeezes files down — compressing 
+them to get rid of repeated characters. Compressing a <i>tar</i> archive 
+typically saves 50% or more. The <span class="docEmphBold">bzip2</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-6">Section 
+15.6</a>) utility can save even more. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="50" src="screw.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">If your compressed archive is corrupted somehow — 
+        say, a disk block goes bad — you could lose access to
+        <span class="docEmphasis">all</span> of the files. That's because 
+        neither <i>tar</i> nor compression utilities recover well from missing 
+        data blocks. If you're archiving an important directory, be sure you 
+        have good backup copies of the archive. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Making a compressed archive of a directory and all of its 
+subdirectories is easy: <i>tar</i> copies the whole tree when you give it the 
+top directory name. Just be sure to save the archive in some directory that 
+won't be copied — so <i>tar</i> won't try to archive its own archive! I usually 
+put the archive in the parent directory. For example, to archive my directory 
+named <span class="docEmphasis">project</span>, I'd use the following commands. 
+The <span class="docEmphasis">.tar.gz</span> extension isn't required, but is 
+just a convention; another common convention is <span class="docEmphasis">.tgz</span>. 
+I've added the <i>gzip</i> - -<i>best</i> option for more compression — but it 
+can be a lot slower, so use it only if you need to squeeze out every last byte.
+<i>bzip2</i> is another way to save bytes, so I'll show versions with both <i>
+gzip</i> and <i>bzip2</i>. No matter what command you use, watch carefully for 
+errors: </p>
+<p class="docText"><tt>..</tt>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">
+Section 1.16</a>, <tt>-r</tt>
+<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-16">
+Section 14.16</a></p>
+<pre>% <b>cd project </b>
+% <b>tar clf - . | gzip --best &gt; ../project.tar.gz </b>
+% <b>gzcat ../project.tar.gz | tar tvf            - </b><i> Quick verification</i>
+% <b>tar clf - . | bzip2 --best &gt; ../project.tar.bz2 </b>
+% <b>bzcat ../project.tar.bz2 | tar tvf           - </b><i> Quick verification</i>
+% <b>cd .. </b>
+% <b>rm -r project </b></pre>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: tar</p>
+<p class="docText">If you have GNU <i>tar</i> or another version with the <i>z</i> 
+option, it will run <i>gzip</i> for you. This method doesn't use the <i>gzip</i> 
+- -<i>best</i> option, though — so you may want to use the previous method to 
+squeeze out all you can. Newer GNU <i>tar</i>s have an <i>I</i> option to run <i>
+bzip2</i>. Watch out for other <i>tar</i> versions that use <i>-I</i> as an 
+&quot;include file&quot; operator — check your manpage or <span class="docEmphasis">tar — 
+help</span>. If you want to be sure that you don't have a problem like this, use 
+the long options (<i> -- gzip</i> and <i>-- bzip2</i>) because they're 
+guaranteed not to conflict with something else; if your <i>tar</i> doesn't 
+support the particular compression you've asked for, it will fail cleanly rather 
+than do something you don't expect. </p>
+<p class="docText">Using the short flags to get compression from GNU <i>tar</i>, 
+you'd write the previous <i>tar</i> command lines as follows: </p>
+<pre>tar czlf ../project.tar.gz .
+tar cIlf ../project.tar.bz2 .</pre>
+<p class="docText">In any case, the <span class="docEmphasis">tar l</span> 
+(lowercase letter L) option will print messages if any of the files you're 
+archiving have other <span class="docEmphBold">hard links</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>). If a lot of your files have other links, archiving the directory may 
+not save much disk space — the other links will keep those files on the disk, 
+even after your <span class="docEmphasis">rm -r</span> command. </p>
+<p class="docText">Any time you want a list of the files in the archive, use
+<span class="docEmphasis">tar t</span> or <span class="docEmphasis">tar tv</span>:
+</p>
+<p class="docText"><tt>less</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">
+Section 12.3</a></p>
+<pre>% <b>gzcat project.tar.gz | tar tvf - | less</b>
+rw-r--r--239/100    485 Oct  5 19:03 1991 ./Imakefile
+rw-rw-r--239/100   4703 Oct  5 21:17 1991 ./scalefonts.c
+rw-rw-r--239/100   3358 Oct  5 21:55 1991 ./xcms.c
+rw-rw-r--239/100  12385 Oct  5 22:07 1991 ./io/input.c
+rw-rw-r--239/100   7048 Oct  5 21:59 1991 ./io/output.c
+   ...
+% <b>bzcat project.tar.bz2 | tar tvf - | less</b>
+   ...
+% <b>tar tzvf project.tar.gz | less</b>
+   ...
+% <b>tar tIvf project.tar.bz2 | less</b>
+   ...</pre>
+<p class="docText">To extract all the files from the archive, type one of these
+<i>tar</i> command lines: </p>
+<pre>% <b>mkdir project</b>
+% <b>cd project</b>
+% <b>gzcat ../project.tar.gz | tar xf -</b>
+
+% <b>mkdir project</b>
+% <b>cd project</b>
+% <b>bzcat ../project.tar.bz2 | tar xf -</b>
+
+% <b>mkdir project</b>
+% <b>cd project</b>
+% <b>tar xzf ../project.tar.gz</b>
+
+% <b>mkdir project</b>
+% <b>cd project</b>
+% <b>tar xIf ../project.tar.bz2</b></pre>
+<p class="docText">Of course, you don't have to extract the files into a 
+directory named <span class="docEmphasis">project</span>. You can read the 
+archive file from other directories, move it to other computers, and so on. </p>
+<p class="docText">You can also extract just a few files or directories from the 
+archive. Be sure to use the exact name shown by the previous
+<span class="docEmphasis">tar t</span> command. For instance, to restore the old 
+subdirectory named <span class="docEmphasis">project/io</span> (and everything 
+that was in it), you'd use one of the previous <i>tar</i> command lines with the 
+filename at the end. For instance: </p>
+<pre>% <b>mkdir project</b>
+% <b>cd project</b>
+% <b>gzcat ../project.tar.gz | tar xf - ./io</b></pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-15-SECT-8">15.8 How Much Disk Space?</h3>
+<p class="docText">Two tools, <i>df</i> and <i>du</i>, report how much disk 
+space is free and how much is used by any given directory. For each filesystem,
+<i>df</i> tells you the capacity, how much space is in use, and how much is 
+free. By default, it lists both local and remote (i.e.,
+<span class="docEmphBold">NFS</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>)) filesystems. Under Linux or BSD Unix, the output from <i>df</i> looks 
+like this: </p>
+<pre>% <b>df</b>
+Filesystem  1K-blocks     Used    Avail Capacity  Mounted on
+/dev/ad0s1a     99183    37480    53769    41%    /
+/dev/ad2s1e   3943876  1873453  1754913    52%    /home
+/dev/ad0s1f   3360437  1763460  1328143    57%    /usr
+/dev/ad0s1e    508143    16925   450567     4%    /var
+procfs              4        4        0   100%    /proc
+toy:/usr     17383462 15470733   522053    97%    /toy
+   ...</pre>
+<p class="docText">This report shows information about four local filesystems, 
+the local <span class="docEmphasis">procfs</span> filesystem, and one remote 
+filesystem (from the system <span class="docEmphasis">toy</span>). Note that a 
+normal filesystem that is 100% full really has 5 to 10% free space — but only 
+the <span class="docEmphBold">superuser</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-18">Section 
+1.18</a>) can use this reserved space, and that usually isn't a good idea. The 
+reserved space is primarily for recovering from the disk filling up for some 
+reason; the superuser can still successfully copy files and the like to free up 
+space. Special filesystems often don't do this sort of block reservation; procfs 
+and ISO-9660 (CD-ROM and CD-R) filesystems don't care. </p>
+<p class="docText"><i>df</i> can be invoked in several other ways:</p>
+<ul>
+  <li>
+  <p class="docList">If you already know that you're interested in a particular 
+  filesystem, you can use a command such as <span class="docEmphasis">df /home</span> 
+  or <span class="docEmphasis">df</span> . (. means &quot;the current directory&quot; (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+  1.16</a>)). </li>
+  <li>
+  <p class="docList">If your system uses NFS and you are interested only in 
+  local (non-NFS) filesystems, use the command <span class="docEmphasis">df -t 
+  ufs</span> (most BSDs) or <span class="docEmphasis">df -t ext2fs</span> (most 
+  Linuxes). You should always use this command if remote file servers are down. 
+  If you have mounted remote disks that are unavailable, <i>df</i> will be 
+  extremely slow or hang completely. </li>
+  <li>
+  <p class="docList">If you are interested in inode usage rather than filesystem 
+  data capacity, use the command <span class="docEmphasis">df -i</span>. This 
+  produces a similar report showing inode statistics. </li>
+</ul>
+<p class="docText">If you are using the older System V filesystem (for example, 
+on Solaris), the report from <i>df</i> will look different. The information it 
+presents, however, is substantially the same. Here is a typical report: </p>
+<pre>% <b>df</b>
+/       (/dev/root ):    1758 blocks    3165 i-nodes
+/u      (/dev/u    ):     108 blocks   13475 i-nodes
+/usr    (/dev/usr  ):   15694 blocks    8810 i-nodes</pre>
+<p class="docText">[If you get this sort of output from <i>df</i>, you may be 
+able to get the BSDish display by using <i>df -P</i> or <i>df -k</i>. You may 
+also want to try the GNU <i>df</i>. — DH] </p>
+<p class="docText">There are 1,758 physical blocks (always measured as 512-byte 
+blocks for this sort of <i>df</i>, regardless of the filesystem's logical block 
+size) and 3,165 inodes available on the root filesystem. To find out the 
+filesystem's total capacity, use <span class="docEmphasis">df -t</span>. The 
+command <span class="docEmphasis">df -l</span> only reports on your system's 
+local filesystems, omitting filesystems mounted by NFS or RFS. </p>
+<p class="docText">It is often useful to know how much storage a specific 
+directory requires. This can help you to determine if any users are occupying 
+more than their share of storage. The <i>du</i> utility provides such a report. 
+Generally you want to use the <i>-k</i> to <i>du</i>; by default its reports are 
+in disk blocks and thus somewhat harder to read. <i>-k</i> asks <i>df</i> to 
+report its numbers in kilobytes. Here's a simple report from <i>du</i>: </p>
+<pre>% <b>du -k</b>
+107     ./reports
+888     ./stuff
+32      ./howard/private
+33      ./howard/work
+868     ./howard
+258     ./project/code
+769     ./project
+2634    .</pre>
+<p class="docText"><i>du</i> shows that the current directory and all of its 
+subdirectories occupy about 2.5 MB (2,634 KB). The biggest directories in this 
+group are <span class="docEmphasis">stuff</span> and <span class="docEmphasis">
+howard</span>, which have a total of 888 KB and 868 KB, respectively. The total 
+for each directory includes the totals for any subdirectories, as well as files 
+in the directory itself. For instance, the two subdirectories
+<span class="docEmphasis">private</span> and <span class="docEmphasis">work</span> 
+contribute 65 KB to <span class="docEmphasis">howard</span>; the rest of the 868 
+KB is from files in <span class="docEmphasis">howard</span> itself. (So, to get 
+the grand total of 2,634, <i>du</i> adds 107, 888, 868, and 769, plus files in 
+the top-level directory.) <i>du</i> does not show individual files as separate 
+items unless you use its <i>-a</i> option. </p>
+<p class="docText">The <i>-s</i> option tells <i>du</i> to report the total 
+amount of storage occupied by a directory; it suppresses individual reports for 
+all subdirectories. For example: </p>
+<pre>% <b>du -s</b>
+2634    .</pre>
+<p class="docText">This is essentially the last line of the previous report.
+<span class="docEmphasis">du -s</span> is particularly useful for showing only 
+the files in the current directory, rather than showing every directory down the 
+tree: </p>
+<pre>% <b>cd /home</b>
+% <b>du -sk *</b>
+69264   boots
+18236   chaos
+1337820 deb
+...</pre>
+<p class="docText"><span class="docEmphasis">—ML, from System Performance Tuning 
+(O'Reilly, 2002)</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-15-SECT-9">15.9 Compressing a Directory Tree: Fine-Tuning</h3>
+<p class="docText">Here's a quick little command that will
+<span class="docEmphBold">compress</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-6">Section 
+15.6</a>) files in the current directory and below. It uses
+<span class="docEmphBold">find</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-2">Section 
+9.2</a>) to find the files recursively and pick the files it should compress:
+</p>
+<p class="docText"><tt>-size</tt><a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-14">Section 
+9.14</a>, <tt>xargs</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-17">
+Section 28.17</a> </p>
+<pre>% <b>find . ! -perm -0100 -size +1 -type f -print | xargs gzip -v</b></pre>
+<p class="docText">This command finds all files that are the following:</p>
+<ul>
+  <li>
+  <p class="docList">Not executable (<tt>!</tt> <tt>-perm</tt> <tt>-0100</tt>), 
+  so we don't compress shell scripts and other program files. </li>
+  <li>
+  <p class="docList">Bigger than one block, since it won't save any disk space 
+  to compress a file that takes one disk block or less. But, depending on your 
+  filesystem, the <tt>-size +1</tt> may not really match files that are one 
+  block long. You may need to use <tt>-size +2</tt>, <tt>-size +1024c</tt>, or 
+  something else. </li>
+  <li>
+  <p class="docList">Regular files (<tt>-type</tt> <tt>f</tt>) and not 
+  directories, named pipes, etc. </li>
+</ul>
+<p class="docText">The <i>-v</i> switch to <i>gzip</i> tells you the names of 
+the files and how much they're being compressed. If your system doesn't have <i>
+xargs</i>, use the following: </p>
+<pre>% <b>find . ! -perm -0100 -size +1 -type f -exec gzip -v {} \;</b></pre>
+<p class="docText">Tune the <i>find</i> expressions to do what you want. Here 
+are some ideas — for more, read your system's <i>find</i> manual page: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">! -name \*.gz</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Skip any file that's already <i>gzip</i>ped (filename ends 
+  with <span class="docEmphasis">.gz</span> ). </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-links 1</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Only compress files that have no other (hard) links.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-user</span> <tt><i>
+  yourname</i></tt></span> </dt>
+  <dd>
+  <p class="docList">Only compress files that belong to you.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">-atime +60</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Only compress files that haven't been accessed (read, 
+  edited, etc.) for more than 60 days. </dd>
+</dl>
+<p class="docText">You might want to put this in a job that's run every month or 
+so by <span class="docEmphBold">at</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-5">Section 
+25.5</a>) or <span class="docEmphBold">cron</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-2">Section 
+25.2</a>). </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-15-SECT-10">15.10 Save Space in Executable Files with strip</h3>
+<p class="docText">After you compile and debug a program, there's a part of the 
+executable binary that you can delete to save disk space. The <i>strip</i> 
+command does the job. Note that once you strip a file, you can't use a symbolic 
+debugger like <i>dbx</i> or <i>gdb</i> on it! </p>
+<p class="docText">Here's an example. I'll compile a C program and list it. Then 
+I'll strip it and list it again. How much space you save depends on several 
+factors, but you'll almost always save something. </p>
+<p class="docText"><tt>-s</tt>
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-14">
+Section 9.14</a></p>
+<pre>% <b>cc -o echoerr echoerr.c</b>
+% <b>ls -ls echoerr</b>
+  52 -rwxr-xr-x   1 jerry    24706 Nov 18 15:49 echoerr
+% <b>strip echoerr</b>
+% <b>ls -ls echoerr</b>
+  36 -rwxr-xr-x   1 jerry    16656 Nov 18 15:49 echoerr</pre>
+<p class="docText">The GNU <i>strip</i> has a number of options to control what 
+symbols and sections are stripped from the binary file. Check the <i>strip</i> 
+manpage for specific details of the version you have. </p>
+<p class="docText">If you know that you want a file stripped when you compile 
+it, your compiler probably has a <i>-s</i> option (which is passed to <i>ld</i> 
+after compilation is complete). If you use <i>ld</i> directly — say, in a
+<span class="docEmphBold">makefile</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-10">Section 
+11.10</a>) — use the <i>-s</i> option there. </p>
+<p class="docText">Here's a shell script named <i>stripper</i> that finds all 
+the unstripped executable files in <span class="docEmphBold">your bin</span>
+<span class="docEmphBold">directory</span> (<a class="docLink" href="_chapter 7.htm#upt3-CHP-7-SECT-4">Section 
+7.4</a>) and strips them. It's a quick way to save space on your account. (The 
+same script, searching the whole filesystem, will save even more space for 
+system administrators — but watch out for unusual filenames): </p>
+<p class="docText"><tt>xargs</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-17">
+Section 28.17</a></p>
+<pre>#! /bin/sh
+skipug=&quot;! -perm -4000 ! -perm -2000&quot;  # SKIP SETUID, SETGID FILES
+find $HOME/bin -type f \( -perm -0100 $skipug \) -print |
+xargs file |
+sed -n '/executable .*not stripped/s/: TAB .*//p' |
+xargs -rpl strip</pre>
+<p class="docText">The <span class="docEmphBold">find</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-2">Section 
+9.2</a>) finds all executable files that aren't setuid or setgid and runs
+<span class="docEmphBold">file</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-6">Section 
+12.6</a>) to get a description of each. The <i>sed</i> command skips shell 
+scripts and other files that can't be stripped. <i>sed</i> searches for lines 
+from <i>file</i> like the following: </p>
+<pre>/usr/local/bin/xemacs: TAB<tt><i> xxx</i></tt>... executable
+<tt><i>xxx</i></tt>... not stripped</pre>
+<p class="docText">with the word &quot;executable&quot; followed by &quot;not stripped.&quot; <i>sed</i> 
+removes the colon, tab, and description, then passes the filename to <i>strip</i>.
+</p>
+<p class="docText">The final <i>xargs</i> command uses the options <i>-r</i> (to 
+not run <i>strip</i> if <i>sed</i> outputs no names to strip), <i>-p</i> (to be 
+interactive, asking before each <i>strip</i>), and <i>-l</i> (to process one 
+filename at a time). None of those options are required; if you don't want them, 
+you might at least use <i>-t</i> so the script will list the files it's 
+stripping. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-15-SECT-11">15.11 Disk Quotas</h3>
+<p class="docText">No matter how much disk space you have, you will eventually 
+run out. One way the system administrator can force users to clean up after 
+themselves is to impose quotas on disk usage. Many Unixes have quota systems 
+available: check your manual pages with a command like <tt>apropos quota</tt>.
+</p>
+<p class="docText">If you're a user, how do quotas affect you? Sooner or later, 
+you may find that you're over your quota. Quotas are maintained on a per-filesystem 
+basis. They may be placed on disk storage (the number of blocks) and on inodes 
+(the number of files). The quota system maintains the concept of
+<span class="docEmphasis">hard</span> and <span class="docEmphasis">soft</span> 
+limits. When you exceed a soft limit, you'll get a warning (<tt>WARNING: disk 
+quota</tt> <tt>exceeded</tt>), but you can continue to accumulate more storage. 
+The warning will be repeated whenever you log in. At some point (i.e., after 
+some number of sessions in which the storage stays above the soft limit), the 
+system loses patience and refuses to allocate any more storage. You'll get a 
+message like <tt>OVER DISK</tt> <tt>QUOTA: NO MORE DISK SPACE</tt>. At this 
+point, you must delete files until you're again within the soft limit. Users are 
+never allowed to exceed their hard limit. This design allows you to have large 
+temporary files without penalty, provided that they do not occupy too much disk 
+space long-term. </p>
+<p class="docText">There may also be a quota on the number of files (i.e., 
+inodes) that you can own per filesystem. It works exactly the same way; you'll 
+get a warning when you exceed the soft limit; if you don't delete some files, 
+the system will eventually refuse to create new files. </p>
+<p class="docText">The <i>quota</i> command shows a user's quota on each 
+filesystem where quotas have been set. With no option, it displays a line for 
+each system where you're over quota. The <i>-v</i> option shows a line for each 
+system where you have a quota. The output can be a bit confusing on systems with 
+the automounter running, since it mounts things dynamically and uses symlinks to 
+make things appear where you expect them, so the filesystem names may not match 
+the directory names you're accustomed to: </p>
+<pre>$ <b>quota</b>
+Over disk quota on /home/jpeek, remove 228K within 4.0 days
+Over file quota on /home/jpeek, remove 13 files within 4.5 days
+$ <b>quota -v</b>
+Filesystem     usage  quota limit  timeleft  files  quota limit  timeleft
+/export/users      0   8000  9000                0    600   750
+/export/home9   8228   8000  9000  4.0 days    613    600   750  4.5 days</pre>
+<p class="docText">In this case, the automounter has clearly mounted my home 
+directory on <i>/export/home9</i>, since that shows the same information that <i>
+quota</i> showed me in the first command. </p>
+<p class="docText"><span class="docEmphasis">— ML and JP</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN15-1"><a class="docLink" href="#ENB15-1">[1]</a>&nbsp;&nbsp;The link entry takes a few characters in the directory where you make the link. 
+Unless this makes the directory occupy another disk block, the space available 
+on the disk doesn&#39;t change.</p><p class="docFootnote" id="EN15-2"><a class="docLink" href="#ENB15-2">[2]</a>&nbsp;&nbsp;Completely empty files (zero 
+  characters) don't take a block.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 14.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 16.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

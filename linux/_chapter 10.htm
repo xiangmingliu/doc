@@ -1,0 +1,893 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 10</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 9.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 11.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 10. Linking, Renaming, and Copying Files</h2>
+
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-1">10.1 What's So Complicated About Copying Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-2">10.2 What's Really in a Directory?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-3">10.3 Files with Two or More Names</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-4">10.4 More About Links</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-5">10.5 Creating and Removing Links</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-6">10.6 Stale Symbolic Links</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-7">10.7 Linking Directories</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-8">10.8 Showing the Actual Filenames for Symbolic Links</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-9">10.9 Renaming, Copying, or Comparing a Set of Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-10">10.10 Renaming a List of Files Interactively</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-11">10.11 One More Way to Do It</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-12">10.12 Copying Directory Trees with cp -r</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-10-SECT-13">10.13 Copying Directory Trees with tar and Pipes</a></li>
+</ul>
+
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-1">10.1 What's So Complicated About Copying Files</h3>
+<p class="docText">At first glance, there doesn't seem to be enough material to 
+fill an entire chapter with information about linking, moving, and copying 
+files. However, there are several things that make the topic more complex (and 
+more interesting) than you might expect: </p>
+<ul>
+  <li>
+  <p class="docList">In addition to moving and copying files, Unix systems also 
+  allow you to link them — to have two filenames, perhaps in different 
+  directories or even on different filesystems, that point to the same file.
+  <a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-3">
+  Section 10.3</a> explores the reasons why you want to do that;
+  <a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">
+  Section 10.4</a> discusses the difference between &quot;hard&quot; and &quot;soft&quot; links;
+  <a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-5">
+  Section 10.5</a> demonstrates how to create links; and other articles discuss 
+  various issues that can come up when using links. </li>
+  <li>
+  <p class="docList">It's nontrivial to rename a group of files all at once, but 
+  Unix provides many ways to circumvent the tedium of renaming files 
+  individually. In the chapter you'll see many different ways to do this, 
+  exploring the variety in the Unix toolbox along the way. </li>
+  <li>
+  <p class="docList">In a hierarchical filesystem, you're sometimes faced with 
+  the problem of moving not only files but entire directory hierarchies from one 
+  place to another.
+  <a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-12">
+  Section 10.12</a> and
+  <a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-13">
+  Section 10.13</a> demonstrate two techniques you can use to perform this task.
+  </li>
+</ul>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-2">10.2 What's Really in a Directory?</h3>
+<p class="docText">Before you can understand moving and copying files, you need 
+to know a bit more about how files are represented in directories. What does it 
+mean to say that a file is really &quot;in&quot; a directory? It's easy to imagine that 
+files are actually inside of something (some special chunk of the disk that's 
+called a directory). But that's precisely wrong, and it's one place where the 
+filing cabinet model of a filesystem doesn't apply. </p>
+<p class="docText">A directory really is just another file, and it really isn't 
+different from any other datafile. If you want to prove this, try the command <i>
+od -c .</i> On some Unix systems, it dumps the current directory to the screen 
+in raw form. The result certainly looks ugly (it's not a text file; it just has 
+lots of binary characters). But, if your system allows it, <i>od -c</i> should 
+let you see the names of the files that are in the current directory [and, 
+probably, some names of files that have been deleted! Sorry, they're only the 
+old directory entries; you can't get the files back <span class="docEmphasis">— 
+JP</span>]. If <i>od -c .</i> doesn't work (and it won't on current versions of 
+Linux, for example), use <i>ls -if</i> instead. </p>
+<p class="docText">A directory is really just a list of files represented by 
+filenames and inode numbers, as shown in the output in
+<a class="docLink" href="#upt3-CHP-10-EX-1">Example 10-1</a>. </p>
+<h5 id="upt3-CHP-10-EX-1" class="docExampleTitle">Example 10-1. Directory-content visualization </h5>
+<pre>The file named    .          is inode 34346
+The file named    ..         is inode 987
+The file named    mr.ed      is inode 10674
+The file named    joe.txt    is inode 8767
+The file named    grok       is inode 67871
+The file named    otherdir   is inode 2345</pre>
+<p class="docText">When you give a filename like <i>grok</i>, the kernel looks 
+up <i>grok</i> in the current directory and finds out that this file has inode 
+67871; it then looks up this inode to find out who owns the file, where the data 
+blocks are, and so on. </p>
+<p class="docText">What's more, some of these &quot;files&quot; may be directories in 
+their own right. In particular, that's true of the first two entries: <tt>.</tt> 
+and <tt>..</tt>. These entries are in <span class="docEmphasis">every</span> 
+directory. The current directory is represented by <tt>.</tt>, while <tt>..</tt> 
+refers to the &quot;parent&quot; of the current directory (i.e., the directory that 
+&quot;contains&quot; the current directory). The file <i>otherdir</i> is yet another 
+directory that happens to be &quot;within&quot; the current directory. However, there's no 
+way you can tell that from its directory entry — Unix doesn't know it's 
+different until it looks up its inode. </p>
+<p class="docText">Now that you know what a directory is, think about some basic 
+directory operations. What does it mean to move, or rename, a file? If the file 
+is staying in the same directory, the <i>mv</i> command just changes the file's 
+name in the directory; it doesn't touch the data at all. </p>
+<p class="docText">Moving a file into another directory takes a little more 
+work, but not much. A command like <i>mv dir1/foo dir2/foo</i> means &quot;delete <i>
+foo</i>'s entry in <i>dir1</i> and create a new entry for <i>foo</i> in <i>dir2</i>.&quot; 
+Again, Unix doesn't have to touch the data blocks or the inode at all. </p>
+<p class="docText">The only time you actually need to copy data is if you're 
+moving a file into another filesystem. In that case, you have to copy the file 
+to the new filesystem; delete its old directory entry; return the file's data 
+blocks to the &quot;free list,&quot; which means that they can be reused; and so on. It's 
+a fairly complicated operation, but (still) relatively rare. (On some old 
+versions of Unix, <i>mv</i> wouldn't let you move files between filesystems. You 
+had to copy it and remove the old file by hand.) </p>
+<p class="docText">How does Unix find out the name of the current directory? In
+<a class="docLink" href="#upt3-CHP-10-EX-1">Example 10-1</a> there's an entry 
+for <tt>.</tt>, which tells you that the current directory has inode 34346. Is 
+the directory's name part of the inode? Sorry — it isn't. The directory's name 
+is included in the parent directory. The parent directory is <tt>..</tt>, which 
+is inode 987. So Unix looks up inode 987, finds out where the data is, and 
+starts reading every entry in the parent directory. Sooner or later, it will 
+find one that corresponds to inode 34346. When it does that, it knows that it 
+has found the directory entry for the current directory and can read its name.
+</p>
+<p class="docText">Complicated? Yes, but if you understand this, you have a 
+pretty good idea of how Unix directories work. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-3">10.3 Files with Two or More Names</h3>
+<p class="docText">We've talked about hard <span class="docEmphBold">links</span> 
+(<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-1">Section 
+10.1</a>) and symbolic links in a number of places, but we've not discussed
+<span class="docEmphasis">why</span> you'd want a file with several names. It 
+was easy to understand what a link would <span class="docEmphasis">do</span>, 
+but why would you want one? </p>
+<p class="docText">There are many situations that links (and only links) are 
+able to handle. Once you've seen a few of the problems that a link can solve, 
+you'll start seeing even more situations in which they are appropriate. </p>
+<p class="docText">Consider a company phone list on a system that is shared by 
+several users. Every user might want a copy of the phone list in his home 
+directory. However, you wouldn't want to give each user a different phone list. 
+In addition to wasting disk space, it would be a pain to modify all of the 
+individual lists whenever you made a change. Giving each user a &quot;link&quot; to a 
+master phone list is one way to solve the problem. </p>
+<p class="docText">Similarly, assume that you use several different systems that 
+share files via NFS. Eventually, you get tired of editing five or six different
+<i>.login</i> and <i>.cshrc</i> files whenever you decide to add a new alias or 
+change some element in your startup file; you'd like to have the exact same file 
+appear in each of your home directories. You might also want to give several 
+systems access to the same master database files. </p>
+<p class="docText">How about this: you have a program or script that performs 
+several related functions. Why not perform them all with the same executable? 
+The script or program just needs to check the name by which it's called and act 
+accordingly. </p>
+<p class="docText">As another example, assume that you have two versions of a 
+file: a current version, which changes from time to time, and one or more older 
+versions. One good convention would be to name the files <i>data.</i><tt><i>date</i></tt>, 
+where <tt><i>date</i></tt> shows when the file was created. For example, you 
+might have the files <i>data.jul1</i>, <i>data.jul2</i>, <i>data.jul5</i>, and 
+so on. However, when you access these files, you don't necessarily want to 
+figure out the date — not unless you have a better chronological sense than I 
+do. To make it easier on yourself, create a link (either symbolic or hard) named
+<i>data.cur</i> that always refers to your most recent file. The following 
+script runs the program <i>output</i>, puts the data into a dated file, and 
+resets <i>data.cur</i>: </p>
+<pre>#!/bin/sh
+curfile=data.`date +%h%d`
+linkname=data.cur
+output &gt; $curfile
+rm -f $linkname
+ln -s $curfile $linkname</pre>
+<p class="docText">Here's an analogous situation. When writing technical manuals 
+at one company, I had two classes of readers: some insisted on referring to the 
+manuals by name, and the others by part number. Rather than looking up part 
+numbers all the time, I created a set of links so that I could look up a manual 
+online via either its name or its part number. For example, if the manual was 
+named &quot;Programming&quot; and had the part number 046-56-3343, I would create the file
+<i>/manuals/byname/programming</i>. I would then create the link <i>/manuals/bynumber/046-56-3343</i>:
+</p>
+<p class="docText"><tt>..</tt>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">
+Section 1.16</a></p>
+<pre>% <b>cd /manuals/bynumber</b>
+% <b>ln -s ../byname/programming 046-56-3343</b></pre>
+<p class="docText">Sometimes you simply want to collect an assortment of files 
+in one directory. These files may really belong in other places, but you want to 
+collect them for some temporary purpose: for example, to make a tape. Let's say 
+that you want to make a tape that includes manual pages from <i>
+/development/doc/man/man1</i>, a manual from <i>/development/doc/product</i>, 
+source files from <i>/src/ccode</i>, and a set of executables from <i>
+/release/68000/execs</i>. The following shell script creates links for all of 
+these directories within the <i>/tmp/tape</i> directory and then creates a <i>
+tar</i> tape that can be sent to a customer or friend. Note that the <i>tar h</i> 
+option tells <i>tar</i> to follow symbolic links and archive whatever is at the 
+end of the link; otherwise, <i>tar</i> makes a copy of just the symbolic link:
+</p>
+<pre>#!/bin/sh
+dir=/tmp/tape.mike
+test -d $dir || mkdir $dir
+cd $dir
+rm -f man1 product ccode execs
+ln -s /development/doc/man/man1
+ln -s /development/doc/product
+ln -s /src/ccode
+ln -s /release/68000/execs
+tar ch ./man1 ./product ./ccode ./execs</pre>
+<p class="docText">These examples only begin to demonstrate the use of linking 
+in solving day-to-day tasks. Links provide neat solutions to many problems, 
+including source control, filesystem layout, and so forth. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-4">10.4 More About Links</h3>
+<p class="docText">Unix provides two different kinds of links: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><i>Hard links</i></span> </dt>
+  <dd>
+  <p class="docList">With a hard link, two filenames (i.e., two directory 
+  entries) point to the same inode and the same set of data blocks. All Unix 
+  versions support hard links. They have two important limitations: a hard link 
+  can't cross a filesystem (i.e., both filenames must be in the same filesystem), 
+  and you can't create a hard link to a directory (i.e., a directory can only 
+  have one name).<span id="ENB10-1"><a class="docLink" href="#EN10-1"><sup>[1]</sup></a></span> 
+  They have two important advantages: the link and the original file are 
+  absolutely and always identical, and the extra link takes no disk space 
+  (except an occasional extra disk block in the directory file). </dd>
+  <dt><span class="docPubcolor"><i>Symbolic links</i> (also called
+  <span class="docEmphasis">soft links</span> or <span class="docEmphasis">
+  symlinks</span>)</span> </dt>
+  <dd>
+  <p class="docList">With a symbolic link, there really are two different files. 
+  One file contains the actual data; the other file just contains the name of 
+  the first file and serves as a &quot;pointer.&quot; We call the pointer the <i>link</i>. 
+  The system knows that whenever it opens a symlink, it should read the contents 
+  of the link and then access the file that really holds the data you want. 
+  Nearly all Unix systems support symbolic links these days. Symbolic links are 
+  infinitely more flexible than hard links. They can cross filesystems or even 
+  computer systems (if you are using <span class="docEmphBold">NFS or RFS</span> 
+  (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-9">Section 
+  44.9</a>)). You can make a symbolic link to a directory. A symbolic link has 
+  its own inode and takes a small amount of disk space to store. </dd>
+</dl>
+<p class="docText">You obviously can't do without copies of files: copies are 
+important whenever users need their own &quot;private version&quot; of some master file. 
+However, links are equally useful. With links, there's only one set of data and 
+many different names that can access it.
+<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-5">
+Section 10.5</a> shows how to make links. </p>
+<h4  id="upt3-CHP-10-SECT-4.1" class="docSection2Title">10.4.1 Differences Between Hard and Symbolic Links</h4>
+<p class="docText">With a hard link, the two filenames are identical in every 
+way. You can delete one without harming the other. The system deletes the 
+directory entry for one filename and leaves the data blocks (which are shared) 
+untouched. The only thing <i>rm</i> does to the inode is decrement its &quot;link 
+count,&quot; which (as the name implies) counts the number of hard links to the file. 
+The data blocks are only deleted when the link count goes to zero — meaning that 
+there are no more directory entries that point to this inode.
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-24">
+Section 9.24</a> shows how to find the hard links to a file. </p>
+<p class="docText">With a symbolic link, the two filenames are really not the 
+same. Deleting the link with <i>rm</i> leaves the original file untouched, which 
+is what you'd expect. But deleting or renaming the original file removes both 
+the filename and the data. You are left with a link that doesn't point anywhere. 
+Remember that the link itself doesn't have any data associated with it. Despite 
+this disadvantage, you rarely see hard links on Unix versions that support 
+symbolic links. Symbolic links are so much more versatile that they have become 
+omnipresent. </p>
+<p class="docText">Let's finish by taking a look at the <i>ls</i> listing for a 
+directory. This directory has a file named <i>file</i> with another hard link to 
+it named <i>hardlink</i>. There's also a symlink to <i>file</i> named (are you 
+ready?) <i>symlink</i>: </p>
+<pre>$ <b>ls -lai</b>
+total 8
+ 140330 drwxr-xr-x   2 jerry    ora    1024 Aug 18 10:11 .
+  85523 drwxr-xr-x   4 jerry    ora    1024 Aug 18 10:47 ..
+ 140331 -rw-r--r--   2 jerry    ora    2764 Aug 18 10:11 file
+ 140331 -rw-r--r--   2 jerry    ora    2764 Aug 18 10:11 hardlink
+ 140332 lrwxrwxrwx   1 jerry    ora       4 Aug 18 10:12 symlink -&gt; file</pre>
+<p class="docText">You've seen <i>ls</i>'s <span class="docEmphBold">-l option</span><a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+50.2</a>) and, probably, the <span class="docEmphBold">-a option</span>
+<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-9">
+Section 8.9</a>) for listing &quot;dot files.&quot; The <i>-i</i> option lists the
+<span class="docEmphBold">i-number</span><a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-2">Section 
+14.2</a>) for each entry in the directory; see the first column. The third 
+column has the <i>link count</i>: this is the number of hard links to the file.
+</p>
+<p class="docText">When you compare the entries for <i>file</i> and <i>hardlink</i>, 
+you'll see that they have a link count of 2. In this case, both links are in the 
+same directory. Every other entry (i-number, size, owner, etc.) for <i>file</i> 
+and <i>hardlink</i> is the same; that's because they both refer to exactly the 
+same file, with two links (names). </p>
+<p class="docText">A symbolic link has an <tt>l</tt> at the start of the 
+permissions field. Its i-number isn't the same as the file to which it points 
+because a symbolic link takes a separate inode; so, it also takes disk space 
+(which an extra hard link doesn't). The name has two parts: the name of the link 
+(here, <i>symlink</i>) followed by an arrow and the name to which the link 
+points (in this case, <i>file</i>). The symlink takes just four characters, 
+which is exactly enough to store the pathname (<i>file</i>) to which the link 
+points. </p>
+<h4  id="upt3-CHP-10-SECT-4.2" class="docSection2Title">10.4.2 Links to a Directory</h4>
+<p class="docText">While we're at it, here's a section that isn't about linking 
+to files or making symbolic links. Let's look at the first two entries in the 
+previous sample directory in terms of links and link counts. This should help to 
+tie the filesystem together (both literally and in your mind!). </p>
+<p class="docText">You've seen <tt>.</tt> and <tt>..</tt> in
+<span class="docEmphBold">pathnames</span>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">
+Section 1.16</a>); you might also have read <span class="docEmphBold">an 
+explanation of what's in a directory</span><a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-2">Section 
+10.2</a>). The <tt>.</tt> entry is a link to the current directory; notice that 
+its link count is 2. Where's the other link? It's in the parent directory: </p>
+<pre>$ <b>ls -li ..</b>
+total 2
+ 140330 drwxr-xr-x   2 jerry    ora      1024 Aug 18 10:11 sub
+  85524 drwxr-xr-x   2 jerry    ora      1024 Aug 18 10:47 sub2</pre>
+<p class="docText">Look at the i-numbers for the entries in the parent 
+directory. Which entry is for our current directory? The entry for <i>sub</i> 
+has the i-number 140330, and so does the <tt>.</tt> listing in the current 
+directory. So the current directory is named <i>sub</i>. Now you should be able 
+see why every directory has at least two links. One link, named <tt>.</tt>, is 
+to the directory itself. The other link, in its parent, gives the directory its 
+name. </p>
+<p class="docText">Every directory has a <tt>..</tt> entry, which is a link to 
+its parent directory. If you look back at the listing of our current directory, 
+you can see that the parent directory has four links. Where are they? </p>
+<p class="docText">When a directory has subdirectories, it will also have a hard 
+link named <tt>..</tt> in each subdirectory. You can see earlier, in the output 
+from <i>ls -li ..</i>, that the parent directory has two subdirectories: <i>sub</i> 
+and <i>sub2</i>. That's two of the four links. The other two links are the <tt>.</tt> 
+entry in the parent directory and the entry for the parent directory (which is 
+named <i>test</i> in <span class="docEmphasis">its</span> parent directory): </p>
+<p class="docText"><tt>-d</tt>
+<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-5">
+Section 8.5</a></p>
+<pre>% <b>ls -dli ../. ../../test</b>
+  85523 drwxr-xr-x   4 jerry    ora      1024 Aug 18 10:47 ../.
+  85523 drwxr-xr-x   4 jerry    ora      1024 Aug 18 10:47 ../../test</pre>
+<p class="docText">As they should, all the links have the same i-number: 85523. 
+Make sense? This concept can be a little abstract and hard to follow at first. 
+Understanding it will help you, though — especially if you're a system 
+administrator who has to understand <i>fsck</i>'s output because it can't fix 
+something automatically or use strong medicine like <i>clri</i>. For more 
+practice, make a subdirectory and experiment in it the way shown in this 
+article. </p>
+<p class="docText">By the way, directories and their hard links <tt>.</tt> and
+<tt>..</tt> are added by the <i>mkdir</i> (2) system call. That's the only way 
+that normal users can create a directory (and the links to it). </p>
+<p class="docText"><span class="docEmphasis">—JP and ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-5">10.5 Creating and Removing Links</h3>
+<p class="docText">The <i>ln</i> command creates both <span class="docEmphBold">
+hard and soft (symbolic) links</span>
+<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">
+Section 10.4</a>). If by some strange chance you're using Minix or some other 
+Unix that doesn't have symlinks, then <i>ln</i> won't have the <i>-s</i> option.
+</p>
+<pre>% <b>ln  </b><i>filename linkname                  . . . To create a hard link</i>
+% <b>ln -s  </b><i>filename linkname              . . . To create a symbolic link</i></pre>
+<p class="docText">If creating a hard link, <i>filename</i> must already exist, 
+or you will get an error message. On many versions of <i>ln</i>, <i>linkname</i> 
+must not exist — if it does, you will also get an error. On other versions, <i>
+linkname</i> may already exist; if you are allowed to write the file, <i>ln</i> 
+destroys its old contents and creates your link. If you don't have write access 
+for <i>linkname</i>, <i>ln</i> asks whether it is okay to override the file's 
+protection. For example: </p>
+<pre>% <b>ln foo bar</b>
+ln: override protection 444 for bar? <b>y</b></pre>
+<p class="docText">Typing <tt>y</tt> gives <i>ln</i> permission to destroy the 
+file <i>bar</i> and create the link. Note that this will still fail if you don't 
+have write access to the directory. </p>
+<p class="docText">You are allowed to omit the <i>linkname</i> argument from the
+<i>ln</i> command. In this case, <i>ln</i> takes the last component of <i>
+filename</i> (i.e., everything after the last slash) and uses it for <i>linkname</i>. 
+Of course, this assumes that <i>filename</i> doesn't refer to the current 
+directory. If it does, the command fails because the link already exists. For 
+example, the following commands are the same: </p>
+<p class="docText"><tt>..</tt>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">
+Section 1.16</a></p>
+<pre>% <b>ln -s ../archive/file.c file.c</b>
+% <b>ln -s ../archive/file.c</b></pre>
+<p class="docText">Both create a link from <i>file.c</i> in the current 
+directory to <i>../archive/file.c</i>. <i>ln</i> also lets you create a group of 
+links with one command, provided that all of the links are in the same 
+directory. Here's how: </p>
+<pre>% <b>ln</b> file1 file2 file3 ... filen directory</pre>
+<p class="docText">This command uses the filename from each pathname (after the 
+last slash) as each link's name. It then creates all the links within the given
+<i>directory</i>. For example, the first of the following commands is equivalent 
+to the next two: </p>
+<p class="docText"><tt>.</tt>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">
+Section 1.16</a></p>
+<pre>% <b>ln ../s/f1 ../s/f2 current</b>
+% <b>ln ../s/f1 current/f1</b>
+% <b>ln ../s/f2 current/f2</b></pre>
+<p class="docText">You can replace this list of files with a
+<span class="docEmphBold">wildcard expression</span>
+<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">
+Section 33.2</a>), as in: </p>
+<pre>% <b>ln -s ../newversion/*.[ch] </b></pre>
+<p class="docText">Note that symbolic links can get <span class="docEmphBold">
+out-of-date</span>
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-6">
+Section 10.6</a>). Hard links can also be &quot;broken&quot; in some situations. For 
+example, a text editor might rename the link <i>textfile</i> to <i>textfile.bak</i> 
+then create a new <i>textfile</i> during editing. Previous links to <i>textfile</i> 
+will now give you <i>textfile.bak</i>. To track down this problem,
+<span class="docEmphBold">find the links</span><a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-24">Section 
+9.24</a>) to each file. </p>
+<p class="docText">To remove a link, either hard or symbolic, use the <i>rm</i> 
+command. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-6">10.6 Stale Symbolic Links</h3>
+<p class="docText"><span class="docEmphBold">Symbolic links</span> (
+<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-5">
+Section 10.5</a>) have one problem. Like good bread, they become &quot;stale&quot; fairly 
+easily. What does that mean? </p>
+<p class="docText">Consider the following commands:</p>
+<pre>% <b>ln -s foo bar</b>
+% <b>rm foo</b></pre>
+<p class="docText">What happens if you run these two commands? Remember that the 
+link <i>bar</i> is a pointer: it doesn't have any real data of its own. Its data 
+is the name of the file <i>foo</i>. After deleting <i>foo</i>, the link <i>bar</i> 
+still exists, but it points to a nonexistent file. Commands that refer to bar 
+will get a confusing error message: </p>
+<pre>% <b>cat bar</b>
+cat: bar: No such file or directory</pre>
+<p class="docText">This will drive you crazy if you're not careful. The <i>ls</i> 
+command will show you that <i>bar</i> still exists. You won't understand what's 
+going on until you realize that <i>bar</i> is only a pointer to a file that no 
+longer exists. </p>
+<p class="docText">The commands <i>ls -Ll </i>or <i>ls -LF </i>will show an 
+unconnected symbolic link. The <i>-L</i> option means &quot;list the file that this 
+link points to instead of the link itself.&quot; If the link points nowhere, <i>ls -L</i> 
+will still list the link. </p>
+<p class="docText">There are many innocuous ways of creating invalid symbolic 
+links. For example, you could simply <i>mv</i> the data file <i>foo</i>. Or you 
+could move <i>foo</i>, <i>bar</i>, or both to some other part of the filesystem 
+where the pointer wouldn't be valid anymore. </p>
+<p class="docText">One way to avoid problems with invalid links is to use
+<span class="docEmphBold">relative pathnames</span>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">
+Section 1.16</a>) when appropriate. For instance, using relative pathnames will 
+let you move entire directory trees around without invalidating links (provided 
+that both the file and the link are in the same tree). Here's an example: assume 
+that you have the file <i>/home/mars/john/project/datastash/input123.txt</i>. 
+Assume that you want to link this file to <i>/home/mars/john/test/input.txt</i>. 
+You create a link by giving the command: </p>
+<pre>% <b>cd /home/mars/john/test</b>
+% <b>ln -s ../project/datastash/input123.txt input.txt</b></pre>
+<p class="docText">At some later date, you hand the project over to
+<span class="docEmphasis">mary</span>, who <span class="docEmphBold">copies</span>
+<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-13">
+Section 10.13</a>) the entire <i>project</i> and <i>test</i> data trees into her 
+home directory. The link between <i>input.txt</i> and the real file, <i>
+input123.txt</i>, will still be valid. Although both files' names have changed, 
+the relationship between the two (i.e., the relative path from one directory to 
+the other) is still the same. Alternatively, assume that you are assigned to a 
+different computer named <i>jupiter</i> and that you copy your entire home 
+directory when you move. Again, the link remains valid: the relative path from 
+your <i>test</i> directory to your <i>datastash</i> directory hasn't changed, 
+even though the absolute paths of both directories are different. </p>
+<p class="docText">On the other hand, there is certainly room for
+<span class="docEmphBold">absolute pathnames</span>
+<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-2">
+Section 31.2</a>). They're useful if you're more likely to move the link than 
+the original file. Assume that you are creating a link from your working 
+directory to a file in a master directory (let's say <i>/corp/masterdata/input345.txt</i>). 
+It is much more likely that you will rearrange your working directory than that 
+someone will move the master set of files. In this case, you would link as 
+follows: </p>
+<pre>% <b>ln -s /corp/masterdata/input345.txt input.txt</b></pre>
+<p class="docText">Now you can move the link <i>input.txt</i> anywhere in the 
+filesystem: it will still be valid, provided that <i>input345.txt</i> never 
+moves. </p>
+<p class="docText">Note that hard links never have this problem. With a hard 
+link, there is no difference at all between the link and the original — in fact, 
+it's unfair to call one file the link and the other the original, since both are 
+just links to the same inode. You can't even tell which one came first. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-7">10.7 Linking Directories</h3>
+<p class="docText">One feature of <span class="docEmphBold">symbolic links</span> 
+(<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-5">Section 
+10.5</a>) (a.k.a. <i>symlinks</i>) is that unlike hard links, you can use 
+symbolic links to link directories as well as files. Since symbolic links can 
+span between filesystems, this can become enormously useful. </p>
+<p class="docText">For example, sometimes administrators want to install a 
+package in a directory tree that's not where users and other programs expect it 
+to be. On our site, we like to keep <i>/usr/bin</i> pure — that is, we like to 
+be sure that all the programs in <i>/usr/bin</i> came with the operating system. 
+That way, when we install a new OS, we know for sure that we can overwrite the 
+entirety of <i>/usr/bin</i> and not lose any &quot;local&quot; programs. We install all 
+local programs in <i>/usr/local</i>. </p>
+<p class="docText">The X11 package poses a problem, though. Our X windows 
+package (discussed in
+<a class="docLink" href="_chapter 5.htm">Chapter 5</a>) 
+expects X11 programs to be installed in <i>/usr/bin/X11</i>. But X isn't 
+distributed as part of our OS, so we'd prefer not to put it there. Instead, we 
+install X programs in <i>/usr/local/X11/bin</i> and create a symbolic link named
+<i>/usr/bin/X11</i>. We do the same for <i>/usr/include/X11</i> and <i>/usr/lib/X11</i>:
+</p>
+<pre># <b>ln -s /usr/local/X11/bin /usr/bin/X11</b>
+# <b>ln -s /usr/local/X11/lib /usr/lib/X11</b>
+# <b>ln -s /usr/local/X11/include /usr/include/X11</b></pre>
+<p class="docText">By using symlinks, we installed the package where we wanted, 
+but we kept it invisible to any users or programs that expected the X programs, 
+libraries, or include files to be in the standard directories. </p>
+<p class="docText">Directory links can result in some unexpected behavior, 
+however. For example, let's suppose I want to look at files in <i>/usr/bin/X11</i>. 
+I can just <i>cd</i> to <i>/usr/bin/X11</i>, even though the files are really in
+<i>/usr/local/X11/bin</i>: </p>
+<pre>% <b>cd /usr/bin/X11</b>
+% <b>ls -F</b>
+       mkfontdir*      xcalc*          xinit*          xset*
+   ...</pre>
+<p class="docText">But when I do a <i>pwd</i>,<span id="ENB10-2"><a class="docLink" href="#EN10-2"><sup>[2]</sup></a></span> 
+I see that I'm really in <i>/usr/local/X11/bin</i>. If I didn't know about the 
+symlink, this might be confusing for me: </p>
+<pre>% <b>pwd</b>
+/usr/local/X11/bin</pre>
+<p class="docText">Now suppose I want to look at files in <i>/usr/bin</i>. Since 
+I did a <i>cd</i> to <i>/usr/bin/X11</i>, I might think I can just go up a 
+level. But that doesn't work: </p>
+<p class="docText"><tt>-F</tt>
+<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-3">
+Section 8.3</a></p>
+<pre>% <b>cd ..</b>
+% <b>ls -F</b>
+bin/     include/     lib/
+% <b>pwd</b>
+/usr/local/X11</pre>
+<p class="docText">What happened? Remember that a symbolic link is just a
+<span class="docEmphasis">pointer</span> to another file or directory. So when I 
+went to the <i>/usr/bin/X11</i> &quot;directory,&quot; my current working directory became 
+the directory to which <i>/usr/bin/X11</i> points, which is <i>/usr/local/X11/bin</i>.
+</p>
+<p class="docText">As a solution to this problem and others, the X distribution 
+provides a program called <i>lndir</i>. <i>lndir</i> makes symlinks between 
+directories by creating links for each individual file. It's cheesy, but it 
+works. If you have it, you can use <i>lndir</i> instead of <i>ln -s</i>: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: lndir</p>
+<pre># <b>lndir /usr/local/X11/bin /usr/bin/X11</b>
+# <b>ls -F /usr/bin/X11</b>
+X@       mkfontdir@      xcalc@          xinit@          xset@
+   ...</pre>
+<p class="docText"><span class="docEmphasis">— LM</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-8">10.8 Showing the Actual Filenames for Symbolic 
+Links</h3>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: sl</p>
+<p class="docText">The <i>sl</i> program is a <i>perl</i> script (see coverage 
+of Perl in
+<a class="docLink" href="_chapter 41.htm">Chapter 
+41</a>) that traverses the pathnames supplied on the command line, and for each 
+one, it tells you if it had to follow any symbolic links to find the actual 
+filename. Symbolic links to absolute pathnames start over at the left margin. 
+Symbolic links to relative pathnames are aligned vertically with the path 
+element they replace. For example: </p>
+<pre>$ <b>sl /usr/lib/libXw.a</b>
+
+/usr/lib/libXw.a:
+/usr/lib/libXw.a -&gt; /usr/lib/X11/libXw.a
+/usr/lib/X11 -&gt; /X11/lib
+/X11 -&gt; /usr/local/X11R4
+/usr/local/X11R4/lib/libXw.a
+
+$ <b>sl /bin/rnews</b>
+
+/bin -&gt; /usr/bin
+/usr/bin/rnews -&gt; /usr/lib/news/rnews
+/usr/lib/news -&gt; ../local/lib/news
+     local/lib/news/rnews -&gt; inews
+                    inews</pre>
+<p class="docText"><span class="docEmphasis">—LW and RS </span></p>
+<ul>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-9">10.9 Renaming, Copying, or Comparing a Set of Files</h3>
+<p class="docText">If you have a group of files whose names end with <i>.new</i> 
+and you want to rename them to end with <i>.old</i>, you might try something 
+like the following: </p>
+<pre>% <b>mv *.new *.old </b> <i> Wrong!</i></pre>
+<p class="docText">However, this won't work because the shell can't match <i>
+*.old</i> and because the <i>mv</i> command just doesn't work that way. Here's 
+one way to do it that will work with most shells: </p>
+<p class="docText"><tt>-d</tt>
+<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-5">
+Section 8.5</a>, <tt>\(..\)..\1</tt>
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-11">
+Section 34.11</a></p>
+<pre>$ <b>ls -d *.new | sed &quot;s/\(.*\)\.new$/mv '&amp;' '\1.old'/&quot; | sh</b>
+% <b>ls -d *.new | sed 's/\(.*\)\.new$/mv &quot;&amp;&quot; &quot;\1.old&quot;/' | sh</b></pre>
+<p class="docText">That outputs a series of <i>mv</i> commands, one per file, 
+and pipes them to a <span class="docEmphBold">shell</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">Section 
+3.4</a>). The quotes help make sure that <span class="docEmphBold">special 
+characters</span>
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-17">
+Section 27.17</a>) aren't touched by the shell — this isn't always needed, but 
+it's a good idea if you aren't sure what files you'll be renaming. Single quotes 
+around the filenames are &quot;strongest&quot;; we use them in the Bourne-type shell 
+version. Unfortunately, <i>csh</i> and <i>tcsh</i> don't allow <tt>$</tt> inside 
+double quotes unless it's the start of a shell variable name. So the C shell 
+version puts double quotes around the filenames — but the Bourne shell version 
+can use the &quot;stronger&quot; single quotes, like this: </p>
+<pre>mv 'afile.new' 'afile.old'
+mv 'bfile.new' 'bfile.old'
+   ...</pre>
+<p class="docText">To copy, change <i>mv</i> to <i>cp</i>. For safety, use <i>mv 
+-i</i> or <i>cp -i</i> if your versions have the <span class="docEmphBold">-i 
+options</span>
+<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-15">
+Section 14.15</a>). Using <span class="docEmphBold">sh -v</span>
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-15">
+Section 27.15</a>) will show the commands as the shell executes them. </p>
+<p class="docText">This method works for any Unix command that takes a pair of 
+filenames. For instance, to compare a set of files in the current directory with 
+the original files in the <i>/usr/local/src</i> directory, use <i>diff</i>: </p>
+<pre>% <b>ls -d *.c *.h | sed 's@.*@diff -c &amp; /usr/local/src/&amp;@' | sh</b></pre>
+<p class="docText">Note that <i>diff -r</i> does let you compare entire 
+directories, but you need a trick like this to only compare some of the files.
+</p>
+<p class="docText"><span class="docEmphasis">—JP and DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-10">10.10 Renaming a List of Files Interactively</h3>
+<p class="docText">
+<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-9">
+Section 10.9</a> shows how to rename a set of files, e.g., changing <tt>*.new</tt> 
+to <tt>*.old</tt>. Here's a different way, done from inside <i>vi</i>. This 
+gives you a chance to review and edit the commands before you run them. Here are 
+the steps: </p>
+<p class="docText"><tt>&amp;&amp;</tt>
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-10">
+Section 34.10</a>, <tt>$</tt>
+<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-5">
+Section 32.5</a></p>
+<pre>% <b>vi                 </b><i> Start vi without a filename</i>
+<b>:r !ls *.new         </b><i> Read in the list of files, one filename per line</i>
+<b>:%s/.*/mv -i &amp;&amp;/     </b><i> Make mv command lines</i>
+<b>:%s/new$/old/        </b><i> Change second filenames; ready to review</i>
+<b>:w !sh               </b><i> Run commands by writing them to a shell</i>
+<b>:q!                  </b><i> Quit vi without saving</i></pre>
+<p class="docText">If you've made your own version of <i>ls</i> that changes its 
+output format, that can cause trouble here. If your version gives more than a 
+plain list of filenames in a column, use<tt>!/bin/ls</tt> instead of just <tt>!ls</tt>.
+</p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-11">10.11 One More Way to Do It</h3>
+<p class="docText">I couldn't resist throwing my hat into this ring. I can 
+imagine an unsophisticated user who might not trust himself to replace one 
+pattern with another, but doesn't want to repeat a long list of <i>mv</i> -<i>i</i> 
+commands. (The <i>-i</i> option will prompt if a new name would overwrite an 
+existing file.) Here's a simple <span class="docEmphBold">script</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-8">Section 
+1.8</a>) that takes a list of filenames (perhaps provided by wildcards) as input 
+and prompts the user for a new name for each file: </p>
+<pre>#!/bin/sh
+# Usage: newname files
+for x
+do
+    echo -n &quot;old name is $x, new name is: &quot;
+    read newname
+    mv -i &quot;$x&quot; &quot;$newname&quot;
+done</pre>
+<p class="docText">For example:</p>
+<pre>% <b>touch junk1 junk2 junk3</b>
+% <b>newname junk*</b>
+old name is junk1, new name is: <b>test1</b>
+mv: overwrite test1 with junk1? <b>y</b>
+old name is junk2, new name is: <b>test2</b>
+old name is junk3, new name is: <b>test3</b></pre>
+<p class="docText">In the first case, <span class="docEmphasis">test1</span> 
+already existed, so <span class="docEmphasis">mv -i</span> prompted. </p>
+<p class="docText">This script is very simple; I just thought I'd use it to 
+demonstrate that there's more than one way to do it, even if you aren't using 
+Perl. </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-12">10.12 Copying Directory Trees with cp -r</h3>
+<p class="docText"><i>cp</i> has a <i>-r</i> (recursive) flag, which copies all 
+the files in a directory tree — that is, all the files in a directory and its 
+subdirectories. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">One of our Unix systems has a <i>cp</i> without a <i>
+        -r</i> option. But it also has an <span class="docEmphBold">rcp</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+        1.21</a>) command that <span class="docEmphasis">does</span> have <i>-r</i>.
+        <i>rcp</i> can copy to any machine, not just remote machines. When I 
+        need <span class="docEmphasis">cp -r</span> on that host, I use
+        <span class="docEmphasis">rcp -r</span>. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">cp -r</span> can be used in two 
+ways. The first is much like normal copies; provide a list of files to copy and 
+an existing directory into which to copy them. The <i>-r</i> option just means 
+that source directories will be copied as well as normal files. The second 
+allows you to copy a single directory to another location. </p>
+<ul>
+  <li>
+  <p class="docList">Here's how to do the copy shown in
+  <a class="docLink" href="#upt3-CHP-10-FIG-1">
+  Figure 10-1</a>. This copies the directory <i>/home/jane</i>, with all its 
+  files and subdirectories, and creates a subdirectory named <i>jane</i> in the
+  <span class="docEmphBold">current directory (.)</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+  1.16</a>): </p>
+  <pre>% <b>cd /work/bkup</b>
+% <b>cp -r /home/jane .</b></pre>
+  </li>
+  <li>
+  <p class="docList">How can you copy the contents of the subdirectory called <i>
+  data</i> and all its files (but not the subdirectory itself) into a duplicate 
+  directory named <i>data.bak</i>? First make sure that the destination 
+  directory doesn't exist. That's because if the last argument to <i>cp</i> is a 
+  directory that already exists, the source directory will be copied to a 
+  subdirectory of the destination directory (i.e., it will become <i>data.bak/data</i> 
+  rather than just <i>data.bak</i>): </p>
+  <pre>% <b>cd /home/jane</b>
+% <b>cp -r data data.bak</b></pre>
+  </li>
+  <li>
+  <p class="docList">Use this to copy the subdirectories <i>Aug</i> and <i>Sep</i> 
+  and their files from the directory <i>/home/jim/calendar</i> into the current 
+  directory (.): </p>
+  <p class="docList"><tt>[..]*</tt>
+  <a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">
+  Section 33.2</a></p>
+  <pre>% <b>cp -r /home/jim/calendar/[AS]* .</b></pre>
+  <p class="docList">In many shells, if you wanted the <i>Oct</i> directory too, 
+  but not the file named <i>Output</i>, you can copy just the directories by 
+  using the handy <span class="docEmphBold">curly brace operators</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">Section 
+  28.4</a>): </p>
+  <pre>% <b>cp -r /home/jim/calendar/{Aug,Sep,Oct} .</b></pre>
+  </li>
+</ul>
+<p class="docText">Some gotchas:</p>
+<ul>
+  <li>
+  <p class="docList"><span class="docEmphBold">Symbolic and hard links</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+  10.4</a>) are copied as files. That can be a good thing; if a symbolic link 
+  were not turned into a file along the way, the new symbolic link would point 
+  to the wrong place. It can be bad if the link pointed to a really big file; 
+  the copy can take up a lot of disk space that you didn't expect. (In
+  <a class="docLink" href="#upt3-CHP-10-FIG-1">
+  Figure 10-1</a>, notice that the symbolic link in <i>jane</i>'s home directory 
+  was converted to a file named <i>.setup</i> with a copy of the contents of <i>
+  generic</i>.) This can be prevented by using the <i>-d</i> option, if your <i>
+  cp</i> supports it. </li>
+  <li>
+  <p class="docList">On many Unixes, the copy will be dated at the time you made 
+  the copy and may have its permissions set by your <i>umask</i>. If you want 
+  the copy to have the original modification time and permissions, add the <i>-p</i> 
+  option. </li>
+  <li>
+  <p class="docList"><span class="docEmphasis">cp -r</span> may go into an 
+  endless loop if you try to copy a directory into itself. For example, let's 
+  say you're copying everything from the current directory into an existing 
+  subdirectory named <i>backup</i>, like this: </p>
+  <pre>% <b>cp -r * backup</b></pre>
+  <p class="docList">Unless your <span class="docEmphasis">cp -r</span> is smart 
+  enough to scan for files before it starts copying, it will create <i>
+  backup/backup</i>, and <i>backup/backup/backup</i>, and so on. To avoid that, 
+  replace the <tt>*</tt> wildcard with other less-&quot;wild&quot; wildcards. </li>
+  <li>
+  <p class="docList"><span class="docEmphasis">cp -r</span> doesn't deal well 
+  with special files. Most platforms support a <i>-R</i> option instead, which 
+  correctly handles device files and the like. GNU <i>cp</i> has <i>-a</i> as a 
+  recommended option for normal recursive copying; it combines <i>-R</i> with <i>
+  -d</i> and <i>-p</i>, as described earlier. </li>
+</ul>
+<p class="docText">Note that directories can be copied to another machine using 
+the same basic syntax with <i>rcp</i> and <i>scp</i>. The only difference is 
+that remote files have <tt><i>hostname</i></tt>: in front of them; note that 
+remote files can be used either as source or destination. Relative pathnames for 
+remote files are always relative to your home directory on the remote machine.
+</p>
+<pre>% <b>scp -r mydata bigserver:backups</b>
+% <b>scp -r bass:/export/src/gold-20020131 .</b></pre>
+<p class="docText"><i>scp</i> and <i>rcp</i> use the same syntax; <i>scp</i> 
+uses <span class="docEmphBold">SSH</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-6">Section 
+46.6</a>) to do its copying, while <i>rcp</i> uses unencrypted connections. </p>
+<p class="docText"><span class="docEmphasis">—DJPH and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-10-SECT-13">10.13 Copying Directory Trees with tar and Pipes</h3>
+<p class="docText">The <span class="docEmphBold">tar</span> (<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-2">Section 
+39.2</a>) command isn't just for tape archives. It can copy files from disk to 
+disk, too. And even if your computer has <span class="docEmphBold">cp -r</span> 
+(<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-12">Section 
+10.12</a>), there are advantages to using <i>tar</i>. </p>
+<p class="docText">The obvious way to copy directories with <i>tar</i> is to 
+write them onto a tape archive with relative pathnames — then read back the tape 
+and write it somewhere else on the disk. But <i>tar</i> can also write to a Unix 
+pipe — and read from a pipe. This looks like: </p>
+<pre>% <i>reading-tar </i> <b>| </b> <i>writing-tar </i></pre>
+<p class="docText">with one trick: the <tt><i>writing-tar</i></tt> process has a<span class="docEmphBold"> 
+different current directory</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>,
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">
+Section 24.4</a>) (the place where you want the copy made) than the <tt><i>
+reading-tar</i></tt>. To do that, run the <tt><i>writing-tar</i></tt> in a
+<span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">Section 
+43.7</a>), or if your <i>tar</i> supports it, use the <i>-C</i> option. </p>
+<p class="docText">The argument(s) to the <tt><i>reading-tar</i></tt> can be 
+directories or files. Just be sure to use <span class="docEmphBold">relative 
+pathnames</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-2">Section 
+31.2</a>) that don't start with a slash — otherwise, the <tt><i>writing-tar</i></tt> 
+may write the copies in the same place from where the originals came! </p>
+<p class="docText">&quot;How about an example,&quot; you ask?
+<a class="docLink" href="#upt3-CHP-10-FIG-1">Figure 10-1</a> has one. It copies 
+from the directory <i>/home/jane</i>, with all its files and subdirectories. The 
+copy is made in the directory <i>/work/bkup/jane</i>: </p>
+<pre>% <b>mkdir /work/bkup/jane</b>
+% <b>cd /home/jane</b>
+% <b>tar cf - . | (cd /work/bkup/jane &amp;&amp; tar xvf -)</b></pre>
+<p class="docText">Or, if you want to use <i>-C</i>:</p>
+<pre>% <b>tar cf - . | tar xvf - -C /work/bkup/jane</b></pre>
+<p class="docText">In the subshell version, the <span class="docEmphBold">&amp;&amp; 
+operator</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">Section 
+35.14</a>) tells the shell to start <tt>tar xvf -</tt> only if the previous 
+command (the <tt>cd</tt>) succeeded. That prevents <i>tar</i> writing files into 
+the same directory from which it's reading — if the destination directory isn't 
+accessible or you flub its pathname. Also, don't use the <i>v</i> (verbose) 
+option in both <i>tar</i>s unless you want to see doubled output; one or the 
+other is plenty. I usually put it in the <tt><i>writing-tar</i></tt> to see 
+write progress, as that's more interesting to me than how far ahead the system 
+has cached the read for me. </p>
+<center>
+<h5 id="upt3-CHP-10-FIG-1" class="docFigureTitle">Figure 10-1. Copying /home/jane to /work/bkup with 
+tar</h5>
+<p>
+<img alt="figs/upt3_1001.gif" src="upt3_1001.gif" border="0" width="441" height="395"></p>
+</center>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="50" src="screw.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">At least one <i>tar</i> version has a <i>v</i> 
+        (verbose) option that writes the verbose text to standard output instead 
+        of standard error! If your <i>tar</i> does that, definitely don't use <i>
+        v</i> on the <tt><i>reading-tar</i></tt> (the <i>tar</i> that feeds the 
+        pipe) — use <i>v</i> on the <tt><i>writing-tar</i></tt> only. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">You can use other options that your <i>tar</i> might have — 
+such as excluding files or directories — on the <tt><i>reading-tar</i></tt>, 
+too. Some gotchas: </p>
+<ul>
+  <li>
+  <p class="docList">Be aware that <span class="docEmphBold">symbolic links</span> 
+  (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+  10.4</a>) will be copied exactly. If they point to relative pathnames,
+  <span class="docEmphBold">the copied links might point to locations that don't 
+  exist</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-6">Section 
+  10.6</a>). You can search for these symbolic links with
+  <span class="docEmphasis">find -type l</span>. </li>
+  <li>
+  <p class="docList">If your system has <span class="docEmphBold">rsh</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+  1.21</a>) or <i>ssh</i>, you can run either the <tt><i>reading-tar</i></tt> or 
+  the <tt><i>writing-tar</i></tt> on a remote system. For example, to copy a 
+  directory to the computer named <span class="docEmphasis">kumquat</span>: </p>
+  <pre>% <b>ssh kumquat mkdir /work/bkup/jane</b>
+% <b>tar cf - . | ssh kumquat 'cd /work/bkup/jane &amp;&amp; tar xvf -'</b></pre>
+  </li>
+</ul>
+<p class="docText"><span class="docEmphasis">—JP and DJPH</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN10-1"><a class="docLink" href="#ENB10-1">[1]</a>&nbsp;&nbsp;Actually, every directory has at least two names. See the last section of this 
+article.</p><p class="docFootnote" id="EN10-2"><a class="docLink" href="#ENB10-2">[2]</a>&nbsp;&nbsp;I mean the standard Unix <i>
+  pwd</i> command, an external command that isn't built into your shell. Most 
+  shells have an internal version of <i>pwd</i> that &quot;keeps track&quot; of you as you 
+  change your current directory; it may not give the same answer I show here. 
+  You can run the external version by typing <i>/bin/pwd</i>.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 9.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 11.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

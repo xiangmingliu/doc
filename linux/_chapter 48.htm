@@ -1,0 +1,556 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 48</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 47.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 49.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 48. Security Basics</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-48-SECT-1">48.1 Understanding Points of Vulnerability</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-48-SECT-2">48.2 CERT Security Checklists</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-48-SECT-3">48.3 Keeping Up with Security Alerts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-48-SECT-4">48.4 What We Mean by Buffer Overflow</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-48-SECT-5">48.5 What We Mean by DoS</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-48-SECT-6">48.6 Beware of Sluggish Performance</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-48-SECT-7">48.7 Intruder Detection</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-48-SECT-8">48.8 Importance of MOTD</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-48-SECT-9">48.9 The Linux proc Filesystem</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-48-SECT-10">48.10 Disabling inetd</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-48-SECT-11">48.11 Disallow rlogin and rsh</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-48-SECT-12">48.12 TCP Wrappers</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-48-SECT-1">48.1 Understanding Points of Vulnerability</h3>
+<p class="docText">Rather than being impregnable fortresses of steel, most 
+computers are about as leaky as old wooden fishing boats. Though the press has 
+focused primarily on Windows security violations in the last few years, Unix 
+boxes are just as vulnerable and require as much, or more, effort to keep safe.
+</p>
+<p class="docText">If your Unix box sits in your home, it is protected from 
+unauthorized access, you live alone, and you never connect to the Internet, 
+security probably isn't a concern for you. However, chances are your Unix box is 
+fairly easy to access physically, and your system is most likely connected to 
+the Internet through a modem or other network connection. In both these cases, 
+this chapter and those that follow are of extreme interest to you. </p>
+<p class="docText">Anytime you have a multiuser system, your account is 
+vulnerable to others in the system and to anyone who might break into the system 
+from outside your organization. The only way to protect accounts is to ensure 
+that good account management practices are in place, such as removing accounts 
+when people are no longer with the organization and using difficult-to-hack 
+passwords, as well as making sure that sensitive data is protected by accidental 
+or deliberate access. </p>
+<p class="docText">For single-user systems, you'll want to make sure that 
+someone can't accidentally or deliberately log into your machine at home or 
+work. Chances are no one would try, but particularly if you have something such 
+as Linux installed on a laptop, you're going to want to keep the snoops out. </p>
+<p class="docText">More importantly, before you connect to the Internet, you 
+have to know what you're doing with your system, particularly if you run 
+applications such as web servers on your system. All you need is one harmful 
+worm or virus, or to have a cracker break into your system, to have all your 
+work and effort compromised. </p>
+<p class="docText">The above areas of vulnerability — account, machine, and 
+system — probably don't surprise you. But are you aware that you're vulnerable 
+to yourself? </p>
+<p class="docText">How many times have you accidentally deleted a file? Now, how 
+many times have you deleted a file and not had backup in place? Security isn't 
+just a protection against external intrusion. Used effectively, security is also 
+an effective means to protect the system and the data and applications from 
+internal error and blunder. </p>
+<p class="docText">Before you install your Unix operating system and turn on 
+your machine, you need to have a security plan in place, starting with a
+<span class="docEmphBold">security checklist</span> (<a class="docLink" href="_chapter 48.htm#upt3-CHP-48-SECT-2">Section 
+48.2</a>). </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-48-SECT-2">48.2 CERT Security Checklists</h3>
+<p class="docText">If you can stand the access times, one of the most valuable 
+web sites for Unix security information is the CERT (Computer Emergency Response 
+Team) web site at <a class="docLink" href="http://www.cert.org" target="_blank">
+http://www.cert.org</a>. At this site you'll be able to find information about 
+the latest <span class="docEmphBold">security alerts</span> (<a class="docLink" href="_chapter 48.htm#upt3-CHP-48-SECT-3">Section 
+48.3</a>), where to get security patches for your operating system, and the CERT 
+Unix Security Checklist. </p>
+<p class="docText">The CERT Unix Security Checklist is a step-by-step overview 
+of what security procedures you need to implement for your Unix system, 
+regardless of the type of system you have. </p>
+<p class="docText">There's no magic formula in the Checklist, just good common 
+sense. First of all, keep your system up to date with the most recent security 
+patches. Always apply the <span class="docEmphBold">most restrictive permission</span> 
+(<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-5">Section 
+50.5</a>) on a file: if a file only needs to be read-only, make sure its file 
+permissions are set to read-only, and so on. Other tips are disabling Internet 
+services you're not using and protecting your system so it can't be used to 
+launch <span class="docEmphBold">denial-of-service attacks (DoS)</span> (<a class="docLink" href="_chapter 48.htm#upt3-CHP-48-SECT-5">Section 
+48.5</a>). </p>
+<p class="docText">Above all, the Checklist emphasizes an attitude of &quot;Go ahead, 
+be paranoid — someone is out to break into your system.&quot; If your Unix box is 
+connected in any way to the Internet, the Checklist is the first thing you 
+should print out and review, one step at a time, <span class="docEmphasis">
+before</span> you install your Unix operating system or turn on your machine. 
+Definitely before you connect to the Internet. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">The CERT web site has extremely slow access times. I 
+        imagine this is because it's a popular site. I can also imagine that the 
+        site is the target of every cracker in the world. Regardless of the 
+        cause of the slowness, access the site only during non-peak hours, if 
+        there is such a thing with a 24-hour-a-day Internet. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-48-SECT-3">48.3 Keeping Up with Security Alerts</h3>
+<p class="docText">If you have a Microsoft Windows system, you're probably 
+familiar with the frequent security bulletins from Microsoft's Security 
+division. One of the nice things about Microsoft's security is that you can get 
+security alerts emailed to you so that you're made aware of new vulnerabilities 
+as soon as Microsoft acknowledges them. </p>
+<p class="docText">In the Unix world, you may have to make a little more effort 
+to keep up with the security alerts for various flavors of Unix; however, 
+keeping up with the alerts isn't a horrendous amount of work. It's just a case 
+of knowing where to look for them. </p>
+<p class="docText">I've already mentioned <span class="docEmphBold">CERT</span> 
+(<a class="docLink" href="_chapter 48.htm#upt3-CHP-48-SECT-2">Section 
+48.2</a>). This web site has some of the best information about new security 
+vulnerabilities, and if you're managing a multiuser Unix system, you should 
+check this site at least once a day. Even if you only have a single-use Unix 
+box, you should check the site frequently. Note, though, that CERT publicizes 
+all security vulnerabilities, not just Unix ones. On the day I wrote this, when 
+I checked at CERT's Advisories page (at
+<a class="docLink" href="http://www.cert.org/advisories" target="_blank">
+http://www.cert.org/advisories</a>/), there were advisories on Oracle, the zlib 
+Compression library, PHP, and Microsoft's Internet Explorer, to name just a few.
+</p>
+<p class="docText">If you're running a Linux system, you can check Linux 
+Security at
+<a class="docLink" href="http://www.linuxsecurity.com" target="_blank">
+http://www.linuxsecurity.com</a> for up-to-date information on security problems 
+related to Linux operating systems. In addition, you can read articles on Linux 
+security and download security-related utilities. When I accessed the site, the 
+current reported exploit was related to a vulnerability with Apache, and the 
+most current advisory was warning about a <span class="docEmphBold">potential 
+buffer overflow</span> (<a class="docLink" href="_chapter 48.htm#upt3-CHP-48-SECT-4">Section 
+48.4</a>) problem related to FreeBSD's <span class="docEmphasis">squid</span> 
+port. </p>
+<p class="docText">What I particularly like about Linux Security is that it 
+shows security advisories categorized by flavor of Unix/Linux. Among the 
+categories are Corel, Caldera, Red Hat, Slackware, Debian, FreeBSD, NetBSD, and 
+so on. Since I run a Red Hat Linux box as well as a FreeBSD web server, it is 
+particularly helpful for me to see what I need to be aware of in both of these 
+environments. </p>
+<p class="docText">O'Reilly publishes information about Unix and open source at 
+the Linux DevCenter at the O'Reilly Network (at
+<a class="docLink" href="http://linux.oreillynet.com" target="_blank">
+http://linux.oreillynet.com</a>). Rather than list all vulnerabilities, this 
+site tends to focus on specific instances and then covers each in more detail 
+than you'll normally get at the other security sites. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-48-SECT-4">48.4 What We Mean by Buffer Overflow</h3>
+<p class="docText">You can't run any operating system without getting security 
+alerts related to buffer overflow vulnerabilities. Unless you're into system 
+hacking, you're probably not aware of what this means and why buffer overflow is 
+the base cause of so many alerts. </p>
+<p class="docText">In a procedural language, such as the C programming language 
+used to create Unix, functionality is broken down into separate, reusable 
+functions. These functions are then called whenever that functionality is 
+needed. Data is passed between the application and the function through function 
+arguments. </p>
+<p class="docText">Function arguments are pushed onto a section of memory called 
+the stack. Additionally, the return point for the function — that place in the 
+application where the function is called — is also pushed onto the stack. 
+Finally, data internal to the function is also pushed onto the stack. </p>
+<p class="docText">A buffer is allocated on the stack to store function 
+parameters. If a parameter exceeds the buffer size, the data overwrites the 
+other stack contents, including the function return call, resulting in an 
+application failure. Many functions commonly used in C, such as <i>scanf</i> or
+<i>strcpy</i>, don't ensure that the buffer meets the size of the data copied, 
+and if the application developer doesn't perform this check herself, the 
+application will most likely fail the first time the data copied exceeds the 
+size of the buffer. </p>
+<p class="docText">An example of this type of problem is an application that 
+opens and copies the contents of a file using one of the C functions that don't 
+do buffer size checking. As long as the file contents are small enough, the 
+application doesn't generate an error. However, if a file's contents are too 
+large, the application will fail, abruptly, leaving application support 
+personnel scratching their heads wondering why an application that worked to a 
+certain point stopped working. </p>
+<p class="docText">An application failure is not the worst that can happen in 
+this situation. Crackers with a good understanding of how the stack works and 
+knowledge of assembly code can exploit this vulnerability by writing code to the 
+stack beyond the function arguments and function return address. In addition, 
+they can rewrite the function return address to point to the address of the 
+beginning of this malicious code. When the function finishes, the address of the 
+new hacked code is pushed to the processor rather than the return location of 
+the function, and the hacked code is executed, usually with disastrous results.
+</p>
+<p class="docText">To prevent both application crashes and buffer-overflow 
+vulnerabilities, boundary-checking versions of most C functions are used rather 
+than the unsafe functions. The application developer also adds boundary checking 
+to his or her own code, such as checking the size of the application file before 
+processing it from our example application. Unfortunately, this doesn't always 
+happen. </p>
+<p class="docText">When you read about or receive an alert about buffer-overflow 
+vulnerability in a Unix utility or application, what's happened is that crackers 
+— or security personnel — have discovered that the application contains code 
+that isn't testing the boundaries of the data being processed. Usually a patch 
+that replaces the defective code accompanies this alert. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-48-SECT-5">48.5 What We Mean by DoS</h3>
+<p class="docText">Another major security problem is one in which users of a 
+Unix system can't access the functionality because access attempts are being 
+blocked in some way. These blocking efforts are called, appropriately enough, 
+denial-of-service attacks, usually abbreviated DoS. </p>
+<p class="docText">CERT defines three types of DoS attacks: </p>
+<ul>
+  <li>
+  <p class="docList">An attack that consumes all resources</li>
+  <li>
+  <p class="docList">Manipulation of configuration information</li>
+  <li>
+  <p class="docList">Manipulation of network components</li>
+</ul>
+<p class="docText">Resources in a networked system include memory, bandwidth, 
+Internet connections, and so on. In a DoS attack, the attacker seeks to use 
+these resources in such a way that no one else can connect to the system. Famous 
+examples of this type of attack involve a concept known as the distributed 
+denial-of-service attack, DDoS. </p>
+<p class="docText">In a DDoS attack, several machines that have not been 
+properly secured against external control are compromised, and an application is 
+placed on each. This application lies dormant until triggered by the attacker. 
+When this happens, these compromised machines — known as
+<span class="docEmphasis">handlers</span> — direct other compromised machines — 
+known as <span class="docEmphasis">agents</span> — to run an application that 
+generates network packets, all of which are directed to a specific target. These 
+packets overwhelm the available bandwidth of the victim, and they may also 
+overwhelm routers in the path to the victim to the point where entire sections 
+of the Internet may be negatively impacted. </p>
+<p class="docText">Though Windows-based rather than Unix, the Code Red worm that 
+caused so many problems in 2001 was based on the premise of DDoS. </p>
+<p class="docText">Though disabling, DoS attacks based on overutilizing 
+ephemeral resources such as bandwidth deny access but don't permanently damage a 
+machine's infrastructure. However, another DoS attack is one in which an 
+attacker gains root access to a machine and modifies configuration information 
+such as usernames and passwords, in such a way that no one can access the 
+network. </p>
+<p class="docText">How simple is it to access configuration information? 
+Accessing the password file on a system can be as easy as using TFTP (Trivial 
+File Transfer Protocol) to download the password file unless TFTP is disabled or 
+configured to prevent unauthorized access. </p>
+<p class="docText">In fact, a DDoS attack is dependent on the attacker getting 
+access to several machines in order to launch an attack. Keeping your system 
+clean and protected not only prevents invasion of your own systems, but prevents 
+your Unix boxes from being used to launch attacks on others. </p>
+<p class="docText">The third type of DoS attack is based on physical attack. 
+Literally, if someone comes after your wires with an axe, no security software 
+is going to protect your system. However, axe-wielding intruders are beyond the 
+scope of this book, so we'll concentrate primarily on software and system 
+adjustments to protect against DoS attacks. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-48-SECT-6">48.6 Beware of Sluggish Performance</h3>
+<p class="docText">Contrary to popular myth, systems don't just start to fail 
+for no reason. If your system is starting to perform poorly, chances are it's 
+because of something that's been initiated. In most cases, the cause has 
+innocuous roots, such as a poorly designed script; however, sluggish performance 
+could also mean an external attack. Regardless of the origin of the decreasing 
+efficiency, you'll want to take steps to locate the problem and remove it before 
+it takes your system down. </p>
+<p class="docText">If you notice that your systems performance is degrading, 
+there are several built-in utilities you can use to troubleshoot possible 
+problems. Probably the most commonly used utility is <span class="docEmphBold">
+ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>); however, there are other utilities that can provide useful 
+information. </p>
+<h4  id="upt3-CHP-48-SECT-6.1" class="docSection2Title">48.6.1 Check Processes</h4>
+<p class="docText">The first check to perform if you think that you have a 
+destructive agent running on your machine is the processes currently in 
+operation. You'll use the basic <i>ps</i> command to do this, after first 
+checking to make sure that <i>ps</i> itself hasn't been replaced by a bogus 
+program (check installation date, location, and size to see if the <i>ps</i> 
+utility has been replaced). </p>
+<p class="docText">Running the <i>ps</i> command with the flags <i>-aux</i> 
+shows each user's processes, the CPU and memory usage, time started and command. 
+Here's an example of output: </p>
+<pre>&gt; ps -aux
+
+root    6910  0.0  0.1  2088  516  ??  IsJ 30Apr02  1:04.80 /usr/sbin/sshd
+root    6955  0.0  0.0  2600  384  ??  IsJ 30Apr02  0:06.67 /usr/local/sbin/xinetd -pidfile 
+/var/run/xinetd.pid
+root    6970  0.0  0.0   624    0 #C1- IWJ -        0:00.00 /bin/sh /usr/virtual/share/
+pkgs/installed/mysql-server/3.22.32/bin/
+mysql   6994  0.0  0.0 11216  144 #C1- SJ  30Apr02  0:35.83 /usr/local/libexec/
+mysqld --basedir=/usr/local --datadir=/var/db/my
+root    7003  0.0  0.3 10028 2616  ??  SsJ 30Apr02  3:33.55 /usr/local/www/bin/httpd -DSSL
+nobody 38060  0.0  0.3 10324 3116  ??  SJ  12:01PM  0:08.60 /usr/local/www/bin/httpd -DSSL
+nobody 38061  0.0  0.3 10332 2612  ??  SJ  12:01PM  0:08.23 /usr/local/www/bin/httpd -DSSL
+nobody 38062  0.0  0.3 11212 2656  ??  SJ  12:01PM  0:08.89 /usr/local/www/bin/httpd -DSSL
+nobody 38117  0.0  0.2 10352 2580  ??  SJ  12:01PM  0:09.37 /usr/local/www/bin/httpd -DSSL
+nobody 38314  0.0  0.2 10332 2596  ??  SJ  12:03PM  0:08.98 /usr/local/www/bin/httpd -DSSL
+root   62104  0.0  0.0  2112  400  ??  SJ   9:57AM  0:00.16 sshd: shelleyp@ttyp2 (sshd)</pre>
+<p class="docText">In this listing, several processes are being run by root, but 
+all are normal processes and accounted for. In addition, several processes are 
+being run by &quot;nobody,&quot; which is the generic user used with HTTP web page access. 
+Using additional <i>ps</i> flags displays additional information, including <i>
+-e</i> for environment and <i>-f</i> for command-line and environment 
+information of swapped-out processes. </p>
+<h4  id="upt3-CHP-48-SECT-6.2" class="docSection2Title">48.6.2 Checking Swap Space</h4>
+<p class="docText">If your system is under DoS attack, your swap space is a 
+vulnerable point. This hard disk space is reserved for use by the operating 
+system and to provide space for temporary files. If your system is sluggish and 
+you suspect a possible DoS attack — or just a badly behaving script that results 
+in a lot of temporary files — the first thing you should check is how much swap 
+space you have. </p>
+<p class="docText">The <i>pstat</i> utility can be used to check swap space when 
+using the <i>-s</i> option on the command line: </p>
+<pre>pstat -s</pre>
+<p class="docText">The result will be a listing of swap areas by device with 
+available and used swap space. If the percentage of used space is much higher 
+than normal, you probably have a bad script or external interference. Additional 
+utilities can help you determine which. </p>
+<p class="docText">Within FreeBSD and other Unix systems, <i>swapinfo</i> 
+returns the same information as <i>pstat</i> <i>-s</i>. If you're running a Mac 
+OS X system, instead of <i>pstat</i>, you'll use the <i>ls</i> command and check 
+the contents of <i>/var/vm</i>: </p>
+<pre>ls -l /var/vm
+-rw-------T   1   root      wheel     000000000  Jun    4    12:56    swapfile0</pre>
+<p class="docText">Since the system wasn't under load, the swap space didn't 
+have any contents at the time this command was run. </p>
+<h4  id="upt3-CHP-48-SECT-6.3" class="docSection2Title">48.6.3 Check Network Connections</h4>
+<p class="docText">Another check you can run if your system is running 
+sluggishly and you think you might be under attack is <i>netstat</i>. This 
+command will return activity on Unix sockets as well as all of the active 
+Internet connections, including referrals if the connection occurs through HTTP.
+</p>
+<p class="docText">Here's an example of <i>netstat</i> output: </p>
+<pre>Active Internet connections
+Proto Recv-Q Send-Q  Local Address          Foreign Address        (state)
+tcp4       0      0  burningbird.http       a25253.upc-a.che.3617  TIME_WAIT
+tcp4       0      0  burningbird.http       pm66.internetsee.4301  TIME_WAIT
+tcp4       0      0  burningbird.http       strider.ccs.neu..4492  TIME_WAIT
+tcp4       0      0  burningbird.http       strider.ccs.neu..4491  TIME_WAIT
+tcp4       0      0  burningbird.http       strider.ccs.neu..4490  TIME_WAIT
+tcp4       0      0  burningbird.http       mailgate.ltsbfou.57600 FIN_WAIT_2
+tcp4       0      0  burningbird.http       mailgate.ltsbfou.57595 FIN_WAIT_2
+tcp4       0     20  burningbird.ssh        adsl-64-168-24-1.1076  ESTABLISHED
+tcp4       0      0  burningbird.submission *.*                    LISTEN
+tcp4       0      0  burningbird.smtp       *.*                    LISTEN
+tcp4       0      0  burningbird.domain     *.*                    LISTEN
+tcp4       0      0  burningbird.http       *.*                    LISTEN
+tcp4       0      0  burningbird.https      *.*                    LISTEN
+tcp4       0      0  burningbird.pop3s      *.*                    LISTEN
+tcp4       0      0  burningbird.ssh        *.*                    LISTEN
+udp4       0      0  burningbird.domain     *.*
+udp4       0      0  burningbird.syslog     *.*
+Active UNIX domain sockets
+Address  Type   Recv-Q Send-Q    Inode     Conn     Refs  Nextref Addr
+e5ed4cc0 stream      0      0 e5f0cbc0        0        0        0 /tmp/mysql.sock
+e5ed4d40 stream      0      0        0        0        0        0
+e5e08380 dgram       0      0        0 e5ed4dc0        0 e5e083c0
+e5e083c0 dgram       0      0        0 e5ed4dc0        0 e5ed4d80
+e5ed4d80 dgram       0      0        0 e5ed4dc0        0        0
+e5ed4dc0 dgram       0      0 e556c040        0 e5e08380        0 /var/run/log</pre>
+<p class="docText">Specifying <i>netstat</i> with the command line option <i>-s</i> 
+provides a detailed report of per-protocol — TCP, UDP, IP, and so on — usage 
+statistics. </p>
+<p class="docText">The <i>netstat</i> program is helpful not only for 
+determining if someone is trying to break into your system, but also for 
+determining if your system is having basic communication problems. </p>
+<h4  id="upt3-CHP-48-SECT-6.4" class="docSection2Title">48.6.4 Other Checks</h4>
+<p class="docText">You can use <i>iostat</i> to check I/O statistics on your 
+various devices. For instance, to check to see what kind of activity is 
+occurring on all devices every three seconds for nine runs, issue the following 
+command: </p>
+<pre># <b>iostat -odICTw 2 -c 9</b>
+      tty        mlxd0          acd0           fd0           md0             cpu
+ tin tout blk xfr msps  blk xfr msps  blk xfr msps  blk xfr msps  us ni sy in id
+   0    0   0   0  0.0    0   0  0.0    0   0  0.0    0   0  0.0   0  0  0  0  0
+   0    0 224  12  167    0   0  0.0    0   0  0.0    0   0  0.0   0  0  0  0  0
+   0    0 568  36 55.8    0   0  0.0    0   0  0.0    0   0  0.0   0  0  0  0  0
+   0    0 144   5  402    0   0  0.0    0   0  0.0    0   0  0.0   0  0  0  0  0
+   0    0 112   7  287    0   0  0.0    0   0  0.0    0   0  0.0   0  0  0  0  0
+   0    0  48   3  670    0   0  0.0    0   0  0.0    0   0  0.0   0  0  0  0  0
+   0    0 240  15  134    0   0  0.0    0   0  0.0    0   0  0.0   0  0  0  0  0
+   0    0 192  12  168    0   0  0.0    0   0  0.0    0   0  0.0   0  0  0  0  0
+   0    0  96   6  335    0   0  0.0    0   0  0.0    0   0  0.0   0  0  0  0  0</pre>
+<p class="docText">The result allows you to compare I/O over a period of time. 
+Note that in some systems, <i>iostat</i> may be <i>io_stat</i>, instead. </p>
+<p class="docText">Another check is <i>vmstat</i> (<i>vm_stat</i>), which 
+displays the virtual memory statistics for a machine. As with <i>iostat</i>, 
+running the command several times over a period of time can show if there is 
+unusual activity within virtual memory. For instance, if the free memory 
+unexpectedly decreases, no known user is running a process, the occurrence of 
+the free memory use is consistent (occurring at a set time of day), and no other 
+system processes or <span class="docEmphasis">cron</span> jobs are known to be 
+running, you probably have an intruding application running somewhere on the 
+system. Other tests can then be used to help you determine what the application 
+is. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-48-SECT-7">48.7 Intruder Detection</h3>
+<p class="docText">From the CERT Intruder detection checklist at
+<a class="docLink" href="http://www.cert.org/tech_tips/intruder_detection_checklist.html" target="_blank">
+http://www.cert.org/tech_tips/intruder_detection_checklist.html</a> comes a 
+variety of helpful steps to take to determine if your system has had an 
+intruder. </p>
+<p class="docText">Check logfiles first, and then check for any unusual
+<span class="docEmphBold">setgid</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-5">Section 
+49.5</a>) or <i>setuid</i> files. </p>
+<p class="docText">A key symptom that something is wrong with your system is 
+when something appears that doesn't belong. This includes files, directories, 
+users, and groups. Unfortunately, these are also almost impossible to detect 
+unless they occur in obviously incorrect locations. </p>
+<p class="docText">You can search for modified files based on a time range using 
+the <span class="docEmphBold">find</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-1">Section 
+9.1</a>) command. For instance, the following two commands will find all files 
+that have been changed in the last two days excluding today. The results are 
+piped to <span class="docEmphasis">cat</span> for easier reading: </p>
+<pre>&gt; find /  -mtime -2 -mtime +1 -exec ls -ld {} \; | cat
+&gt; find /  -ctime -2 -ctime +1 -exec ls -ldc {} \; | cat</pre>
+<p class="docText">Running these commands as root will ensure you have access to 
+all files and directories. Note that depending on the size of your system, the 
+command can take a considerable amount of time. </p>
+<p class="docText">Also check for hidden files, those beginning with a period. 
+The following command searches every directory but NFS mounted ones for files 
+beginning with a period (.): </p>
+<pre>find / -name &quot;.*&quot; -print -xdev | cat -v</pre>
+<p class="docText">In addition, review critical files such as <i>/etc/passwd</i> 
+and the <span class="docEmphBold">crontab file</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-3">Section 
+25.3</a>), checking for new and unusual entries. You might want to keep off-disk 
+copies of the files to use for comparison; online versions can also be 
+compromised. </p>
+<p class="docText">Check binaries for possible changes and replacements — 
+including backups — and changes to files such as <i>xinetd.conf</i>, allowing 
+services such as telnet that were originally disallowed. </p>
+<p class="docText">In other words, according to CERT, knowing your system and 
+checking for changes using built-in utilities can be the best approach to take 
+to detect intrusion. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-48-SECT-8">48.8 Importance of MOTD</h3>
+<p class="docText">If you live in the United States, and depending on which 
+state you live in, if you include the word &quot;welcome&quot; within the MOTD, this can 
+legally be construed as an invitation, which means that anyone can come into the 
+system if they can find a username and password. And since usernames and 
+passwords are transmitted in plain text using telnet or a similar service, 
+you're basically leaving your system open. If someone breaks in, they may not 
+even be prosecutable. </p>
+<p class="docText">Avoid the use of the word &quot;welcome&quot; in your message; instead 
+use a message that specifically states that only authorized personnel are 
+allowed access to the system. In addition, you'll also want to consider removing 
+operating system information from the MOTD: no need to tell people more about 
+your system then they need to know. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-48-SECT-9">48.9 The Linux proc Filesystem</h3>
+<p class="docText">Linux contains a <i>/proc</i> filesystem with virtual files 
+that maintain the current state of the system. You can actually access the
+<span class="docEmphasis">proc</span> system directly and view the command, 
+command-line parameters, and other information. </p>
+<p class="docText">In particular, if you have a suspicious process (detected 
+using <span class="docEmphBold">ps</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-6">Section 
+49.6</a>)), you can investigate the process more thoroughly using the Linux
+<span class="docEmphasis">proc</span> filesystem. For instance, if <i>ps</i> <i>
+-ux</i> returns the following procecss: </p>
+<pre>Root   1684   0.0   0.7   7492    3888    ?   S    13:44     0.00      rp3</pre>
+<p class="docText">you can change to the process directory by using the process 
+number:</p>
+<pre>bash# cd /proc/1684</pre>
+<p class="docText">Once there, typing <tt>ls</tt> will show several entries, 
+including ones titled <span class="docEmphasis">cwd</span>,
+<span class="docEmphasis">exe</span>, and <span class="docEmphasis">cmdline</span>. 
+At that point you can use <span class="docEmphBold">cat</span> (<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-2">Section 
+11.2</a>) to print out the <span class="docEmphasis">cmdline</span> entry, which 
+will show the command, including parameters that kicked off the process: </p>
+<pre>bash# cat cmdline
+rp3</pre>
+<p class="docText">Typing <tt>ls -l</tt> on <span class="docEmphasis">cwd</span> 
+results in: </p>
+<pre>lrwxrwxrwx      1     root     root     9     June 4     17:44  cwd-&gt; /root</pre>
+<p class="docText">Typing <tt>ls-1</tt> on <span class="docEmphasis">exe</span> 
+results in:</p>
+<pre>lrwxrwxrwx      1     root     root     9     June 4     17:44  cwd-&gt; /usr/bin/rp3</pre>
+<p class="docText">The <span class="docEmphasis">proc</span> filesystem is 
+extremely helpful, not only for security reasons, but also for general system 
+usage. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-48-SECT-10">48.10 Disabling inetd</h3>
+<p class="docText">Any remote access that takes a plain text password increases 
+the vulnerability of your system. This includes the use of telnet and FTP. </p>
+<p class="docText">If your flavor of Unix is running the <i>inet</i> daemon, you 
+can disable <span class="docEmphasis">telnet</span>, <span class="docEmphasis">
+ftp</span>, <span class="docEmphasis">rlogin</span>, and so on by accessing <i>
+the /etc/rc.conf</i> file and setting the <i>inetd_enable</i> value to no: </p>
+<pre>inetd_enable=no</pre>
+<p class="docText">You can disable individual services by accessing the <i>
+inetd.conf</i> file and setting the associated line to no, or commenting the 
+line out, as shown in Darwin and BSD environments such as OpenBSD or FreeBSD:
+</p>
+<pre>#telnet stream tcp  nowait  root  /usr/libexe/tcpd    telnetd</pre>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-48-SECT-11">48.11 Disallow rlogin and rsh</h3>
+<p class="docText">The remote access tools such as <i>rlogin</i>, to login 
+remotely, and <i>rsh</i>, to execute commands on a remote system, are handy. For 
+instance, with <i>rlogin</i>, if your username is the same on the remote machine 
+as it is on the local machine, you don't have to provide your username and 
+password. </p>
+<p class="docText">However, the very simplicity of the <i>rlogin</i> and <i>rsh</i> 
+commands makes them security risks. If you're concerned about the security of 
+your Unix box, you'll want to disable these. </p>
+<p class="docText">Disable both <i>rlogin</i> and <i>rsh</i> by commenting out 
+their entries in <i>inetd.conf</i> or <i>xinetd.conf</i>, depending on which 
+your system is running. </p>
+<p class="docText"><span class="docEmphasis">— SP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-48-SECT-12">48.12 TCP Wrappers</h3>
+<p class="docText">TCP Wrappers are programs that work with <i>inetd</i> to 
+monitor and filter <span class="docEmphasis">telnet</span>,
+<span class="docEmphasis">ftp</span>, <span class="docEmphasis">rlogin</span>, 
+and other services. In particular, TCP wrappers provide log information showing 
+access using these services, particularly helpful if you're trying to determine 
+if someone's attempting to break into your system. </p>
+<p class="docText">In FreeBSD, the TCP wrapper <span class="docEmphasis">tcpd</span> 
+(documented at
+<a class="docLink" href="http://www.freebsddiary.org/tcpwrapper.php" target="_blank">
+http://www.freebsddiary.org/tcpwrapper.php</a>) is built into the system 
+starting with FreeBSD 3.2 release, and is configured through the <i>/etc/syslog.conf</i> 
+file. The following lines from an existing file show that TCP logging is turned 
+on for all remote access such as <span class="docEmphasis">telnet</span>, 
+putting the log messages into a file called <i>auth.log</i>: </p>
+<pre><b>auth.*                                          /var/log/auth.log</b>
+mail.info                                       /var/log/maillog
+lpr.info                                        /var/log/lpd-errs</pre>
+<p class="docText">Since I have <i>telnet</i>, <i>rlogin</i>, etc. disabled from 
+my system, nothing shows in the log file. </p>
+<p class="docText">The TCP wrapper is also installed by default in Mac OS X. The
+<span class="docEmphasis">tcpd</span> daemon is installed in place of the 
+service — such as in place of <span class="docEmphasis">fingerd</span> — or the 
+entry for the service is adjusted to point to <span class="docEmphasis">tcpd</span> 
+in <i>/etc/inetd.conf</i>: </p>
+<pre>finger  stream   tcp  nowait  nobody  /some/where/tcpd   in.fingerd</pre>
+<p class="docText">By default, all unprotected external sources are wrapped with 
+the TCP wrapper. </p>
+<p class="docText">In some systems, the TCP wrapper is controlled by the <i>
+/etc/hosts.allow</i> and <i>/etc/hosts.deny</i> files instead of within <i>
+syslog.conf</i>. You'll want to check <span class="docEmphasis">tcpd</span> for 
+your system by accessing the manpage for it: </p>
+<pre># man tcpd</pre>
+<p class="docText">The same configuration and <span class="docEmphBold">TCP 
+wrapper</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-5">Section 
+46.5</a>) — known as the Wietse Venema's network logger — is used with Debian 
+(downloadable at
+<a class="docLink" href="http://packages.debian.org/stable/base/tcpd.html" target="_blank">
+http://packages.debian.org/stable/base/tcpd.html</a>) and Linux, as well as 
+other operating systems. </p>
+<p class="docText"><span class="docEmphasis">— SP</span> </p>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 47.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 49.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

@@ -1,0 +1,1741 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 5</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 4.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 6.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 5. Getting the Most out of Terminals, xterm, 
+and X Windows</h2>
+
+
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-1">5.1 There's a Lot to Know About Terminals</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-2">5.2 The Idea of a Terminal Database</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-3">5.3 Setting the Terminal Type When You Log In</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-4">5.4 Querying Your Terminal Type: qterm</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-5">5.5 Querying Your xterm Size: resize</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-6">5.6 Checklist: Terminal Hangs When I Log In</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-7">5.7 Find Out Terminal Settings with stty</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-8">5.8 Setting Your Erase, Kill, and Interrupt Characters</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-9">5.9 Working with xterm and Friends</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-10">5.10 Login xterms and rxvts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-11">5.11 Working with Scrollbars</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-12">5.12 How Many Lines to Save?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-13">5.13 Simple Copy and Paste in xterm</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-14">5.14 Defining What Makes Up a Word for Selection Purposes</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-15">5.15 Setting the Titlebar and Icon Text</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-16">5.16 The Simple Way to Pick a Font</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-17">5.17 The xterm Menus</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-18">5.18 Changing Fonts Dynamically</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-19">5.19 Working with xclipboard</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-20">5.20 Problems with Large Selections</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-21">5.21 Tips for Copy and Paste Between Windows</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-22">5.22 Running a Single Command with xterm -e</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-5-SECT-23">5.23 Don't Quote Arguments to xterm -e</a></li>
+</ul>
+
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-1">5.1 There's a Lot to Know About Terminals</h3>
+<p class="docText">This chapter covers most of what you need to know to set up 
+your terminal or terminal emulator from your <span class="docEmphBold">shell 
+setup files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>). </p>
+<p class="docText">In the latter half of the chapter, we cover the ins and outs 
+of working with some of the most popular terminal-emulator software for the X 
+Window System, including <i>xterm</i>, <i>rxvt</i>, and others, where 
+applicable. The list of terminals and emulators you might come into contact with 
+is long and getting longer, though, so the advice we give in the first section 
+of the chapter regarding how to configure your terminal will be helpful. As you 
+find yourself suddenly confronted with the prospect of configuring the terminal 
+emulator on your cell phone or tablet computer, remember: you can usually make 
+it work, with enough time and effort. </p>
+<p class="docText">It is important to remember, however, that the tricks and 
+tips we discuss in this chapter, if implemented incorrectly, may cause your 
+terminal to hang. One way around a hung terminal is always to keep at least one 
+other terminal emulator window, with sane settings, open all the time you're 
+modifying the setup of the other. That way, if you hang up the terminal you're 
+actively modifying, you can always go back to the other and save yourself. On 
+systems that support virtual consoles, such as Linux, you can also use command 
+keys (e.g., ALT and the first five function keys) to switch between various 
+virtual consoles, just as you might with a terminal emulator. Don't just reach 
+for the power switch! </p>
+<p class="docText"><span class="docEmphasis">—TOR and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-2">5.2 The Idea of a Terminal Database</h3>
+<p class="docText">In the past few years, terminals have been standardized to a 
+few types. In fact, most terminals nowadays are terminal
+<span class="docEmphasis">emulators</span> (like <i>xterm</i>) that simulate a 
+terminal on a graphical display. Years ago, though, terminals differed widely. 
+Rather than simply being implemented in software, they were hardware — keyboards 
+and monitors or even teletypes, with which the user interacted to communicate 
+with an often faraway mainframe or other big iron. All were specialized, and 
+differences between them often came down to how much you paid and to what 
+manufacturer. This lets you take advantage of other features of the 
+manufacturer's primary hardware — the big computers they considered their main 
+product. Manufacturers produced a variety of terminals, each one including a 
+particular set of features for a certain price. There were smart terminals and 
+dumb ones, terminals with big screens and terminals with small screens, printing 
+terminals and video displays, and terminals with all sorts of special features.
+</p>
+<p class="docText">Differences between terminals do not matter much to programs 
+like <span class="docEmphBold">cat</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">Section 
+12.2</a>) or <span class="docEmphBold">who</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-8">Section 
+2.8</a>) that use the terminal screen as a sort of typewriter with an endless 
+scroll of paper. These programs produce sequential output and do not make use of 
+the terminal's special features; they do not need to know much to do their job. 
+Only programs such as screen editors, which make use of screen-handling 
+features, need to know a lot about differences between terminals. </p>
+<p class="docText">However, even today, we find a wide variety of terminal 
+emulators across a multitude of platforms. My new Kyocera Smartphone, for 
+example, is a Palm device integrated with a PCS telephone; one of the main 
+reasons I bought it was for remote, emergency <i>ssh</i> access to my servers, 
+using a tiny terminal emulator that runs on the PalmOS. Many Unix programs 
+assume a basic environment that this terminal emulator does not provide — an 
+80-column screen — so even simple commands such as <i>w</i>, which prints a list 
+of who is logged in, where they logged in from, and what they're currently 
+running, become impossible to run. But let's go back to the early days and 
+revisit some of the old problems that plagued early Unix developers, so that we 
+might better understand how to deal with today's problems. </p>
+<p class="docText">In the late 1970s, Bill Joy created the
+<span class="docEmphBold">vi</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-2">Section 
+17.2</a>) text editor at UC Berkeley. Like all screen-oriented editors, <i>vi</i> 
+uses the terminal screen nonsequentially (in stark contrast to earlier editors 
+such as <i>ed</i>, which were designed for a teletype, and so use even more 
+terse commands and feature even more terse output). A program performing 
+nonsequential output does not just print character after character, but must 
+manipulate the text that was sent before, scroll the page, move the cursor, 
+delete lines, insert characters, and more. While it would be possible to keep 
+redrawing the screen in its entirety, many features are provided in hardware or 
+firmware by the terminal itself, saving too much time and trouble to be ignored.
+</p>
+<p class="docText">The first version of <i>vi</i> was written specifically for 
+Lear Siegler ADM3a terminals. <i>vi</i> was such an improvement over 
+line-oriented editors that there was great demand to port <i>vi</i> to other 
+brands of terminals. The problem was that each terminal had different features 
+and used different control codes to manipulate the features that they did have 
+in common. </p>
+<p class="docText">Rather than write separate terminal drivers for each terminal 
+type, Bill Joy did something very clever, which all Unix users now take for 
+granted. He wrote a version of <i>vi</i> with generic commands to manipulate the 
+screen instead of hardcoding the control codes and dimensions for a particular 
+terminal.<span id="ENB5-1"><a class="docLink" href="#EN5-1"><sup>[1]</sup></a></span></p>
+<p class="docText">Joy came up with a generic terminal-handling mechanism that 
+had two parts: a database describing the capabilities of each of the terminals 
+to be supported and a subroutine library that allows programs to query that 
+database and make use of the capability values it contains. Both the library and 
+the database were given the name <span class="docEmphasis">termcap</span>, which 
+is short for <span class="docEmphasis">term</span>inal <span class="docEmphasis">
+cap</span>abilities. </p>
+<p class="docText">At this point, users take for granted that you can use just 
+about any terminal with a Unix system and use screen-oriented programs like <i>
+vi</i> without any problem. But this is really quite remarkable! </p>
+<p class="docText">The <span class="docEmphasis">termcap</span> database is 
+contained in a single text file, which grew quite large over the years to 
+include descriptions of hundreds of different terminals. To improve performance, 
+AT&amp;T later introduced a database called <span class="docEmphasis">terminfo</span>, 
+which stores terminal descriptions in compiled form in a separate file for each 
+terminal. </p>
+<p class="docText">If a program is designed to use <span class="docEmphasis">
+termcap</span> or <span class="docEmphasis">terminfo</span>, it queries an 
+environment variable called <span class="docEmphasis">TERM</span> to determine 
+the terminal type (or terminal type being emulated), then looks up the entry for 
+that terminal in the terminal database, and reads the definition of any 
+capabilities it plans to use as external variables. Programs that use
+<span class="docEmphasis">termcap</span> or <span class="docEmphasis">terminfo</span> 
+range from screen editors like <span class="docEmphBold">vi</span>
+<span class="docEmphBold">and</span> <span class="docEmphBold">emacs</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-1">Section 
+19.1</a>), which use the complete terminal description, to a program like <i>
+clear</i>, which needs to know only one capability (the escape sequence to clear 
+the screen). Other programs include <i>more</i>, <i>pg</i>, <i>rogue</i><span class="docEmphBold">, 
+tset</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-3">Section 
+5.3</a>), <i>ul</i>, and <i>nroff</i>. </p>
+<p class="docText"><span class="docEmphasis">—JS and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-3">5.3 Setting the Terminal Type When You Log In</h3>
+<p class="docText">If you always work at the same terminal or use the same 
+terminal emulator, there's no problem with setting the terminal type explicitly 
+in your <span class="docEmphBold">shell setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) — like <i>.login</i> or <i>.profile</i>. Just set the
+<span class="docEmphasis">TERM</span> <span class="docEmphBold">environment 
+variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>): </p>
+<pre>setenv TERM vt100           <i>...csh, tcsh</i>
+TERM=vt100; export TERM     <i>...sh, ksh, zsh</i>
+export TERM=vt100           <i>...pdksh, bash, zsh</i></pre>
+<p class="docText">In fact, on a hardwired terminal, your terminal type may 
+already have been set in a system file like <span class="docEmphBold">/etc/ttys</span>
+<span class="docEmphBold">or</span> <span class="docEmphBold">/etc/ttytype</span> 
+(<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-15">Section 
+3.15</a>). But if, like many Unix users, you might log in from time to time at 
+different terminals, from home, or on different systems over a network, you may 
+need some more intelligent method for setting the terminal type. To find out, 
+try logging in at each place and starting a screen-oriented program like <i>vi</i>. 
+Do various operations: scrolling up, inserting text that wraps onto another 
+line, deleting lines. If the screen scrambles or the cursor gets &quot;out of sync,&quot; 
+your terminal type may need to be set. </p>
+<p class="docText">It's possible to set up various <span class="docEmphBold">
+tests</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-10">Section 
+3.10</a>) in your shell setup files to do this. But you can also do a surprising 
+amount of terminal type testing with <i>tset</i>, even though it was nominally 
+designed for initializing the terminal: </p>
+<ul>
+  <li>
+  <p class="docList">If no <span class="docEmphBold">arguments</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-4">Section 
+  1.4</a>) are specified and <span class="docEmphasis">TERM</span> is already 
+  set, <i>tset</i> uses the value of <span class="docEmphasis">TERM</span> to 
+  determine the terminal type. </li>
+  <li>
+  <p class="docList">If no arguments are specified and <span class="docEmphasis">
+  TERM</span> is <span class="docEmphasis">not</span> set, then <i>tset</i> uses 
+  the value specified in the system file <i>/etc/ttytype</i> or <i>/etc/ttys</i> 
+  (BSD 4.3 and later and its derivatives only). On Linux systems, the terminal 
+  type is determined by <i>getty</i>, based on a similar process but using the
+  <i>/etc/inittab</i> file or other configuration files used by <i>getty</i> 
+  during initialization. On SVR4 systems, a similar process is managed by <i>
+  ttymon</i> and <i>listen</i>.<span id="ENB5-2"><a class="docLink" href="#EN5-2"><sup>[2]</sup></a></span>
+  </p>
+  </li>
+  <li>
+  <p class="docList">If a terminal type is specified as an argument, that 
+  argument is used as the terminal type, regardless of the value of
+  <span class="docEmphasis">TERM</span>. </li>
+  <li>
+  <p class="docList">The <i>-m</i> (map) option allows a fine degree of control 
+  in cases where the terminal type may be ambiguous. For example, if you 
+  sometimes log in on a dialup line, sometimes over a local area network, and 
+  sometimes on a hardwired line, the <i>-m</i> option can be specified to 
+  determine which login is currently being used, and the terminal type can be 
+  set accordingly. </li>
+</ul>
+<p class="docText">In Bourne-type shells, <i>tset</i> can be used to set the 
+value of <span class="docEmphasis">TERM</span> as follows: </p>
+<pre>export TERM=`tset - -Q <tt><i>options</i></tt>`           <i>...newer shells</i>
+TERM=`tset - -Q <tt><i>options</i></tt>`; export TERM     <i>...all shells</i></pre>
+<p class="docText">(Given the <i>-</i> option, <i>tset</i> prints the value 
+determined for the terminal type to <span class="docEmphBold">standard output</span> 
+(<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>). Otherwise, it <span class="docEmphBold">initializes the terminal</span> 
+(<a class="docLink" href="#upt3-CHP-5-SECT-3">Section 5.3</a>), but keeps the 
+terminal type to itself. The <i>-Q</i> (quiet) option causes <i>tset</i> to 
+suppress printing a message it normally prints regarding the values set for the 
+erase and kill characters — a job it does in its alternate role as terminal 
+initializer. The <span class="docEmphBold">backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) surrounding the <i>tset</i> command interpolate its output into the 
+command line.) </p>
+<p class="docText">In the C shell, you should use the <span class="docEmphBold">
+eval</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-8">Section 
+27.8</a>) command to capture the output of <i>tset</i>; this will also allow you 
+to <span class="docEmphBold">set the</span> <span class="docEmphBold">TERMCAP</span>
+<span class="docEmphBold">variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">Section 
+35.5</a>). (You must also issue the command <tt>set noglob</tt>.) To simplify 
+the rest of this article, we'll show examples for the C shell; if you don't use 
+a C-type shell, please translate to Bourne-shell syntax (as shown earlier). </p>
+<p class="docText">To see what <i>tset</i> can do, consider a case where the 
+terminal's serial line is connected to a dialup modem, through which several 
+different users might be connected, each using a different type of terminal. 
+Accordingly, the default terminal type in <i>/etc/ttytype</i> or <i>/etc/ttys</i> 
+should be set to <span class="docEmphasis">dialup</span>. The <i>tset</i> 
+command could then be used in the <i>.login</i> file as follows, with the 
+appropriate terminal type set for each user: </p>
+<pre>set noglob
+eval `tset -s -Q -m 'dialup:vt100'`</pre>
+<p class="docText">This means that if <span class="docEmphasis">ttytype</span> 
+says <span class="docEmphasis">dialup</span>, use <span class="docEmphasis">
+vt100</span> as the terminal type. A colon separates the
+<span class="docEmphasis">ttytype</span> value and the value to which it is to 
+be mapped. If a user wants to be prompted to be sure, place a question mark 
+after the colon and before the mapped terminal type: </p>
+<pre>set noglob
+eval `tset -s -Q -m 'dialup:?vt100'`</pre>
+<p class="docText">The prompt will look like this:</p>
+<pre>TERM = (vt100)</pre>
+<p class="docText">If the user presses RETURN, the preferred terminal type will 
+be used. Alternately, another terminal type could be entered at that time. </p>
+<p class="docText">You can cause <i>tset</i> to prompt for a terminal type even 
+without testing a generic entry like <span class="docEmphasis">dialup</span>. 
+Just specify the desired terminal type, preceded by a question mark, after the
+<i>-m</i> option. For example: </p>
+<pre>set noglob
+eval `tset -s -Q -m '?vt100'`</pre>
+<p class="docText">It is also possible to specify different terminal types for 
+different line speeds. For example, say that you normally used a Wyse-50 with a 
+9600-bps modem when dialing in from home, but used a portable PC with a VT100 
+terminal emulator and 2400-bps modem on the road.<span id="ENB5-3"><a class="docLink" href="#EN5-3"><sup>[3]</sup></a></span> 
+You might then use a <i>tset</i> command like this: </p>
+<pre>set noglob
+eval `tset -s -Q -m 'dialup@2400:vt100' wy50`</pre>
+<p class="docText">Assuming that the type is set in <i>/etc/ttys</i> or <i>/etc/ttytype</i> 
+as <span class="docEmphasis">dialup</span>, <i>tset</i> will use the type
+<span class="docEmphasis">vt100</span> if at 2400 bps and, if not, will use the 
+type <span class="docEmphasis">wy50</span>. See the <i>tset</i>(1) manual page 
+for more choices. Watch out for the line-speed switches. They don't work on a 
+lot of networked systems — usually, the line speed at the computer's port is 
+higher than the speed at the terminal. The same problem occurs with dialup 
+modems that use data compression. The <i>stty</i> command will tell you what 
+data rate the system believes you're using. </p>
+<p class="docText">Multiple <i>-m</i> options can be specified; the first map to 
+be satisfied will be used. If no match is found, a final value specified on the 
+line without a <i>-m</i> option (as in the previous example) will be used. If no 
+value is specified, the type in <i>/etc/ttytype</i> or <i>/etc/ttys</i> will be 
+used. </p>
+<p class="docText"><span class="docEmphasis">—TOR and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-4">5.4 Querying Your Terminal Type: qterm</h3>
+<p class="docText"><span class="docEmphBold">tset</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-3">Section 
+5.3</a>) is a powerful tool to use if you often log in at different terminals. 
+You can use <i>tset</i> to prompt you with a default terminal type, giving you 
+the opportunity to specify a new terminal type when you log in: </p>
+<pre>TERM = (vt100)</pre>
+<p class="docText">However, <i>tset</i> requires you to know your terminal type. 
+You might log in at a new terminal and have no idea what to set the terminal 
+type to. Or your terminal might be configured to emulate another terminal type 
+without your knowledge. New users in particular are confused by the <i>tset</i> 
+prompt. In some respects, this is not a surprise, as the prompt itself can be 
+confusing without a bit of context. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: qterm</p>
+<p class="docText">As an alternative, try Michael Cooper's <i>qterm</i> program 
+on our CD-ROM [see
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a>]. <i>qterm</i> sends the terminal a test 
+string and determines what sort of terminal you're using based on how the 
+terminal responds. Using <i>qterm</i>, you can make sure you always use the 
+correct terminal type by placing the following line in your <i>.login</i>: </p>
+<p class="docText"><tt>'...'</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a></p>
+<pre>setenv TERM `qterm`</pre>
+<p class="docText">or in <i>.profile</i>: </p>
+<pre>TERM=`qterm`;export TERM</pre>
+<p class="docText">The advantage of <i>qterm</i> is that it sets the terminal 
+type without your intervention. You don't need to know your terminal type; it 
+gets set automatically. </p>
+<p class="docText"><i>qterm</i> works by sending the terminal a query string and 
+returning the terminal type depending on the terminal's response. <i>qterm</i> 
+is configured using a listing of responses and the terminals to which they 
+correspond. By default, <i>qterm</i> looks for the listings in a system-wide 
+location such as <i>/usr/local/lib/qtermtab</i>. In addition, you can call <i>
+qterm</i> with the <i>+usrtab</i> option, so that it will look for a file called
+<i>.qtermtab</i> in your home directory. </p>
+<p class="docText">The string used to query the terminal is usually ESC Z. The 
+sample <i>qtermtab</i> file distributed with <i>qterm</i> defines the responses 
+several different terminals give for that string: </p>
+<pre>#
+# QtermTab - Query terminal table for qterm.
+#
+#SendStr ReceiveStr         TermName       FullTermName
+#
+^[Z     ^[[?1;0c            vt100          Base vt100
+^[Z     ^[[?1;1c            vt100          vt100 with STP
+^[Z     ^[[?1;2c            vt100          ANSI/VT100 Clone
+   ...
+^[Z     ^[/K                h29            Zenith z29 in zenith mode
+^[Z     ^[/Z                vt52           Generic vt52
+^[Z     ^[[0n               vt100          AT&amp;T Unix PC 7300</pre>
+<p class="docText">If your terminal isn't listed here, you can just add it. To 
+find out your terminal's response to the query string, just echo ESC Z to your 
+terminal and see what the response is. For example, I logged in from my 
+Macintosh terminal emulator at home and found that <i>qterm</i> didn't recognize 
+my terminal type: </p>
+<pre>% <b>qterm</b>
+Terminal NOT recognized - defaults to &quot;vt100&quot;.
+vt100</pre>
+<p class="docText"><i>qterm</i> defaults to the right terminal description, but 
+I'd still rather define my own entry. I find out my terminal's response to the 
+ESC Z string: </p>
+<pre>% <b>echo &quot;^[Z&quot;</b>
+^[[E;Y|</pre>
+<p class="docText">(Note that ESC prints as <tt>^[</tt>.) Then I add the entry 
+to my <i>qterm</i> description file: </p>
+<pre>^[Z         ^[[E;Y|         vt100       Macintosh terminal emulator</pre>
+<p class="docText">Now when I run <i>qterm</i>, the terminal is recognized:</p>
+<pre>% <b>qterm</b>
+Terminal recognized as vt100 (Macintosh terminal emulator)
+vt100</pre>
+<p class="docText">The string <tt>Terminal</tt> <tt>recognized</tt> <tt>as</tt>
+<tt>...</tt> is sent to <span class="docEmphBold">standard error</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>); only the terminal type itself is sent to <span class="docEmphBold">
+standard output</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>). So if you use the following command line: </p>
+<pre>% <b>setenv TERM `qterm`</b>
+Terminal recognized as vt100 (Macintosh terminal emulator)</pre>
+<p class="docText">the TERM variable is set correctly:</p>
+<pre>% <b>echo $TERM</b>
+vt100</pre>
+<p class="docText">Now for the caveat: <i>qterm</i>'s results are only as 
+accurate as the <i>qtermtab</i> file. Not all terminals respond to the ESC Z 
+string, and you may not find a string to which it responds uniquely. And some 
+terminals do uncanny imitations of others. For example, I'm currently using an
+<span class="docEmphBold">xterm</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-20">Section 
+24.20</a>) window, but <i>qterm</i> thinks I'm using a <span class="docEmphasis">
+vt100</span>: </p>
+<pre>% <b>echo $TERM</b>
+xterm
+% <b>qterm</b>
+Terminal recognized as vt100 (ANSI/VT100 Clone)
+vt100</pre>
+<p class="docText">As a hack, you can just edit your <i>.qtermtab</i> file. For 
+example, I could comment out the old <span class="docEmphasis">vt100</span> 
+entry and map <tt>^[[?1;2c</tt> to <i>xterm</i> instead: </p>
+<pre>#^[Z     ^[[?1;2c            vt100          ANSI/VT100 Clone
+^[Z     ^[[?1;2c            xterm          xterm window</pre>
+<p class="docText">and then call <i>qterm</i> with the <i>+usrtab</i> 
+command-line option: </p>
+<pre>setenv TERM `qterm +usrtab`</pre>
+<p class="docText"><span class="docEmphasis">—LM and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-5">5.5 Querying Your xterm Size: resize</h3>
+<p class="docText">When the <i>xterm</i> client is called, it not only sets the
+<span class="docEmphasis">TERM</span> environment variable, but it also adjusts 
+the terminal definition for the size of the window being created. The size of <i>
+xterm</i> windows, however, can be changed later on by using the window manager. 
+If the window is resized, then the user's shell may need to be passed the new 
+size information as well, or programs that use termcap and terminfo won't work 
+correctly. The <i>resize</i> client is provided for redefining the number of 
+lines and columns for the terminal database used in an <i>xterm</i> window. Note 
+that <i>resize</i> cannot be used for terminal emulators other than <i>xterm</i> 
+(except for those, like <i>rxvt</i>, that emulate <i>xterm</i>) because it 
+depends on <i>xterm</i>'s escape sequences. </p>
+<p class="docText">Some systems can send a &quot;window size changed&quot; signal (<span class="docEmphasis">SIGWINCH</span>) 
+to programs and do not require <i>resize</i> to be run for a resized <i>xterm</i> 
+window. We recommend using <i>resize</i> only if terminal-based programs start 
+to have problems with your window size. A typical terminal-based program that is 
+having problems with the window size will fill only some of the lines in the 
+window — or may scroll lines down the window when it shouldn't. </p>
+<p class="docText">The <i>resize</i> client is typically used immediately after 
+the dimensions of an <i>xterm</i> window are changed. A peculiarity of the <i>
+resize</i> client is that it does not access the shell itself, but simply 
+returns the shell commands that would be needed; to have those commands read by 
+the shell, you either save its output in a file and read the file with the shell 
+commands <i>source</i> or <span class="docEmphBold">.</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">Section 
+35.29</a>), or evaluate <i>resize</i> output using the shell command
+<span class="docEmphBold">eval</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-8">Section 
+27.8</a>). For example, after resizing a window, you would type in that shell:
+</p>
+<p class="docText"><tt>`...`</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a></p>
+<pre>% eval `resize`</pre>
+<p class="docText">When you call the <i>resize</i> command under a termcap 
+system, it produces the commands for resetting the TERMCAP environment variable 
+with the <span class="docEmphasis">li#</span> and <span class="docEmphasis">co#</span> 
+capabilities reflecting the current dimensions. When you call the <i>resize</i> 
+command under a terminfo system, it produces the commands for resetting the
+<span class="docEmphasis">LINES</span> and <span class="docEmphasis">COLUMNS</span> 
+environment variables. </p>
+<p class="docText">The <i>resize</i> command consults the value of your
+<span class="docEmphasis">SHELL</span> environment variable and generates the 
+commands for setting variables within that shell. If you're using a nonstandard 
+shell, <i>resize</i> may still recognize your shell; as of X Release 5, <i>
+resize</i> recognizes <i>tcsh</i>, <i>jcsh</i>, <i>ksh</i>, <i>bash</i>, and <i>
+jsh</i>. But if <i>resize</i> does not recognize your shell, try using the <i>-c</i> 
+or <i>-u</i> options to force <i>resize</i> to use C- or Bourne-shell syntax 
+(respectively), depending on which syntax is appropriate for your shell. </p>
+<p class="docText"><span class="docEmphasis">—LM, EP, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-6">5.6 Checklist: Terminal Hangs When I Log In</h3>
+<p class="docText">If your terminal seems to &quot;hang&quot; (freeze, lock up) when you 
+log in, here are some things to try: </p>
+<ul>
+  <li>
+  <p class="docList">Have another user look at your shell's
+  <span class="docEmphBold">setup files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+  3.3</a>). There could be some obvious mistakes that you didn't catch. </li>
+  <li>
+  <p class="docList">Log in to another account and use the
+  <span class="docEmphasis">su stucklogin</span> command (if the stuck account 
+  uses Bourne-type shells) or the <span class="docEmphasis">su -f stucklogin</span> 
+  command (if the stuck account uses <i>csh</i> or <i>tcsh</i>). Change (<i>cd
+  </i>) to the home directory. Rename the account's setup files so the shell 
+  won't see them as you log in. (If you have <span class="docEmphBold">superuser 
+  access</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-18">Section 
+  1.18</a>), you also can use it to rename the file.)<span id="ENB5-4"><a class="docLink" href="#EN5-4"><sup>[4]</sup></a></span>
+  </p>
+  <p class="docList">If you can log in after that, you know that the problem is 
+  with the account's setup files. </li>
+  <li>
+  <p class="docList"><span class="docEmphBold">Set shell debugging</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-15">Section 
+  27.15</a>) on the stuck account's setup files. From another account or as the 
+  superuser, start an editor and put the following line at the top of an <i>sh</i>-like 
+  setup file (such as <i>.profile</i>). It'll tell you whether <i>.profile</i> 
+  is being read at all and where it hangs: </p>
+  <pre>set -xv</pre>
+  <p class="docList">You'll see each line read from the <i>.profile</i> and the 
+  commands executed on the screen. If you don't see anything, then the shell 
+  probably didn't read <i>.profile</i>. Bash users would want to check <i>.bashrc</i> 
+  or <i>.bash_profile</i>. </p>
+  <p class="docList">C-shell users should put this command at the top of <i>.cshrc</i> 
+  (or <i>.tcshrc</i>, for <i>tcsh</i>) instead: </p>
+  <pre>set echo verbose</pre>
+  <p class="docList">Note that on many Unix systems, the shell won't read its 
+  startup files if the files aren't owned by you. You might use
+  <span class="docEmphBold">ls -l</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+  50.2</a>) to check. </li>
+  <li>
+  <p class="docList">Look at the entry in the <span class="docEmphBold">/etc/passwd</span>
+  <span class="docEmphBold">file</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-3">Section 
+  22.3</a>) for this user. Be sure it has the correct number of fields 
+  (separated by :). Also, see if there's another user with the same login name. 
+  (If your system has commands like <i>useradd</i>, <i>linuxconf</i>, or <i>vipw</i>(8) 
+  and <i>pwck</i>(8), using them to edit and check the <i>passwd</i> file will 
+  avoid many of these problems, as those programs perform sanity checks on any 
+  modifications you make before taking them live.) </li>
+  <li>
+  <p class="docList">Does your account use any <span class="docEmphBold">
+  directories remotely mounted (by NFS)</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+  1.21</a>)? If the remote host or network is down and any command in your 
+  startup files (especially <span class="docEmphasis">set path</span>) tries to 
+  access those directories, the shell may hang there. </p>
+  <p class="docList">To fix that problem, <i>su</i> to the account as explained 
+  earlier, and take the command or directory name out of your startup file. Or, 
+  if this problem happens a lot, the system administrator can mount an NFS 
+  filesystem &quot;soft&quot; (instead of &quot;hard,&quot; the default) and limit the number of 
+  retrys. </li>
+  <li>
+  <p class="docList">What looks like a &quot;hang&quot; might also be that you just aren't 
+  getting any output to the terminal, for some very weird reason. Then the
+  <span class="docEmphasis">set -xv</span> wouldn't help you. In that case, try 
+  adding this line to the start of the <i>.profile</i>: </p>
+  <pre>exec &gt; /tmp/sh.out.$$ 2&gt;&amp;1</pre>
+  <p class="docList">If the Bourne shell starts reading <i>.profile</i>, it'll 
+  make a file in <i>/tmp</i> called <tt>sh.out</tt>.<tt><i>nnn</i></tt> with 
+  output from the commands and the shell's <i>set</i> -<i>xv</i>. </p>
+  <p class="docList">There's no command like that for the C shell or <i>tcsh</i>.
+  </li>
+</ul>
+<p class="docText">Here are a few more tips for dealing with stuck terminals.</p>
+<h4  id="upt3-CHP-5-SECT-6.1" class="docSection2Title">5.6.1 Output Stopped?</h4>
+<p class="docText">If your terminal has a HOLD SCREEN or SCROLL LOCK button, did 
+you accidentally press it? Try pressing it and see if things start working 
+again. If pressing the button once doesn't fix the problem, you should probably 
+press it once more to undo the screen hold. Otherwise, you may lock up your 
+session worse than it was before! </p>
+<p class="docText">Another way to stop output is by pressing CTRL-s. The way to 
+restart stopped output is with CTRL-q — try pressing that now. (Unlike a SCROLL 
+LOCK button, though, if CTRL-q doesn't help, you don't need to undo it.) </p>
+<h4  id="upt3-CHP-5-SECT-6.2" class="docSection2Title">5.6.2 Job Stopped?</h4>
+<p class="docText">If you're at a shell prompt instead of in the program you 
+thought you were running — and if your Unix has job control — you may have 
+stopped a job. <span class="docEmphBold">Try the</span>
+<span class="docEmphBold">jobs</span> <span class="docEmphBold">command</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-1">Section 
+23.1</a>); if the job is stopped, restart it. </p>
+<h4  id="upt3-CHP-5-SECT-6.3" class="docSection2Title">5.6.3 Program Waiting for Input?</h4>
+<p class="docText">The program may be waiting for you to answer a question or 
+type text to its standard input. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="50" src="screw.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">If the program you were running does something that's 
+        hard to undo — like removing files — <span class="docEmphasis">don't</span> 
+        try this step unless you've thought about it carefully. </p>
+        <p class="docText">If your system has job control, you can find out by 
+        putting the job in the background with CTRL-z and <i>bg</i>. If the job 
+        was waiting for input, you'll see the message: </p>
+        <pre>[1]  + Stopped (tty input)  grep pat</pre>
+        <p class="docText">You can bring the job back into the foreground and 
+        answer its question, if you know what that question is. Otherwise, now 
+        that the job is stopped, you can kill it. See the following directions.
+        </p>
+        <p class="docText">On systems without job control, you might satisfy the 
+        program by pressing RETURN or some other key that the program is 
+        expecting, like <span class="docEmphasis">y</span> or
+        <span class="docEmphasis">n</span>. You could also try pressing CTRL-d 
+        or whatever your &quot;end of input&quot; character is set to. That might log you 
+        out, though, unless you've set the <span class="docEmphasis">ignoreeof</span> 
+        variable. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-5-SECT-6.4" class="docSection2Title">5.6.4 Stalled Data Connection?</h4>
+<p class="docText">Be sure that the wires haven't come loose. </p>
+<p class="docText">If you're using a modem and the modem has function lights, 
+try pressing keys to see if the Send Data (SD) light flashes. If it does, your 
+terminal is sending data to the host computer. If the Receive Data (RD) light 
+flashes, the computer is sending data to your terminal. If you don't see 
+anything, there might be something wrong on your terminal. </p>
+<p class="docText">If you're connected with <span class="docEmphBold">rlogin</span>
+<span class="docEmphBold">or</span> <span class="docEmphBold">telnet</span>
+<span class="docEmphBold">or</span> <span class="docEmphBold">ssh</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), the network to the remote computer might be down or really slow. Try 
+opening another connection to the same remote host — if you get a response like
+<tt>Connection</tt> <tt>timed</tt> <tt>out</tt>, you have two choices: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Wait for your original connection to unfreeze. The 
+  connection may come back and let you keep working where you left off. Or the 
+  connection may end when <i>rlogin</i>, <i>telnet,</i> or <i>ssh </i>notices 
+  the network problem. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Quit the session, and try again later.</span></li>
+</ol>
+</span>
+<h4  id="upt3-CHP-5-SECT-6.5" class="docSection2Title">5.6.5 Aborting Programs</h4>
+<p class="docText">To abort a program, most users press CTRL-c. Your account may 
+be set up to use a different interrupt character, such as DELETE. If this 
+doesn't work, try CTRL-\ (CTRL-backslash). Under most circumstances, this will 
+force the program to terminate. Otherwise, do the following: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Log in at another terminal or window.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Enter the command <tt>ps</tt> <tt>x</tt>, or, if that 
+  doesn't work, use <tt>ps</tt> <tt>-u</tt> <tt><i>yourname</i></tt>, where <tt>
+  <i>yourname</i></tt> is your Unix username. This displays a list of the 
+  programs you are running, something like this: </p>
+  <pre>% <b>ps x</b>
+PID     TTY     STAT    TIME    COMMAND
+163     i26     I       0:41    -csh (csh)
+8532    i26     TW      2:17    vi ts.ms
+22202   i26     S       12:50   vi UNIXintro.ms
+8963    pb      R       0:00    ps -x
+24077   pb      S       0:05    -bin/csh (csh)
+%</pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Search through this list to find the command that has 
+  backfired. Note the process identification (PID) number for this command.
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Enter the command <span class="docEmphBold">kill PID</span> 
+  (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+  24.12</a>), where <span class="docEmphasis">PID</span> is the identification 
+  number from the previous step. If that doesn't work, try <tt>kill -1</tt> <tt>
+  <i>PID</i></tt> to send a HUP signal. You can also try various other signals, 
+  including <tt>-2</tt> or <tt>-15</tt>. If none of them work, you may need
+  <span class="docEmphasis">kill -9</span>, but try the other <i>kill</i>s 
+  first. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">If the Unix shell prompt (such as <tt>%</tt> or <tt>$</tt>) 
+  has appeared at your original terminal, things are probably back to normal. 
+  You may still have to take the terminal out of a strange mode though. </p>
+  <p class="docList">If the shell prompt hasn't come back, find the shell 
+  associated with your terminal (identified by a tty number), and <i>kill</i> 
+  it. The command name for the C shell is <i>csh</i>. For the Bourne shell, it 
+  is <i>sh</i>. In most cases, this will destroy any other commands running from 
+  your terminal. Be sure to <i>kill</i> the shell on your own terminal, not the 
+  terminal you borrowed to enter these commands. The tty you borrowed is the one 
+  running <i>ps</i>; look at the previous example and check the <tt>TTY</tt> 
+  column. In this case, the borrowed terminal is TTY pb. </p>
+  <p class="docList">Check <i>ps</i> to ensure that your shell has died. If it 
+  is still there, take more drastic action with the command <tt>kill -9<i>PID</i></tt>.
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Run <tt>ps x</tt> or <tt>ps -u</tt> <tt><i>yourname</i></tt> 
+  again to be sure that all processes on the other tty have died. (In some 
+  cases, processes will remain.) If there are still processes on the other tty, 
+  kill them. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">At this point, you should be able to log in again from your 
+  own terminal. </span></li>
+</ol>
+</span>
+<p class="docText">The <span class="docEmphBold">ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>) command, which lists some or all of the programs you are running, also 
+gives you useful information about the status of each program and the amount of 
+CPU time it has consumed. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-7">5.7 Find Out Terminal Settings with stty</h3>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: stty</p>
+<p class="docText">It may hardly seem appropriate to follow Chris Torek's 
+learned article about how <i>stty</i> works with some basics, but this book is 
+designed for beginners as well as those who already know everything. <tt>:-)</tt> 
+[Good idea, Tim. This is also a handy place to put the globe icon for the GNU 
+version. <tt>;^)</tt> <span class="docEmphasis">— JP</span>] </p>
+<p class="docText">So, to find out what settings your terminal line currently 
+has, type:</p>
+<pre>% <b>stty</b></pre>
+<p class="docText">For a more complete listing, type:</p>
+<pre>% <b>stty -a</b></pre>
+<p class="docText">On older BSD-style systems, use <tt>stty everything</tt> 
+instead. On most newer BSD-derived systems, <tt>stty everything</tt> and <tt>
+stty</tt> -<tt>a</tt> are both supported, but with slightly different output 
+formats. The former prints a tabular layout, while the latter prints each 
+control character setting in a <tt><i>name</i></tt> <span class="docEmphasis">=</span>
+<tt><i>value</i></tt> format. </p>
+<p class="docText">As Jerry Peek said in an editorial aside to Chris's article, 
+be sure to have your <i>stty</i> manual page handy! </p>
+<p class="docText"><span class="docEmphasis">—TOR and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-8">5.8 Setting Your Erase, Kill, and Interrupt 
+Characters</h3>
+<p class="docText">Have you ever sat down at a terminal where the &quot;erase&quot; key 
+(the character that deletes the last thing you typed) wasn't where you thought 
+it would be? If you have, you know how disorienting this can be! On Linux, 
+there's <i>loadkeys</i>. If you're using the X Window System, check into the
+<span class="docEmphBold">xmodmap</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-1">Section 
+5.1</a>) command. Newer shells, like <i>bash</i> and <i>zsh</i>, tend to do 
+their own handling of these special characters — especially during their
+<span class="docEmphBold">built-in command-line editing</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-14">Section 
+30.14</a>). Check your shell's manual page about <i>readline</i>. The most 
+portable method is with the <span class="docEmphBold">stty</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-7">Section 
+5.7</a>) command. All of these give you a way of changing the erase character 
+(along with several others) so you can restore some order to your world. </p>
+<p class="docText"><i>stty</i> takes two kinds of input. If you want to give the 
+command interactively, type <tt>stty</tt> <tt>erase</tt> <tt><i>char</i></tt>, 
+where <tt><i>char</i></tt> is the key you normally use for erase — BACKSPACE, 
+DELETE, whatever — followed by RETURN. This will do the trick, provided that the 
+character you type isn't already used for something. If the character is in use 
+or if you're putting <i>stty</i> commands into your <i>.login</i>, <i>.profile,</i> 
+or <i>.bash_profile</i> file, it's better to &quot;spell these characters out.&quot; 
+&quot;Control&quot; characters in <i>.login</i> are allowed, but they aren't a great idea. 
+If you like to use the BACKSPACE key as the erase key, add the following line:
+</p>
+<pre>stty erase ^h</pre>
+<p class="docText">If you want to use the DELETE key, quote the <tt>?</tt> 
+character so the shell won't treat it as a <span class="docEmphBold">wildcard</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+1.13</a>): </p>
+<pre>stty erase ^\?</pre>
+<p class="docText">That is, <i>stty</i> lets you represent a control key with 
+the two-character combination <tt>^<i>x</i></tt>, where <tt>^</tt> is the 
+literal key <tt>^</tt> (caret) and <tt><i>x</i></tt> is any single character. 
+You may need to put a <tt>\</tt> before the <tt><i>x</i></tt> to prevent the 
+shell from interpreting it as a wildcard [and a <tt>\</tt> before the <tt>^</tt> 
+to prevent old Bourne shells from interpreting it as a pipe! —
+<span class="docEmphasis">JP</span>]. </p>
+<p class="docText">Of course, you're not limited to the BACKSPACE or DELETE 
+keys; you can choose any other key you want. If you want to use &quot;Z&quot; as your 
+DELETE key, type <tt>stty erase</tt> <tt>Z</tt>. Just make sure you never want 
+to type a real <tt>Z</tt>! </p>
+<p class="docText"><a class="docLink" href="#upt3-CHP-5-TABLE-1">Table 5-1</a> 
+lists functions that <i>stty</i> can change. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-5-TABLE-1" class="docTableTitle">Table 5-1. Keys to set with stty </h5>
+  </caption>
+  <colgroup span="4">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Character</th>
+    <th class="docTableHeader">
+    <p class="docText">Function</th>
+    <th class="docTableHeader">
+    <p class="docText">Good setting</th>
+    <th class="docTableHeader">
+    <p class="docText">See article</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">erase</td>
+    <td class="docTableCell">
+    <p class="docText">Erases the previous character.</td>
+    <td class="docTableCell">
+    <p class="docText">^\? (DELETE)</td>
+    <td class="docTableCell">
+    <p class="docText"><a class="docLink" href="#upt3-CHP-5-SECT-8">Section 5.8</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">kill</td>
+    <td class="docTableCell">
+    <p class="docText">Erases the entire line.</td>
+    <td class="docTableCell">
+    <p class="docText">^u (CTRL-u)</td>
+    <td class="docTableCell">
+    <p class="docText"><a class="docLink" href="#upt3-CHP-5-SECT-8">Section 5.8</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">werase</td>
+    <td class="docTableCell">
+    <p class="docText">Erases the previous word.</td>
+    <td class="docTableCell">
+    <p class="docText">^w (CTRL-w)</td>
+    <td class="docTableCell">
+    <p class="docText"><a class="docLink" href="#upt3-CHP-5-SECT-8">Section 5.8</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">intr</td>
+    <td class="docTableCell">
+    <p class="docText">Terminates the current job. </td>
+    <td class="docTableCell">
+    <p class="docText">^c (CTRL-c)</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-11">
+    Section 24.11</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">quit</td>
+    <td class="docTableCell">
+    <p class="docText">Terminates the current job; makes a core file.</td>
+    <td class="docTableCell">
+    <p class="docText">^\ (CTRL-\)</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-11">
+    Section 24.11</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">susp</td>
+    <td class="docTableCell">
+    <p class="docText">Stops the current job (so you can put it in the 
+    background).</td>
+    <td class="docTableCell">
+    <p class="docText">^z (CTRL-z)</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">
+    Section 23.3</a></td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">rprnt</td>
+    <td class="docTableCell">
+    <p class="docText">Redisplays the current line.</td>
+    <td class="docTableCell">
+    <p class="docText">^r (CTRL-r)</td>
+    <td class="docTableCell">
+    <p class="docText">
+    <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-2">
+    Section 28.2</a></td>
+  </tr>
+</table>
+<p class="docText">The command <span class="docEmphasis">stty everything</span> 
+(BSD derivatives) or <span class="docEmphasis">stty -a</span> (Linux and System 
+V derivatives) shows all your current terminal settings. The
+<span class="docEmphasis">werase</span> and <span class="docEmphasis">rprnt</span> 
+characters aren't implemented on some older versions of Unix, though they are on 
+Linux and Darwin and most other modern Unix variants. </p>
+<p class="docText">It's amazing how often you'll see even moderately experienced 
+Unix users holding down the BACKSPACE or DELETE key to delete a partially 
+completed command line that contains an error. </p>
+<p class="docText">It's usually easier to use the line-kill characters — 
+typically CTRL-u or CTRL-x. (The command <span class="docEmphBold">stty -a</span> 
+or <span class="docEmphBold">stty everything</span> (<a class="docLink" href="_chapter 41.htm#upt3-CHP-41-SECT-3">Section 
+41.3</a>) will tell you which.
+<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-7">
+Section 5.7</a> shows how to change them.) The line-kill character will work on 
+a command line (at a <span class="docEmphBold">shell prompt</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-1">Section 
+4.1</a>)) and in other places where the terminal is in cooked mode. Some Unix 
+programs that don't run in cooked mode, like <i>vi</i>, understand the line-kill 
+character, too. </p>
+<p class="docText">Even better, many stystems have a &quot;word-erase&quot; character, 
+usually CTRL-2, which deletes only back to the previous whitespce. There's no 
+need to delete the entire command line if you want to change only part of it!
+</p>
+<p class="docText">As a historical note, the erase character was originally <tt>
+#</tt>, and the kill character was originally <tt>@</tt>. These assignments go 
+back to the olden days, when terminals printed with real ink on real paper and 
+made lots of noise. However, I'm told that there are some modern systems on 
+which these settings are still the default.<span id="ENB5-5"><a class="docLink" href="#EN5-5"><sup>[5]</sup></a></span>
+</p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">Terminal emulators, editors, and other programs can 
+        fool around with all of this stuff. They <span class="docEmphasis">
+        should</span> be well behaved and reset your terminal when you leave 
+        them, but that's often not true. So don't expect your settings to work 
+        within a terminal emulator; they may, or they may not. And don't expect 
+        your settings to be correct after you exit from your terminal emulator. 
+        Again, they may, or they may not. This is primarily due to the fact that 
+        some terminal-emulator programs lie about the extent to which they 
+        support a given set of control codes. </p>
+        <p class="docText">The <i>tset</i> program also
+        <span class="docEmphBold">fools around</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-3">Section 
+        5.3</a>) with key settings. Therefore, in your <span class="docEmphBold">
+        shell setup files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+        3.3</a>), put <i>stty</i> after <i>tset</i>. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">—ML, JP, SJC, and TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-9">5.9 Working with xterm and Friends</h3>
+<p class="docText"><i>xterm</i> is by far the most commonly used X client, 
+although more and more people are switching from <i>xterm</i> to similar or 
+related programs, such as <i>rxvt</i> — which is a lightweight <i>xterm</i> 
+derivative without the Tektronix terminal emulation support. Regardless, the 
+most commonly used clients are largely derivatives of <i>xterm</i>, so we're 
+devoting the rest of this section to this single client and its family. </p>
+<p class="docText"><i>xterm</i><span id="ENB5-6"><a class="docLink" href="#EN5-6"><sup>[6]</sup></a></span> 
+gives you a window containing your standard shell prompt (as specified in your
+<i>/etc/passwd</i> entry). You can use this window to run any 
+command-line-oriented Unix program or to start additional X applications. </p>
+<p class="docText">The uncustomized <i>xterm</i> window should be sufficient for 
+many users' needs. Certainly you can do anything in a vanilla <i>xterm</i> 
+window that you can from a character-based terminal. But <i>xterm</i> also has 
+special features you can use, and since you spend so much time in <i>xterm</i>, 
+you might as well use them. </p>
+<p class="docText">The rest of this chapter gives you a set of tricks and tips 
+about using <i>xterm</i>, including the following: </p>
+<ul>
+  <li>
+  <p class="docList">Specifying and using a scrollbar (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-11">Section 
+  5.11</a>). </li>
+  <li>
+  <p class="docList">Copying and pasting text selections (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-13">Section 
+  5.13</a>). </li>
+  <li>
+  <p class="docList">Modifying text-selection behavior (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-14">Section 
+  5.14</a>). </li>
+  <li>
+  <p class="docList">Printing the current directory in the <i>xterm</i> titlebar 
+  (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-15">Section 
+  5.15</a>). </li>
+  <li>
+  <p class="docList">Dynamically changing fonts and other features (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-17">Section 
+  5.17</a>,
+  <a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-18">
+  Section 5.18</a>). </li>
+</ul>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">The articles in this chapter use terms that you may 
+        want defined:</p>
+        <ul>
+          <li>
+          <p class="docList">A <span class="docEmphasis">pointer</span>, or 
+          pointing device, is a piece of hardware designed for navigating a 
+          screen. Most people use a mouse as their pointer, but there are also 
+          trackballs, touchpads, and others. </li>
+          <li>
+          <p class="docList">The best pointer to use with X has three buttons. 
+          When we refer to the <span class="docEmphasis">first button</span> or
+          <span class="docEmphasis">button 1</span>, we mean the button you 
+          click with your index finger. For right-handed people, this is usually 
+          the left button on a mouse. But the <span class="docEmphBold">X client</span>
+          <i>xmodmap</i> (<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-1">Section 
+          6.1</a>) lets left-handed users swap mouse buttons to make the 
+          rightmost button the &quot;first.&quot; </li>
+          <li>
+          <p class="docList">Even though the actual image on the screen is 
+          called a cursor, throughout this chapter we refer to &quot;moving the 
+          pointer&quot; to avoid confusion with the standard text cursor that can 
+          appear in an <i>xterm</i> window. </li>
+        </ul>
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">—LM, VQ, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-10">5.10 Login xterms and rxvts</h3>
+<p class="docText">If you want your <i>xterm</i> or <i>rxvt</i> to run a
+<span class="docEmphBold">login shell</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">Section 
+3.4</a>), give it the <i>-ls</i> flag, or put a line like one of the following 
+in your <span class="docEmphBold">X resource file</span> (<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-5">Section 
+6.5</a>): </p>
+<pre>xterm*loginShell: true  <i>...for xterm</i>
+XTerm*loginShell: true  <i>...for xterm or rxvt</i>
+Rxvt*loginShell:  true  <i>...for rxvt</i></pre>
+<p class="docText">Once you've defined the appropriate resource, you can get a 
+nonlogin shell (which is otherwise the default) with <i>xterm +ls</i>. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-11">5.11 Working with Scrollbars</h3>
+<p class="docText">The scrollbar is a favorite <i>xterm</i> feature, 
+particularly among those whose terminals lacked the ability to scroll backwards. 
+Using the scrollbar, you can re-examine the output or error from a command, 
+select previous text to supply in another command line or to paste into a file, 
+or to hide your current screen from a nosy coworker. </p>
+<p class="docText">There are many ways to start up the scrollbar. You can 
+specify the <i>-sb</i> option on the command line: </p>
+<pre>% <b>xterm -sb &amp;</b>
+% <b>rxvt -sb &amp;</b></pre>
+<p class="docText">or you can <span class="docEmphBold">set the scrollBar</span>
+<span class="docEmphBold">resource</span> (<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-5">Section 
+6.5</a>) to <tt>true</tt>: </p>
+<pre>XTerm*scrollBar:    true  <i>...for xterm or rxvt</i>
+Rxvt*scrollBar:            true  <i>...for rxvt</i></pre>
+<p class="docText">or for an <i>xterm</i> window that's already running, you can 
+call up the <span class="docEmphBold">VT Options</span>
+<span class="docEmphBold">menu</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-17">Section 
+5.17</a>) by holding down the CTRL key and the center mouse button or by 
+selecting <span class="docEmphBold">Enable Scrollbar</span>. These menus are not 
+supported by <i>rxvt</i>. </p>
+<p class="docText">A scrollbar appears on the left side of the <i>xterm</i> 
+window, as shown in <a class="docLink" href="#upt3-CHP-5-FIG-1">Figure 5-1</a>.
+</p>
+<center>
+<h5 id="upt3-CHP-5-FIG-1" class="docFigureTitle">Figure 5-1. xterm window with scrollbar</h5>
+<p>
+<img alt="figs/upt3_0501.gif" src="upt3_0501.gif" border="0" width="438" height="267"></p>
+</center>
+<p class="docText"><span class="docEmphasis">—LM and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-12">5.12 How Many Lines to Save?</h3>
+<p class="docText">If you use the <span class="docEmphBold">scrollbar in</span>
+<span class="docEmphBold">xterm</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-11">Section 
+5.11</a>), you'll find that by default the scrollbar retains only 64 previous 
+lines of text. You can change this by using the <i>-sl</i> command-line option:
+</p>
+<pre>% <b>xterm -sb -sl 200 &amp;</b>
+% <b>rxvt -sb -sl 200 &amp;</b></pre>
+<p class="docText">or by setting the <tt>saveLines</tt> resource: </p>
+<pre>XTerm*saveLines: 200</pre>
+<p class="docText">You don't want to go crazy with the number of saved lines, 
+though. Too many lines saved may crunch on virtual memory and also make it hard 
+to scroll. </p>
+<p class="docText"><span class="docEmphasis">—LM and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-13">5.13 Simple Copy and Paste in xterm</h3>
+<p class="docText">You can use the pointer to select text to copy and paste 
+within the same <i>xterm</i> window or between <i>xterm</i> windows. You don't 
+need to be in a text editor to copy and paste. You can also copy or paste text 
+to and from the command line, between the command line and a file, etc. </p>
+<p class="docText">There are several ways to select (copy) text; all require you 
+to use the pointer. You can select a passage of text, or you can select text by 
+individual words or lines. </p>
+<p class="docText">When you select text, it is highlighted and copied into 
+global memory from which you can paste it into any <i>xterm</i> window. 
+Regardless of the number of <i>xterm</i> windows you're running, you can store 
+only one selection in memory at a time. However, you can paste that selection as 
+many times as you like. When you make another selection, the new text replaces 
+the previous selection in memory. </p>
+<p class="docText"><a class="docLink" href="#upt3-CHP-5-TABLE-2">Table 5-2</a> 
+summarizes all of the text-selection methods. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-5-TABLE-2" class="docTableTitle">Table 5-2. Button combinations to select text for 
+  copying </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">To select</th>
+    <th class="docTableHeader">
+    <p class="docText">Do this</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Passage</td>
+    <td class="docTableCell">
+    <p class="docText">Click the first button at the start of the selection and 
+    the third button at the end of the selection. Or at the beginning of the 
+    selection, hold down the first button; drag the pointer to the end of the 
+    desired text; release the button. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Word</td>
+    <td class="docTableCell">
+    <p class="docText">Double-click the first button anywhere on the word.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Line</td>
+    <td class="docTableCell">
+    <p class="docText">Triple-click the first button anywhere on the line.</td>
+  </tr>
+</table>
+<p class="docText">To clear the highlighting, move the pointer off the 
+selection, and click the first button anywhere else in the window. Note, 
+however, that the text still remains in memory until you make another selection.
+</p>
+<p class="docText">Of the two methods for selecting a passage, the first is 
+generally easier. Hypothetically, you can select a passage of any length; in 
+practice, we've found there to be limitations. The size of the window limits the 
+amount of text you can highlight in one action. You can extend a selection 
+beyond the parameters of a window. Copying an extremely long selection, however, 
+doesn't seem to work reliably. Also, when pasting a long selection, the text can 
+become garbled. </p>
+<p class="docText">You can paste text into any <i>xterm</i> window, either onto 
+the command line or into a text file you're editing. In both cases, move the 
+pointer into the window, and click the second button. The text will be pasted; 
+in other words, it will appear on the screen, just as if you typed it. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="50" src="screw.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">To paste into an open text file, the editing program 
+        must be in insert mode. (If not, when pasted, the selection may be 
+        interpreted as a stream of editor commands, such as in <i>vi</i>. The 
+        act of pasting the word &quot;selection&quot; in a <i>vi</i> editor not in insert 
+        mode would be to ignore everything up until the
+        <span class="docEmphasis">i</span>, which would place <i>vi</i> into 
+        insert mode, and then the last three letters would be inserted into the 
+        buffer.) </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-14">5.14 Defining What Makes Up a Word for Selection 
+Purposes</h3>
+<p class="docText">You probably already know how to <span class="docEmphBold">
+select text</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-13">Section 
+5.13</a>) in an <i>xterm</i>, and you've probably discovered that
+<span class="docEmphBold">double-clicking</span>
+<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-13">
+Section 5.13</a> will select the entire word around the pointer. What you may 
+not know is that it is possible to change what defines a &quot;word.&quot; </p>
+<p class="docText"><i>xterm</i> maintains a table of all the ASCII characters 
+and their <span class="docEmphasis">character classes</span>. Any sequence of 
+adjacent characters of the same class is treated as a word. Numbers, letters, 
+and the underscore are in class 48 (which is the ASCII code for the character
+<tt>0</tt>) and SPACE and TAB are in class 32 (the ASCII code for SPACE). By 
+default, all the other characters are in classes by themselves. </p>
+<p class="docText">For Unix users, this isn't the most useful default; it would 
+be better if you could select filenames, email addresses, URLs, resource 
+specifications, etc. as single words even though they often contain punctuation 
+characters. </p>
+<p class="docText">You can modify the character class table with <i>xterm</i>'s
+<tt>charClass</tt> <span class="docEmphBold">resource variable</span> (<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-3">Section 
+6.3</a>). The value this resource accepts is a comma-separated list; each item 
+on the list is an ASCII character code or range of characters, followed by a 
+colon, followed by the character class to which the character should be added. I 
+set the <tt>charClass</tt> resource as follows: </p>
+<pre>xterm*charClass: 33:48, 37:48, 42:48, 45-47:48, 63-64:48, 126:48</pre>
+<p class="docText">This tells <i>xterm</i> to treat !, %, *, -, ., /, ?, @, and 
+~ as characters of the same class as numbers and letters. You may also want to 
+treat : as a member of this class, for URLs; in that case, use the following <tt>
+charClass</tt> string: </p>
+<pre>xterm*charClass: 33:48, 37:48, 42:48, 45-47:48, 58:48, 63-64:48, 126:48</pre>
+<p class="docText"><span class="docEmphasis">—DJF and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-15">5.15 Setting the Titlebar and Icon Text</h3>
+<p class="docText">Under most modern window managers, most windows (including <i>
+xterm</i>) are displayed with a titlebar. You can change the text in the 
+titlebar using the following <i>xterm</i> escape sequence: </p>
+<pre>^[ ]2;<tt><i>string</i></tt>^G</pre>
+<p class="docText">Note that this sequence has a close bracket (<tt>]</tt>) 
+following the ESC (Escape, <tt>^[)</tt> — not an open bracket. It ends with a 
+CTRL-g character — not a caret followed by a &quot;g&quot;. </p>
+<p class="docText">I use this sequence to display my current working directory 
+and directory stack in the titlebar, where they are visible but unobtrusive. I 
+do this by adding a few lines to my <span class="docEmphBold">shell setup file</span> 
+(<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>).
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-8">
+Section 4.8</a> explains. </p>
+<p class="docText">If you change the number &quot;2&quot; in the escape sequence to &quot;1,&quot; 
+it will set the text that appears in the <i>xterm</i>'s icon instead of its 
+titlebar. If you change it to &quot;0,&quot; it will set the text for both the icon and 
+the titlebar. If you use and iconify a number of <i>xterm</i>s, you may find 
+these sequences useful. </p>
+<p class="docText">You may also wish simply to specify an icon name and/or title 
+text for a given window, statically, for those situations where the window is 
+only used to display output from some program, and not for interactive use. Both
+<i>xterm</i> and <i>rxvt</i> allow this, using the <i>-n</i> option to specify 
+the icon name and the <i>-T</i> option to specify the title. You may also use X 
+resources to specify icon name or title. </p>
+<p class="docText">The Mac OS X Terminal application lets you set the title from 
+the Set Title command on the Shell menu as well. </p>
+<p class="docText"><span class="docEmphasis">—DJF and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-16">5.16 The Simple Way to Pick a Font</h3>
+<p class="docText">X font names make the Rosetta Stone look like bedtime 
+reading. Those hardy souls who want to experiment with fonts or access fonts on 
+remote machines must take the high road and learn the X font naming conventions 
+anyway. But if you just want to locate some fonts to use with <i>xterm</i> and 
+other clients, you can use the predefined aliases for some of the constant-width 
+fonts available on most systems. </p>
+<p class="docText"><a class="docLink" href="#upt3-CHP-5-FIG-2">Figure 5-2</a> 
+lists the aliases for some constant-width fonts that should be appropriate for 
+most of the standard clients, including <i>xterm</i>. [These &quot;aliases&quot; are 
+basically font <span class="docEmphasis">names</span>. They aren't the same as
+<span class="docEmphBold">shell aliases</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-1">Section 
+29.1</a>). Also note that terminals should use constant-width fonts (where every 
+character — thin or wide — occupies the same horizontal width). Constant-width 
+fonts ensure that, for instance, the 54th character in every line of output from
+<i>ls</i> <i>-l</i> is always in the same horizontal position on the screen — so 
+columns will always be straight. — <span class="docEmphasis">JP</span>] To give 
+you an idea of the range of sizes, each alias is written in the font it 
+identifies. </p>
+<center>
+<h5 id="upt3-CHP-5-FIG-2" class="docFigureTitle">Figure 5-2. Miscellaneous fonts for xterm and other 
+clients</h5>
+<p>
+<img alt="figs/upt3_0502.gif" src="upt3_0502.gif" border="0" width="107" height="138"></p>
+</center>
+<p class="docText">In these cases, the aliases refer to the dimensions in pixels 
+of each character in the font. (For example, &quot;10x20&quot; is the alias for a font 
+with characters 10 pixels wide by 20 pixels high.) Note, however, that an alias 
+can be virtually any character string. </p>
+<p class="docText">The default font for many applications, including <i>xterm</i>, 
+is a 6x13 pixel font that has <span class="docEmphasis">two</span> aliases: 
+&quot;fixed&quot; and &quot;6x13.&quot; Many users consider this font to be too small. If you have 
+enough screen space, you might want to use the 10x20 font for <i>xterm</i> 
+windows: </p>
+<pre>% <b>xterm -fn 10x20 &amp;</b></pre>
+<p class="docText">You can make this font the default for <i>xterm</i> by 
+specifying it as the value for the <span class="docEmphBold">font</span>
+<span class="docEmphBold">resource variable</span> (<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-3">Section 
+6.3</a>): </p>
+<pre>XTerm*font: 10x20</pre>
+<p class="docText">Another quick way to get a list of fonts that match a given 
+string is to use the <i>xlsfonts</i> program, which accepts a variety of options 
+but may be used as simply as this: </p>
+<pre>% xlsfonts -fn \*-10-\*</pre>
+<p class="docText">This command will display all of the fonts that are 10 pixels 
+wide. The string <tt>\*-10-\*</tt> is a wildcard expression matching any font 
+specification containing <tt>-10-</tt>. Be sure to escape the * and ? characters 
+when specifying a pattern on the command line, to avoid interpolation by the 
+shell. </p>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-17">5.17 The xterm Menus</h3>
+<p class="docText"><i>xterm</i> has four different menus, each providing items 
+that serve different purposes. You display a menu by placing the pointer on the 
+window and simultaneously pressing the CTRL (keyboard) key and a pointer button. 
+When you're using a window manager that provides a titlebar or frame, the 
+pointer must rest within the window proper and <span class="docEmphasis">not</span> 
+on any window decoration. </p>
+<p class="docText"><a class="docLink" href="#upt3-CHP-5-TABLE-3">Table 5-3</a> 
+describes the menus and how to display them. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-5-TABLE-3" class="docTableTitle">Table 5-3. The xterm menus </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Menu title</th>
+    <th class="docTableHeader">
+    <p class="docText">Display by holding</th>
+    <th class="docTableHeader">
+    <p class="docText">Use to </th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Main Options</span> </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">CTRL</span>, pointer button 1</td>
+    <td class="docTableCell">
+    <p class="docText">Enter secure mode; interrupt, stop, etc., the xterm 
+    process. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">VT Options</span> </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">CTRL</span>, pointer button 2</td>
+    <td class="docTableCell">
+    <p class="docText">Toggle user preferences, including scrollbar, reverse 
+    video, margin bell; toggle Tektronix/VT100 mode. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">VT Fonts</span> </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">CTRL</span>, pointer button 3</td>
+    <td class="docTableCell">
+    <p class="docText">Select alternative display font. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Tek Options</span> </td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">CTRL</span>, pointer button 2, 
+    on Tektronix window </td>
+    <td class="docTableCell">
+    <p class="docText">Toggle VT100/Tektronix mode; select display font.</td>
+  </tr>
+</table>
+<p class="docText">As shown in <a class="docLink" href="#upt3-CHP-5-TABLE-3">
+Table 5-3</a>, three of the four <i>xterm</i> menus are divided into sections 
+separated by horizontal lines. The top portion of each divided menu contains 
+various modes that can be toggled. (The one exception is the
+<span class="docEmphBold">Redraw Window</span> item on the
+<span class="docEmphBold">Main Options</span> menu, which is a command.) A check 
+mark appears next to a mode that is currently active. Selecting one of these 
+modes toggles its state. </p>
+<p class="docText">The items on the <span class="docEmphBold">VT Fonts</span> 
+menu change the font in which text is displayed in the <i>xterm</i> window. Only 
+one of these fonts can be active at a time. To turn one off, you must activate 
+another. See
+<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-18">
+Section 5.18</a> for information on using the <span class="docEmphBold">VT Fonts</span> 
+menu. </p>
+<p class="docText">When you display an <i>xterm</i> menu, the pointer becomes 
+the arrow pointer and initially appears in the menu's title. Once the menu 
+appears, you can release any keyboard key. The menu will remain visible as long 
+as you continue to hold down the appropriate pointer button. (You can move the 
+pointer off the menu without it disappearing.) To toggle a mode or activate a 
+command, drag the pointer down the menu and release the pointer button on the 
+item you want. </p>
+<p class="docText">If you decide not to select a menu item after the menu has 
+appeared, move the pointer off the menu and release the button. The menu 
+disappears and no action is taken. </p>
+<p class="docText">You probably won't use the <i>xterm</i> menus too often. You 
+can set most mode entries by using command-line options when invoking <i>xterm</i> 
+or by using entries in a <span class="docEmphBold">resource file</span> (<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-5">Section 
+6.5</a>). See the <i>xterm</i> manpage for a complete list of options and 
+resource variables. </p>
+<p class="docText">The various modes on the menus are very helpful if you've set 
+(or failed to set) a particular mode on the command line and then decide you 
+want the opposite characteristic. For instance, say you've run <i>xterm</i> 
+without a scrollbar and then decide you want one. You can toggle the scrollbar 
+from the <span class="docEmphBold">VT Options</span> menu. </p>
+<p class="docText">The sections below the modes portion of each menu contain 
+various commands. Selecting one of these commands performs the indicated 
+function. Many of these functions can be invoked only from the <i>xterm</i> 
+menus. However, some functions can be invoked in other ways, which are often 
+more convenient. For example, you can remove the <i>xterm</i> window using 
+several of the items on the <span class="docEmphBold">Main Options</span> menu, 
+but it's probably simpler to type <tt>exit</tt> or <tt>logout</tt>, or use a 
+window manager menu or button. Of course, the <i>xterm</i> menus can be very 
+helpful when other methods fail to invoke a function. And some functions (such 
+as <span class="docEmphBold">Secure Keyboard</span>) are not available in any 
+other way — unless you do a little customizing. </p>
+<p class="docText">Most people tend to use the mode toggles on the
+<span class="docEmphBold">VT Options</span> menu (which allow you to turn 
+features like the scrollbar on and off) and the items on the
+<span class="docEmphBold">VT Fonts</span> menu (which allow you to change the 
+display font once the client is running). If you're concerned about security, 
+you may want to invoke secure keyboard mode from the <span class="docEmphBold">
+Main Options</span> menu before typing passwords or other sensitive information.
+</p>
+<p class="docText">Note that a Release 5 <span class="docEmphBold">patch</span> 
+(<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-9">Section 
+20.9</a>) has eliminated <i>xterm</i>'s logging capability for security reasons. 
+If this patch has been applied, your <span class="docEmphBold">Main Options</span> 
+menu will not offer the <span class="docEmphBold">Log to File</span> option. </p>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-18">5.18 Changing Fonts Dynamically</h3>
+<p class="docText">Ideally, you want to set up your environment so that <i>xterm</i> 
+windows (and other clients) come up automatically with the characteristics you 
+prefer, including the display font. I use the very large
+<span class="docEmphBold">10x20-pixel font</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-16">Section 
+5.16</a>) for all my <i>xterm</i> windows by specifying the
+<span class="docEmphBold">resource variable</span> (<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-3">Section 
+6.3</a>): </p>
+<pre>XTerm*font: 10x20</pre>
+<p class="docText">But if you start an <i>xterm</i> and then decide you want a 
+different font, you do have an option. </p>
+<h4  id="upt3-CHP-5-SECT-18.1" class="docSection2Title">5.18.1 VT Fonts Menu</h4>
+<p class="docText">The <i>xterm</i> <span class="docEmphBold">VT Fonts menu</span> 
+(<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-17">Section 
+5.17</a>) allows you to change a window's font on the fly, which is a very handy 
+capability. You can change the font any number of times to accommodate a variety 
+of uses. You might choose to use a large font for text editing; you could then 
+change to a smaller font while a process is running, since you don't need to be 
+reading or typing in that <i>xterm</i>. Since <i>xterm</i>'s dimensions are 
+determined by the number of characters wide by the number of lines high, 
+changing the font also changes the size of the window. </p>
+<p class="docText">When the focus is on an <i>xterm</i>, you display the menu by 
+pressing CTRL and then the third pointer button. The default menu is shown in
+<a class="docLink" href="#upt3-CHP-5-FIG-3">Figure 5-3</a>. </p>
+<center>
+<h5 id="upt3-CHP-5-FIG-3" class="docFigureTitle">Figure 5-3. xterm's VT Fonts menu lets you change 
+fonts dynamically</h5>
+<p>
+<img alt="figs/upt3_0503.gif" src="upt3_0503.gif" border="0" width="450" height="289"></p>
+</center>
+<p class="docText">The items on the <span class="docEmphBold">VT Fonts</span> 
+menu are toggles, each of which provides a different size display font. If you 
+have not toggled any items on this menu, a check mark will appear next to
+<span class="docEmphBold">Default</span>, which is the font specified when the
+<i>xterm</i> was run. This font could have been specified on the <i>xterm</i> 
+command line or in a resource file. Whatever the case, this font remains the
+<span class="docEmphBold">Default</span> for the duration of the current <i>
+xterm</i> process. </p>
+<p class="docText">By default, the <span class="docEmphBold">Unreadable</span>,
+<span class="docEmphBold">Tiny</span>, <span class="docEmphBold">Small</span>,
+<span class="docEmphBold">Medium</span>, <span class="docEmphBold">Large</span>, 
+and <span class="docEmphBold">Huge</span> menu choices toggle the constant-width 
+fonts shown in <a class="docLink" href="#upt3-CHP-5-TABLE-4">Table 5-4</a>. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-5-TABLE-4" class="docTableTitle">Table 5-4. VT Fonts menu defaults </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Menu item</th>
+    <th class="docTableHeader">
+    <p class="docText">Default font</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Unreadable</span></td>
+    <td class="docTableCell">
+    <p class="docText">nil2</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Tiny</span></td>
+    <td class="docTableCell">
+    <p class="docText">5x7</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Small</span></td>
+    <td class="docTableCell">
+    <p class="docText">6x10</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Medium</span></td>
+    <td class="docTableCell">
+    <p class="docText">7x13</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Large</span></td>
+    <td class="docTableCell">
+    <p class="docText">9x15</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Huge</span></td>
+    <td class="docTableCell">
+    <p class="docText">10x20</td>
+  </tr>
+</table>
+<p class="docText">Bring up the <span class="docEmphBold">VT Fonts</span> menu, 
+and toggle some of these fonts to see what they look like. The first choice is 
+not called <span class="docEmphBold">Unreadable</span> for nothing, but it does 
+have a practical use. </p>
+<p class="docText">You can specify your own Unreadable, Tiny, Small, Medium, 
+Large, and Huge fonts using the <i>xterm</i> resource variables <tt>font1</tt>,
+<tt>font2</tt>, <tt>font3</tt>, <tt>font4</tt>, <tt>font5</tt>, and <tt>font6</tt>. 
+You might want to specify bold alternatives to some of the default fonts. For 
+example, 7x13 bold is somewhat more readable than the standard
+<span class="docEmphBold">Medium</span> font. </p>
+<p class="docText">All of the references to fonts and command-line options also 
+apply to <i>rxvt</i>, which does not, however, support the
+<span class="docEmphBold">VT Fonts</span> menu supported by <i>xterm</i>. </p>
+<h4  id="upt3-CHP-5-SECT-18.2" class="docSection2Title">5.18.2 Enabling Escape Sequence and Selection</h4>
+<p class="docText">When you first run an <i>xterm</i> window, the final two 
+choices on the <span class="docEmphBold">VT Fonts</span> menu,
+<span class="docEmphBold">Escape Sequence</span> and <span class="docEmphBold">
+Selection</span>, are not functional. (They will appear in a lighter typeface 
+than the other selections.) The average user may not care about these items, but 
+if you're experimenting with fonts, they are sometimes useful. </p>
+<p class="docText">To enable <span class="docEmphBold">Selection</span>, you 
+first have to select a font name. You can do this simply by highlighting a font 
+name with the pointer, as you would <span class="docEmphBold">any text selection</span> 
+(<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-13">Section 
+5.13</a>). However, it's more likely that you'll use <span class="docEmphBold">
+Selection</span> in concert with the <i>xfontsel</i> client. [This is a client 
+that does point-and-click selection of X11 font names; see its manpage. —
+<span class="docEmphasis">JP</span>] Once you've selected a font name, you can 
+toggle it using the <span class="docEmphBold">Selection</span> menu item. A 
+serious limitation: <span class="docEmphBold">Selection</span> tries to use the 
+last selected text as a font name. If the last selected text was not a valid 
+font name, toggling <span class="docEmphBold">Selection</span> will get you 
+nothing more than a beep. When there is no primary text selection in memory, the 
+menu item is grayed out again. </p>
+<p class="docText">The <span class="docEmphBold">Escape Sequence</span> item is 
+a little more complicated, but once set up it will be available for the duration 
+of the <i>xterm</i> process. To make it available, you first need to change the 
+font by a more primitive method, using a literal escape sequence that you send 
+to the <i>xterm</i> using <i>echo</i>: </p>
+<pre>val@ruby 181% <b>echo &quot;Esc]50;7x13boldControl-g&quot;</b></pre>
+<p class="docText">These are the literal keys you type to change the font to 
+7x13bold. But pressing ESC actually generates the symbol <tt>^[</tt>, and CTRL-g 
+appears as <tt>^G</tt>, so you'll get a line that looks like this: </p>
+<pre>val@ruby 181% <b>echo &quot;^[ ]50;7x13bold^G&quot;</b></pre>
+<p class="docText">If you <span class="docEmphasis">don't</span> get this 
+string, try typing the CTRL-v character before both the ESC and CTRL-g 
+characters, letting the system know you intend for the following character to be 
+a literal. </p>
+<p class="docText">I've used a short <span class="docEmphBold">font name alias</span> 
+(<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-16">Section 
+5.16</a>), but you could use a full name or a name with wildcards. Once you've 
+changed the font in this manner, you can toggle it using the
+<span class="docEmphBold">Escape Sequence</span> menu item. If you change the 
+font again using the literal escape sequence, that font will be available via 
+the menu item. Note that the trick for changing the font discussed earlier also 
+works in <i>rxvt</i>, but does not enable any font menus. </p>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-19">5.19 Working with xclipboard</h3>
+<p class="docText">The <i>xclipboard</i> client does exactly what you might 
+think: it allows you to save multiple <span class="docEmphBold">text selections</span> 
+(<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-13">Section 
+5.13</a>) and copy them to other windows. Text you copy from an <i>xterm</i> 
+window can be made the CLIPBOARD selection (and thus automatically appear in the
+<i>xclipboard</i> window). To set this up, you first need to customize <i>xterm</i> 
+using resources.<span id="ENB5-7"><a class="docLink" href="#EN5-7"><sup>[7]</sup></a></span>
+</p>
+<p class="docText">For text you copy from an <i>xterm</i> to be pasted 
+automatically into <i>xclipboard</i>, the text must be made the CLIPBOARD 
+selection. You set this up to happen by specifying a few
+<span class="docEmphBold">translations</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-4">Section 
+6.4</a>) for <i>xterm</i>.<span id="ENB5-8"><a class="docLink" href="#EN5-8"><sup>[8]</sup></a></span> 
+Here are the translations I use to coordinate <i>xterm</i> with <i>xclipboard</i>:
+</p>
+<pre>*VT100.Translations:    #override\
+    Button1 &lt;Btn3Down&gt;: select-end(primary,CUT_BUFFER0,CLIPBOARD)\n\
+    !Shift &lt;Btn2Up&gt;:    insert-selection(CLIPBOARD)\n\
+    ~Shift ~Ctrl ~Meta &lt;Btn2Up&gt;:  insert-selection(primary,CUT_BUFFER0)</pre>
+<p class="docText">To let you store multiple text selections, the seemingly tiny
+<i>xclipboard</i> actually provides multiple screens, each of which can be 
+thought of as a separate buffer. Each time you use the pointer to make text the 
+CLIPBOARD selection, the <i>xclipboard</i> advances to a new screen in which it 
+displays and stores the text. If you make a long selection, it might take up 
+more than one screen, but the clipboard still considers it a single buffer. When 
+you make a selection that extends beyond the bounds of the <i>xclipboard</i> 
+window (either horizontally, vertically, or both), <span class="docEmphBold">
+scrollbars</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-11">Section 
+5.11</a>) will be activated in the window to allow you to view the entire 
+selection. </p>
+<p class="docText">To the right of the command buttons is a tiny box that 
+displays a number corresponding to the selection currently in the <i>xclipboard</i> 
+window. Once you have saved multiple selections, you can click on the client's
+<tt>Next</tt> and <tt>Prev</tt> command buttons to move forward and backward 
+among these screens of text. </p>
+<p class="docText">If you've coordinated <i>xterm</i> with <i>xclipboard</i> 
+using the guidelines outlined earlier, you paste the CLIPBOARD selection in an
+<i>xterm</i> window by holding down the Shift key and clicking the second 
+pointer button. When you paste the CLIPBOARD selection, you get the selection 
+that's currently being displayed in the <i>xclipboard</i> window. Here's where 
+the client really comes in handy. Suppose you send four selections to <i>
+xclipboard</i> and you want to paste #2. Just go back to selection #2 using the
+<tt>Prev</tt> command button; when you use the pointer command to paste the 
+CLIPBOARD selection, selection #2 is pasted. In
+<a class="docLink" href="#upt3-CHP-5-FIG-4">Figure 5-4</a>, we've pasted 
+selection #2 into a new file. (Notice that the text is too wide for the <i>
+xclipboard</i> window and that a horizontal scrollbar has been provided so we 
+can view the entire selection.) </p>
+<center>
+<h5 id="upt3-CHP-5-FIG-4" class="docFigureTitle">Figure 5-4. Text you copy from an xterm appears in 
+xclipboard</h5>
+<p>
+<img alt="figs/upt3_0504.gif" src="upt3_0504.gif" border="0" width="442" height="442"></p>
+</center>
+<p class="docText">A selection remains available in <i>xclipboard</i> until you
+<tt>Quit</tt> the program or use the <tt>Delete</tt> button to erase the current 
+buffer. </p>
+<p class="docText">Use the <tt>Save</tt> command button to save the text in the 
+current buffer to a file. A dialog will ask you to <tt>Accept</tt> or <tt>Cancel</tt> 
+the save to a file with the default name <span class="docEmphasis">clipboard</span>. 
+You can change the filename using <span class="docEmphasis">Text widget commands</span> 
+[these are listed in the <i>xedit</i>(1) manpage — <span class="docEmphasis">JP</span>]. 
+If you want to save multiple selections, you'll need to change the filename each 
+time, or you'll overwrite the previous save. </p>
+<p class="docText">You can edit text you send to the <i>xclipboard</i> using 
+Text widget commands. When you edit a screenful of text, the <i>xclipboard</i> 
+continues to store the edited version until you delete it or exit the program.
+</p>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-20">5.20 Problems with Large Selections</h3>
+<p class="docText">If you experiment making large selections with <i>xclipboard</i>, 
+you may discover what seems to be a bug in the program. Though making a new 
+selection usually causes the screen to advance and display the new text, this 
+does not happen reliably after a selection that vertically spans more than one 
+screenful. In these cases, the new selection <span class="docEmphasis">is</span> 
+saved in the <i>xclipboard</i> (and the number in the small box is incremented 
+to indicate this); however, the <i>xclipboard</i> window does not automatically 
+advance to show you the new current selection. Instead, the previous long 
+selection is still displayed. (For example, though the box says &quot;5,&quot; indicating 
+that a fifth selection has been saved, the window is still displaying selection 
+#4.) This is a bit of <i>xclipboard</i> sleight of hand: the new selection has 
+been successfully made, but the appearance of the window belies this fact. The
+<tt>Next</tt> button will probably add to your confusion; it will not be 
+available for selection, suggesting that the text in the window is the last 
+selection saved. This is not the case. </p>
+<p class="docText">To get around this problem and display the actual current 
+selection, press the <tt>Previous</tt> button. The same long selection (which 
+is, in actuality, the Previous selection) will be displayed again. (The small 
+box will flip back to display the preceding number as well.) Then the <tt>Next</tt> 
+button will be enabled, and you can click on it to display the actual current 
+selection. The selection displayed in the window and the number in the small box 
+will correspond.<span id="ENB5-9"><a class="docLink" href="#EN5-9"><sup>[9]</sup></a></span>
+</p>
+<p class="docText"><span class="docEmphasis">—VQ and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-21">5.21 Tips for Copy and Paste Between Windows</h3>
+<p class="docText">One of my favorite uses for an <i>xterm</i> (which may seem 
+natural to people who've grown up using window systems, but was a pleasant 
+surprise for a guy who started computing with teletypes in 1970) is using a 
+window to accept text pasted from some other window. For instance, in writing 
+this book, I'll have one window open with something happening that I want to put 
+into the book. So I select the text, then paste it into another <i>xterm</i> 
+window — where there's usually a text editor (like <i>vi</i>, with its
+<span class="docEmphBold">keymaps for pasting text</span> (<a class="docLink" href="_chapter 18.htm#upt3-CHP-18-SECT-5">Section 
+18.5</a>)). </p>
+<p class="docText">You can also use a text editor or Unix utilities to reformat 
+text from one window before pasting it into another. For instance, you'd like to 
+send most of the text in your browser to another window where you're composing 
+an email message. But the web site used those irritating Microsoft 
+Windows-specific quote characters that show up as question marks (<tt>?</tt>) on 
+any other platform. So you paste the text into an Emacs window, do a quick run 
+of text substitution, and copy the result to paste into the email window. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: requote</p>
+<p class="docText">Another problem with email messages comes when you're sending 
+a reply to someone who's used very long or jagged lines and the quoted text is a 
+mess. But if you cut the messy text into an <i>xterm</i> window running the <i>
+requote</i> shell script, you'll get a neatened version. In the following 
+example, the text I paste (cut from a quoted email message) is shown in 
+boldface. Then I press CTRL-d, and the result appears; I can paste it back into 
+the email message: </p>
+<pre>$ <b>requote</b>
+<b>&gt; This is a long line of text that runs on and on and wraps to the next</b>
+<b>line without a quote character at the start and it goes on and on and on</b>
+<b>and well you know</b>
+<b>&gt; This is the next line of text</b>
+CTRL-d
+&gt; This is a long line of text that runs on and on and wraps to the next
+&gt; line without a quote character at the start and it goes on and on and
+&gt; on and well you know This is the next line of text</pre>
+<p class="docText">You can pass a <i>fmt</i> width option to tell <i>requote</i> 
+how wide to make the output lines. (Different versions of <i>fmt</i> have 
+different width options: <i>-w</i>, <i>-l</i>, etc.) <i>requote</i> also works 
+great as a <i>vi</i> <span class="docEmphBold">filter-through</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-18">Section 
+17.18</a>): paste the messy text into <i>vi</i>, and run a command like <tt>!{requote</tt> 
+to requote the text in place. </p>
+<p class="docText"><i>requote</i> is a simple script that doesn't try to handle 
+multiple levels of quoting (<tt>&gt;&gt; &gt; &gt;&gt;</tt>, etc.). The main formatting 
+commands are shown here; the temporary file <tt>$temp</tt> makes sure <i>fmt</i> 
+has read all the text before the final <i>sed</i> outputs any of it: </p>
+<p class="docText"><tt>${1+&quot;$@&quot;}</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+Section 36.7</a></p>
+<pre>sed 's/^&gt; //' |
+fmt ${1+&quot;$@&quot;} &gt; $temp
+sed 's/^/&gt; /' $temp</pre>
+<p class="docText">Here's another problem like the one <i>requote</i> solves. 
+When I copy text from a browser window, my browser usually puts some whitespace 
+before each line. When I paste the text, it's a mess. I could use a text editor 
+to clean up the lines, but a one-line <i>sed</i> script can do the job faster.
+</p>
+<p class="docText">Let's look at three examples of <i>dedent</i>. It removes all 
+space and TAB characters from the start of each line it reads on its standard 
+input, and it writes the result to standard output. </p>
+<pre>$ <b>dedent &gt; order_confirmation </b>
+   <i> ...paste text into xterm, press CTRL-d...</i>
+$ <b>dedent | fmt &gt; johnson </b>
+   <i> ...paste text into xterm, press CTRL-d...</i>
+$ <b>dedent | mail -s 'article I mentioned' ali </b>
+   <i> ...paste text into xterm, press CTRL-d...</i>
+$</pre>
+<p class="docText">In the first example, I started <i>dedent</i> and pasted text 
+into the <i>xterm</i>. After I pressed CTRL-d, <i>dedent</i> removed leading 
+whitespace from the pasted text and wrote the result to standard output, which 
+the shell had redirected to a file named <span class="docEmphasis">
+order_confirmation</span>. In the second example, <i>dedent</i>'s output is 
+piped to <span class="docEmphBold">fmt</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-2">Section 
+21.2</a>) to make the lines neat. (Without <i>dedent</i>, most versions of <i>
+fmt</i> would indent the reformatted text.) The third example removes leading 
+whitespace, then <span class="docEmphBold">emails</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) the text to <span class="docEmphasis">ali</span>. </p>
+<p class="docText">One more thing: many of the tricks discussed earlier may be 
+implemented as shell functions or even <i>emacs</i> functions or <i>vi</i> 
+macro. If you use a mail user agent such as <i>mutt</i>, you can specify your 
+favorite editor for email messages and just call the functions or macros while 
+you edit. This is how I requote my replies to others' email, wrap it to a sane 
+width, and so on. In <i>emacs</i>, <tt>ESC q</tt> is mapped to the function <tt>
+fill-paragraph</tt>, so if I need a paragraph wrapped to a certain width 
+(determined by <tt>default-fill-column</tt>), I just position the cursor inside 
+the paragraph and call the function. If the <tt>fill-prefix</tt> variable is 
+properly set (say, to <tt>&gt;)</tt> it even knows how to wrap several levels of 
+nested quoting in email. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-22">5.22 Running a Single Command with xterm -e</h3>
+<p class="docText">The <i>-e</i> option to <i>xterm</i> is useful for running a 
+single command before exiting. For example, if you just want to run a 
+character-based mail program, type the following: </p>
+<pre>% <b>xterm -e mail</b></pre>
+<p class="docText">When you quit the <i>mail</i> program, the <i>xterm</i> 
+window exits. </p>
+<p class="docText">The <i>-e</i> option needs to be the last <i>xterm</i> option 
+on the command line. The remainder of the command line is assumed to be part of 
+the command to be executed by <i>xterm</i>. The new window has the command name 
+in its titlebar by default (unless <span class="docEmphBold">overridden by other 
+command-line options</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-15">Section 
+5.15</a>)). </p>
+<p class="docText">One use for <span class="docEmphasis">xterm -e</span> is for 
+running a window with a login session to a remote system, like this: </p>
+<pre>% <b>xterm -e ssh </b> <i>hostname </i><b> &amp; </b></pre>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: ssh-agent</p>
+<p class="docText">The <i>xterm</i> process runs on the local system, but 
+immediately logs you into the remote machine. You are prompted for a password in 
+the new <i>xterm</i> that pops up — before you can log in to the remote system. 
+This isn't as convenient as putting that command in your X setup file (like <i>.xinitrc</i> 
+or <i>.xsession</i>) — but it's far more secure because you don't need to put 
+your hostname in your <span class="docEmphBold">.rhosts</span>
+<span class="docEmphBold">or</span> <span class="docEmphBold">.shosts</span>
+<span class="docEmphBold">file</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), which is a potential security hole. (Or, if you use <i>ssh</i> for 
+your remote login — and you start <i>ssh-agent</i> before you start X — you 
+won't need to type passwords at all during your X session. This is the handiest 
+setup by far.) </p>
+<p class="docText">You can use <i>-e</i> to create a makeshift X display for any 
+character-based programs you like to run. For example, you might want to keep 
+track of messages sent to the console, but you can't run
+<span class="docEmphasis">xterm -C</span> to get console messages because you 
+aren't actually logged in on the console. You might run something like this: </p>
+<p class="docText"><tt>tail</tt> <tt>-f</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-10">
+Section 12.10</a> </p>
+<pre>% <b>xterm -e tail -f /var/log/messages &amp;</b></pre>
+<p class="docText">
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-21">
+Section 24.21</a> has more about how this works.</p>
+<p class="docText"><span class="docEmphasis">—LM, JP, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-5-SECT-23">5.23 Don't Quote Arguments to xterm -e</h3>
+<p class="docText">Being a belt-and-suspenders kind of guy, I've gotten in the 
+habit of quoting arguments to commands. This makes good sense with lots of Unix 
+shell commands, but it can get you in trouble with <span class="docEmphasis">
+xterm -e</span>. For example, I wanted to set up a job that would open <i>vi</i> 
+in a window to edit a file named <i>.postit</i>. At first, I used the command:
+</p>
+<pre><b>xterm ... -e 'vi .postit' &amp;</b></pre>
+<p class="docText">only to receive the perplexing message in the resulting 
+window:</p>
+<pre>Can't execvp vi .postit</pre>
+<p class="docText">The quotes passed the entire string to <i>xterm</i> as an 
+argument, which parsed it as a single command name, rather than a command plus 
+argument. Removing the quotes solved the problem. </p>
+<p class="docText"><span class="docEmphasis">—TOR and SJC</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN5-1"><a class="docLink" href="#ENB5-1">[1]</a>&nbsp;&nbsp;When we refer to <span class="docEmphasis">terminals</span> throughout this and 
+other chapters, understand that we mean, more often than not, the set of 
+standard terminal-emulation control codes implemented by terminal emulators, 
+such as <span class="docEmphasis">vt100</span> or <span class="docEmphasis">ANSI 
+color</span>. So, though we may refer to a vt100 terminal, we&#39;re more likely 
+referring to any terminal-emulator software that can understand and react to 
+that set of control codes.</p><p class="docFootnote" id="EN5-2"><a class="docLink" href="#ENB5-2">[2]</a>&nbsp;&nbsp;<i>getty</i> is spawned by 
+    the <i>init</i> at multiuser system startup, and it sets up all ttys, 
+    handles the initial login prompt, and then hands successful logins over to
+    <i>login</i> to complete.</p><p class="docFootnote" id="EN5-3"><a class="docLink" href="#ENB5-3">[3]</a>&nbsp;&nbsp;Sure, you don't have to 
+  worry about whether there is a local TYMNET dialup nowadays, but back in the 
+  day . . . </p><p class="docFootnote" id="EN5-4"><a class="docLink" href="#ENB5-4">[4]</a>&nbsp;&nbsp;Note that there is no user 
+    named <span class="docEmphasis">stucklogin</span>; you're expected to supply 
+    the actual login username as an argument to <i>su</i>.</p><p class="docFootnote" id="EN5-5"><a class="docLink" href="#ENB5-5">[5]</a>&nbsp;&nbsp;. . . for some values of &quot;modern&quot;, anyway . . . — <span class="docEmphasis">SJC</span></p><p class="docFootnote" id="EN5-6"><a class="docLink" href="#ENB5-6">[6]</a>&nbsp;&nbsp;When we refer, throughout 
+  the rest of the chapter, to <i>xterm</i>, we're often referring to <i>xterm</i> 
+  proper, as well as <i>rxvt</i> and other related terminal programs.</p><p class="docFootnote" id="EN5-7"><a class="docLink" href="#ENB5-7">[7]</a>&nbsp;&nbsp;Since there can be only one CLIPBOARD selection at a time, you can only run one
+<i>xclipboard</i> per display.</p><p class="docFootnote" id="EN5-8"><a class="docLink" href="#ENB5-8">[8]</a>&nbsp;&nbsp;If you're using a terminal 
+  emulator other than <i>xterm</i>, the program should also allow this sort of 
+  customization. See the client manpage for the actions (the equivalents of <tt>
+  select-end</tt> and <tt>insert-selection</tt>) to include in the translation 
+  table.</p><p class="docFootnote" id="EN5-9"><a class="docLink" href="#ENB5-9">[9]</a>&nbsp;&nbsp;By this time, the observant 
+  reader will have concluded that <i>xclipboard</i> is a nuisance at best.</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 4.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 6.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

@@ -1,0 +1,795 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 23</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 22.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 24.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 23. Job Control</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-1">23.1 Job Control in a Nutshell</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-2">23.2 Job Control Basics</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-3">23.3 Using jobs Effectively</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-4">23.4 Some Gotchas with Job Control</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-5">23.5 The &quot;Current Job&quot; Isn't Always What You Expect</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-6">23.6 Job Control and autowrite: Real Timesavers!</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-7">23.7 System Overloaded? Try Stopping Some Jobs</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-8">23.8 Notification When Jobs Change State</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-9">23.9 Stop Background Output with stty tostop</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-10">23.10 nohup</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-11">23.11 Disowning Processes</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-12">23.12 Linux Virtual Consoles</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-23-SECT-13">23.13 Stopping Remote Login Sessions</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-1">23.1 Job Control in a Nutshell</h3>
+<p class="docText">As has been said many times in this book, Unix is a 
+mutliprocessing system. Unlike some historic systems such as MS-DOS, all flavors 
+of Unix run more than one process at a time. In fact, when Unix boots, the first 
+program executed is called <i>init</i> , which is the parent of all future 
+processes. <i>init</i> immediately creates a new process in which other programs 
+can run, such as <i>getty</i> and the various <i>rc</i> setup scripts. At some 
+point when a user logs into the system, the <i>getty</i> program creates a new 
+shell for that session. Even when the system is in single-user mode, Unix is 
+still capable of running multiple processes. Multiprocessing is prevasive in 
+Unix. </p>
+<p class="docText">But multiprocessing isn't just for system daemons. It's also 
+there to make your interactive shell session just a little bit more productive. 
+Often, you will need to execute a program that takes a long time to run. For 
+instance, you might be downloading a file with FTP or Lynx. It is possible to 
+have that task put into the background so that you may execute new commands 
+while the previous ones are running to completion. Just as you may have several 
+piles of work on your desk, you often need to set aside one stack to work on 
+another. A process is said to be in the foreground when it is receiving your 
+keyboard input and is writing to your screen. Using the desk analogy, the 
+foreground process is that pile of work currently in front of you. Only one 
+process can be in the foreground at a time. Putting a process in the background 
+is like putting the current stack of work in front of you on the floor. And if 
+your desk is anything like mine, you can soon find your desk surrounded by piles 
+of work. Unlike the real world, Unix is able to continue working on completing 
+processes in the background. The management and manipulation of foreground and 
+background processes is called <span class="docEmphasis">job control</span>. By 
+understanding job control, you can begin to take better advantage of your Unix 
+system. </p>
+<p class="docText">One cautionary note on job control: there's no such thing as 
+a free lunch. In other words, while Unix blithely lets you put all the processes 
+you want into the background, they all share the same CPU, RAM, and hard drive 
+resources. If one process dominates one of these resources, the other processes 
+won't get done any faster than they would have had you run them one after the 
+other to completion. So if you've got a process that's CPU-intensive (such as a 
+photomosiac program), there's little point in trying to run more processes on 
+that machine. </p>
+<p class="docText">From the days of mainframes, when programs were submitted on 
+stacks of cards, comes the term &quot;job control.&quot; This chapter is going to go into 
+some depth about using your shell's job control features. For those already 
+familar with the concept, here is the thirty-second version of &quot;Job Control in a 
+Nutshell.&quot; </p>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 class="docSidebarTitle">Summary Box</h2>
+      <p class="docText">Unless otherwise noted, these commands apply only to 
+      the C shell, Korn shell, and <i>bash</i>: </p>
+      <dl class="docList">
+        <dt><span class="docPubcolor"><span class="docEmphBold">command &amp;</span> 
+        (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+        23.3</a>)</span> </dt>
+        <dd>
+        <p class="docList">Run <tt><i>command</i></tt> in the background. You 
+        can continue to execute jobs in the foreground. This is the most common 
+        way to put processes in the background. </dd>
+        <dt><span class="docPubcolor"><span class="docEmphBold">CTRL-c</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-11">Section 
+        24.11</a>)</span> </dt>
+        <dd>
+        <p class="docList">Kill the current foreground job by sending the
+        <span class="docEmphBold">INTR signal</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-10">Section 
+        24.10</a>). </dd>
+        <dt><span class="docPubcolor"><span class="docEmphBold">CTRL-z</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+        23.3</a>,
+        <a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-6">
+        Section 23.6</a>)</span> </dt>
+        <dd>
+        <p class="docList">Suspend the current foreground job by sending the
+        <span class="docEmphBold">TSTP signal</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-10">Section 
+        24.10</a>). </dd>
+        <dt><span class="docPubcolor"><i>suspend</i></span> </dt>
+        <dd>
+        <p class="docList">Suspend a shell with the <i>suspend</i> command.</dd>
+        <dt><span class="docPubcolor"><i>stop</i></span> </dt>
+        <dd>
+        <p class="docList">Suspend a background job with the <i>stop</i> command 
+        or an <span class="docEmphBold">alias that does the same thing</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-7">Section 
+        23.7</a>). </dd>
+        <dt><span class="docPubcolor"><span class="docEmphBold">bg %num</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+        23.3</a>)</span> </dt>
+        <dd>
+        <p class="docList">Let a stopped job (by job number <tt><i>num</i></tt>) 
+        continue in the background. </dd>
+        <dt><span class="docPubcolor"><span class="docEmphBold">fg %num</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+        23.3</a>)</span> </dt>
+        <dd>
+        <p class="docList">Put a background job or a stopped job (by job number
+        <tt><i>num</i></tt>) into the foreground. </dd>
+        <dt><span class="docPubcolor"><span class="docEmphBold">kill %num</span> 
+        (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+        23.3</a>)</span> </dt>
+        <dd>
+        <p class="docList">Kill an arbitrary background job (by job number <tt>
+        <i>num</i></tt>). </dd>
+        <dt><span class="docPubcolor"><span class="docEmphBold">kill pid</span> 
+        (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+        24.12</a>)</span> </dt>
+        <dd>
+        <p class="docList">Kill an arbitrary job (by process ID number <tt><i>
+        num</i></tt>). </dd>
+        <dt><span class="docPubcolor"><span class="docEmphBold">jobs</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+        23.3</a>)</span> </dt>
+        <dd>
+        <p class="docList">List background and stopped jobs and their job 
+        numbers.</dd>
+        <dt><span class="docPubcolor"><span class="docEmphBold">set notify</span> 
+        (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-8">Section 
+        23.8</a>)</span> </dt>
+        <dd>
+        <p class="docList">Immediate job-state change notices.</dd>
+        <dt><span class="docPubcolor"><span class="docEmphBold">stty tostop</span> 
+        (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-9">Section 
+        23.9</a>)</span> </dt>
+        <dd>
+        <p class="docList">Automatically stop background processes if they try 
+        writing to the screen. </dd>
+      </dl>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<p class="docText">Some systems, like Linux, extend the <i>kill</i> to kill 
+processes by name. See
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-15">
+Section 24.15</a>, which introduces <i>killall</i>. </p>
+<p class="docText"><span class="docEmphasis">—ML and JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-2">23.2 Job Control Basics</h3>
+<p class="docText">If you're coming from a Windows or MacOS desktop, Unix job 
+control may seem a little strange at first, but both of those operating systems 
+support a form of job control too. The Windows' taskbar shows the foreground 
+application as a depressed icon. In the classic Mac interface, the current 
+application's icon is present in the upper righthand corner. Such displays 
+aren't possible on the command line (although there are similar metaphores 
+available in modern X11 desktop environments like Gnome and KDE). This article 
+tries to give you some background into, er, background processes. </p>
+<h4  id="upt3-CHP-23-SECT-2.1" class="docSection2Title">23.2.1 How Job Control Works</h4>
+<p class="docText">To get a better feel for how to use job control, a brief look 
+at how Unix handles processes can be helpful. As was mentioned in the opening 
+section, Unix systems normally are running many processes at once. A process is 
+defined as a program that is executing in memory, as opposed to an executable 
+file (i.e., the program) that is sitting on the filesystem. When you log into a 
+Unix system, you are running some shell program (e.g., <i>tcsh</i> or <i>bash</i>). 
+When you ask the shell to run another program, such as <i>vi</i>, a new process 
+starts and takes over the terminal from the shell. That new process is in the 
+foreground by default. When you type commands, it is <i>vi</i> that responds, 
+not the shell. When you exit <i>vi</i>, that process ends and parent process, 
+the shell, returns. When you run <i>vi</i>, the shell itself goes into the 
+background. You've been using background processes all along. </p>
+<p class="docText">You may have noticed that I slipped in a new concept about 
+processes in the last paragraph. Process are related to each other in 
+hierarchical way by the kernel. When you execute a command from the shell, that 
+new command is a child process of the shell. When a process terminates, the 
+parent process is notified and is given an opportunity to take some action. What 
+happens when you log out? All your shell's child processes are terminated along 
+with the shell process itself, and your system's <i>getty</i> daemon waits for a 
+new user to log in. What happens when <i>getty</i> dies? The ultimate ancestor 
+for all system processes on a Unix system is <i>init</i>. When <i>init</i> dies, 
+the system is halted. </p>
+<h4  id="upt3-CHP-23-SECT-2.2" class="docSection2Title">23.2.2 Using Job Control from Your Shell</h4>
+<p class="docText">Remember that the shell sits there listening to what you type 
+and calling other programs to do jobs that it doesn't have built-in commands to 
+do. </p>
+<p class="docText">Normally, when the shell calls another program, it waits for 
+the other program to finish. The ampersand (<tt>&amp;</tt>) at the end of a command 
+line tells the shell not to wait. </p>
+<p class="docText">Basically all shells allow background processing. On systems 
+that have <span class="docEmphBold">job control</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+23.3</a>), however, most shells will give you a lot of extra capabilities for 
+manipulating background processes. </p>
+<p class="docText">Here's the tip of the iceberg:</p>
+<ul>
+  <li>
+  <p class="docList">If you forget to put a job into the background, you can 
+  stop it on the fly with a <span class="docEmphBold">suspend signal</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-1">Section 
+  24.1</a>) by typing CTRL-z. Then use the <i>bg</i> command to put it into the 
+  background and restart it: </p>
+  <pre>% <b>find /usr -name tim -print &gt; mine</b>
+CTRL-z
+Stopped
+% <b>bg</b>
+[1]    find /usr -name tim -print &gt; mine &amp;</pre>
+  </li>
+  <li>
+  <p class="docList">You can bring <span class="docEmphBold">the current 
+  background job</span> (
+  <a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-5">
+  Section 23.5</a>) into the foreground with the <i>fg</i> command. This is 
+  handy when Unix stops the background job that needs input from your keyboard 
+  (you can't type to jobs running in the background). </li>
+  <li>
+  <p class="docList">If you have a lot of background processes running, you can 
+  use the <i>jobs</i> command to list them all, then bring a selected job into 
+  the foreground by job number. You can also kill jobs by job number rather than 
+  by process ID. [Recall that job numbers are per-session numbers that the shell 
+  generates, whereas process IDs are generated by the operating system and are 
+  visible to all other processes. <span class="docEmphasis">— JJ</span>] </li>
+</ul>
+<p class="docText"><span class="docEmphasis">—TOR and JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-3">23.3 Using jobs Effectively</h3>
+<p class="docText">So far, you've seen how to get processes into and out of the 
+background. That's a pretty good start, but what happens when you put more than 
+one process in the background? How do you remember what's in the background at 
+all? Fortunately the <i>jobs</i> command, built into Bourne and C shell 
+derviates, lists all your current session's background jobs. Let's see this in 
+action. In the example below, I started several web browsers: </p>
+<pre>[jjohn@marian jjohn]$ jobs
+[1]   Running                 netscape &amp;
+[2]-  Stopped                 lynx
+[3]+  Stopped                 lynx http://aliensaliensaliens.com</pre>
+<p class="docText">Every background process is assigned a job number by your 
+shell. This number is unique only for your current session. It isn't globally 
+unique like a process ID. In fact, one job number is assigned to processes that 
+are pipelined together. For example, the following line gets only one job 
+number. </p>
+<pre>$ uniq bigfile.dat | sort | wc -l &amp;</pre>
+<p class="docText">In the <i>jobs</i> example above, the first process was 
+started with an ampersand, so it was immediately backgrounded. Job 2 started as 
+a typical interactive session, but I stopped it with CTRL-z. A stopped process 
+is not the same as a terminated process — it simply doesn't receive any CPU 
+time. It's like a caveman frozen in ice, waiting to be thawed out and come back 
+to life. If you find that a job is becoming a resource hog, consider using 
+CTRL-z to suspend the process until you figure out why it's being so gluttonous. 
+The next job listed is a new instance of <i>lynx</i>, which is also put into the 
+background so that the <i>jobs</i> command could be run for this listing. The 
+plus sign next to the job number indicates that that job will be in the 
+foreground when <i>fg</i> is typed. That job is known as the
+<span class="docEmphasis">current job</span>. The minus sign indicates the
+<span class="docEmphasis">previous job</span>, the job that used to be the 
+current job. </p>
+<p class="docText">Job numbers can be supplied to <i>fg</i>. In the given 
+example, the first version of <i>lynx</i> can be revived using <i>fg %2</i>. You 
+can also kill jobs with the job number. Why have two versions of <i>lynx</i> 
+running? The first one can be terminated with <i>kill %2</i>. You can also 
+supply signal numbers, as you normally would to <i>kill</i>. By default <i>kill</i> 
+sends the TERM (15 on Linux) signal, which will stop most processes. </p>
+<p class="docText">When a backgrounded job is terminated or completes, you will 
+be notified before the next command prompt is printed. For example: </p>
+<pre>[jjohn@marian jjohn]$ kill -9 %3
+[jjohn@marian jjohn]$
+[3]+  Killed                  xcalc
+[jjohn@marian jjohn]$</pre>
+<p class="docText">Just as before, the job number is printed with a plus sign, 
+indicating that it was the current job. Because this process exited abnormally 
+(it was sent a KILL signal), the reason is printed next, along with the line 
+that was executed. For a process that runs to completion, the output looks 
+slightly different: </p>
+<pre>[jjohn@marian jjohn]$ ls | uniq | sort | wc -l &amp;
+     99
+[2] 10501
+[2]+  Done                    ls --color=tty | uniq | sort | wc -l
+[jjohn@marian jjohn]$</pre>
+<p class="docText">Here, the command was put in the background immediately. The 
+shell then reported the job number and process ID. Because the command completed 
+very quickly, the shell reports that job 2 exited normally even before the next 
+command prompt could be printed. </p>
+<p class="docText">As useful as job numbers are, sometimes you don't want to 
+bother running <i>jobs</i>, searching for the desired command, finding its job 
+number, and then running <i>fg %num</i>. Luckily, the job control mechanism uses 
+a simple pattern-matching scheme so that you can supply only part of the command 
+or job you wish to foreground or kill. Instead of prefixing the job number with 
+simply <tt>%</tt>, use <tt>%?</tt>. The string you supply must be enough to 
+disambiguate it from all other jobs. Take this job listing, for example: </p>
+<pre>[1]   Running                 netscape &amp;
+[2]   Running                 xcalc &amp;
+[3]-  Stopped                 lynx
+[4]+  Stopped                 lynx http://aliensaliensaliens.com</pre>
+<p class="docText">I can put the <i>xcalc</i> program in the foreground with <tt>
+fg %?xc</tt>, because <tt>xc</tt> doesn't appear in the other jobs. But I can't 
+refer to either of the <i>lynx</i> processes with any substring of &quot;lynx.&quot; If I 
+do, I get something like the following. </p>
+<pre>[jjohn@marian jjohn]$ fg %?ly
+bash: fg: ambigious job spec: ly</pre>
+<p class="docText">Instead, I could refer to the second version with <tt>fg 
+%?aliens</tt>. In order to get at the first <i>lynx</i> job, its job number must 
+be used explicitly. </p>
+<p class="docText">You may find that your shell attempts to interpret <tt>%?</tt> 
+as a filename wildcard. This is increasingly rare, but you may need to escape 
+the <tt>?</tt>, so that you can foreground a process. That can be done like 
+this: <tt>fg %\?<i>string</i></tt>. </p>
+<p class="docText">One final shortcut to job control: you can put jobs in the 
+foreground simply by referring to the job number. For instance, typing <tt>%2</tt> 
+alone at the command prompt will put job number 2 in the foreground. You can 
+even put jobs into the background with this notation: <tt>%2 &amp;</tt>. This seems 
+a little terse, even for Unix, but it will save you some typing. </p>
+<p class="docText"><span class="docEmphasis">— JJ</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-4">23.4 Some Gotchas with Job Control</h3>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">If you're using Bourne-type shells, you have to watch out 
+  for putting a series of commands separated by <span class="docEmphBold">
+  semicolons</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-16">Section 
+  28.16</a>) into the background. These shells put only the last command on the 
+  line into the background, but wait for the first. </p>
+  <p class="docList">An easy way to test this is with the following command 
+  line, which waits for 15 seconds, then does an <i>ls</i>: </p>
+  <pre>$ <b>sleep 15; ls &amp;</b></pre>
+  <p class="docList">In Bourne-like shells, you won't get your prompt back until 
+  the <span class="docEmphBold">sleep</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-9">Section 
+  25.9</a>) command has finished. </p>
+  <p class="docList">With Bourne-type shells, the proper way to put a series of 
+  commands into the background is to group them with parentheses: </p>
+  <p class="docList"><tt>( )</tt>
+  <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">
+  Section 43.7</a></p>
+  <pre>$ <b>(sleep 15; ls)&amp;</b></pre>
+  <p class="docList">This may strike you as a defect, but in fact, it's a sign 
+  of the greater precision of Bourne shell syntax, which makes it somewhat 
+  exasperating for interactive use but much better for programming. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">It doesn't make any sense to run an interactive program 
+  such as an editor in the background. For example, if you type this from the C 
+  shell: </p>
+  <pre>% <b>vi &amp;</b>
+[1] 3071</pre>
+  <p class="docList">you'll get a message like the following:</p>
+  <pre>[1]  + Stopped (tty output) vi</pre>
+  <p class="docList"><i>vi</i> can be active only in the foreground. However, it 
+  does make sense to have <span class="docEmphBold">vi</span>
+  <span class="docEmphBold">stopped</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-1">Section 
+  23.1</a>) in the background. </p>
+  <p class="docList">If you are running <i>vi</i> or any other interactive 
+  program, you can quickly get back to the shell by typing CTRL-z to stop the 
+  program. The shell will take control of your terminal and print another shell 
+  prompt. </p>
+  <p class="docList"><span class="docEmphBold">Stopping vi</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-6">Section 
+  23.6</a>) is more efficient than using its <span class="docEmphBold">shell 
+  escape mechanism</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-21">Section 
+  17.21</a>), since it lets you go back to your original shell rather than 
+  starting a new one. Simply type <tt>fg</tt> to get back to where you were in 
+  editing. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">We have had the misfortune to share a system with new users 
+  who were overenthusiastic in their use of background processes, rather like 
+  the man who loved loving so much he sought many lovers. Because each 
+  background process is competing for the same resources, running many of them 
+  can be a drain on the system, and everything takes longer for everyone. We 
+  knew people who thought that if they ran three <i>troff</i> processes at once, 
+  they'd get their three files formatted faster than if they did them one after 
+  another. Boy, were they mistaken.<span id="ENB23-1"><a class="docLink" href="#EN23-1"><sup>[1]</sup></a></span>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">If you use the Bourne shell, any background processes you 
+  have running will normally be terminated when you log out. To avoid this, use 
+  the <span class="docEmphBold">nohup</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-10">Section 
+  23.10</a>) command. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Not all processes are created equal. Unix maintains a queue 
+  of processes ordered by priority. Foreground processes, such as a user typing 
+  a command at a prompt, often receive higher priority than background 
+  processes. However, you may want to run background processes at an even lower 
+  priority, by using <span class="docEmphBold">nice</span> (
+  <a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-5">
+  Section 26.5</a>). This is a relatively painless way of being kind to other 
+  users — and making your foreground job run faster — though it will make your 
+  background tasks take a little longer. </span></li>
+</ol>
+</span>
+<p class="docText"><span class="docEmphasis">—TOR and DD</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-5">23.5 The &quot;Current Job&quot; Isn't Always What You Expect</h3>
+<p class="docText"><tt>%</tt> is the current stopped or background job, but not 
+always the last one. If you've stopped any jobs, the current job is the most 
+recently stopped job. Otherwise, it's the most recent background job. For 
+example, try stopping your editor (like <i>vi</i>), then putting another job in 
+the background: </p>
+<pre>% <b>vi afile</b>
+CTRL-z
+Stopped
+% <b>sleep 1000 &amp;</b>
+[2] 12345
+% <b>fg</b></pre>
+<p class="docText">and notice that the <tt>fg</tt> brings your editor to the 
+foreground. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-6">23.6 Job Control and autowrite: Real Timesavers!</h3>
+<p class="docText">I see too many people using a series of commands like the 
+ones that follow. Programmers do this when they write and compile programs. 
+Writers use this when they're making a draft file and running it through the 
+formatter. They're probably wasting a lot of time and effort: </p>
+<pre>% <b>vi somefile </b>
+   <i> ...Edit somefile, then quit vi...</i>
+% <b>someprog somefile </b>
+   <i> ...Process somefile...</i>
+% <b>vi somefile </b>
+   <i> ...Edit somefile again...</i>
+% <b>someprog somefile </b>
+   <i> ...Process somefile again...</i></pre>
+<p class="docText">Each time they restart <i>vi</i>, they have to reset options 
+and move the cursor to the place they were working before. After they restart,
+<i>vi</i> has forgotten the previous search (the <span class="docEmphasis">n</span> 
+command), the previous action (the . command), the previous regular expression, 
+the named and numbered buffers... </p>
+<p class="docText">In the same way, why quit any other program (that isn't an 
+editor) if you aren't done with it? The programs lose their state. For instance, 
+quitting a <span class="docEmphBold">man</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+2.1</a>) or <span class="docEmphBold">info</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-9">Section 
+2.9</a>) command when you're in the middle of a document means that when you 
+start it again, it'll be at the start. It will have forgotten the last term you 
+searched for. </p>
+<p class="docText">If your system has <span class="docEmphBold">job control</span> 
+(<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-1">Section 
+23.1</a>), that solves all these problems. (If it doesn't, you can still use a
+<span class="docEmphBold">shell escape</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-21">Section 
+17.21</a>).) Instead of quitting <i>vi</i>, get into command mode and write your 
+buffer with the <tt>:w</tt> command. Stop the editor with the CTRL-z command. 
+Then process the file. When you're ready to do more editing, bring your <i>vi</i> 
+job back into the foreground with <i>fg</i>. The editor will be just where it 
+was. </p>
+<p class="docText">Even better, you can set <i>vi</i>'s
+<span class="docEmphasis">autowrite</span> option. If you've made any changes to 
+the buffer before you press CTRL-z, <i>vi</i> will automatically write the 
+buffer. You won't need to remember to type <tt>:w</tt> before you stop the 
+editor. You can set <span class="docEmphasis">autowrite</span> at a colon (:) 
+prompt, but I set it in my <span class="docEmphBold">.exrc file</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-5">Section 
+17.5</a>) instead. </p>
+<p class="docText">You don't absolutely have to write your file before 
+suspending <i>vi</i>. It's a good piece of advice, but not required by the job 
+control mechanism. Typing CTRL-z will suspend the editor whether you've written 
+out your files or not. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-7">23.7 System Overloaded? Try Stopping Some Jobs</h3>
+<p class="docText">If your computer is barely crawling, you can
+<span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+24.12</a>) some processes, but you'll have to start them again later. On many 
+Unix systems, you can <span class="docEmphBold">renice</span> (
+<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-7">
+Section 26.7</a>) the processes, but you won't be able to raise the priority 
+again later, after the system speeds up, unless you're the
+<span class="docEmphBold">superuser</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-18">Section 
+1.18</a>). </p>
+<p class="docText">If you don't need your results right away (and you won't get 
+them, anyway, if the system is crawling!), try stopping some jobs. The best 
+candidates are &quot;CPU-eaters&quot; like formatters, compilers, and any job that runs up 
+a lot of time quickly in the <span class="docEmphBold">ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>) or <span class="docEmphBold">time</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-2">Section 
+26.2</a>) reports. Start them again later, and the jobs will take up where they 
+left off. </p>
+<p class="docText">If the job is in the foreground, just press
+<span class="docEmphBold">CTRL-z</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+23.3</a>) to stop it. If the job is running in the background and you're running
+<i>csh</i> or <i>tcsh</i>, use the shell's <i>stop</i> command with a job 
+identifier — for example, <tt>stop %3</tt> or <tt>stop %cc</tt>. </p>
+<p class="docText">On other shells — even shells without job control (!) — you 
+can use <span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+24.12</a>) with the <i>-STOP</i> signal and either the job number or process ID 
+number. The <i>csh</i> and <i>tcsh</i> command <i>stop</i> does this for you. On 
+other shells, if you'd like, you can add an alias named <i>stop</i> to the shell
+<span class="docEmphBold">setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>). Later, when the system speeds up, put the job back into the background 
+with <i>bg</i> or into the foreground with <i>fg</i>. For example: </p>
+<pre>bash$ <b>alias stop='kill -STOP' </b>
+bash$ <b>jobs </b>
+[1]+  Running                 g++ hugeprog.cc &amp;
+bash$ <b>stop %1 </b>
+[1]+  Stopped (signal)        g++ hugeprog.cc
+    <i> ...later...</i>
+bash$ <b>bg %1 </b>
+[1]+ g++ hugeprog.cc &amp;</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-8">23.8 Notification When Jobs Change State</h3>
+<p class="docText">Normally, the shell tells you about changes to your 
+background jobs whenever it prints its prompt. That is, when you do something 
+that makes the shell give you a prompt, you'll get a message like: </p>
+<pre>[1]  + Stopped (tty input)   rm -r
+%</pre>
+<p class="docText">This message tells you that the <span class="docEmphasis">rm 
+-r</span> command, which you're running in the background, needs input; it has 
+probably asked you whether or not to delete a read-only file, or something 
+similar. </p>
+<p class="docText">This default behavior is usually what you want. By waiting 
+until it prints a prompt, the shell minimizes &quot;damage&quot; to your screen. If you 
+want to be notified immediately when a job changes state, you should set the 
+variable <span class="docEmphasis">notify</span>: </p>
+<pre>% <b>set notify </b>      <i> ...csh, tcsh</i>
+$ <b>set -o notify </b>   <i> ...bash, ksh</i>
+$ <b>setopt notify </b>   <i> ...zsh</i></pre>
+<p class="docText">The drawback, of course, is that you may be analyzing a 
+screenful of output that you've laboriously constructed, only to have that 
+screen &quot;destroyed&quot; by a lot of messages from the shell. Therefore, most users 
+prefer to leave <span class="docEmphasis">notify</span> off (<tt>unset</tt>). To 
+stop all background output, use <span class="docEmphBold">stty tostop</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-9">Section 
+23.9</a>). </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-9">23.9 Stop Background Output with stty tostop</h3>
+<p class="docText">If you put a job in the background and don't
+<span class="docEmphBold">redirect</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+43.1</a>) its output, text that the job writes to its standard output and 
+standard error comes to your screen. Those messages can mess up the screen while 
+you're using another program. You could lose the (maybe important) messages, too 
+— they might scroll off your screen and be lost, or your foreground program may 
+clear the screen and erase them. </p>
+<p class="docText">Many Unix systems have the command <span class="docEmphasis">
+stty tostop</span>. Type that command at a prompt, or put it in your
+<span class="docEmphasis">.login</span> or <span class="docEmphasis">.profile</span> 
+file.<span id="ENB23-2"><a class="docLink" href="#EN23-2"><sup>[2]</sup></a></span> After 
+that, your shell's background jobs that try to write to your terminal will be 
+stopped. When you want to see the background job's output, bring it into the 
+foreground (with <i>fg</i>). </p>
+<p class="docText">How will you know that the background job has been stopped? 
+The shell will print a message like this just before it prints a prompt: </p>
+<pre>[1] + Stopped (tty output)    <tt><i>somejob</i></tt>
+%</pre>
+<p class="docText">The shell can also interrupt your foreground job with that 
+message as soon as the background job is stopped. To make it do that, set
+<span class="docEmphBold">notify</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-8">Section 
+23.8</a>). </p>
+<p class="docText">In C shell, you can turn off this feature and let background 
+jobs write to your terminal any time with the command: </p>
+<pre>% <b>stty -tostop</b></pre>
+<p class="docText">In <span class="docEmphasis">bash</span>, the command is 
+similar: </p>
+<pre>$ <b>stty tostop</b></pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-10">23.10 nohup</h3>
+<p class="docText">When Unix first started, even local terminals very often 
+communicated with the system via short-haul modems. (After all, Unix was 
+invented by the phone company.) When someone logged out, the modem hung up the 
+phone — and conversely, if the modem hung up, a &quot;hangup&quot; signal was sent to the 
+login shell, whereupon it terminated, bringing down all its
+<span class="docEmphBold">child processes</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>) with it. </p>
+<p class="docText">In the C shell, processes that you run in the background are 
+immune to hangups, but in the Bourne shell, a process that you started in the 
+background might be abruptly terminated. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: nohup</p>
+<p class="docText">The <i>nohup</i> command (&quot;<span class="docEmphasis">no h</span>ang<span class="docEmphasis">up</span>&quot;) 
+allows you to circumvent this. (The GNU version is on the web site.) Simply 
+type: </p>
+<pre>$ <b>nohup <tt><i>command</i></tt> &amp;</b></pre>
+<p class="docText">Any output from <tt><i>command</i></tt> that would normally 
+go to the terminal (i.e., has not been redirected) goes to a file named
+<span class="docEmphasis">nohup.out</span> in the current directory. </p>
+<p class="docText">Of course, if you want to run jobs at off hours, you might do 
+even better using <i>at</i>, <i>cron</i>, or <i>batch</i>. </p>
+<p class="docText"><i>nohup</i> is sometimes handy in shell scripts to make them 
+ignore the <span class="docEmphBold">HUP and TERM signals</span> (
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-10">
+Section 24.10</a>), though <span class="docEmphBold">trap</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">Section 
+35.17</a>) is more versatile. (In System V, <i>nohup</i> causes a command to 
+ignore HUP and QUIT, but not TERM.) </p>
+<p class="docText"><span class="docEmphasis">— TOR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-11">23.11 Disowning Processes</h3>
+<p class="docText">Job control isn't always a good thing. For instance, I might 
+want to start a long equipment-monitoring job running when I go home for the 
+night. But if I simply put the job in the background and try to log out, <i>zsh</i> 
+says <tt>zsh: you have running</tt> <tt>jobs</tt>. If I log out anyway, the 
+shell sends my background job a HUP signal. I could use
+<span class="docEmphBold">nohup</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-10">Section 
+23.10</a>) to block the hangup signal, but there's a simpler way: tell the 
+shell, &quot;Don't use job control on this job.&quot; This is also true of jobs that I 
+know are there — a clock running on my X Window System display, for instance — 
+and that I'll never want to use job control on, so the jobs are just cluttering 
+the <span class="docEmphBold">jobs</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-3">Section 
+23.3</a>) list. </p>
+<p class="docText">To run a job without job control, the trick in most shells is 
+to start the job in a <span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">Section 
+43.7</a>), and put the job inside that subshell into the background. This is 
+sometimes called &quot;disowning&quot; the job. Note that the ampersand (<tt>&amp;</tt>) is
+<span class="docEmphasis">inside</span> the parentheses: </p>
+<pre>% <b>(myprog -opts &amp;)</b></pre>
+<p class="docText">The job won't appear in the <i>jobs</i> list, but
+<span class="docEmphBold">ps</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>) should show it running. (You might need to use a &quot;show all jobs&quot; 
+option like <i>ps -x</i> or <i>ps -e</i>.) If you use <i>ps -l</i> for a &quot;long&quot; 
+listing, you'll see that the process' PPID (the process ID number of the
+<span class="docEmphBold">parent process</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>)) is 1; this means that the process is now &quot;owned&quot; by
+<span class="docEmphBold">init</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">Section 
+24.2</a>). On the other hand, if you'd started the job in the background 
+normally (without the subshell trick), you'd see that its PPID was that of the 
+shell you started it from. </p>
+<p class="docText">The Z shell has a more direct way: its <tt>&amp;!</tt> and <tt>&amp;|</tt> 
+background operators. Both of them do the same thing: if you use one of those 
+operators instead of plain <tt>&amp;</tt>, the job will be disowned immediately; it 
+won't appear in the <i>jobs</i> list. </p>
+<p class="docText">In most shells, once you start a job without the subshell 
+trick, the shell that started the job will continue to be its parent. (Some 
+shells, like the C shells, will give up ownership of a child process and let it 
+keep running when you end the shell — that is, when you log out — and then <i>
+init</i> will &quot;inherit&quot; the process.) In <i>zsh</i> and <i>bash</i> Version 2, 
+though, you can change your mind after you start a job by using the shell's 
+built-in <i>disown</i> command. Give <i>disown</i> the job number you want the 
+shell to &quot;forget.&quot; For instance, I'll start a background job and then disown it. 
+It disappears from the job table, but giving <i>ps</i> its process ID shows that 
+the job is still running: </p>
+<pre>zsh% <b>myprog -opts&amp;</b>
+[1] 28954
+zsh% <b>jobs</b>
+[1]  + running    myprog -opts
+zsh% <b>disown %1</b>
+zsh% <b>jobs</b>
+zsh% <b>ps 28954</b>
+  PID TTY      STAT   TIME COMMAND
+28954 pts/5    S      0:09 myprog -opts</pre>
+<p class="docText">If you don't give a job number, <i>disown</i> &quot;forgets&quot; the 
+current job. The <i>bash2</i> version of <i>disown</i> has options that <i>zsh</i> 
+doesn't: <i>disown</i> -<i>a</i> disowns all jobs, and <i>disown</i> -<i>r</i> 
+disowns only running jobs. The <i>bash2</i> option <i>-h</i> does a different 
+job: instead of removing a job from the job table, the job won't receive any HUP 
+signal sent to the shell. This is similar to what the <i>nohup</i> command does.
+</p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-12">23.12 Linux Virtual Consoles</h3>
+<p class="docText">Your Linux workstation display may look like just one 
+terminal. It's actually seven terminals — or even more — in one. Linux has 
+built-in <span class="docEmphasis">virtual consoles</span>, a series of
+<span class="docEmphBold">ttys</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+2.7</a>) that you can log into separately: each one can have a login session, 
+with its own shell, working at the same time as the others. You can see only one 
+of these consoles at once; you bring a console into view by pressing a hot-key 
+combination. For instance, I log into the first virtual console as
+<span class="docEmphasis">root</span> and the second as myself. </p>
+<h4  id="upt3-CHP-23-SECT-12.1" class="docSection2Title">23.12.1 What Are They?</h4>
+<p class="docText">If your Linux system comes up after a reboot with a mostly 
+blank screen something like this: </p>
+<pre>Red Hat Linux release 6.2 (Zoot)
+Kernel 2.2.14-5.0 on an i686
+
+penguin login:</pre>
+<p class="docText">you're seeing one of the virtual consoles — in this case, 
+it's the first one you've seen since the reboot, so it has to be console number 
+1. On the other hand, if your system boots to an X Window display with a 
+graphical <i>xdm</i> or <i>gdm</i> login box, you're using a different virtual 
+console, probably console number 7. All of this is configurable. But by default, 
+consoles 1 through 6 are <span class="docEmphasis">tty</span>s, with
+<span class="docEmphBold">getty</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">Section 
+24.2</a>) processes running, ready to manage individual login sessions. Virtual 
+console 7 is an X Window System display. </p>
+<p class="docText">To switch between the consoles — to bring a differnt console 
+&quot;to the front&quot; — use the hot-key combination CTRL-ALT-n, where
+<span class="docEmphasis">n</span> is the console number. (Actually, the only 
+time you need the CTRL key is when the X Window console is in front. When you've 
+got a nongraphical console in front, you can switch with just ALT-n. But if you 
+find the difference hard to remember, there's no problem with always using the 
+CTRL key.) </p>
+<p class="docText">Here's one of the reasons I like to start my window system by 
+typing a command (<i>startx</i>) at a shell prompt in a virtual console. The X 
+server, and client applications running under X, will spit error messages onto 
+the standard output (or standard error) at the console where I ran <i>startx</i>. 
+So it's easy for me to jump back to the console — by pressing CTRL-ALT-2 — to 
+see error messages. Then I can jump back to X with CTRL-ALT-7. (I actually 
+changed this setup, later, to log X errors to a file that I watch from a window, 
+but that's another story.) </p>
+<p class="docText">When you log out of one of the <span class="docEmphasis">tty</span>-type 
+consoles (by typing <i>exit</i> or <i>logout</i>), the <i>getty</i> process 
+there prints a new <tt>login</tt>: prompt. But not every one of these
+<span class="docEmphasis">tty</span>s needs a login session. For instance, while 
+the Red Hat Linux installation program is working, it uses the first four 
+virtual consoles as logs that show different information about the installation 
+process — and the fifth has a shell prompt where you can do work during the 
+installation. Another handy example is this tip from Chris Hilts, posted to
+<a class="docLink" href="http://www.oreilly.com" target="_blank">www.oreilly.com</a> 
+as a followup to a Linux feature in the summer of 2000. Add the following line 
+to your <i>/etc/syslog.conf</i> file: </p>
+<pre>*.* /dev/tty9</pre>
+<p class="docText">After the next reboot or restart of <i>syslog</i>, all of 
+your system's <i>syslog</i> messages will appear on virtual console number 9 — 
+where you can see them at any time by pressing CTRL-ALT-9. </p>
+<h4  id="upt3-CHP-23-SECT-12.2" class="docSection2Title">23.12.2 Scrolling, Using a Mouse</h4>
+<p class="docText">The <span class="docEmphasis">tty</span>-type virtual 
+consoles have some other nice features. One is a scrolling buffer that lets you 
+scroll back to see previous screens of text. Press SHIFT-PAGE UP to move to 
+previous screenfuls, and SHIFT-PAGE DOWN to move toward the most recent screen.
+</p>
+<p class="docText">The <span class="docEmphasis">tty</span>-type consoles also 
+support copy-and-paste with your mouse. To copy an area, point to the first 
+character and hold down the first mouse button; move to the end of the text 
+block and release the button. The selected text should be shown in reverse 
+video. To paste the copied text, click the third mouse button. You also can 
+paste from one console into another with the same steps. You can't paste from a
+<span class="docEmphasis">tty</span>-type console into the X Windows, or 
+vice-versa, though. To do that, use a temporary file. For example, highlight 
+(copy) an area of text, then use the command: </p>
+<p class="docText"><tt>cat &gt;</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-2">
+Section 12.2</a></p>
+<pre>% <b>cat &gt; /tmp/paste-me </b>
+   <i> ...paste the text...</i>
+CTRL-d</pre>
+<p class="docText">Then switch to the other console. Either read the file 
+directly into an application, or output the file onto the screen (<i>cat /tmp/paste-me</i>) 
+and copy from that redisplayed text. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-23-SECT-13">23.13 Stopping Remote Login Sessions</h3>
+<p class="docText">Once you start <i>telnet</i>, <i>rlogin</i>, <i>rsh</i>, and
+<i>ssh</i> for an interactive login, they basically &quot;take over&quot; your shell. Your 
+keystrokes are sent to the shell running on the remote system. So if you type 
+CTRL-z, it won't stop the <i>telnet</i> (or whatever) job: it'll stop the job 
+running on the remote system. </p>
+<p class="docText">It can be very handy to suspend a connection to a remote 
+system and resume it, sometime later, with <i>fg</i>. Most of the remote login 
+utilities let you do that. </p>
+<p class="docText">To stop a <i>telnet</i> session, start by pressing the escape 
+character. By default, this is CTRL-] (Control-right bracket). You should get a
+<i>telnet</i> command prompt. Type <span class="docEmphasis">z</span> to suspend 
+the job, Here's how that looks: </p>
+<pre>myhost$ <b>telnet remhost</b>
+Trying 198.59.115.17...
+Connected to remhost.
+Escape character is '^]'.
+
+SunOS 5.6
+
+login: <b>whoever</b>
+   ...
+remhost% CTRL]
+telnet&gt; <b>z</b>
+
+[1]+  Stopped                 telnet remhost
+
+myhost$</pre>
+<p class="docText">You can use other commands at the <i>telnet</i> command 
+prompt. For a list, see your manual page or type <span class="docEmphasis">help</span> 
+at the prompt. If you get to that prompt accidentally and don't want to stop the
+<i>telnet</i> session, simply press ENTER once. </p>
+<p class="docText">Other remote-login utilities don't have a command prompt. 
+Their control commands start with ENTER-tilde (<tt>~</tt>) and one more control 
+character. The command to stop the session is ENTER, then tilde, then CTRL-z. It 
+won't appear on your screen as you type it (if it does appear, it didn't work . 
+. . try again). For example: </p>
+<pre>myhost$ <b>ssh remhost</b>
+Last login: Fri Dec 22 09:08:31 2000 from myhost
+NetBSD 1.4.2A (GENERIC) #6: Wed May 31 06:12:46 EST 2000
+
+remhost%
+remhost% ~CTRL-z
+
+[1]+  Stopped                 ssh remhost
+
+myhost$</pre>
+<p class="docText">Notice the extra prompt: it shows me pressing ENTER first, 
+before typing the tilde. That isn't necessary if you pressed ENTER to complete 
+the previous command line — but I tend to do it all the time, &quot;just in case&quot; I 
+didn't type that ENTER. </p>
+<p class="docText">You can stop the remote session in the middle of an 
+interactive job, like using a text editor. But I'd recommend getting to a shell 
+prompt on the remote system first, if you can. (For example, stop the remote job 
+with CTRL-z so you'll get a shell prompt on the remote system.) Otherwise, if 
+you bring the remote session into the foreground while you're in the middle of a 
+full-screen editing job there, for example, the remote system won't know that 
+it's supposed to redraw the screen when you come back online. Worse, if you 
+forget where you were on the remote system, you might type a key that could do 
+something disastrous, like deleting lines of the file you're editing. Stopping 
+and starting from a known point — a shell prompt — is the best way I've found.
+</p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+
+<blockquote>
+<p class="docFootnote" id="EN23-1"><a class="docLink" href="#ENB23-1">[1]</a>&nbsp;&nbsp;<span style="font-weight: bold"><span style="font-weight: normal">In the old 
+days, Unix systems gave all processes to a single CPU. Modern Unix systems can 
+have multiple CPUs. On these systems, you may be able to do several jobs almost 
+as quickly as one.</span></span></p><p class="docFootnote" id="EN23-2"><a class="docLink" href="#ENB23-2">[2]</a>&nbsp;&nbsp;This command sets the Unix 
+  terminal device driver for all processes started on it.
+  <span class="docEmphBold">You don't need to set this for subshells</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+  3.3</a>).</p>
+</blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 22.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 24.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

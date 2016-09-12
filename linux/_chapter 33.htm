@@ -1,0 +1,757 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 33</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 32.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 34.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 33. Wildcards</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-33-SECT-1">33.1 File-Naming Wildcards</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-33-SECT-2">33.2 Filename Wildcards in a Nutshell</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-33-SECT-3">33.3 Who Handles Wildcards?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-33-SECT-4">33.4 What if a Wildcard Doesn't Match?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-33-SECT-5">33.5 Maybe You Shouldn't Use Wildcards in Pathnames</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-33-SECT-6">33.6 Getting a List of Matching Files with grep -l</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-33-SECT-7">33.7 Getting a List of Nonmatching Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-33-SECT-8">33.8 nom: List Files That Don't Match a Wildcard</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-33-SECT-1">33.1 File-Naming Wildcards</h3>
+<p class="docText"><span class="docEmphBold">Wildcards</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+1.13</a>) are the shell's way of abbreviating filenames. Just as in poker, where 
+a wildcard is a special card that can match any card in the deck, filename 
+wildcards are capable of matching letters or groups of letters in the alphabet. 
+Rather than typing a long filename or a long chain of filenames, a wildcard lets 
+you provide parts of names and then use some &quot;wildcard characters&quot; for the rest. 
+For example, if you want to delete all files whose names end in
+<span class="docEmphasis">.o</span>, you can give the following command: </p>
+<pre>% <b>rm *.o</b></pre>
+<p class="docText">You don't have to list every filename.</p>
+<p class="docText">I'm sure you already know that wildcards are useful in many 
+situations. If not, they are summarized in
+<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">
+Section 33.2</a>. Here are a few of my favorite wildcard applications: </p>
+<ul>
+  <li>
+  <p class="docList">If you remember part of a filename, but not the whole name, 
+  you can use wildcards to help you find it. If I have a file on genetics saved 
+  in a directory with several hundred other files, a command like: </p>
+  <pre>% <b>ls *gene*</b></pre>
+  <p class="docList">will often find what I want. It's quicker and easier than
+  <span class="docEmphBold">find</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-1">Section 
+  9.1</a>). </li>
+  <li>
+  <p class="docList">Wildcards are a natural when you want to work with groups 
+  of files. If I have a general purpose directory that's full of filenames 
+  ending in <span class="docEmphasis">.c</span> and <span class="docEmphasis">.h</span>, 
+  I can make new subdirectories and use wildcards to move the files easily: </p>
+  <pre>% <b>mkdir c h</b>
+% <b>mv *.c c</b>
+</pre>
+  </li>
+  <li>
+  <p class="docList">Wildcards often help you to work with files with 
+  inconvenient characters in their names. Let's say you have a file named <tt>
+  abc<i>x</i>e</tt>, where <tt><i>x</i></tt> is some unknown control character. 
+  You can delete or rename that file by using the wildcarded name <tt>abc?e</tt>. 
+  (When you do this, be careful that your wildcard doesn't match more than you 
+  intend, perhaps by running an <i>ls</i> using the pattern first.) </li>
+  <li>
+  <p class="docList">Wildcards can appear in any component of a pathname. This 
+  can often be used to your advantage. For example, let's say that you have a 
+  directory named <i>/work</i>, split into subdirectories for a dozen different 
+  projects. For each project, you have a schedule, in a file called (obviously 
+  enough) <i>schedule.txt</i>. You can print all the schedules with a command 
+  like: </p>
+  <pre>% <b>lpr /work/*/schedule.txt</b></pre>
+  </li>
+  <li>
+  <p class="docList">(However, you can occasionally <span class="docEmphBold">
+  run into problems</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-5">Section 
+  33.5</a>).) </li>
+</ul>
+<p class="docText">It's a common misconception, particularly among new users, 
+that application programs and utilities have something to do with wildcards. 
+Given a command like <tt>grep ident *.c</tt>, many users think that <i>grep</i> 
+handles the <tt>*</tt> and looks to see which files have names that end in
+<span class="docEmphasis">.c</span>. If you're at all familiar with Unix's 
+workings, you'll realize that this is the wrong picture. The shell interprets 
+wildcards. That is, the shell figures out which files have names ending in
+<span class="docEmphasis">.c</span>, puts them in a list, puts that list on the 
+command line, and then hands that command line to <i>grep</i>. As it processes 
+the command line, the shell turns <tt>grep ident *.c</tt> into <tt>grep ident 
+file1.c file2.c...</tt>. </p>
+<p class="docText">Since there are several shells, one might think (or fear!) 
+that there should be several different sets of wildcards. Fortunately, there 
+aren't. The basic wildcards work the same for all shells. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-33-SECT-2">33.2 Filename Wildcards in a Nutshell</h3>
+<p class="docText">This article summarizes the wildcards that are used for 
+filename expansion (see <a class="docLink" href="#upt3-CHP-33-TABLE-1">Table 
+33-1</a>). The shells use the same basic wildcards, though most shells have some 
+extensions. Unless otherwise noted, assume that wildcards are valid for all 
+shells. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-33-TABLE-1" class="docTableTitle">Table 33-1. Filename wildcards </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Wildcard</th>
+    <th class="docTableHeader">
+    <p class="docText">Shells</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>*</tt></td>
+    <td class="docTableCell">
+    <p class="docText">All</td>
+    <td class="docTableCell">
+    <p class="docText">Match zero or more characters. For example, <tt>a*</tt> 
+    matches the files <span class="docEmphasis">a</span>,
+    <span class="docEmphasis">ab</span>, <span class="docEmphasis">abc</span>,
+    <span class="docEmphasis">abc.d</span>, and so on. (<i>zsh</i> users: also 
+    see <tt>x#</tt> and <tt>x##</tt>, below.) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>?</tt></td>
+    <td class="docTableCell">
+    <p class="docText">All</td>
+    <td class="docTableCell">
+    <p class="docText">Match exactly one character. For example, <tt>a?</tt> 
+    matches <span class="docEmphasis">aa</span>, <span class="docEmphasis">ab</span>,
+    <span class="docEmphasis">ac</span>, etc. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[12..a..z]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">All</td>
+    <td class="docTableCell">
+    <p class="docText">Match any character listed in the brackets. For example,
+    <tt>a[ab]</tt> matches <span class="docEmphasis">aa</span> or
+    <span class="docEmphasis">ab</span>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[a-z]</tt></td>
+    <td class="docTableCell">
+    <p class="docText">All</td>
+    <td class="docTableCell">
+    <p class="docText">Match all characters between a and z, in a case-sensitive 
+    manner, based on the characters' value in the ASCII character set. For 
+    example, <tt>a[0-9]</tt> matches <span class="docEmphasis">a0</span>,
+    <span class="docEmphasis">a1</span>, and so on, up to
+    <span class="docEmphasis">a9</span>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[!ab..z]</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><i>bash</i>, <i>ksh</i>, <i>zsh</i>, newer <i>sh</i> </td>
+    <td class="docTableCell">
+    <p class="docText">Match any character that does <span class="docEmphasis">
+    not</span> appear within the brackets. For example, <tt>a[!0-9]</tt> doesn't 
+    match <span class="docEmphasis">a0</span> but does match
+    <span class="docEmphasis">aa</span>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>[^ab..z]</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><i>tcsh</i>, <i>zsh</i></td>
+    <td class="docTableCell">
+    <p class="docText">Match any character that does <span class="docEmphasis">
+    not</span> appear within the brackets. For example, <tt>a[^0-9]</tt> doesn't 
+    match <span class="docEmphasis">a0</span>, but does match
+    <span class="docEmphasis">aa</span>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>&lt;<i>m-n</i>&gt;</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><i>zsh</i></td>
+    <td class="docTableCell">
+    <p class="docText">Any number in the range <tt><i>m</i></tt> to <tt><i>n</i></tt>. 
+    If <tt><i>m</i></tt> is omitted, this matches numbers less than or equal to
+    <tt><i>n</i></tt>. If <tt><i>n</i></tt> is omitted, it matches numbers 
+    greater than or equal to <tt><i>m</i></tt>. The pattern <tt>&lt;-&gt;</tt> matches 
+    all numbers. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>{<i>word1</i></tt>,<tt><i>word2</i>...}</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><i>bash</i>, <i>csh</i>, <i>pdksh</i>, <i>zsh</i> </td>
+    <td class="docTableCell">
+    <p class="docText">Match <span class="docEmphasis">word1</span>,
+    <span class="docEmphasis">word2</span>, etc. For example, <tt>
+    a_{dog,cat,horse}</tt> matches the filenames <span class="docEmphasis">a_dog</span>,
+    <span class="docEmphasis">a_cat</span>, and <span class="docEmphasis">
+    a_horse</span>. <span class="docEmphBold">These</span>
+    <span class="docEmphBold">(</span><a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">Section 
+    28.4</a>) actually aren't filename-matching wildcards. They expand to
+    <span class="docEmphasis">all</span> strings you specify, including 
+    filenames that don't exist yet, email addresses, and more. (If you want to 
+    match one or more of a group of filenames that already exist, see also the 
+    parenthesis operators <tt>( )</tt> below.) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>?(<i>x</i>|<i>y</i>|<i>z</i>)</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><i>ksh</i>, <i>bash2</i></td>
+    <td class="docTableCell">
+    <p class="docText">Match zero or one instance of any of the specified 
+    patterns. For example, <tt>w?(abc)w</tt> matches <span class="docEmphasis">
+    ww</span> or <span class="docEmphasis">wabcw</span>. Also, <tt>?(foo|bar)</tt> 
+    matches only <span class="docEmphasis">foo</span>, <span class="docEmphasis">
+    bar</span>, and the empty string. In <i>bash2</i>, this works only if you've 
+    set the <span class="docEmphasis">extglob</span> option using <i>shopt</i>.
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>*(<i>x</i>|<i>y</i>|<i>z</i>)</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><i>ksh</i>, <i>bash2</i></td>
+    <td class="docTableCell">
+    <p class="docText">Match zero or more instances of any of the specified 
+    patterns. For example, <tt>w*(abc)w</tt> matches <span class="docEmphasis">
+    ww</span>, <span class="docEmphasis">wabcw</span>, <span class="docEmphasis">
+    wabcabcw</span>, etc. Also, <tt>*(foo|bar)</tt> matches
+    <span class="docEmphasis">foo</span>, <span class="docEmphasis">bar</span>,
+    <span class="docEmphasis">foobarfoo</span>, etc., as well as the empty 
+    string. In <i>bash2</i>, this works only if you've set the
+    <span class="docEmphasis">extglob</span> option using <i>shopt</i>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>+(<i>x</i>|<i>y</i>|<i>z</i>)</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><i>ksh</i>, <i>bash2</i></td>
+    <td class="docTableCell">
+    <p class="docText">Match one or more instances of any of the specified 
+    patterns. For example, <tt>w+(abc)w</tt> matches <span class="docEmphasis">
+    wabcw</span>, <span class="docEmphasis">wabcabcw</span>, etc. Also, <tt>+(foo|bar)</tt> 
+    matches <span class="docEmphasis">foo</span>, <span class="docEmphasis">bar</span>,
+    <span class="docEmphasis">foobarfoo</span>, etc. In <i>bash2</i>, this works 
+    only if you've set the <span class="docEmphasis">extglob</span> option using
+    <i>shopt</i>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>@(<i>x</i>|<i>y</i>|<i>z</i>)</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><i>ksh</i>, <i>bash2</i></td>
+    <td class="docTableCell">
+    <p class="docText">Match exactly one of any of the specified patterns. For 
+    example, <tt>@(foo|bar)</tt> matches <span class="docEmphasis">foo</span> or
+    <span class="docEmphasis">bar</span>. (See also <tt>{word1,word2...}</tt>.) 
+    In <i>bash2</i>, this works only if you've set the <span class="docEmphasis">
+    extglob</span> option using <i>shopt</i>. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>!(<i>x</i>|<i>y</i>|<i>z</i>)</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><i>ksh</i>, <i>bash2</i></td>
+    <td class="docTableCell">
+    <p class="docText">Match anything that doesn't contain any of the specified 
+    patterns. For example, <tt>w!(abc)w</tt> doesn't match
+    <span class="docEmphasis">wabcw</span> or <span class="docEmphasis">wabcabcw</span>, 
+    but it does match practically anything else that begins or ends with
+    <span class="docEmphasis">w</span>. Also, <tt>!(foo|bar)</tt> matches all 
+    strings except <span class="docEmphasis">foo</span> and
+    <span class="docEmphasis">bar</span>. In <i>bash2</i>, this works only if 
+    you've set the <span class="docEmphasis">extglob</span> option using <i>
+    shopt</i>. (For other shells, see <span class="docEmphBold">nom</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-8">Section 
+    33.8</a>).) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>^<i>pat</i></tt></td>
+    <td class="docTableCell">
+    <p class="docText"><i>tcsh</i>, <i>zsh</i></td>
+    <td class="docTableCell">
+    <p class="docText">Match any name that doesn't match <tt><i>pat</i></tt>. In
+    <i>zsh</i>, this only works if you've set the <span class="docEmphasis">
+    EXTENDED_GLOB</span> option. In <i>tcsh</i>, the <tt><i>pat</i></tt> must 
+    include at least one of the wildcards <tt>*</tt>, <tt>?</tt> and <tt>[ ]</tt>. 
+    So, to match all except a single name in <i>tcsh</i>, here's a trick: put 
+    brackets around one character. For instance, you can match all except
+    <span class="docEmphasis">abc</span> with <tt>^ab[c]</tt>. (For other 
+    shells, see <span class="docEmphBold">nom</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-8">Section 
+    33.8</a>).) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>(<i>x</i>|<i>y</i>)</tt> </td>
+    <td class="docTableCell">
+    <p class="docText"><i>zsh</i></td>
+    <td class="docTableCell">
+    <p class="docText">Match either <tt><i>x</i></tt> or <tt><i>y</i></tt>. The 
+    vertical bar (<tt>|</tt>) must be used inside parentheses. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>**</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><i>zsh</i></td>
+    <td class="docTableCell">
+    <p class="docText">Search recursively. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt>***</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><i>zsh</i></td>
+    <td class="docTableCell">
+    <p class="docText">Search recursively, following symbolic links to 
+    directories. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt><i>x</i>#</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><i>zsh</i></td>
+    <td class="docTableCell">
+    <p class="docText">Matches zero or more occurrences of the pattern <tt><i>x</i></tt> 
+    (like the <span class="docEmphBold">regular expresssion</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-2">Section 
+    32.2</a>) x*). The pattern can have parentheses <tt>( )</tt> around it. You 
+    must have set the <span class="docEmphasis">EXTENDED_GLOB</span> option.
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText"><tt><i>x</i>##</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><i>zsh</i></td>
+    <td class="docTableCell">
+    <p class="docText">Matches one or more occurrences of the pattern <tt><i>x</i></tt> 
+    (like the <span class="docEmphBold">regular expresssion</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-15">Section 
+    32.15</a>) x+). The pattern can have parentheses <tt>( )</tt> around it. You 
+    must have set the <span class="docEmphasis">EXTENDED_GLOB</span> option.
+    </td>
+  </tr>
+</table>
+<p class="docText">Note that wildcards <span class="docEmphasis">do not</span> 
+match files whose names begin with a dot (.), like <i>.cshrc</i>. This prevents 
+you from deleting (or otherwise mucking around with) these files by accident. 
+The usual way to match those files is to type the dot literally. For example,
+<tt>.[a-z]*</tt> matches anything whose name starts with a dot and a lowercase 
+letter. Watch out for plain <tt>.*</tt>, though; it matches the directory 
+entries <tt>.</tt> and <tt>..</tt>. If you're constantly needing to match 
+dot-files, though, you can set the <i>bash</i> variable
+<span class="docEmphasis">glob_dot_filenames</span> and the <i>zsh</i> option
+<span class="docEmphasis">GLOB_DOTS</span> to include dot-files' names in those 
+shells' wildcard expansion. </p>
+<p class="docText">You can prevent wildcard expansion by
+<span class="docEmphBold">quoting</span> (
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">
+Section 27.12</a>,
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">
+Section 27.13</a>), of course. In the C shells, you can stop all wildcard 
+expansion (which is also called <span class="docEmphasis">globbing</span>, by 
+the way) without quoting if you set the <span class="docEmphasis">noglob</span> 
+shell variable. In <i>bash</i>, <i>ksh,</i> and <i>zsh</i>, set the
+<span class="docEmphasis">noglob</span> option. </p>
+<p class="docText">And a final note: many operating systems (VAX/VMS and DOS 
+included) consider a file's <span class="docEmphasis">name</span> and
+<span class="docEmphasis">extension</span> to be different entities; therefore, 
+you can't use a single wildcard to match both. What do we mean? Consider the 
+file <span class="docEmphasis">abc.def</span>. Under DOS or VMS, to match this 
+filename you'd need the wildcard expression <tt>*.*</tt>. The first <tt>*</tt> 
+matches the name (the part before the period), and the second matches the 
+extension (the part after the period). Although Unix uses extensions, they 
+aren't considered a separate part of the filename, so a single <tt>*</tt> will 
+match the entire name. </p>
+<p class="docText"><span class="docEmphasis">—JP, ML, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-33-SECT-3">33.3 Who Handles Wildcards?</h3>
+<p class="docText"><span class="docEmphBold">Wildcards</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+1.13</a>) are actually defined by the Unix shells, rather than the Unix 
+filesystem. In theory, a new shell could define new wildcards, and consequently, 
+we should discuss wildcarding when we discuss the shell. In practice, all Unix 
+shells (including <span class="docEmphBold">ksh, bash, and other variants</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-6">Section 
+1.6</a>)) honor the same wildcard conventions, and we don't expect to see anyone 
+change the rules. (But most new shells also have <span class="docEmphBold">
+extended wildcards</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">Section 
+33.2</a>). And different shells do different things <span class="docEmphBold">
+when a wildcard doesn't match</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-4">Section 
+33.4</a>).) </p>
+<p class="docText">You may see different wildcarding if you have a 
+special-purpose shell that emulates another operating system (for example, a 
+shell that looks like the COMMAND.COM in MS-DOS) — in this case, your shell will 
+obey the other operating system's wildcard rules. But even in this case, 
+operating system designers stick to a reasonably similar set of wildcard rules.
+</p>
+<p class="docText">The fact that the shell defines wildcards, rather than the 
+filesystem itself or the program you're running, has some important implications 
+for a few commands. Most of the time, a program never sees wildcards. For 
+example, the result of typing: </p>
+<pre>% <b>lpr *</b></pre>
+<p class="docText">is exactly the same as typing:</p>
+<pre>% <b>lpr  </b><i>file1 file2 file3 file4 file5 </i></pre>
+<p class="docText">In this case everything works as expected. But there are 
+other situations in which wildcards don't work at all. Assume you want to read 
+some files from a tape, which requires the command <span class="docEmphBold">tar 
+x</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-6">Section 
+38.6</a>), so you type the command <tt>tar x *.txt</tt>. Will you be happy or 
+disappointed? </p>
+<p class="docText">You'll be disappointed — unless older versions of the files 
+you want are already in your <span class="docEmphBold">current directory</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>). The shell expands the wildcard <tt>*.txt</tt>, according to what's in 
+the current directory, <span class="docEmphasis">before it hands the completed 
+command line over to tar for execution</span>. All <i>tar</i> gets is a list of 
+files. But you're probably not interested in the current directory; you probably 
+want the wildcard <tt>*</tt> to be expanded on the tape, retrieving any <tt>
+*.txt</tt> files that the tape has. </p>
+<p class="docText">There's a way to pass wildcards to programs, without having 
+them interpreted by the shell. Simply put <tt>*.txt</tt> in
+<span class="docEmphBold">quotes</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>). The quotes prevent the Unix shell from expanding the wildcard, 
+passing it to the command unchanged. Programs that can be used in this way (like
+<span class="docEmphBold">ssh and scp</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-6">Section 
+46.6</a>)) know how to handle wildcards, obeying the same rules as the shell (in 
+fact, these programs usually start a shell to interpret their arguments). You 
+only need to make sure that the programs see the wildcards, that they aren't 
+stripped by the shell before it passes the command line to the program. As a 
+more general rule, you should be aware of when and why a wildcard gets expanded, 
+and you should know how to make sure that wildcards are expanded at an 
+appropriate time. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">If your shell understands the
+        <span class="docEmphBold">{} characters</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">Section 
+        28.4</a>), you can use them because they can generate any string — not 
+        just filenames that already exist. You have to type the unique part of 
+        each name, but you only have to type the common part once. For example, 
+        to extract the files called <span class="docEmphasis">
+        project/wk9/summary</span>, <span class="docEmphasis">
+        project/wk14/summary</span>, and <span class="docEmphasis">
+        project/wk15/summary</span> from a <i>tar</i> tape or file, you might 
+        use: </p>
+        <pre>% <b>tar xv project/wk{9,14,15}/summary</b>
+x project/wk9/summary, 3161 bytes, 7 tape blocks
+x project/wk14/summary, 878 bytes, 2 tape blocks
+x project/wk15/summary, 2268 bytes, 5 tape blocks</pre>
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Some versions of <i>tar</i> understand wildcards, but many 
+don't. There is a <span class="docEmphBold">clever workaround</span> (<a class="docLink" href="_chapter 38.htm#upt3-CHP-38-SECT-10">Section 
+38.10</a>). </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-33-SECT-4">33.4 What if a Wildcard Doesn't Match?</h3>
+<p class="docText">I ran into a strange situation the other day. I was compiling 
+a program that was core dumping. At some point, I decided to delete the object 
+files and the <i>core</i> file, and start over, so I gave the command: </p>
+<pre>% <b>rm *.o core</b></pre>
+<p class="docText">It works as expected most of the time, except when no object 
+files exist. (I don't remember why I did this, but it was probably by using
+<span class="docEmphBold">!!</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-8">Section 
+30.8</a>) when I knew there weren't any <span class="docEmphasis">.o</span>'s 
+around.) In this case, you get <tt>No match</tt>, and the
+<span class="docEmphasis">core</span> file is not deleted. </p>
+<p class="docText">It turns out, for C shell users, that if none of the 
+wildcards can be expanded, you get a <tt>No match</tt> error. It doesn't matter 
+that there's a perfectly good match for other name(s). That's because, when <i>
+csh</i> can't match a wildcard, it aborts and prints an error — it won't run the 
+command. If you create one <span class="docEmphasis">.o</span> file or remove 
+the <tt>*.o</tt> from the command line, <span class="docEmphasis">core</span> 
+will disappear happily. </p>
+<p class="docText">On the other hand, if the Bourne shell can't match a 
+wildcard, it just passes the unmatched wildcard and other filenames: </p>
+<pre>*.o core</pre>
+<p class="docText">to the command (in this case, to <i>rm</i>) and lets the 
+command decide what to do with it. So, with Bourne shell, what happens will 
+depend on what your <i>rm</i> command does when it sees the literal characters
+<tt>*.o</tt>. </p>
+<p class="docText">The Korn shell works like the Bourne shell. </p>
+<p class="docText">You can make <i>csh</i> and <i>tcsh</i> act a lot like <i>sh</i> 
+(and <i>ksh</i>) by setting the shell's <span class="docEmphasis">nonomatch</span> 
+option. Without <span class="docEmphasis">nonomatch</span> set, the shell sees a 
+nonmatching wildcard and never runs <i>ls</i> at all. Then I set
+<span class="docEmphasis">nonomatch</span> and the shell passes the unmatched 
+wildcard on to <i>ls</i>, which prints its own error message: </p>
+<pre>% <b>ls a*</b>
+ls: No match.
+% <b>set nonomatch</b>
+% <b>ls a*</b>
+ls: a*: No such file or directory</pre>
+<p class="docText">In <i>bash</i> Version 1, the option
+<span class="docEmphasis">allow_null_glob_expansion</span> converts nonmatching 
+wildcard patterns into the null string. Otherwise, the wildcard is left as is 
+without expansion. Here's an example with <span class="docEmphBold">echo</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-5">Section 
+27.5</a>), which simply shows the arguments that it gets from the shell. In the 
+directory where I'm running this example, there are no names starting with
+<span class="docEmphasis">a</span>, but there are two starting with
+<span class="docEmphasis">s</span>. In the first case below,
+<span class="docEmphasis">allow_null_glob_expansion</span> isn't set, so the 
+shell passes the unmatched <tt>a*</tt> to <i>echo</i>. After setting
+<span class="docEmphasis">allow_null_glob_expansion</span>, the shell removes 
+the unmatched <tt>a*</tt> before it passes the results to <i>echo</i>: </p>
+<pre>bash$ <b>echo a* s*</b>
+a* sedscr subdir
+bash$ <b>allow_null_glob_expansion=1</b>
+bash$ <b>echo a* s*</b>
+sedscr subdir</pre>
+<p class="docText"><i>bash</i> Version 2 leaves nonmatching wildcard patterns as 
+they are unless you've set the shell's <span class="docEmphasis">nullglob</span> 
+option (<tt>shopt -s nullglob</tt>). The <span class="docEmphasis">nullglob</span> 
+option does the same thing that <tt>allow_null_glob_expansion=1</tt> does in <i>
+bash</i> version 1. </p>
+<p class="docText"><i>zsh</i> gives you all of those choices. See the options
+<span class="docEmphasis">CSH_NULL_GLOB</span>, <span class="docEmphasis">
+NOMATCH</span> and <span class="docEmphasis">NULL_GLOB</span>. </p>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-33-SECT-5">33.5 Maybe You Shouldn't Use Wildcards in Pathnames</h3>
+<p class="docText">Suppose you're giving a command like the one below (not 
+necessarily <i>rm</i> — this applies to any Unix command): </p>
+<pre>% <b>rm /somedir/otherdir/*</b></pre>
+<p class="docText">Let's say that matches 100 files. The <i>rm</i> command gets 
+100 complete pathnames from the shell: <i>/somedir/otherdir/afile</i>, <i>/somedir/otherdir/bfile</i>, 
+and so on. For each of these files, the Unix kernel has to start at the root 
+directory, then search the <i>somedir</i> and <i>otherdir</i> directories before 
+it finds the file to remove. </p>
+<p class="docText">That can make a significant difference, especially if your 
+disk is already busy. It's better to <i>cd</i> to the directory first and run 
+the <i>rm</i> from there. You can do it in a <span class="docEmphBold">subshell 
+(with parentheses)</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">Section 
+43.7</a>) if you want to, so you won't have to <i>cd</i> back to where you 
+started: </p>
+<p class="docText"><tt>&amp;&amp;</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+Section 35.14</a></p>
+<pre>% <b>(cd /somedir/otherdir &amp;&amp; rm *)</b></pre>
+<p class="docText">There's one more benefit to this second way: you're not as 
+likely to get the error <tt>Arguments too long</tt>. (Another way to handle long 
+command lines is with the <span class="docEmphBold">xargs</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-17">Section 
+28.17</a>) command.) </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-33-SECT-6">33.6 Getting a List of Matching Files with grep -l</h3>
+<p class="docText">Normally when you run <span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-1">Section 
+13.1</a>) on a group of files, the output lists the filename along with the line 
+containing the search pattern. Sometimes you want to know only the names of the 
+files, and you don't care to know the line (or lines) that match. In this case, 
+use the <i>-l</i> (lowercase letter &quot;l&quot;) option to list only filenames where 
+matches occur. For example, the following command: </p>
+<pre>% <b>grep -l R6  </b><i>file1 file2 ...  </i><b>&gt; r6.filelist </b></pre>
+<p class="docText">searches the files for a line containing the string <tt>R6</tt>, 
+produces a list of those filenames, and stores the list in <i>r6.filelist</i>. 
+(This list might represent the files containing Release 6 documentation of a 
+particular product.) Because these Release 6 files can now be referenced by one 
+list, you can treat them as a single entity and run various commands on them all 
+at once: </p>
+<p class="docText"><tt>'...'</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a></p>
+<pre>% <b>lpr `cat r6.filelist`          </b><i> Print only the Release 6 files</i>
+% <b>grep UNIX `cat r6.filelist`    </b><i> Search limited to the Release 5 files</i></pre>
+<p class="docText">You don't have to create a file list, though. You can insert 
+the output of a <i>grep</i> directly into a command line with command 
+substitution. For example, to edit only the subset of files containing <tt>R6</tt>, 
+you would type: </p>
+<pre>% <b>vi `grep -l R6  </b><i>file1 file2 ... </i>`</pre>
+<p class="docText">(Of course, you also could use a wildcard like <tt><i>file*</i></tt> 
+instead of a list of filenames.) </p>
+<p class="docText"><i>grep -l</i> is also good for shell programs that need to 
+check whether a file contains a particular string. The traditional way to do 
+that test is by throwing away <i>grep</i>'s output and checking its exit status:
+</p>
+<pre>if grep <tt><i>something somefile</i></tt> &gt;/dev/null
+then ...</pre>
+<p class="docText">If <i>somefile</i> is huge, though, <i>grep</i> has to search 
+all of it. Adding the <i>grep -l</i> option saves time because <i>grep</i> can 
+stop searching after it finds the first matching line. </p>
+<p class="docText">—<span class="docEmphasis">DG and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-33-SECT-7">33.7 Getting a List of Nonmatching Files</h3>
+<p class="docText">You can use the <span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-2">Section 
+13.2</a>) option <i>-c</i> to tell you how many occurrences of a pattern appear 
+in a given file, so you can also use it to find files that
+<span class="docEmphasis">don't</span> contain a pattern (i.e., zero occurrences 
+of the pattern). This is a handy technique to package into a shell script. </p>
+<h4  id="upt3-CHP-33-SECT-7.1" class="docSection2Title">33.7.1 Using grep -c</h4>
+<p class="docText">Let's say you're indexing a DocBook (SGML) document and you 
+want to make a list of files that don't yet contain indexing tags. What you need 
+to find are files with zero occurrences of the string <tt>&lt;indexterm&gt;</tt>. (If 
+your tags might be uppercase, you'll also want the<span class="docEmphBold"> -i 
+option</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-22">Section 
+9.22</a>).) The following command: </p>
+<pre>% <b>grep -c &quot;&lt;indexterm&gt;&quot; chapter*</b></pre>
+<p class="docText">might produce the following output:</p>
+<pre>chapter1.sgm:10
+chapter2.sgm:27
+chapter3.sgm:19
+chapter4.sgm:0
+chapter5.sgm:39
+   ...</pre>
+<p class="docText">This is all well and good, but suppose you need to check 
+index entries in hundreds of reference pages. Well, just filter <i>grep</i>'s 
+output by piping it through another <i>grep</i>. The previous command can be 
+modified as follows: </p>
+<pre>% <b>grep -c &quot;&lt;indexterm&gt;&quot; chapter* | grep :0</b></pre>
+<p class="docText">This results in the following output:</p>
+<pre>chapter4.sgm:0</pre>
+<p class="docText">Using <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) to truncate the <tt>:0</tt>, you can save the output as a list of 
+files. For example, here's a trick for creating a list of files that
+<span class="docEmphasis">don't</span> contain index macros: </p>
+<pre>% <b>grep -c &quot;&lt;indexterm&gt;&quot; * | sed -n 's/:0$//p' &gt; ../not_indexed.list</b></pre>
+<p class="docText">The <i>sed -n</i> command prints only the lines that contain
+<tt>:0</tt>; it also strips the <tt>:0</tt> from the output so that <i>../not_indexed.list</i> 
+contains a list of files, one per line. For a bit of extra safety, we've added a
+<span class="docEmphBold">$ anchor</span> (<a class="docLink" href="_chapter 32.htm#upt3-CHP-32-SECT-5">Section 
+32.5</a>) to be sure <i>sed</i> matches only <tt>0</tt> at the end of a line — 
+and not, say, in some bizarre filename that contains <tt>:0</tt>. (We've
+<span class="docEmphBold">quoted</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) the <tt>$</tt> for safety — though it's not really necessary in most 
+shells because <tt>$/</tt> can't match shell variables.) The
+<span class="docEmphBold">.. pathname</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>) puts the <i>not_indexed.list</i> file into the parent directory — this 
+is one easy way to keep <i>grep</i> from searching that file, but it may not be 
+worth the bother. </p>
+<p class="docText">To edit all files that need index macros added, you could 
+type this:</p>
+<pre>% <b>vi `grep -c &quot;&lt;indexterm&gt;&quot; * | sed -n 's/:0$//p'`</b></pre>
+<p class="docText">This command is more obvious once you start using backquotes 
+a lot.</p>
+<h4  id="upt3-CHP-33-SECT-7.2" class="docSection2Title">33.7.2 The vgrep Script</h4>
+<p class="docText">You can put the <i>grep</i> -<i>c</i> technique into a little 
+script named <i>vgrep</i> with a couple of safety features added: </p>
+<p class="docText"><tt>&quot;$@&quot;</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">
+Section 35.20</a></p>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: vgrep</p>
+<pre>#!/bin/sh
+case $# in
+0|1) echo &quot;Usage: `basename $0` pattern file [files...]&quot; 1&gt;&amp;2; exit 2 ;;
+2)  # Given a single filename, grep returns a count with no colon or name.
+    grep -c -e &quot;$1&quot; &quot;$2&quot; | sed -n &quot;s|^0\$|$2|p&quot;
+    ;;
+*)  # With more than one filename, grep returns &quot;name:count&quot; for each file.
+    pat=&quot;$1&quot;; shift
+    grep -c -e &quot;$pat&quot; &quot;$@&quot; | sed -n &quot;s|:0\$||p&quot;
+    ;;
+esac</pre>
+<p class="docText">Now you can type, for example:</p>
+<pre>% <b>vi `vgrep &quot;&lt;indexterm&gt;&quot; *`</b></pre>
+<p class="docText">One of the script's safety features works around a problem 
+that happens if you pass <i>grep</i> just one filename. In that case, most 
+versions of <i>grep</i> won't print the file's name, just the number of matches. 
+So the first <i>sed</i> command substitutes a digit <tt>0</tt> with the 
+filename. </p>
+<p class="docText">The second safety feature is the <i>grep</i> -<i>e</i> 
+option. It tells <i>grep</i> that the following argument is the search pattern, 
+even if that pattern looks like an option because it starts with a dash (<tt>-</tt>). 
+This lets you type commands like <tt>vgrep -0123 *</tt> to find files that don't 
+contain the string <span class="docEmphasis">-0123</span>. </p>
+<p class="docText">—<span class="docEmphasis">DG and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-33-SECT-8">33.8 nom: List Files That Don't Match a Wildcard</h3>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: nom</p>
+<p class="docText">The <i>nom</i> (no match) script takes filenames (usually 
+expanded by the shell) from its command line. It outputs all filenames in the 
+current directory that <span class="docEmphasis">don't</span> match. As
+<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">
+Section 33.2</a> shows, some shells have an operator — <tt>!</tt> or <tt>^</tt> 
+— that works like <i>nom</i>, but other shells don't. Here are some examples of
+<i>nom</i>: </p>
+<ul>
+  <li>
+  <p class="docList">To get the names of all files that
+  <span class="docEmphasis">don't</span> end with <span class="docEmphasis">.ms</span>:
+  </p>
+  <pre>% <b>nom *.ms</b></pre>
+  </li>
+  <li>
+  <p class="docList">To edit all files whose names don't have any lowercase 
+  letters, use <span class="docEmphBold">command substitution</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-14">Section 
+  27.14</a>): </p>
+  <pre>% <b>vi `nom *[a-z]*`</b></pre>
+  </li>
+  <li>
+  <p class="docList">To copy all files to a subdirectory named <i>Backup</i> 
+  (except <i>Backup</i> itself): </p>
+  <pre>% <b>cp `nom Backup` Backup</b></pre>
+  </li>
+</ul>
+<p class="docText">Here's the script:</p>
+<p class="docText"><tt>trap</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">
+Section 35.17</a>, <tt>case</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-11">
+Section 35.11</a>, <tt>$*</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">
+Section 35.20</a>, <tt>comm</tt>
+<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-8">
+Section 11.8</a></p>
+<pre>#! /bin/sh
+temp=/tmp/NOM$$
+stat=1     # Error exit status (set to 0 before normal exit)
+trap 'rm -f $temp; exit $stat' 0 1 2 15
+
+# Must have at least one argument, and all have to be in current directory:
+case &quot;$*&quot; in
+&quot;&quot;) echo Usage: `basename $0` pattern 1&gt;&amp;2; exit ;;
+*/*)    echo &quot;`basename $0` quitting: I can't handle '/'s.&quot; 1&gt;&amp;2; exit ;;
+esac
+
+# ls gives sorted file list. -d=don't enter directories, -1=one name/line.
+ls -d ${1+&quot;$@&quot;} &gt; $temp   # Get filenames we don't want to match
+ls -1 | comm -23 - $temp  # Compare to current dir; output names we want
+stat=0</pre>
+<p class="docText">The<span class="docEmphBold"> -d option</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-5">Section 
+8.5</a>) tells <i>ls</i> to list the names of any directories, not their 
+contents. The <span class="docEmphBold">${1+&quot;$@&quot;}</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">Section 
+36.7</a>) works around a problem in some Bourne shells. You can remove the <i>-1</i> 
+option on the script's <tt>ls</tt> command line if your version of <i>ls</i> 
+lists one filename per line by default; almost all versions of <i>ls</i> do that 
+when they're writing into a pipe. Note that <i>nom</i> doesn't know about files 
+whose names begin with a dot (.); you can change that if you'd like by adding 
+the <tt>ls</tt> <tt>-A</tt> option (uppercase letter &quot;A&quot;, which isn't on all 
+versions of <i>ls</i>). </p>
+<p class="docText">Finally, if you've got a shell with process substitution, 
+such as <i>bash</i>, which is what we use below, you can rewrite <i>nom</i> 
+without the temporary file and the <i>trap</i>: </p>
+<pre>#!/bin/bash
+# Must have at least one argument, and all have to be in current directory:
+case &quot;$*&quot; in
+&quot;&quot;)  echo Usage: `basename $0` pattern 1&gt;&amp;2; exit ;;
+*/*) echo &quot;`basename $0` quitting: I can't handle '/'s.&quot; 1&gt;&amp;2; exit ;;
+esac
+
+# ls gives sorted file list. -d=don't enter directories, -1=one name/line.
+# Compare current directory with names we don't want; output names we want:
+comm -23 &lt;(ls -1) &lt;(ls -d &quot;$@&quot;)</pre>
+<p class="docText"><span class="docEmphasis">— JP </span></p>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 32.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 34.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

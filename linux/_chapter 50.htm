@@ -1,0 +1,1002 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 50</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 49.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 51.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 50. File Security, Ownership, and Sharing</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-1">50.1 Introduction to File Ownership and Security</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-2">50.2 Tutorial on File and Directory Permissions</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-3">50.3 Who Will Own a New File?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-4">50.4 Protecting Files with the Sticky Bit</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-5">50.5 Using chmod to Change File Permission</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-6">50.6 The Handy chmod = Operator</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-7">50.7 Protect Important Files: Make Them Unwritable</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-8">50.8 cx, cw, c-w: Quick File Permission Changes</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-9">50.9 A Loophole: Modifying Files Without Write Access</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-10">50.10 A Directory That People Can Access but Can't List</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-11">50.11 Juggling Permissions</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-12">50.12 File Verification with md5sum</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-13">50.13 Shell Scripts Must Be Readable and (Usually) Executable</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-14">50.14 Why Can't You Change File Ownership?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-50-SECT-15">50.15 How to Change File Ownership Without chown</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-1">50.1 Introduction to File Ownership and Security</h3>
+<p class="docText">Because Unix is a multiuser system, you need some way of 
+protecting users from one another: you don't want other users to look at the 
+wrong files and find out compromising information about you, or raise their 
+salaries, or something equivalently antisocial. Even if you're on a single-user 
+system, file ownership still has value: it can often protect you from making 
+mistakes, like deleting important executables. </p>
+<p class="docText">In this chapter, we'll describe how file ownership works: who 
+owns files, how to change ownership, how to specify which kinds of file access 
+are allowed, and so on. We'll also discuss some other ways to prevent people 
+from &quot;prying,&quot; like clearing your screen. </p>
+<p class="docText">In my opinion, most security breaches arise from mistakes 
+that could easily have been avoided: someone discovers that
+<span class="docEmphasis">anyone</span> can read the boss's email, including the 
+messages to his bookie. Once you've read this chapter, you'll understand how to 
+avoid the common mistakes and protect yourself from most intruders. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-2">50.2 Tutorial on File and Directory Permissions</h3>
+<p class="docText">Regardless of how much you think you know about file 
+permissions, there's always something new to learn. </p>
+<p class="docText">There are three basic attributes for plain file permissions: 
+read, write, and execute. Read and write permission obviously let you read the 
+data from a file or write new data to the file. When you have execute 
+permission, you can use the file as a program or shell script. The characters 
+used to describe these permissions are <tt>r</tt>, <tt>w</tt>, and <tt>x</tt>, 
+for e<span class="docEmphasis">x</span>ecute. </p>
+<p class="docText">Directories use these same permissions, but they have a 
+different meaning. If a directory has read permission, you can see what files 
+are in the directory. Write permission means you can add, remove, or rename 
+files in the directory. Execute allows you to use the directory name when 
+accessing files inside that directory. (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-2">Section 
+10.2</a> has more information about what's in a directory.) Let's examine this 
+more closely. </p>
+<p class="docText">Suppose you have read access to a directory but don't have 
+execute access to the files contained in it. You can still read the directory, 
+or <span class="docEmphasis">inode</span> information for that file, as returned 
+by the <span class="docEmphasis">stat</span>(2) system call. That is, you can 
+see the file's name, permissions, size, access times, owner and group, and 
+number of links. You just cannot read the contents of the file. </p>
+<p class="docText">Write permission in a directory allows you to change the 
+contents in it. Because the name of the file is stored in the directory and not 
+the file, <span class="docEmphasis">write permission in a directory allows 
+creation, renaming, or deletion of files</span>. To be specific, if someone has 
+write permission to your home directory, they can rename or delete your
+<span class="docEmphasis">.login</span> file and put a new file in its place. 
+The permissions of your <span class="docEmphasis">.login</span> file do not 
+matter in this regard. Someone can rename a file even if they can't read the 
+contents of a file. (See
+<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-9">
+Section 50.9</a>.) </p>
+<p class="docText">Execute permission on a directory is sometimes called search 
+permission. If a directory gives you execute but not read permission, you can 
+use any file in that directory; however, you <span class="docEmphasis">must</span> 
+know the name. You cannot look inside the directory to find out the names of the 
+files. Think of this type of directory as a black box. You can throw filenames 
+at this directory, and sometimes you find a file, sometimes you don't. (See
+<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-10">
+Section 50.10</a>.) </p>
+<h4  id="upt3-CHP-50-SECT-2.1" class="docSection2Title">50.2.1 User, Group, and World</h4>
+<p class="docText">All files have an owner and group associated with them. There 
+are three sets of read/write/execute permissions: one set for the user or owner 
+of the file, one set for the <span class="docEmphBold">group</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-6">Section 
+49.6</a>) of the file, and one set for everyone else. These permissions are 
+determined by nine bits in the inode information and are represented by the 
+characters <tt>rwxrwxrwx</tt> in an <span class="docEmphasis">ls -l</span> 
+listing:<span id="ENB50-1"><a class="docLink" href="#EN50-1"><sup>[1]</sup></a></span> </p>
+<pre>% <b>ls -l</b>
+drwxr-xr-x  3 jerry   books      512 Feb 14 11:31 manpages
+-rw-r--r--  1 jerry   books    17233 Dec 10  2001 misc.Z
+-rwxr-xr-x  1 tim     books      195 Mar 29 18:55 myhead</pre>
+<p class="docText">The first character in the <span class="docEmphasis">ls -l</span> 
+listing <span class="docEmphBold">specifies the type of file</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-13">Section 
+9.13</a>). The first three of the nine permissions characters that follow 
+specify the user; the middle three, the group; and the last three, the world. If 
+the permission is not true, a dash is used to indicate lack of privilege. If you 
+want to have a data file that you can read or write but don't want anyone else 
+to access, the permissions would be <tt>rw-------</tt>. </p>
+<p class="docText">An easier way to specify these nine bits is with three octal 
+digits instead of nine characters. (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-17">Section 
+1.17</a> has diagrams of permission bits and explains how to write permissions 
+as an octal number.) The order is the same, so the above permissions can be 
+described by the octal number 600. The first number specifies the owner's 
+permission. The second number specifies the group's permission. The last number 
+specifies permission to everyone who is not the owner or not in the group of the 
+file [although permissions don't apply to the <span class="docEmphBold">
+superuser</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-18">Section 
+1.18</a>), who can do anything to any file or directory.
+<span class="docEmphasis">— JP</span>]. </p>
+<p class="docText">This last point is subtle. When testing for permissions, the 
+system looks at the groups in order. If you are denied permission, Unix does not 
+examine the next group. Consider the case of a file that is owned by user
+<span class="docEmphasis">jo</span>, is in the group <span class="docEmphasis">
+guests</span>, and has the permissions <tt>-----xrwx</tt>, or 017 in octal. This 
+has the result that user <span class="docEmphasis">jo</span> cannot use the 
+file, anyone in group <span class="docEmphasis">guests</span> can execute the 
+program, and everyone else besides <span class="docEmphasis">jo</span> and
+<span class="docEmphasis">guests</span> can read, write, and execute the 
+program. This is not a very common set of permissions, but some people use a
+<span class="docEmphBold">similar mechanism</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-7">Section 
+49.7</a>) to deny one group of users from accessing or using a file. In the 
+above case, <span class="docEmphasis">jo</span> cannot read or write the file 
+she owns. She could use the <span class="docEmphBold">chmod</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-5">Section 
+50.5</a>) command to grant herself permission to read the file. However, if the 
+file was in a directory owned by someone else, and the directory did not give
+<span class="docEmphasis">jo</span> read or search permission, she would not be 
+able to find the file to change its permission. </p>
+<p class="docText">The above example is an extreme case. Most of the time 
+permissions fall into four cases: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">The information is personal. Many people have a directory 
+  or two in which they store information they do not wish to be public. Mail 
+  should probably be confidential, and all of your mailbox files should be in a 
+  directory with permissions of 700, denying everyone but yourself and the 
+  superuser read access to your letters. (See
+  <a class="docLink" href="_chapter 7.htm#upt3-CHP-7-SECT-5">
+  Section 7.5</a>.) </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">The information is not personal, yet no one should be able 
+  to modify the information. Most of my directories are set up this way, with 
+  the permissions of 755. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">The files are managed by a team of people. This means 
+  group-write permission, or directories with the mode 775. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">In the previous case, for confidential projects, you may 
+  want to deny access to people outside the group. In this case, make 
+  directories with mode 770. </span></li>
+</ol>
+</span>
+<p class="docText">You could just create a directory with the proper permissions 
+and put the files inside the directory, hoping the permissions of the directory 
+will &quot;protect&quot; the files in the directory. This is not adequate. Suppose you had 
+a directory with permissions 755 and a file with permissions 666 inside the 
+directory. Anyone could change the contents of this file because the world has 
+search access on the directory and write access to the file. </p>
+<p class="docText"><img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: umask.csh, 
+umask.sh</p>
+<p class="docText">What is needed is a mechanism to prevent any new file from 
+having world-write access. This mechanism exists with the <i>umask</i> command. 
+If you consider that a new directory would get permissions of 777, and that new 
+files would get permissions of 666, the <i>umask</i> command specifies 
+permissions to &quot;take away&quot; from all new files. To &quot;subtract&quot; world-write 
+permission from a file, 666 must have 002 &quot;subtracted&quot; from the default value to 
+get 664. To subtract group and world write, 666 must have 022 removed to leave 
+644 as the permissions of the file. These two values of
+<span class="docEmphasis">umask</span> are so common that it is useful to have 
+some <span class="docEmphBold">aliases</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-4">Section 
+49.4</a>) defined: </p>
+<pre>alias open umask 002
+alias shut umask 022</pre>
+<p class="docText">With these two values of <span class="docEmphasis">umask</span>, 
+new directories will have permissions of 775 or 755. Most people have a
+<span class="docEmphasis">umask</span> value of one of these two values. </p>
+<p class="docText">In a friendly work group, people tend to use the
+<span class="docEmphasis">umask</span> of 002, which allows others in your group 
+to make changes to your files. Someone who uses the mask of 022 will cause grief 
+to others working on a project. Trying to compile a program is frustrating when 
+someone else owns files that you must delete but can't. You can rename files if 
+this is the case or ask the system administrator for help. </p>
+<p class="docText">Members of a team who normally use a default umask of 022 
+should find a means to change the mask value when working on the project (or 
+else risk flames from your fellow workers!). Besides the <i>open</i> alias 
+above, some people have an alias that changes directories and sets the mask to 
+group-write permission: </p>
+<pre>alias proj &quot;cd /usr/projects/proj;umask 002&quot;</pre>
+<p class="docText">This isn't perfect, because people forget to use aliases. You 
+could have a special <i>cd</i> alias and a private shell file in each project 
+directory that sets the <span class="docEmphasis">umask</span> when you <i>cd</i> 
+there. Other people could have similar files in the project directory with 
+different names.
+<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-13">
+Section 31.13</a> shows how. </p>
+<p class="docText">Still another method is to run <span class="docEmphBold">find</span> 
+(<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-1">Section 
+9.1</a>) three times a day and search for files owned by you in the project 
+directory that have the wrong permission: </p>
+<p class="docText"><tt>$USER</tt><a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">Section 
+35.5</a>, <tt>xargs</tt><a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-17">Section 
+28.17</a>, <tt>chmod</tt><a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-5">Section 
+50.5</a></p>
+<pre>% <b>find /usr/projects -user $USER ! -perm -020 -print | \</b>
+<b>xargs chmod g+w</b></pre>
+<p class="docText">You can use the command <span class="docEmphBold">crontab -e</span> 
+(<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-2">Section 
+25.2</a>) to define when to run this command. </p>
+<h4  id="upt3-CHP-50-SECT-2.2" class="docSection2Title">50.2.2 Which Group is Which?</h4>
+<p class="docText">Since group-write permission is so important in a team 
+project, you might be wondering how the group of a new file is determined. The 
+answer depends on several factors. Before I cover these, you should note that 
+Berkeley and AT&amp;T-based systems would use different mechanisms to determine the 
+default group. </p>
+<p class="docText">Originally Unix required you to specify a new group with the
+<i>newgrp</i> command. If there was a password for this group in the
+<span class="docEmphasis">/etc/group</span> file, and you were not listed as one 
+of the members of the group, you had to type the password to change your group.
+</p>
+<p class="docText">Berkeley-based versions of Unix would use the current 
+directory to determine the group of the new file. That is, if the current 
+directory has <span class="docEmphasis">cad</span> as the group of the 
+directory, any file created in that directory would be in the same group. To 
+change the default group, just change to a different directory. </p>
+<p class="docText">Both mechanisms had their good points and bad points. The 
+Berkeley-based mechanism made it convenient to change groups automatically. 
+However, there is a fixed limit of groups one could belong to. SunOS 4 has a 
+limit of 16 groups. Earlier versions had a limit of 8 groups. </p>
+<p class="docText">SunOS and System V Release 4 support both mechanisms. The 
+entire disk can be mounted with either the AT&amp;T or the Berkeley mechanism. If it 
+is necessary to control this on a directory-by-directory basis, a special bit in 
+the file permissions is used. If a disk partition is mounted without the 
+Berkeley group mechanism, a directory with this special bit will make new files 
+have the same group as the directory. Without the special bit, the group of all 
+new files depends on the current group of the user. </p>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-3">50.3 Who Will Own a New File?</h3>
+<p class="docText">If you share files with other users, it's good to be able to 
+tell who will own each file. On many systems, this is even more important 
+because <span class="docEmphBold">only the superuser can change file ownership</span> 
+(<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-14">Section 
+50.14</a>,
+<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-15">
+Section 50.15</a>). </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">When you create a new file, it belongs to you.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">When you append to a file with <tt>&gt;&gt;<i>file</i></tt>, the 
+  owner doesn't change because Unix doesn't have to create a new file. </span>
+  </li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">When you rename a file with <i>mv</i>, the ownership 
+  doesn't change. </p>
+  <p class="docList">Exception: if you use <i>mv</i> to move a file to another 
+  filesystem, the moved file will belong to you, because to move across 
+  filesystems, <i>mv</i> actually has to copy the file and delete the original.
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">When you copy a file, <span class="docEmphBold">the copy 
+  belongs to you because you created it</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-9">Section 
+  50.9</a>). </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">When you edit a file:
+  <ul>
+    <li>
+    <p class="docList">With an editor like <span class="docEmphBold">vi</span> (<a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-2">Section 
+    17.2</a>), the file keeps its original owner because a new file is never 
+    created. </li>
+    <li>
+    <p class="docList">An editor like <span class="docEmphBold">Emacs</span> (<a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-1">Section 
+    19.1</a>), which makes a backup copy, can be different. The backup copy 
+    could belong to you or to the original owner. If you replace the edited file 
+    with its backup, the file's ownership might have changed: </p>
+    <pre>% <b>emacs filea </b>
+   <i> ...Edit a lot, then decide you don't want your changes...</i>
+% <b>mv filea~ filea </b></pre>
+    </li>
+  </ul>
+  </span></li>
+</ol>
+</span>
+<p class="docText">If you aren't sure, use <span class="docEmphBold">ls -l</span> 
+(<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+50.2</a>). </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-4">50.4 Protecting Files with the Sticky Bit</h3>
+<p class="docText">Unix directory access permissions specify that a person with 
+write access to the directory can rename or remove files there — even files that 
+don't belong to the person (see
+<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-9">
+Section 50.9</a>). Many newer versions of Unix have a way to stop that. The 
+owner of a directory can set its <span class="docEmphasis">sticky bit</span> (<span class="docEmphBold">mode</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-17">Section 
+1.17</a>) 1000). The only people who can rename or remove any file in that 
+directory are the file's owner, the directory's owner, and the superuser. </p>
+<p class="docText">Here's an example: the user <span class="docEmphasis">jerry</span> 
+makes a world-writable directory and sets the sticky bit (shown as <tt>t</tt> 
+here): </p>
+<pre>jerry% <b>mkdir share</b>
+jerry% <b>chmod 1777 share</b>
+jerry% <b>ls -ld share</b>
+drwxrwxrwt   2 jerry    ora           32 Nov 19 10:31 share</pre>
+<p class="docText">Other people create files in it. When
+<span class="docEmphasis">jennifer</span> tries to remove a file that belongs to
+<span class="docEmphasis">ellie</span>, she can't: </p>
+<pre>jennifer% <b>ls -l</b>
+total 2
+-rw-r--r--   1 ellie    ora          120 Nov 19 11:32 data.ellie
+-rw-r--r--   1 jennifer ora         3421 Nov 19 15:34 data.jennifer
+-rw-r--r--   1 peter    ora          728 Nov 20 12:29 data.peter
+jennifer% <b>rm data.ellie</b>
+data.ellie: override 644 mode ? <b>y</b>
+rm: data.ellie not removed.
+Permission denied</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-5">50.5 Using chmod to Change File Permission</h3>
+<p class="docText">To change a file's permissions, you need to use the <i>chmod</i> 
+command, and you must be the file's owner or root. The command's syntax is 
+pretty simple: </p>
+<pre>% <b>chmod  </b><i>new-mode file(s) </i></pre>
+<p class="docText">The <tt><i>new-mode</i></tt> describes the access permissions 
+you want <span class="docEmphasis">after</span> the change. There are two ways 
+to specify the mode: you can use either a <span class="docEmphasis">numeric mode</span> 
+or some symbols that describe the changes. I generally prefer the numeric mode 
+(because I'm strange, I suppose). To use a numeric mode, decide what permissions 
+you want to have, <span class="docEmphBold">express them as an octal number</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-17">Section 
+1.17</a>,
+<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">
+Section 50.2</a>), and give a command like this one: </p>
+<pre>% <b>chmod 644 report.txt</b></pre>
+<p class="docText">This gives read and write access to the owner of
+<span class="docEmphasis">report.txt</span> and read-only access to everyone 
+else. </p>
+<p class="docText">Many users prefer to use the <span class="docEmphasis">
+symbolic mode</span> to specify permissions. A symbolic <i>chmod</i> command 
+looks like this: </p>
+<pre>% <b>chmod g-w report.txt</b></pre>
+<p class="docText">This means &quot;take away write access for group members.&quot; The 
+symbols used in mode specifications are shown in
+<a class="docLink" href="#upt3-CHP-50-TABLE-1">Table 50-1</a>. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-50-TABLE-1" class="docTableTitle">Table 50-1. chmod symbolic modes </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Category</th>
+    <th class="docTableHeader">
+    <p class="docText">Mode</th>
+    <th class="docTableHeader">
+    <p class="docText">Description</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Who</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>u</tt></td>
+    <td class="docTableCell">
+    <p class="docText">User (owner) of the file.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>g</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Group members.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>o</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Others.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>a</tt></td>
+    <td class="docTableCell">
+    <p class="docText">All (i.e., user, group, and others).</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">What to do</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>-</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Take away this permission. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>+</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Add this permission.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>=</tt></td>
+    <td class="docTableCell">
+    <p class="docText"><span class="docEmphBold">Set exactly this permission</span> 
+    (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-6">Section 
+    50.6</a>). </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">Permissions</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>r</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Read access.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>w</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Write access.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>x</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Execute access.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>X</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Give (or deny) execute permission to directories, or to 
+    files that have another &quot;execute&quot; bit set. </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>s</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Set user or group ID (only valid with <tt>+</tt> or <tt>-</tt>).
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">&nbsp;</td>
+    <td class="docTableCell">
+    <p class="docText"><tt>t</tt></td>
+    <td class="docTableCell">
+    <p class="docText">Set the<span class="docEmphBold"> &quot;sticky bit&quot;</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-4">Section 
+    50.4</a>,
+    <a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-17">
+    Section 1.17</a>). </td>
+  </tr>
+</table>
+<p class="docText">(<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+50.2</a> explains the &quot;Who&quot; and &quot;Permissions&quot; categories.) Here are a few 
+example symbolic modes: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">o=r</span></span> </dt>
+  <dd>
+  <p class="docList">Set others access to read-only, regardless of what other 
+  bits are set.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">o+r</span></span> </dt>
+  <dd>
+  <p class="docList">Add read access for others.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">go-w</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Take away write access for group members and others.</dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">a=rw</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Give everyone (user, group, and others) read-write (but not 
+  execute) access. </dd>
+</dl>
+<p class="docText">Remember that <tt>+</tt> and <tt>-</tt> add or delete certain 
+permissions but leave the others untouched. The commands below show how 
+permissions are added and subtracted: </p>
+<pre>% <b>ls -l foo</b>
+-rwx-----x  1 mikel           0 Mar 30 11:02 foo
+% <b>chmod a+x foo</b>
+% <b>ls -l foo</b>
+-rwx--x--x  1 mikel           0 Mar 30 11:02 foo
+% <b>chmod o-x,g+r foo</b>
+% <b>ls -l foo</b>
+-rwxr-x---  1 mikel           0 Mar 30 11:02 foo
+%</pre>
+<p class="docText">Note the last <i>chmod</i> command. It shows something we 
+haven't mentioned before. With symbolic mode, you're allowed to combine two (or 
+more) specifications, separated by commas. This command says &quot;take away execute 
+permission for others, and add read access for group members.&quot; </p>
+<p class="docText">On occasion, I've wanted to change the permissions of a whole 
+directory tree: all the files in a directory and all of its subdirectories. In 
+this case, you want to use <span class="docEmphasis">chmod -R</span> (the
+<span class="docEmphasis">R</span> stands for recursive) or
+<span class="docEmphBold">find -exec</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-9">Section 
+9.9</a>,
+<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-6">
+Section 50.6</a>). You won't need this often, but when you do, it's a real 
+lifesaver. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-6">50.6 The Handy chmod = Operator</h3>
+<p class="docText">Let's say you have a set of files. Some are writable by you; 
+others are read-only. You want to give people in your group the same permissions 
+you have — that is, they can write writable files but can only read the 
+read-only files. It's easy with an underdocumented feature of <i>chmod</i>: </p>
+<pre>% <b>chmod g=u *</b></pre>
+<p class="docText">That means &quot;for all files (<tt>*</tt>), set the group 
+permissions (<tt>g</tt>) to be the same as the owner permissions (<tt>u</tt>).&quot; 
+You can also use the letter <tt>o</tt> for others, which is everyone who's not 
+the owner or in the owner's group.
+<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">
+Section 50.2</a> explains these categories. </p>
+<p class="docText">If your <i>chmod</i> has a <i>-R</i> (recursive) option, you 
+can make the same change to all files and directories in your current directory 
+and beneath. If you don't have <span class="docEmphasis">chmod -R</span>, use 
+this <span class="docEmphBold">find</span> (<a class="docLink" href="_chapter 9.htm#upt3-CHP-9-SECT-9">Section 
+9.9</a>): </p>
+<pre>% <b>find . -exec chmod g=u {} \;</b></pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-7">50.7 Protect Important Files: Make Them Unwritable</h3>
+<p class="docText">A good way to prevent yourself from making mistakes is to 
+make certain files read-only. If you try to delete a read-only file, you will 
+get a warning. You will also get a warning if you try to move a file onto 
+another file that is write-protected. If you know you want to remove or move a 
+file, even though the file is read-only, you can use the <i>-f</i> option with
+<i>rm</i> or <i>mv</i> to <span class="docEmphasis">force</span> the change 
+without warnings. </p>
+<p class="docText">Manually changing the permissions of files all the time is 
+counterproductive. You could create two aliases to make it easier to type: </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: chmod.csh, 
+chmod.sh</p>
+<pre># change mode to read only
+alias -w chmod -w
+# change mode to add write permission
+alias +w chmod u+w</pre>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: chmod_edit</p>
+<p class="docText">[These are really handy! I use a script named <i>c-w</i> and
+<i>cw</i>, respectively, instead. For shell programming, I also added <i>cx</i> 
+that does <span class="docEmphasis">chmod +x</span>.
+<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-8">
+Section 50.8</a> explains the script. <span class="docEmphasis">— JP</span>] It 
+is a good idea to remove write permission from some files. Occasionally some 
+files contain information difficult to replace. These files might be included 
+with other, easily replaceable files. Or you might want to protect some files 
+that rarely change. Combined with directory permissions and the current value of
+<span class="docEmphBold">umask</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-4">Section 
+49.4</a>), you can find some file that might be protected in this manner. You 
+can always create a script that adds write permission, edits the file, and 
+removes write permission: </p>
+<p class="docText"><tt>&quot;$@&quot;</tt><a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">Section 
+35.20</a>, <tt>${..=..}</tt><a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">Section 
+36.7</a></p>
+<pre>#!/bin/sh
+# add write permission to the files
+chmod u+w &quot;$@&quot;
+# edit the files; use vi if VISUAL not defined
+${VISUAL=vi} &quot;$@&quot;
+# remove write permission
+chmod -w &quot;$@&quot;</pre>
+<p class="docText"><span class="docEmphasis">— BB</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-8">50.8 cx, cw, c-w: Quick File Permission Changes</h3>
+<p class="docText">Here's a short script that I use a lot. To make a new shell 
+script executable, for example, I type: </p>
+<pre>% <b>cx scriptfile</b></pre>
+<p class="docText">Using <i>cw</i> adds write permission; <i>c-w</i> takes it 
+away. This is the single script file for all three commands: </p>
+<pre>#! /bin/sh
+case &quot;$0&quot; in
+*cx)  chmod +x &quot;$@&quot; ;;
+*cw)  chmod +w &quot;$@&quot; ;;
+*c-w) chmod -w &quot;$@&quot; ;;
+*)    echo &quot;$0: Help!  Shouldn't get here!&quot; 1&gt;&amp;2; exit 1 ;;
+esac</pre>
+<p class="docText">The script has three links. Put it in a file named <i>cx</i>. 
+Then type: </p>
+<pre>% <b>chmod +x cx</b>
+% <b>ln cx cw</b>
+% <b>ln cx c-w</b></pre>
+<p class="docText">The script tests the name it was called with, in <tt>$0</tt>, 
+to decide which <i>chmod</i> command to run. This trick saves disk space. You 
+can add other commands, too, by adding a line to the <i>case</i> and another 
+link. Or <span class="docEmphBold">you can use aliases</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-7">Section 
+50.7</a>). </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-9">50.9 A Loophole: Modifying Files Without Write 
+Access</h3>
+<p class="docText"><span class="docEmphBold">No one said that Unix is perfect</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-20">Section 
+1.20</a>), and one of its nagging problems has always been security. Here's one 
+glitch that you should be aware of. If you don't have write access to a file, 
+you can't modify it. However, if you have write access to the directory, you can 
+get around this as follows: </p>
+<pre>% <b>ls -l unwritable</b>
+-r--r--r--  1 john         334 Mar 30 14:57 unwritable
+% <b>cat &gt; unwritable</b>
+unwritable: permission denied
+% <b>cat unwritable &gt; temp</b>
+% <b>vi temp</b>
+   ...
+% <b>mv temp unwritable</b>
+override protection 444 for unwritable? <b>y</b>
+% <b>cat unwritable</b>
+John wrote this originally, and made the file read-only.
+But then Mike came along and wrote:
+I should not have been able to do this!!!</pre>
+<p class="docText">I couldn't write the file <span class="docEmphasis">
+unwritable</span> directly. But I was able to copy it, and then use <i>vi</i> to 
+make whatever changes I wanted. After all, I had read access, and to copy a 
+file, you only need to be able to read it. When I had my own copy, I could (of 
+course) edit it to my heart's content. When I was done, I was able to <i>mv</i> 
+the new file on top of <span class="docEmphasis">unwritable</span>. Why? 
+Renaming a file requires only that you be able to write the file's directory. 
+You don't need to be able to write the file itself. (Note that <i>cp</i> 
+wouldn't work — copying requires <span class="docEmphasis">unwritable</span> to 
+be writable, if it already exists.) This is one reason to watch directory access 
+fairly closely. </p>
+<p class="docText">As you can see, allowing directory-write access to others can 
+be dangerous. If this is a problem for you, solve it by setting your
+<span class="docEmphBold">umask</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-4">Section 
+49.4</a>) correctly and using <span class="docEmphBold">chmod</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-5">Section 
+50.5</a>) to fix permissions of existing directories. Or you may be able to 
+leave the directory writable and <span class="docEmphBold">set the directory's 
+sticky bit</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-4">Section 
+50.4</a>). </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-10">50.10 A Directory That People Can Access but Can't 
+List</h3>
+<p class="docText">Do you need to let someone use a file of yours, but you don't 
+want everyone on the system to be able to snoop around in the directory? You can 
+give execute permission, but not read permission, to a directory. Then, if a 
+file in the directory is accessible, a person can use the file by typing the 
+exact filename. <i>ls</i> will say the directory is &quot;unreadable.&quot; Wildcards 
+won't work. </p>
+<p class="docText">Here's an example. Let's say that your home directory has <tt>
+rwxr-xr-x</tt> permissions (everyone can access and list files in it). Your 
+username is <span class="docEmphasis">hanna</span>. You have a subdirectory 
+named <span class="docEmphasis">project</span>; you set its permissions so that 
+everyone else on the system has execute-only permission. </p>
+<p class="docText"><tt>-d</tt>
+<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-5">
+Section 8.5</a></p>
+<pre>hanna% <b>pwd</b>
+/home/hanna
+hanna% <b>chmod 711 project</b>
+hanna% <b>ls -ld project project/myplan</b>
+drwx--x--x  2    hanna     512  Jul 26 12:14 project
+-rw-r--r--  1    hanna    9284  Jul 27 17:34 project/myplan</pre>
+<p class="docText">Now you tell the other user, <span class="docEmphasis">toria</span>, 
+the exact name of your file, <span class="docEmphasis">myplan</span>. Like 
+everyone else on the system, she can access your <span class="docEmphasis">
+project</span> directory. She can't list it because she doesn't have read 
+permission. Because she knows the exact filename, she can read the file because 
+the file is readable (anyone else could read the file, too, if they knew its 
+exact name): </p>
+<pre>toria% <b>cd /home/hanna/project </b>
+toria% <b>pwd </b>
+pwd: can't read .
+toria% <b>ls </b>
+ls: . unreadable
+toria% <b>more myplan </b>
+   <i> ...File appears...</i>
+toria% <b>ln myplan /home/toria/project.hanna/plan </b></pre>
+<p class="docText">(We're using the &quot;real&quot; <i>pwd</i> command that reads the 
+filesystem to find your current directory. That's why it complains <tt>can't</tt>
+<tt>read</tt> <tt>.</tt>. If you're using the shell's shortcut <i>pwd</i>, you 
+probably won't get the error shown above.
+<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-4">
+Section 31.4</a> has details.) </p>
+<p class="docText">In the example above, <span class="docEmphasis">toria</span> 
+made a <span class="docEmphBold">hard link</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-5">Section 
+10.5</a>) to the <span class="docEmphasis">myplan</span> file, with a different 
+name, in her own <span class="docEmphasis">project.hanna</span> directory. (She 
+could have copied, printed, or used any other command that reads the file.) Now, 
+if you (<span class="docEmphasis">hanna</span>) want to, you can deny everyone's 
+permission to your <span class="docEmphasis">project</span> directory.
+<span class="docEmphasis">toria</span> still has her link to the file, though. 
+She can read it any time she wants to, follow the changes you make to it, and so 
+on: </p>
+<pre>toria% <b>cd </b>
+toria% <b>ls -ld project.hanna project.hanna/plan </b>
+drwx------  2    toria     512  Jul 27 16:43 project.hanna
+-rw-r--r--  2    hanna    9284  Jul 27 17:34 project.hanna/plan
+toria% <b>more project.hanna/plan </b>
+   <i> ...File appears...</i></pre>
+<p class="docText"><span class="docEmphasis">toria</span> has protected her
+<span class="docEmphasis">project.hanna</span> directory so that other users 
+can't find her link to <span class="docEmphasis">hanna</span>'s file. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">If <span class="docEmphasis">hanna</span> denies 
+        permission to her directory, <span class="docEmphasis">toria</span> can 
+        still read the file through her hard link. If <span class="docEmphasis">
+        toria</span> had made a symbolic link, though, she wouldn't be able to 
+        access the file any more. That's because <span class="docEmphBold">a 
+        hard link keeps the file's i-number</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-2">Section 
+        10.2</a>) but a symbolic link doesn't. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">You might also want to give other users permission to list 
+and access the files in a directory, but not make the directory open to all 
+users. One way to do this is to put a fully accessible directory with an unusual 
+name inside an unreadable directory. Users who know the exact name of the fully 
+accessible directory can <i>cd</i> to it; other users can't find it without its 
+name: </p>
+<pre>hanna% <b>chmod 711 project</b>
+hanna% <b>chmod 777 project/pLaN</b>
+hanna% <b>ls -ld project project/pLaN</b>
+drwx--x--x  3    hanna     512  Jul 27 17:36 project
+drwxrwxrwx  2    hanna     512  Jul 27 17:37 project/pLaN</pre>
+<p class="docText">Users who type <tt>cd /home/hanna/project/pLaN</tt> can list 
+the directory's contents with <i>ls</i>. With the permissions you've set, other 
+users can also create, delete, and rename files inside the
+<span class="docEmphasis">pLaN</span> directory — though you could have used 
+more restrictive permissions like <tt>drwxr-xr-x</tt> instead. </p>
+<p class="docText">This setup can still be a little confusing. For instance, as
+<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-4">
+Section 31.4</a> explains, the <i>pwd</i> command won't work for users in the
+<span class="docEmphasis">pLaN</span> directory because <i>pwd</i> can't read 
+the <span class="docEmphasis">project</span> directory. Variables like
+<span class="docEmphBold">$cwd and $PWD</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">Section 
+35.5</a>) will probably have the absolute pathname. If another user gets lost in 
+a restricted directory like this, the best thing to do is <i>cd</i> to the home 
+directory and start again. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-11">50.11 Juggling Permissions</h3>
+<p class="docText">Like any security feature, Unix permissions occasionally get 
+in your way. When you want to let people use your apartment, you have to make 
+sure you can get them a key; and when you want to let someone into your files, 
+you have to make sure they have read and write access. </p>
+<p class="docText">In the ideal world, each file would have a list of users who 
+can access it, and the file's owner could just add or delete users from that 
+list at will. Some secure versions of Unix are configured this way, but standard 
+Unix systems don't provide that degree of control. Instead, we have to know how 
+to juggle Unix file permissions to achieve our ends. </p>
+<p class="docText">For example, suppose I have a file called
+<span class="docEmphasis">ch01</span> that I want edited by another user,
+<span class="docEmphasis">joe</span>. I tell him that the file is
+<span class="docEmphasis">/books/ptools/ch01</span>, but he reports to me that 
+he can't access it. </p>
+<pre>joe % <b>cd /books/ptools</b>
+joe % <b>more ch01</b>
+ch01: Permission denied</pre>
+<p class="docText">The reason <span class="docEmphasis">joe</span> can't read 
+the file is that it is set to be readable only by me. <span class="docEmphasis">
+joe</span> can check the permissions on the file using the <i>-l</i> option to 
+the <i>ls</i> command: </p>
+<pre>joe % <b>ls -l ch01</b>
+-rw-------  1 lmui       13727 Sep 21 07:43 ch01</pre>
+<p class="docText"><span class="docEmphasis">joe</span> asks me (<span class="docEmphasis">lmui</span>) 
+to give him read and write permission on the file. Only the file owner and
+<span class="docEmphasis">root</span> can change permission for a file. Now, 
+what's the best way to give <span class="docEmphasis">joe</span> access to
+<span class="docEmphasis">ch01</span>? </p>
+<p class="docText">The fastest and most sure-fire way to give another user 
+permission is to extend read and write permission to everyone: </p>
+<pre>lmui % <b>chmod 666 ch01</b>
+lmui % <b>ls -l ch01</b>
+-rw-rw-rw-  1 lmui       13727 Sep 21 07:43 ch01</pre>
+<p class="docText">But this is sort of like leaving your front door wide open so 
+your cat can get in and out. It's far better to extend read and write access to 
+a common group instead of to the entire world. I try to give
+<span class="docEmphasis">joe</span> access to the file by giving group read and 
+write access: </p>
+<pre>lmui % <b>chmod 660 ch01</b>
+lmui % <b>ls -l ch01</b>
+-rw-rw----  1 lmui       13727 Sep 21 07:43 ch01</pre>
+<p class="docText">But <span class="docEmphasis">joe</span> reports that it 
+still doesn't work: </p>
+<pre>joe % <b>more ch01</b>
+ch01: Permission denied</pre>
+<p class="docText">What happened? Well, I gave read and write permission to the 
+file's group, but <span class="docEmphasis">joe</span> doesn't belong to that 
+group. You can find out the group a file belongs to using the <i>-lg</i> option 
+to <i>ls</i>. (This is the default on many systems when you type <tt>ls -l</tt>. 
+Other systems are different. For instance, the GNU <i>ls</i> command ignores <i>
+-g</i> and has a <i>-G</i> option for when you don't want to see the group 
+name.) </p>
+<pre>joe % <b>ls -lg ch01</b>
+-rw-rw----  1 lmui     power          13727 Sep 21 07:43 ch01</pre>
+<p class="docText">You can use the <span class="docEmphBold">groups command</span> 
+(<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-6">Section 
+49.6</a>) to find out what groups a user belongs to: </p>
+<pre>% <b>groups joe</b>
+joe : authors ora
+% <b>groups lmui</b>
+lmui : authors power wheel ora</pre>
+<p class="docText">The <span class="docEmphasis">ch01</span> file belongs to 
+group <span class="docEmphasis">power</span>. <span class="docEmphasis">joe</span> 
+isn't a member of this group, but both <span class="docEmphasis">lmui</span> and
+<span class="docEmphasis">joe</span> are in the <span class="docEmphasis">
+authors</span> group. To give <span class="docEmphasis">joe</span> access to the 
+file <span class="docEmphasis">ch01</span>, therefore, I need to put the file in 
+group <span class="docEmphasis">authors</span>. To do that, I use the
+<span class="docEmphBold">chgrp</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-17">Section 
+1.17</a>) command: </p>
+<pre>lmui % <b>chgrp authors ch01</b>
+lmui % <b>ls -lg ch01</b>
+-rw-rw----  1 lmui     authors        13727 Sep 21 07:43 ch01</pre>
+<p class="docText">Now <span class="docEmphasis">joe</span> can read and write 
+the file. (On some systems, he may need to run <span class="docEmphBold">newgrp</span> 
+(<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-4">Section 
+49.4</a>) first.) </p>
+<p class="docText"><span class="docEmphasis">— LM</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-12">50.12 File Verification with md5sum</h3>
+<p class="docText">How can you know if a file has been corrupted — by accident 
+or by a malicious user? You can check the number of characters with
+<span class="docEmphBold">ls -l</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+50.2</a>), but the corrupted file could have the same number of characters, just 
+some <span class="docEmphasis">different</span> ones. You can check the
+<span class="docEmphBold">last-modification date</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-2">Section 
+8.2</a>), but that's easy to change, to any time you want, with <i>touch</i>. 
+And, of course, you can read through the file, unless it's a binary 
+(nonprintable) file or it's just too long. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: md5sum</p>
+<p class="docText">The easy way is to compute a <span class="docEmphasis">
+checksum</span> — an electronic <span class="docEmphasis">fingerprint</span> or
+<span class="docEmphasis">message digest</span> — that identifies the file at a 
+time you know it's correct. Save that checksum in a secure place (on an 
+unwritable CD-ROM, on a filesystem with write protection disabled in hardware, 
+or just on a piece of paper). Then, when you want to verify the file, recompute 
+the checksum and compare it to the original. That's just what the <i>md5sum</i> 
+utility does. </p>
+<p class="docText"><i>md5sum</i> is a more secure version of the earlier Unix <i>
+sum</i> program, and it's also handier to use. By default, you give <i>md5sum</i> 
+a list of pathnames; it will write checksums to its standard output. Later, use 
+the <i>md5sum</i> -<i>c</i> (&quot;check&quot;) option to compare the files to their 
+checksums. The first command below calculates checksums for some <i>gzip</i>ped
+<i>tar</i> archives and saves it in a temporary file. (If we were doing this 
+&quot;for real,&quot; I'd copy that temporary file someplace more secure!) The second 
+command shows the file. The third command compares the files to their stored 
+checksums: </p>
+<p class="docText"><tt>$?</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">
+Section 35.12</a></p>
+<pre>$ <b>md5sum *.tar.gz &gt; /tmp/sums.out </b>
+$ <b>cat /tmp/sums.out </b>
+018f4aee79e049095a7b16ed1e7ec925  linux-ar-40.tar.gz
+52549f8e390db06f9366ee83e59f64de  nvi-1.79.tar.gz
+856b4af521fdb78c978e5576f269c1c6  palinux.tar.gz
+61dcb5614a61bf123e1345e869eb99d4  sp-1.3.4.tar.gz
+c22bc000bee0f7d6f4845eab72a81395  ssh-1.2.27.tar.gz
+e5162eb6d4a40e9e90d0523f187e615f  vmware-forlinux-103.tar.gz
+   <i> ...sometime later, maybe...</i>
+$ <b>md5sum -c /tmp/sums.out </b>
+linux-ar-40.tar.gz: OK
+nvi-1.79.tar.gz: OK
+palinux.tar.gz: OK
+sp-1.3.4.tar.gz: OK
+ssh-1.2.27.tar.gz: OK
+vmware-forlinux-103.tar.gz: OK
+$ <b>echo $? </b></pre>
+<p class="docText">If all the files match, <i>md5sum</i> returns an exit status 
+of 0. Files that don't match give a <tt>FAILED</tt> message and a nonzero exit 
+status. </p>
+<p class="docText">The exit status — as well as the options <i>-- status</i> (no 
+output, only return statuses) and <i>-w</i> (warn if the checksum line is 
+improperly formatted) — can help you set up an automated checking system. Some 
+software downloading and distribution systems, like <span class="docEmphBold">
+RPM</span> (<a class="docLink" href="_chapter 40.htm#upt3-CHP-40-SECT-11">Section 
+40.11</a>), can do this for you (although in automated systems, it's worth 
+thinking about the integrity of the checksum: does it come from a system you can 
+trust?). If you're a system administrator, look into Tripwire, a tool for 
+tracking MD5 checksums of lots of files on your system. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-13">50.13 Shell Scripts Must Be Readable and (Usually) 
+Executable</h3>
+<p class="docText">Almost everyone knows that you need to make a program file 
+executable — otherwise, Unix won't execute it. Well, that's true for directly 
+executable binary files like C and Pascal programs, but it's not quite true for 
+interpreted programs like shell scripts. </p>
+<p class="docText">The Unix kernel can read an executable binary directly: if 
+there's execute permission, the kernel is happy; it doesn't need read 
+permission. But a shell script has to be read by a user's Unix program (a 
+shell). To read a file, any Unix program has to have read permission. So shell 
+scripts must be readable. </p>
+<p class="docText">
+<img alt="figs/bomb.gif" src="bomb.gif" border="0" width="24" height="30">
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">
+Section 35.17</a></p>
+<p class="docText">Shell scripts don't need execute permission if you start the 
+shell and give it the script file to read: </p>
+<pre>% <b>sh  </b><i>scriptfile </i>
+% <b>sh &lt;  </b><i>scriptfile </i></pre>
+<p class="docText">The execute permission is a sign for the kernel that it can 
+try to execute the file when you type only the filename: </p>
+<pre>% <tt><i>scriptfile</i></tt></pre>
+<p class="docText">So shell scripts don't need to be executable — it's just 
+handy. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-14">50.14 Why Can't You Change File Ownership?</h3>
+<p class="docText">This restriction is not bogus, because the system supports
+<span class="docEmphBold">disk quotas</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-11">Section 
+15.11</a>). If you could give away your own files, you could do something like 
+the following: </p>
+<pre>% <b>mkdir .hide; chmod 700 .hide</b>
+% <b>cd .hide</b>
+% <b>create_huge_file &gt;foo</b>
+% <b>chown prof1 foo</b>
+% <b>create_huge_file &gt;bar</b>
+% <b>chown prof2 bar</b>
+% <b>create_huge_file &gt;ba</b>z
+% <b>chown prof3 baz</b></pre>
+<p class="docText">All you would need do is find someone with a high quota or no 
+quota (such as a professor) who does not often check his own usage (such as a 
+professor) and probably does not care that the disk is 99 percent full (such as 
+a, er, well, never mind), and then give away files as necessary to keep under 
+your own quota. You could regain ownership of the file by copying it to another 
+disk partition, removing the original, and copying it back. </p>
+<p class="docText">If you need to change ownership, there is a
+<span class="docEmphBold">workaround</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-15">Section 
+50.15</a>) that doesn't require root access. </p>
+<p class="docText"><span class="docEmphasis">— CT</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-50-SECT-15">50.15 How to Change File Ownership Without chown</h3>
+<p class="docText">Unix systems with <span class="docEmphBold">disk quotas</span> 
+(<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-11">Section 
+15.11</a>) <span class="docEmphBold">won't let you change the owner</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-14">Section 
+50.14</a>) of a file; only the superuser can use <i>chown</i>. Here's a 
+workaround for those systems. </p>
+<p class="docText"><tt>-d</tt>
+<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-5">
+Section 8.5</a>, <tt>-f</tt>
+<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-10">
+Section 14.10</a></p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">The file's current owner should make sure that the new 
+  owner has write permission on the directory where the file is and read 
+  permission on the file itself: </p>
+  <pre>jerry% <b>ls -dl . afile</b>
+drwxr-xr-x   2 jerry    512  Aug 10 12:20 .
+-rw-r--r--   1 jerry   1934  Aug 10 09:34 afile
+jerry% <b>chmod go+w .</b></pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">The new owner (logged in as herself) should rename the 
+  file, make a copy, and delete the original file. If the new owner is there at 
+  the same time, <span class="docEmphBold">su</span> (<a class="docLink" href="_chapter 49.htm#upt3-CHP-49-SECT-9">Section 
+  49.9</a>) is probably the fastest way to change accounts: </p>
+  <pre>jerry% <b>su laura</b>
+Password:
+laura% <b>mv afile afile.tmp</b>
+laura% <b>cp -p afile.tmp afile</b>
+laura% <b>ls -l afile</b>
+-rw-r--r--   1 laura   1934  Aug 10 09:34 afile
+laura% <b>rm -f afile.tmp</b>
+laura% <b>exit</b>
+jerry% <b>chmod go-w .</b></pre>
+  </span></li>
+</ol>
+</span>
+<p class="docText">The <span class="docEmphBold">cp -p</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-12">Section 
+10.12</a>) command preserves the file's original permissions and last 
+modification time. After the new owner (<span class="docEmphasis">laura</span>) 
+is done copying, the old owner (<span class="docEmphasis">jerry</span>) takes 
+away the directory's write permission again. Now <span class="docEmphasis">laura</span> 
+can edit <span class="docEmphasis">afile</span>, change its modes, and so on: 
+she owns it. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<blockquote><p class="docFootnote" id="EN50-1"><a class="docLink" href="#ENB50-1">[1]</a>&nbsp;&nbsp;On some Unix systems,
+  <span class="docEmphasis">ls -l</span> produces an eight-column listing 
+  without the group name (here, <tt>books</tt>). Use <span class="docEmphasis">
+  ls -lg</span> to get the listing format shown here.</p></blockquote>
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 49.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 51.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

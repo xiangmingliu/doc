@@ -1,0 +1,640 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 44</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 43.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 45.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 44. Devices</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-1">44.1 Quick Introduction to Hardware</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-2">44.2 Reading Kernel Boot Output</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-3">44.3 Basic Kernel Configuration</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-4">44.4 Disk Partitioning</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-5">44.5 Filesystem Types and /etc/fstab</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-6">44.6 Mounting and Unmounting Removable Filesystems</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-7">44.7 Loopback Mounts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-8">44.8 Network Devices — ifconfig</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-9">44.9 Mounting Network Filesystems — NFS, SMBFS</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-10">44.10 Win Is a Modem Not a Modem?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-11">44.11 Setting Up a Dialup PPP Session</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-12">44.12 USB Configuration</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-13">44.13 Dealing with Sound Cards and Other Annoying Hardware</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-44-SECT-14">44.14 Decapitating Your Machine — Serial Consoles</a></li>
+</ul>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-1">44.1 Quick Introduction to Hardware</h3>
+<p class="docText">Your Unix machine can likely talk to a wide collection of 
+hardware: disk controllers and <span class="docEmphBold">disks</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-4">Section 
+44.4</a>,
+<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-5">
+Section 44.5</a>), <span class="docEmphBold">CD-ROMs</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-6">Section 
+44.6</a>), <span class="docEmphBold">ethernet cards</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-8">Section 
+44.8</a>), <span class="docEmphBold">modems</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-10">Section 
+44.10</a>), <span class="docEmphBold">sound cards</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-13">Section 
+44.13</a>), and so on. Each device needs its own little piece of software within 
+the kernel, called a device driver. Some device drivers are simple, and some are 
+very complex; some cover multiple devices, and some are specific to one 
+particular piece of hardware. </p>
+<p class="docText">Many modern Unix platforms use loadable kernel modules for 
+most device drivers, so that drivers can be loaded at run time rather than 
+compiled into the kernel. </p>
+<p class="docText">Many devices also have user-space tools to configure them, 
+like <span class="docEmphBold">ifconfig</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-8">Section 
+44.8</a>) for <span class="docEmphBold">network devices</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-6">Section 
+44.6</a>,
+<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-7">
+Section 44.7</a>), <span class="docEmphBold">mount</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-9">Section 
+44.9</a>) for disks and so forth. </p>
+<p class="docText">In this chapter we'll give you the whirlwind overview of 
+devices on Unix. Since there are so many devices and so many platforms, we'll 
+gloss over a lot of details, but hopefully this will give you enough to get 
+started with and a few hints as to where to find more information. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-2">44.2 Reading Kernel Boot Output</h3>
+<p class="docText">As your Unix machine boots up, it will display a message for 
+each device driver as it initializes. This is a good way to tell what devices 
+your kernel was able to find. The exact output varies, but here is the output 
+for hard drive controllers, hard drives, and network cards from a FreeBSD 
+machine and a Debian Linux machine: </p>
+<pre># FreeBSD
+atapci0: &lt;Intel ICH ATA66 controller&gt; port 0xffa0-0xffaf at device 31.1 on pci0
+ata0: at 0x1f0 irq 14 on atapci0
+ata1: at 0x170 irq 15 on atapci0
+ad0: 19569MB &lt;ST320430A&gt; [39761/16/63] at ata0- master UDMA66
+afd0: 239MB &lt;IOMEGA ZIP 250 ATAPI&gt; [239/64/32] at ata0-slave using PIO3
+acd0: CDROM &lt;ATAPI CDROM&gt; at ata1-master using PIO4
+rl0: &lt;D-Link DFE-530TX+ 10/100BaseTX&gt; port 0xbc 00-0xbcff
+    mem 0xefdfff00-0xefdfffff irq 11 at device 4.0 on pci1
+
+# Linux
+PIIX4: IDE controller on PCI bus 00 dev 39
+PIIX4: not 100% native mode: will probe irqs later
+    ide0: BM-DMA at 0xf000-0xf007, BIOS settings: hda:DMA, hdb:pio
+    ide1: BM-DMA at 0xf008-0xf00f, BIOS settings: hdc:pio, hdd:pio
+hda: WDC WD307AA-32BAA0, ATA DISK drive
+ide0 at 0x1f0-0x1f7,0x3f6 on irq 14
+hda: WDC WD307AA-32BAA0, 29333MB w/2048kB Cache, CHS=3739/255/63, UDMA
+Partition check:
+ hda: hda1 hda2 hda3
+rtl8139.c:v1.07 5/6/99 Donald Becker
+    http://cesdis.gsfc.nasa.gov/linux/drivers/rtl8139.html
+eth0: RealTek RTL8139 Fast Ethernet at 0xd400, IRQ 11, 00:50:ba:d3:9e:14.</pre>
+<p class="docText">More specifically, in the line:</p>
+<pre>atapci0: &lt;Intel ICH ATA66 controller&gt; port 0xffa0-0xffaf at device 31.1 on pci0</pre>
+<p class="docText"><tt>atapci</tt> is the name of the device; <tt>0</tt> is the 
+number of the device (devices are generally numbered sequentially with the first 
+one probed getting the number 0); <tt>&lt;Intel ICH ATA66 controller&gt;</tt> is the 
+name of the specific driver that successfully attached to this device; <tt>port 
+0xffa0-0xffaf at device 31.1</tt> is physical address information about where 
+this particular device is located; and finally, <tt>on</tt> <tt>pci0</tt> tells 
+us this device is attached to the first PCI bus (since <tt>pci</tt> is the 
+device name of a PCI bus and 0 is the number assigned to the first PCI bus 
+probed). </p>
+<p class="docText">Note that in both FreeBSD and Linux, each line gives 
+information about which driver is being used, hardware addresses, and options. 
+Other platforms give similar information during boot. Often if you have a device 
+that's not being recognized, you will see a line in the boot output telling you 
+that a device was found but no driver for it could be found. If you would like 
+more information, you may be able to boot your machine with
+<span class="docEmphasis">boot -v</span> from the bootstrap prompt — the BSDs 
+and Solaris support <i>-v</i>. This enables verbose booting, which prints out a 
+lot more information during device probing and may help you understand why a 
+device driver couldn't be found. Linux doesn't have any straightforward way to 
+get verbose information like this, but you can use <i>lspci</i> to show every 
+device on the PCI bus, whether there's an active driver for that device or not.
+</p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-3">44.3 Basic Kernel Configuration</h3>
+<p class="docText">Generally a Unix kernel is made up of some core, which 
+handles fundamental functionality like virtual memory, and a lot of modules for 
+various devices. A kernel configuration file is used to build a kernel and, on 
+some platforms, a set of loadable kernel modules. </p>
+<p class="docText">A kernel configuration file has a list of kernel options and 
+then a list of devices and device options. The kernel build process uses this 
+file to determine exactly what to build; this way you can have a kernel that 
+supports exactly the hardware you have in your machine but isn't using any extra 
+resources to support hardware you don't have. </p>
+<p class="docText">Some example device lines from various kernel configuration 
+files:</p>
+<pre>#
+# FreeBSD samples
+#
+maxusers        128
+options         INCLUDE_CONFIG_FILE
+options         INET                    #InterNETworking
+device          isa
+device          pci
+device          ata0    at isa? port IO_WD1 irq 14
+device          ata
+device          atadisk                 # ATA disk drives
+device          atapicd                 # ATAPI CDROM drives
+device          atapifd                 # ATAPI floppy drives
+device          atapist                 # ATAPI tape drives
+options         ATA_STATIC_ID           #Static device numbering
+
+#
+# Linux samples
+#
+# Loadable module support
+CONFIG_MODULES=y
+CONFIG_MODVERSIONS=y
+# CONFIG_KMOD is not set
+
+# General setup
+CONFIG_NET=y
+CONFIG_PCI=y
+
+# Block devices
+CONFIG_BLK_DEV_FD=m
+CONFIG_BLK_DEV_IDE=y
+# CONFIG_BLK_DEV_HD_IDE is not set
+CONFIG_BLK_DEV_IDEDISK=y
+CONFIG_BLK_DEV_IDECD=m
+CONFIG_BLK_DEV_IDETAPE=m
+CONFIG_BLK_DEV_IDEFLOPPY=m
+# CONFIG_BLK_DEV_IDESCSI is not set
+CONFIG_BLK_DEV_IDEPCI=y
+CONFIG_BLK_DEV_IDEDMA=y
+CONFIG_IDEDMA_AUTO=y</pre>
+<p class="docText">The kernel build process involves setting up an appropriate 
+configuration file for your platform and then using a tool (generally <i>config</i>(8); 
+check the manpage) to create a kernel build setup from the configuration file. 
+Then you simply run <i>make</i> within the kernel build setup and you have a new 
+kernel. Once the new kernel is installed, you reboot the machine, and poof, 
+you're running on a sleek new customized kernel. </p>
+<p class="docText">To understand how to configure the kernel on your platform, 
+consult the documentation for that platform. Note that many platforms have tools 
+or even GUIs for helping you configure your kernel. For the free Unixes, search 
+the Web. There are extensive HOWTOs available describing how to configure your 
+kernel in excruciating detail. </p>
+<p class="docText">Linux has a very detailed HOWTO for kernel configuration at
+<a class="docLink" href="http://www.tldp.org/HOWTO/Kernel-HOWTO.html" target="_blank">
+http://www.tldp.org/HOWTO/Kernel-HOWTO.html</a>. The short version is that the 
+configuration file mentioned above is stored in the <i>.config</i> file at the 
+top of the kernel source tree (usually <i>/usr/src/linux</i>). Generally you 
+don't have to edit it directly; instead you'd use <tt>make</tt> <tt>menuconfig</tt> 
+or <tt>make</tt> <tt>xconfig</tt>, again at the top of the kernel source tree, 
+to use the fancy kernel configuration tools. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-4">44.4 Disk Partitioning</h3>
+<p class="docText">A physical disk can be divided into smaller blocks, called
+<span class="docEmphasis">partitions</span>. Unix disk devices operate on 
+partitions, where each device is a single partition. The simplest configuration 
+is one big partition for the entire disk. </p>
+<p class="docText">The advantage to having filesystems on separate partitions is 
+that different parts of your operating system are somewhat protected from each 
+other. If your users have filled up <i>/home</i>, programs writing log files in
+<i>/var</i> aren't affected if <i>/home</i> and <i>/var</i> are separate 
+partitions. If your disk gets corrupted, only the corrupted partition is 
+damaged. The disadvantage is that, in most cases, if you mistakenly allocated 
+too little disk space for a partition, you can't steal space from your <i>/var</i> 
+to give you more room on <i>/home</i> once your system is set up. </p>
+<p class="docText">On non-PC hardware, partitioning is generally simple enough; 
+use <i>format</i> or <i>disklabel</i> to write a partition table onto the disk. 
+Traditionally, partitions are named with a letter following the device name, for 
+example, <i>/dev/ad0a</i>, <i>/dev/ad0c</i> and so forth. By convention, 
+partition <tt>a</tt> is for a root filesystem (<tt>/</tt>), <tt>b</tt> is for 
+swap space, <tt>c</tt> represents the whole disk, and so forth. Of course, every 
+current platform changes this in some way. Check the manpages for the various 
+tools mentioned for more details on what to do for your specific platform. </p>
+<p class="docText">Solaris's disk device naming scheme is <i>/dev/dsk/c?t?d?s?</i>, 
+where each <tt>?</tt> is a number. The <tt>c</tt> is for controller, the <tt>t</tt> 
+for target (a physical address on the controller), the <tt>d</tt> for disk, and 
+the <tt>s</tt> for slice, another concept like partition. In this case, rather 
+than partition <tt>c</tt> representing the whole disk, slice <tt>2</tt> does. 
+This set of four numbers uniquely identifies a specific partition (slice) on a 
+specific disk. Solaris uses <i>format</i> to manipulate partition tables. </p>
+<p class="docText">On PC hardware, it's a bit more complicated, because the PC 
+BIOS has a concept of partitions built into its understanding of disks. Unixes 
+like Linux and FreeBSD that run on this hardware need to coexist with this 
+partition table, especially if you want a machine that can dual-boot Unix and 
+Windows. The BIOS understands no more than four <span class="docEmphasis">
+primary partitions</span> on each disk, due to the way it addresses partitions. 
+To get around this limitation, one primary partition can be set to be an
+<span class="docEmphasis">extended partition</span>, which can then serve as a 
+container for a different partition addressing scheme. Partitions within an 
+extended partition are called <span class="docEmphasis">logical partitions</span> 
+and have a few restrictions, but they aren't limited to four. The BIOS requires 
+a primary partition to boot; it can't boot from a logical partition. </p>
+<p class="docText">Linux names the IDE hard drives <i>/dev/hda</i> through <i>
+/dev/hdd</i> and the SCSI drives <i>/dev/sda</i> through <i>/dev/sdg</i>. Higher 
+letters are possible with extra controllers. The device name itself represents 
+the whole disk, as partition <tt>c</tt> and slice <tt>2</tt> did above. Linux 
+uses the BIOS nomenclature and uses primary partitions, extended partitions and 
+logical partitions. Primary partitions get partition numbers one through four, 
+and thus partition two on the second IDE disk would be <i>/dev/hdb2</i>. Logical 
+partitions get numbers higher than four. Linux uses <i>fdisk</i> to manipulate 
+partition tables. </p>
+<p class="docText">FreeBSD calls the BIOS primary partitions
+<span class="docEmphasis">slices</span> and doesn't use extended or logical 
+partitions. Its own partitions within a slice are then just called
+<span class="docEmphasis">partitions</span>. This has the advantage of allowing 
+a fairly traditional <tt>a</tt> through <tt>h</tt> partitioning, which just 
+lives in a particular slice. So the swap partition within the second BIOS slice 
+of the first IDE drive would be <i>/dev/ad0s2b</i>. FreeBSD uses <i>fdisk</i> to 
+deal with slices and <i>disklabel</i> to manipulate partition tables. </p>
+<p class="docText">As you can see, each platform has its own idiosyncrasies, but 
+each unambiguously defines a scheme for uniquely referring to a particular 
+partition on a particular disk. This lets us decide where we want our 
+filesystems and refer to them in <i>mount</i> commands and in
+<span class="docEmphBold">/etc/fstab</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-5">Section 
+44.5</a>). </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-5">44.5 Filesystem Types and /etc/fstab</h3>
+<p class="docText">A <span class="docEmphasis">filesystem</span> is the scheme 
+used to organize files on the disk. In the Windows world, FAT, FAT32, and NTFS 
+are all filesystems. Various Unixes have their own filesystems with a forest of 
+names: <span class="docEmphasis">ufs</span>, <span class="docEmphasis">ext2fs</span>,
+<span class="docEmphasis">vxfs</span>, <span class="docEmphasis">ffs</span>,
+<span class="docEmphasis">nfs</span>, <span class="docEmphasis">mfs</span>,
+<span class="docEmphasis">ISO9660</span> (which most CD-ROMs use) and special 
+filesystems like <span class="docEmphasis">tmpfs</span>,
+<span class="docEmphasis">procfs</span>, and <span class="docEmphasis">devfs</span>.
+</p>
+<p class="docText">Filesystems like <span class="docEmphasis">ufs</span> (Unix 
+File System), <span class="docEmphasis">ffs</span> (Fast File System),
+<span class="docEmphasis">vxfs</span> (Veritas Extended File System), and
+<span class="docEmphasis">ext2fs</span> (Extended File System, Version 2) are 
+simply ways of organizing inodes and bytes with various strengths and 
+weaknesses. <span class="docEmphasis">nfs</span> (Network File System) is a 
+filesystem for making remote files appear to be available locally.
+<span class="docEmphasis">mfs</span> (Memory File System) is a filesystem for 
+ramdisks, that is, file storage in memory instead of on disk.
+<span class="docEmphasis">tmpfs</span> (Temporary File System) is a file system 
+often used for /tmp which shares filespace and swap space dynamically.
+<span class="docEmphasis">procfs</span> (Process File System) simulates a 
+filesystem, but with process information in it instead of files. (<span class="docEmphasis">procfs</span> 
+on Linux is different from <span class="docEmphasis">procfs</span> on the BSDs; 
+FreeBSD has a <span class="docEmphasis">linprocfs</span> to simulate part of 
+Linux's <span class="docEmphasis">procfs</span>.) <span class="docEmphasis">
+devfs</span> is similar, but for devices instead of processes. </p>
+<p class="docText">Standard mounts are configured using <i>/etc/fstab</i> (or, 
+on some platforms, <i>/etc/vfstab</i>). <i>fstab</i> is just a list of 
+filesystems that should be mounted, along with where they should get mounted, 
+what type of filesystem each device contains, and any options. My FreeBSD <i>
+fstab</i> looks like this: </p>
+<pre># Device                Mountpoint      FStype  Options         Dump    Pass#
+/dev/ad0s1b             none            swap    sw              0       0
+/dev/ad2s1b             none            swap    sw              0       0
+/dev/ad0s1a             /               ufs     rw              1       1
+/dev/ad2s1e             /home           ufs     rw              2       2
+/dev/ad0s1f             /usr            ufs     rw              2       2
+/dev/ad0s1e             /var            ufs     rw              2       2
+/dev/acd0c              /cdrom          cd9660  ro,noauto       0       0
+proc                    /proc           procfs  rw              0       0</pre>
+<p class="docText">I have two swap partitions, <i>/dev/ad0s1b</i> and <i>
+/dev/ad2s1b</i>. My <i>/</i>, <i>/home</i>, <i>/usr</i>, and <i>/var</i> are all 
+separate <span class="docEmphasis">ufs</span> filesystems, and I have a CD-ROM 
+that can be mounted on <i>/cdrom</i> (but must be <span class="docEmphBold">
+manually mounted</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-6">Section 
+44.6</a>)) and a standard <span class="docEmphasis">procfs</span>. The last two 
+columns determine priority for backups and for being consistency checked by <i>
+fsck</i>. The <span class="docEmphasis">ufs</span> filesystems are all <i>fsck</i>ed, 
+with <i>/</i> first; the rest of my filesystems are types that don't need to be
+<i>fsck</i>ed. </p>
+<p class="docText">On other platforms, the options may be different, and the 
+device names will certainly be different, but the basic gist of <i>fstab</i> 
+will be the same. </p>
+<p class="docText">Some filesystem types support &quot;soft updates,&quot; which changes 
+slightly the way the filesystem writes files out to the disk and can 
+dramatically increase your effective disk speed. Consider looking at the 
+documentation for your platform and turning on soft updates (generally this is 
+done via <i>tunefs</i>). </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-6">44.6 Mounting and Unmounting Removable Filesystems</h3>
+<p class="docText">Removable disks are prevalent in Unix machines; CD-ROMs, 
+DVD-ROMs, Zip disks, and floppies are all removable disks. When a Unix system 
+boots, normal filesystems are all mounted automatically. By definition, 
+removable filesystems may not even be in the machine at boot time, and you 
+certainly don't want to have to reboot your machine just to change CDs. </p>
+<p class="docText">To do this, you use <i>mount</i> and <i>umount</i>. The <i>-t</i> 
+option allows you to specify the type of filesystem. On my FreeBSD machine, I 
+can mount a FAT-formatted Zip disk with: </p>
+<pre># <b>mount -t msdos /dev/afd0s4 /zip</b></pre>
+<p class="docText">If I've formatted the Zip disk with a BSD
+<span class="docEmphasis">ufs</span> filesystem instead, I don't need the <i>-t</i> 
+option, since <span class="docEmphasis">ufs</span> is the default on FreeBSD, 
+and I would use the BSD partitioning scheme (<i>/dev/afd0c</i>) instead of the 
+BIOS partitions (<i>/dev/afd0s4</i>). </p>
+<p class="docText">If you use your removable disk regularly, you can add it to 
+your <i>fstab</i> and make this simpler: </p>
+<pre>/dev/acd0c              /cdrom          cd9660  ro,noauto       0       0
+/dev/afd0c              /zip            ufs     rw,noauto       0       0
+/dev/afd0s4             /mszip          msdos   rw,noauto       0       0</pre>
+<p class="docText">Note that I've set up my fstab for both
+<span class="docEmphasis">ufs</span>-formatted and FAT-formatted Zip disks, and 
+that the Zip drive and the CD-ROM are both set <tt>noauto</tt> to keep them from 
+being automatically mounted. Having these in my <i>fstab</i> means I can just 
+type <span class="docEmphasis">mount /zip</span> or <span class="docEmphasis">
+mount /cdrom</span> to mount a Zip disk or CD-ROM. Don't forget to create the 
+directories <i>/cdrom</i>, <i>/zip</i>, and <i>/mszip</i>! </p>
+<p class="docText">Generally the <i>mount</i> and <i>umount</i> commands must be 
+run as root. However, you'd often like normal users to be able to mount and 
+unmount removable disks. Linux has an easy way to do this: just add <tt>user</tt> 
+to the options field in <i>/etc/fstab</i> and normal users will be able to mount 
+and unmount that device. (Incidentally, Linux also has an <tt>auto</tt> 
+filesystem type, which is very handy for removable devices, because it does its 
+best to dynamically figure out what filesystem is on the removable media.) On 
+other platforms, it can be a little more complex. Generally, the trick is to set 
+the permissions on the device file properly. On FreeBSD you also need to use <i>
+sysctl</i> to set <tt>vfs.usermount</tt>, which will allow users to mount 
+properly <i>chmod</i>ed devices on directories they own; similar tricks may be 
+needed on other platforms. To set the floppy drive to allow anyone to mount it 
+and the CD-ROM to allow anyone in the <tt>cdrom</tt> group to mount it, you'd do 
+something like this: </p>
+<pre># <b>chmod 666 /dev/fd0</b>
+
+# <b>chgrp cdrom /dev/acd0c</b>
+# <b>chmod 640 /dev/acd0c</b></pre>
+<p class="docText">Then, as a normal user in group <tt>cdrom</tt>, you could:</p>
+<pre>% <b>mkdir ~/cdrom</b>
+% <b>mount -t cd9660 /dev/acd0c ~/cdrom</b></pre>
+<p class="docText">Solaris has a daemon, <i>vold</i>, which handles all of the 
+messy details of removable media for you. At the time of this writing, very 
+current versions of Linux have automount daemons and <i>devfsd</i> to handle 
+such things; check your platform's current documentation. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-7">44.7 Loopback Mounts</h3>
+<p class="docText">Some platforms provide the capability to mount a file as if 
+it were a block device (like a <span class="docEmphBold">disk partition</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-4">Section 
+44.4</a>)). This allows mounting a file as if it were a hard disk, CD-ROM, or 
+any other physical media. The primary advantage to this is that it's a simple 
+way to create or work with a floppy, Zip, or CD-ROM image without needing the 
+physical device. You can mount a CD image without having to burn an actual CD or 
+manipulate a floppy boot image. Of course, different platforms call it different 
+things and use different tools. </p>
+<p class="docText">Mounting file images on Linux uses the
+<span class="docEmphasis">loop device</span> and is called a
+<span class="docEmphasis">loop mount</span> or a <span class="docEmphasis">
+loopback mount</span>. To mount an existing image as a filesystem, use the <tt>
+loop</tt> option to <i>mount</i>: </p>
+<pre>% <b>mount -t iso9660 -o loop image.iso /mnt</b>
+% <b>ls /mnt</b></pre>
+<p class="docText">To create a new image, you first create an empty file of the 
+correct size (this is effectively creating a <span class="docEmphBold">partition</span> 
+(<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-4">Section 
+44.4</a>) — in this case, a 100 megabyte image. You then attach the image to one 
+of the available loop device and use <i>mkfs</i> to create a new filesystem in 
+the image. Then you can mount the image normally. In this example, we'll release 
+the loop device we had to allocate specifically and let the mount find an 
+available loop device automatically. </p>
+<pre>% <b>dd if=/dev/zero of= </b><i>image.file </i> <b>bs=1k count=100000 </b>
+% <b>losetup /dev/loop </b> <i>image.file </i>
+% <b>mkfs -c /dev/loop </b> <b>100000 </b>
+% <b>losetup -d /dev/loop </b>
+% <b>mount -o loop  </b><i>image.file </i> /<b>mnt </b></pre>
+<p class="docText">FreeBSD has a similar capability, called
+<span class="docEmphasis">vnode disks</span>, with very similar syntax, but you 
+use <i>/dev/vn</i> instead of <i>/dev/loop</i> and <i>vnconfig</i> instead of <i>
+losetup</i>. See FreeBSD's <i>vnconfig</i>(8) manpage. </p>
+<p class="docText">Solaris also has loop devices as of Solaris 8. The device is
+<i>/dev/lofi</i> instead of <i>/dev/loop</i>, and you use <i>lofiadm</i> to 
+configure it. See Solaris's <i>lofiadm</i>(1M) and <i>lofi</i>(7D) manpages. </p>
+<p class="docText">FreeBSD and Solaris don't provide an equivalent to the <tt>
+loop</tt> option to <i>mount</i>; instead you just use <i>vnconfig</i> or <i>
+lofiadm</i> to explicitly associate a particular block device with the file and 
+mount the specific block device just like any other device. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-8">44.8 Network Devices — ifconfig</h3>
+<p class="docText"><i>ifconfig</i> is used to configure network devices such as 
+Ethernet cards. While booting, the kernel will find a device driver for the 
+actual device, but it will still need to be assigned an IP address, and any 
+protocol options need to be configured. Various platforms have different ways to 
+store this configuration information, but most use <i>ifconfig</i> somewhere in 
+the startup scripts to do the actual work. </p>
+<p class="docText">The primary use of <i>ifconfig</i> is to set up a network 
+device to use a particular IP address. <i>ifconfig</i> can also be used to set 
+network options and aliases. To bring up an interface (in this case, <tt>rl0</tt>) 
+on 192.168.1.1 with normal settings for a /24 network: </p>
+<pre># <b>ifconfig rl0 inet 192.168.1.1 netmask 255.255.255.0 broadcast 192.168.1.255 up</b></pre>
+<p class="docText">To temporarily bring a network interface down and then back 
+up later, something that can be useful for maintenance: </p>
+<pre># <b>ifconfig rl0 down</b>
+# <b>...maintenance operations...</b>
+# <b>ifconfig rl0 up</b></pre>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-9">44.9 Mounting Network Filesystems — NFS, SMBFS</h3>
+<p class="docText">Network filesystems provide the illusion that files on a 
+remote host are on your disk. Except for mounting and unmounting such a 
+filesystem and but for a few low-level details, they can be treated like any 
+local filesystem, albeit on a very slow disk. The two most common network 
+filesystems available on Unix platforms are the Network File System (NFS) and 
+Server Message Block File System (SMBFS). </p>
+<p class="docText">NFS has been around for a long time and is available on every 
+Unix system I've seen in the past ten years. Its interface is simple: an NFS 
+server has a set of exported filesystems (usually listed in <i>/etc/exports</i>), 
+and any permitted client can mount those filesystems using a straightforward <i>
+mount</i> invocation. Simply specify <tt><i>host</i></tt>:<tt><i>/filesystem</i></tt> 
+as the device, and tell <i>mount</i> that the filesystem is of type <tt>nfs</tt>:
+</p>
+<pre># <b>mount -t nfs orange:/home /orange</b></pre>
+<p class="docText">For more details on NFS on your platform, take a look at the 
+manpages for <i>exports</i>(5) and <i>mount_nfs</i>(8) or <i>nfs</i>(5). </p>
+<p class="docText">NFS mounts can hang up entirely if the NFS server goes down 
+or if you lose your net connection to it. Often this can require rebooting your 
+machine to fix. To avoid this, use the <tt>soft</tt> option when mounting NFS 
+filesystems. <tt>soft</tt> tells the NFS client system to use timeouts, so that 
+losing touch with the NFS server just causes I/O requests to time out instead of 
+hanging your machine. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">NFS by itself is extremely insecure. Be aware that 
+        running NFS without any other precautions on a publicly accessible 
+        network opens you up to a wide variety of attacks.
+        <a class="docLink" href="http://nfs.sourceforge.net/nfs-howto/security.html" target="_blank">
+        http://nfs.sourceforge.net/nfs-howto/security.html</a> addresses some of 
+        the issues involved and has links to other good information on the 
+        subject. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">SMB is the primary file and printer sharing protocol used by 
+Windows. <a class="docLink" href="_chapter 47.htm">
+Chapter 47</a> details Samba, the primary tool used to deal with SMB on Unix 
+systems. <i>smbfs</i> is the tool used to mount SMB-shared filesystems 
+(including Windows shared drives and the like) as if they were Unix filesystems. 
+Much like NFS, <i>smbfs</i> allows you to use <i>mount</i>; in this case, you 
+provide the <span class="docEmphasis">share name</span> as the device: </p>
+<pre># <b>mount -t smbfs //yellow/Public /yellow</b></pre>
+<p class="docText"><i>smbfs</i> is only supported on some platforms; check your 
+installation of Samba for details. </p>
+<p class="docText">Note that both filesystem types can be included in <i>/etc/fstab</i>, 
+just like any other filesystem: </p>
+<pre># Device                Mountpoint      FStype  Options         Dump    Pass#
+/dev/ad0s1b             none            swap    sw              0       0
+/dev/ad0s1a             /               ufs     rw              1       1
+/dev/acd0c              /cdrom          cd9660  ro,noauto       0       0
+orange:/home            /orange         nfs     rw              0       0
+//yellow/Public         /yellow         smbfs   rw              0       0</pre>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-10">44.10 Win Is a Modem Not a Modem?</h3>
+<p class="docText">The word &quot;modem&quot; is a contraction of &quot;modulator-demodulator.&quot; 
+The fundamental job of a modem is to turn a digital signal into an analog signal 
+and send that analog signal across a phone line (modulation) and to receive an 
+analog signal from a phone line and turn it back into the original digital 
+signal (demodulation). </p>
+<p class="docText">Controller-based modems do all of the digital signal 
+processing, D/A and A/D conversion, and phone-line interfacing in hardware. 
+Generally, these modems either are external modems that plug into a serial port 
+or have a serial port chip included and thus just look like an extra serial port 
+to the CPU. Configuring these modems under Unix is easy; just set up whatever 
+program uses the serial port to use the port speed and serial options you want.
+</p>
+<p class="docText">Host-based modems, often called &quot;Winmodems,&quot; provide some 
+level of hardware support (at a minimum, the physical phone line interface) and 
+then emulate some or all of the hardware modulation and demodulation in 
+software. There are a variety of specifications related to &quot;soft&quot; modems, and 
+current information on things like available drivers, issues, standards, and 
+whether a modem is a hard or soft modem are available at
+<a class="docLink" href="http://www.idir.net/~gromitkc/winmodem.html" target="_blank">
+http://www.idir.net/~gromitkc/winmodem.html</a> and
+<a class="docLink" href="http://www.linmodems.org" target="_blank">
+http://www.linmodems.org</a>. </p>
+<p class="docText">The problem that soft modems present to Unix is that the 
+software that makes up the fundamental functionality of the modem is almost 
+always Windows software. These modems are widely available and cheap and do have 
+some advantages, though, so there are efforts to provide Unix software for some 
+set of them. Unix soft-modem software is highly in flux at the time of this 
+writing. Before you buy a modem, be sure that you check the current information 
+on that modem and available drivers for the Unix platform you want to use before 
+you buy. Or spend a bit more and buy a modem that doesn't have these issues. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-11">44.11 Setting Up a Dialup PPP Session</h3>
+<p class="docText">Point-to-Point Protocol (PPP) is the way ISPs usually provide 
+dialup access (largely because this is the default protocol Windows dialup 
+uses). Unixes that can do dialup provide a PPP client, which you configure to 
+call the ISP and set up a PPP connection. An established connection functions as 
+a network connection — you can use <span class="docEmphBold">ifconfig</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-8">Section 
+44.8</a>,
+<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-3">
+Section 46.3</a>) to examine it and packets will be routed to the PPP connection 
+by default, and tools like <span class="docEmphBold">traceroute</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-4">Section 
+46.4</a>) can be used across it. </p>
+<p class="docText">Unixes provide two ways to run PPP: kernel PPP, where the PPP 
+code resides in the kernel and is therefore very fast but limited in features, 
+and user PPP, where packets have to be copied back and forth between kernel 
+space and user space, but a wide feature set can be provided. We'll give a quick 
+overview of both. </p>
+<p class="docText">Kernel PPP uses <i>pppd</i> and a fairly simple set of 
+configuration commands. You provide <i>pppd</i> with the information needed to 
+dial your modem appropriately and with whatever login information your ISP has 
+provided you, and it connects. Generally you then have to set up <i>/etc/resolv.conf</i> 
+to point to your ISP's <span class="docEmphBold">DNS</span> (<a class="docLink" href="_chapter 46.htm#upt3-CHP-46-SECT-9">Section 
+46.9</a>) server. Some implementations of <i>pppd</i> don't even know how to 
+dial the phone, and you'll have to use something like <i>kermit</i> to dial the 
+phone first. <i>pppd</i> must also be run as root. Look at your platform's 
+documentation for <i>pppd</i> for details on setting up kernel PPP on that 
+platform. </p>
+<p class="docText">Platforms that provide a user-space PPP client are a little 
+easier to work with. User-space PPP clients can be run by users other than root 
+(usually limited to a specific group); they tend to configure default routes, <i>
+/etc/resolv.conf</i>, and other details automatically; and they generally deal 
+with PAP or CHAP authentication (which many ISPs use) a little more easily. 
+Usually the user-space PPP client is just called <i>ppp</i>; look for its 
+manpage to see what it requires to configure it. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-12">44.12 USB Configuration</h3>
+<p class="docText">Many PCs support the Universal Serial Bus (USB). USB is a 
+hot-swappable standard; devices can be plugged in and unplugged while the 
+machine is running, and the system is supposed to recognize the new device or no 
+longer recognize the now disconnected device. </p>
+<p class="docText">Unixes deal with this requirement with low-level device 
+drivers to actually interface with the devices and with a daemon, <i>usbd</i>, 
+to monitor for changes on the fly or, on Linux, the hotplug facility (<a class="docLink" href="http://linux-hotplug.sourceforge.net" target="_blank">http://linux-hotplug.sourceforge.net</a>).
+</p>
+<p class="docText">Generally, there is very little configuration required for 
+supported USB devices. If you have the <span class="docEmphBold">correct kernel 
+modules</span> (<a class="docLink" href="_chapter 44.htm#upt3-CHP-44-SECT-3">Section 
+44.3</a>) loaded (and on many platforms they're loaded by default), just plug in 
+the device. Check your platform's supported hardware before buying a USB device, 
+as such devices are changing rapidly at the time of this writing and may or may 
+not have Unix drivers implemented yet. </p>
+<p class="docText">Specific issues you might run into include that USB disks may 
+need to use a special filesystem type (<tt>usbdevfs</tt>) and that specific 
+devices may require tools to actually use the device. Webcams and scanners are a 
+good example, as the device driver provides only low-level access to the device; 
+you still need a tool that can pull images off of the device and do something 
+useful with them. Extensive information is available on the Web about using many 
+USB devices on the free Unixes (<a class="docLink" href="http://www.linux-usb.org" target="_blank">http://www.linux-usb.org</a> 
+for Linux and the USB chapter in the FreeBSD handbook are places to start), and 
+it stays fairly up to date. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-13">44.13 Dealing with Sound Cards and Other Annoying 
+Hardware</h3>
+<p class="docText">There are a lot of devices available for PCs that were never 
+designed for an operating system like Unix to use. Often these devices' 
+manufacturers simply provide Windows drivers and never expect you to need 
+anything else. Luckily, there is a large community of developers for the various 
+free Unixes, and they implement device drivers for many of these devices. 
+Availability of a driver for a particular piece of hardware, however, depends 
+entirely on whether someone happened to write a driver for it. </p>
+<p class="docText">Sound cards are one bit of hardware that commonly has this 
+problem. Most free Unixes have a set of drivers that support a selection of 
+sound cards and one or two other drivers that support a lowest common 
+denominator to get minimal functionality out of most sound cards. If you want 
+real support for your sound card, look at the supported devices list for the OS 
+you want to install before you buy a card, and pick one that someone's written a 
+full driver for. </p>
+<p class="docText">On Linux, take a look at the <i>sndconfig</i> utility, which 
+can probably configure your sound card for you. Take a peek at
+<a class="docLink" href="http://www.linuxheadquarters.com/howto/basic/sndconfig.shtml" target="_blank">
+http://www.linuxheadquarters.com/howto/basic/sndconfig.shtml</a> for details.
+</p>
+<p class="docText">Other hardware that falls into the &quot;check your supported 
+hardware list before buying&quot; includes frame grabbers, multi-serial boards, AD/DA 
+converters, X-10 controllers and any hardware that's brand new (and thus may not 
+have had time for someone to create a Unix driver). All of the free Unixes have 
+extensive supported hardware lists — check before you buy. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-44-SECT-14">44.14 Decapitating Your Machine — Serial Consoles</h3>
+<p class="docText">Often server machines are placed in a rack in a colocation 
+facility, in some back closet, or in some other out of the way place. This can 
+make it really inconvenient to access the server's console should something go 
+wrong or need diagnosing; hauling a monitor and keyboard into your server 
+storage area is a real pain. If you've got your server mounted in a rack, there 
+are devices that are essentially a flat screen monitor, keyboard, and mouse 
+mounted in a sliding rack shelf, which work well, but they're expensive. </p>
+<p class="docText">A simple and cheap solution is to change the console from the 
+normal monitor/keyboard/mouse to one of the serial ports. The serial port can be 
+hooked via null modem to a terminal server or another machine, allowing 
+controlled access, or you can just plug your laptop into it with a null modem 
+when you need to diagnose problems or reboot. </p>
+<p class="docText">Linux has a howto describing details of dealing with serial 
+consoles at
+<a class="docLink" href="http://www.linuxdoc.org/HOWTO/Remote-Serial-Console-HOWTO/" target="_blank">
+http://www.linuxdoc.org/HOWTO/Remote-Serial-Console-HOWTO/</a>. Essentially, you 
+provide options to the boot loader and kernel to tell them to use your serial 
+port as a console, and then configure <i>getty</i> to accept logins on that 
+serial port. The HOWTO shows various potential configurations and demonstrates 
+proper setup on each. </p>
+<p class="docText">FreeBSD's handbook has a chapter on setting up serial 
+consoles. Again, you have to tell the boot loader and the kernel to use the 
+serial port, and then edit <i>/etc/ttys</i> to enable <i>getty</i> on that 
+serial port. FreeBSD can also be configured to decide whether to use a normal 
+console or serial console based on whether or not a keyboard is plugged in. 
+NetBSD and OpenBSD are configured similarly. </p>
+<p class="docText">Solaris is even easier: just unplug the keyboard before you 
+boot the machine. Solaris uses a serial console by default if no keyboard is 
+plugged in at boot time. If you want to set it explicitly to use a serial 
+console even if the keyboard is plugged in, just set <tt>input-device</tt> and
+<tt>output-device</tt> to <tt>ttya</tt> (or <tt>ttyb</tt> if you want it on the 
+second serial port) in the boot eeprom. </p>
+<p class="docText"><span class="docEmphasis">— DJPH</span> </p>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 43.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 45.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

@@ -1,0 +1,1601 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 3</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 2.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 4.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+
+<h2 class="docChapterTitle">Chapter 3. Setting Up Your Unix Shell</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-1">3.1 What Happens When You Log In</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-2">3.2 The Mac OS X Terminal Application</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-3">3.3 Shell Setup Files — Which, Where, and Why</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-4">3.4 Login Shells, Interactive Shells</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-5">3.5 What Goes in Shell Setup Files?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-6">3.6 Tip for Changing Account Setup: Keep a Shell Ready</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-7">3.7 Use Absolute Pathnames in Shell Setup Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-8">3.8 Setup Files Aren't Read When You Want?</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-9">3.9 Gotchas in set prompt Test</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-10">3.10 Automatic Setups for Different Terminals</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-11">3.11 Terminal Setup: Testing TERM</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-12">3.12 Terminal Setup: Testing Remote Hostname and X Display</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-13">3.13 Terminal Setup: Testing Port</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-14">3.14 Terminal Setup: Testing Environment Variables</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-15">3.15 Terminal Setup: Searching Terminal Table</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-16">3.16 Terminal Setup: Testing Window Size</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-17">3.17 Terminal Setup: Setting and Testing Window Name</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-18">3.18 A .cshrc.$HOST File for Per Host Setup</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-19">3.19 Making a &quot;Login&quot; Shell</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-20">3.20 RC Files</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-21">3.21 Make Your Own Manpages Without Learning troff</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-3-SECT-22">3.22 Writing a Simple Manpage with the -man Macros</a></li>
+</ul>
+
+
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-1">3.1 What Happens When You Log In</h3>
+<p class="docText">When you first log in to a Unix system, the <i>login</i> 
+program performs various security measures. These vary slightly from Unix 
+variant to Unix variant, but they are largely the same. </p>
+<p class="docText">First, <i>login</i> checks to see if you are not the root 
+user and whether the file <span class="docEmphasis">/etc/nologin</span> exists 
+(it is created by the <i>shutdown</i> command to indicate that the system is 
+being brought down for maintenance). If both of these conditions are true, the
+<i>login</i> program prints the contents of that file to the terminal, and the 
+login fails. If you are the root user, however, you will be allowed to log in.
+</p>
+<p class="docText">Second, <i>login</i> checks to see if there are any special 
+conditions on your login attempt (which may be defined in
+<span class="docEmphasis">/etc/usertty</span> or <span class="docEmphasis">/etc/securetty</span>), 
+such as on which tty you're coming in. Linux systems do this, for example. Some 
+systems (such as Darwin and other BSD-based systems) also check
+<span class="docEmphasis">/etc/fbtab</span> and may restrict your access to any 
+devices listed in that file. These systems may also log failed login attempts to 
+a file, such as <span class="docEmphasis">/var/log/failedlogin</span>, if it 
+exists. </p>
+<p class="docText"><i>login</i> may also record the time of login in the file
+<span class="docEmphasis">/var/log/lastlog</span>, make an entry in the file
+<span class="docEmphasis">/var/run/utmp</span>, showing that you are 
+successfully logged in (it is removed once you log out), and append the
+<span class="docEmphasis">utmp</span> entry to the file
+<span class="docEmphasis">/var/log/wtmp</span> , showing that you logged in. 
+This <span class="docEmphasis">wtmp</span> record will be updated on logout, 
+showing the duration of your login session. </p>
+<p class="docText">If the file <span class="docEmphasis">.hushlogin</span> 
+exists in the user's home directory, the login will be quiet; otherwise, the 
+following sequence of events will occur. If the system has any special copyright 
+information to display, it will be printed to the terminal, followed by the 
+message of the day (usually stored in <span class="docEmphasis">/etc/motd</span> 
+), and the user's last login time and system of origin (from the
+<span class="docEmphasis">wtmp</span> file, as discussed in the previous 
+paragraph). If you want your login to be quiet, simply <i>touch ~/.hushlogin</i>. 
+If you want it to be noisy, remove the file. </p>
+<p class="docText">Finally, if all other checks have passed and restrictions 
+have been performed, <i>login</i> starts a shell for you. Which shell depends on 
+what is set in your user database entry (<span class="docEmphasis">/etc/passwd</span>, 
+NIS, or possibly NetInfo under Darwin). If the shell specified for you is not
+<span class="docEmphBold">interactive</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">Section 
+3.4</a>), you may well be denied a command line. This is common for POP and 
+ftp-only user accounts, where <i>/bin/true</i> and <i>/bin/false</i> are often 
+specified as shells to disallow shell logins from those accounts. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-2">3.2 The Mac OS X Terminal Application</h3>
+<p class="docText">Throughout the book, we will refer to terminals, terminal 
+emulators, and other software that allows you, the end user, to interact with 
+the computer via some character-driven screen. In the old days, most terminals 
+were separate hardware, but nowadays they're usually software. Mac OS X is no 
+exception: its Terminal application, found in the <tt>Utilities</tt> folder of 
+your <tt>Applications</tt> folder, is a terminal emulator. </p>
+<p class="docText">You can launch Terminal by double-clicking on the icon in the 
+Finder, or if you have the Terminal icon in your Dock, by single-clicking on 
+that icon. </p>
+<p class="docText">Once launched, Terminal may be configured as most Mac 
+applications can: by setting preferences in the Preferences dialog and choosing 
+a font family and size from the Font menu. </p>
+<p class="docText">One big difference between Terminal and other, X-specific 
+applications is that instead of running individual instances of <i>xterm</i>, 
+you run one instance of Terminal and may have multiple windows, known as 
+&quot;shells,&quot; which may have saved settings (such as color, size, font choice, and 
+various other settings). You can't run a shell in Mac OS X without running 
+Terminal. </p>
+<p class="docText"><span class="docEmphasis">— SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-3">3.3 Shell Setup Files — Which, Where, and Why</h3>
+<p class="docText">To understand setup files, you need to understand that a 
+shell can act like a <span class="docEmphBold">login shell</span>
+<span class="docEmphBold">or a</span> <span class="docEmphBold">nonlogin shell</span> 
+(<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">Section 
+3.4</a>). There are different setup files for nonlogin and login shells. </p>
+<p class="docText">When you log in to a Unix system — but not under a window 
+system — the <i>login</i> program starts a shell for you. The <i>login</i> 
+program sets <span class="docEmphBold">a special flag</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-19">Section 
+3.19</a>) to tell a shell that it's a login shell. If the shell doesn't have 
+that flag set, it won't act like a login shell. Opening a new window in a window 
+system may or may not set the &quot;login shell&quot; flag — that depends on the 
+configuration. (For example, the command <i>xterm</i> <i>-ls</i> starts a login 
+shell in an <span class="docEmphBold">xterm</span> <span class="docEmphBold">
+window</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-20">Section 
+24.20</a>); <i>xterm</i> <i>+ls</i> starts a nonlogin shell.) When you connect 
+to a system with programs like <i>ftp</i> and <i>scp</i>, that usually starts a 
+nonlogin shell. And a <span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>) is never a login shell (unless you set a command-line option to force 
+a login shell, like <tt>bash -l</tt>). </p>
+<p class="docText">How can you tell whether your shell is a login shell? The 
+answer is &quot;it depends.&quot; When you first log in to a system, you want a login 
+shell that sets things like the <span class="docEmphBold">terminal type</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-2">Section 
+5.2</a>,
+<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-3">
+Section 5.3</a>). Other shells on the same terminal should be nonlogin shells — 
+to avoid redoing those one-time-only setup commands. Different shells have their 
+own methods for handling first-time shell invocations versus later invocations, 
+and that's what the rest of this article is about. </p>
+<p class="docText"><span class="docEmphBold">Parenthesis operators</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">Section 
+43.7</a>) don't read any setup file. Instead, they start another instance of 
+your current shell. Parentheses are called &quot;subshell operators,&quot; but the 
+subshell they start doesn't print a prompt and usually has a short lifetime. </p>
+<p class="docText">Next, let's look at the setup files — login and nonlogin — 
+for the major shells. I recommend that you read about all of them. Then 
+experiment with your shell's setup files until you get things working the way 
+you want them. </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">System-wide setup</span></i> </dt>
+  <dd>
+  <p class="docList">Your <i>login</i>(1) command probably sets some
+  <span class="docEmphBold">environment variables</span> (
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">
+  Section 35.3</a>) like HOME, PATH, SHELL, TERM, MAIL, and LOGNAME or USER; 
+  check its manual page. Your system may set some environment variables or other 
+  parameters that apply to all shells or to all shells of a particular type (all
+  <i>bash</i> shells, <i>zsh</i> shells, etc.). All of these will be passed 
+  through the environment, <span class="docEmphBold">from parent process to 
+  child process</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-4">Section 
+  35.4</a>), to all of your shells, login and nonlogin. </dd>
+</dl>
+<p class="docText">Once <i>login</i> or your window system starts your 
+individual shell, it may also read its own system-wide setup files. These files, 
+if any, will be read before your personal setup files. Check your shell's manual 
+page and the <i>/etc</i> directory for files like <i>csh.login</i>, <i>bashrc</i>,
+<i>zshrc</i>, and so on. On Red Hat systems, for example, there is a directory 
+named <i>/etc/profile.d</i> containing package-specific C and Bash shell config 
+files that are sourced (read into the current shell) on startup of a shell. On 
+Mac OS X, when you use <span class="docEmphBold">Terminal</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-2">Section 
+3.2</a>), your shell (which is <i>tcsh</i> by default) reads <i>/private/etc/csh.cshrc</i>, 
+as well as any user-specific files (e.g., <i>~/.tcshrc</i>). </p>
+<dl class="docList">
+  <dt><i><span class="docPubcolor">Bourne shell</span></i> </dt>
+  <dd>
+  <p class="docList">The original Bourne shell has one file that it reads when 
+  you log in: it's called <i>.profile</i> and is in your home directory. Put all 
+  your setup commands there. Later versions of the Bourne shell may also read <i>
+  /etc/profile</i> before your local setup file is read and may also read the 
+  contents of whatever file is named in the ENV <span class="docEmphBold">
+  environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+  35.3</a>) (but only for interactive shells). You may set this variable from 
+  your own <i>.profile</i>: </p>
+  <pre>ENV=$HOME/.mystartup; export ENV</pre>
+  <p class="docList">The Bourne shell doesn't read <i>.profile</i> when you 
+  start a nonlogin shell or <span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">Section 
+  43.7</a>), though. Subshells are set up through inheritance of
+  <span class="docEmphBold">environment variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+  35.3</a>) that were set when you first logged in (in system-wide setup files 
+  or <i>.profile</i>) or from commands you typed since. </dd>
+  <dt><i><span class="docPubcolor">C shell</span></i> </dt>
+  <dd>
+  <p class="docList">C shell users have several shell setup files available:
+  <ul>
+    <li>
+    <p class="docList">The <i>.cshrc</i> file is read any time a C shell starts 
+    — that includes shell escapes and shell scripts.<span id="ENB3-1"><a class="docLink" href="#EN3-1"><sup>[1]</sup></a></span> 
+    This is the place to put commands that should run every time you start a 
+    shell. For instance, shell variables like <span class="docEmphBold">cdpath</span> 
+    (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-5">Section 
+    31.5</a>) and <span class="docEmphasis">prompt</span> should be set here.
+    <span class="docEmphBold">Aliases</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">Section 
+    29.2</a>) should, too. Those things aren't passed to subshells through the 
+    environment, so they belong in <i>.cshrc</i> (or <i>.tcshrc</i>). See the 
+    upcoming section on <i>tcsh</i> for more details. </p>
+    <p class="docList">Alternately, you can put aliases into a separate file and 
+    use the <i>source</i> command to read the file into the current shell from 
+    your <i>.cshrc</i>/<i>.tcshrc</i> — if you're the sort who likes to have 
+    custom init files for every host you log in to, but like your aliases to be 
+    common wherever you go. This provides a quick and easy way for you to copy 
+    your <i>.csh.aliases</i> (or whatever name you give it, being careful to 
+    distinguish between it and the slightly different format required by <i>bash</i> 
+    aliases) from host to host without clobbering your custom, localized init 
+    files. </li>
+    <li>
+    <p class="docList">When <i>csh</i> starts up, on recent systems it may read 
+    a system-wide setup file, such as <i>/etc/csh.cshrc</i>,<span id="ENB3-2"><a class="docLink" href="#EN3-2"><sup>[2]</sup></a></span> 
+    and for login shells, <i>/etc/csh.login</i>. </p>
+    </li>
+    <li>
+    <p class="docList">Your <i>.login</i> file is read when you start a login 
+    shell. You should set several things here. Set <span class="docEmphBold">
+    environment variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+    35.3</a>) (which Unix will pass to subshells automatically). Run commands 
+    like <span class="docEmphBold">tset</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-3">Section 
+    5.3</a>) and <span class="docEmphBold">stty</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-7">Section 
+    5.7</a>,
+    <a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-8">
+    Section 5.8</a>) that set up your terminal. Finally, include commands you 
+    want to run every time you log in — checking for <span class="docEmphBold">
+    mail and news</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+    1.21</a>), running <i>fortune</i>, checking your calendar for the day, etc.
+    </p>
+    <p class="docList">Note that <i>.cshrc</i> is read before <i>.login</i>, by
+    <i>csh</i>, but that tcsh may be compiled such that the order is reversed, 
+    and <i>.tcshrc</i> may be read <span class="docEmphasis">after</span> <i>
+    .login</i> in some environments. Check the <span class="docEmphasis">version</span> 
+    shell variable to find out how your environment is set up. </li>
+    <li>
+    <p class="docList">The shell reads <i>.logout</i> when you end a login 
+    shell.
+    <a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-8">
+    Section 3.8</a> has tips for reading <i>.logout</i> from nonlogin shells.
+    </li>
+  </ul>
+  </dd>
+  <dt><i><span class="docPubcolor">Korn shell</span></i> </dt>
+  <dd>
+  <p class="docList">The Korn shell is a lot like the Bourne shell. A
+  <span class="docEmphBold">login Korn shell</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">Section 
+  3.4</a>) will read the <i>.profile</i> first; recent versions do so only after 
+  reading <i>/etc/profile</i>, if present. The <i>.profile</i> can set the
+  <span class="docEmphBold">ENV</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">Section 
+  35.5</a>) environment variable to the pathname of a file (typically <i>$HOME/.kshrc</i>). 
+  Any child Korn shell started by that login shell — including all subshells — 
+  will read the file named by <tt>$ENV</tt> as it starts up, before printing a 
+  prompt or running other commands. </p>
+  <p class="docList">The public domain Korn shell often found on Linux may also 
+  be further restricted when invoked as a &quot;privileged&quot; shell, using a pattern 
+  that matches r*sh, in which case neither the <i>~/.profile</i> nor the file 
+  named by the <span class="docEmphasis">ENV</span> environment variable will be 
+  read. Instead, the shell will be initialized using <i>/etc/suid_profile</i>, 
+  if present. </dd>
+  <dt><i><span class="docPubcolor">bash</span></i> </dt>
+  <dd>
+  <p class="docList"><i>bash</i> is something of a cross between the Bourne and 
+  C shells. A login <i>bash</i> will read <i>.bash_profile</i> , <i>.bash_login</i>, 
+  or <i>.profile</i>. A noninteractive <i>bash</i> will read a file named <i>.bashrc</i> 
+  in your home directory. The shell reads <i>.bash_logout</i> when you end a 
+  login shell; you can set a <span class="docEmphBold">trap</span> (<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-18">Section 
+  4.18</a>) to handle nonlogin shells. </p>
+  <p class="docList"><i>bash</i> also uses GNU Readline for reading and editing 
+  text you enter at a shell prompt. The <i>.inputrc</i> file configures Readline 
+  for a given user; <i>/etc/inputrc</i> is for global configuration. </dd>
+  <dt><i><span class="docPubcolor">tcsh</span></i> </dt>
+  <dd>
+  <p class="docList"><i>tcsh</i> is like the C shell but more flexible. If a <i>
+  tcsh</i> shell is run, it first tries to read <i>.tcshrc</i> and, if not 
+  found, then tries <i>.cshrc</i>. In addition, <i>tcsh</i> will also load 
+  either <i>.history</i> or the value of the <span class="docEmphasis">histfile</span> 
+  variable, if set; then it may try to read <i>.cshdirs</i> or the value of the
+  <span class="docEmphasis">dirsfile</span> variable. </dd>
+  <dt><i><span class="docPubcolor">zsh</span></i> </dt>
+  <dd>
+  <p class="docList">As always, <i>zsh</i> is very flexible. Startup files are 
+  read from the directory named in the <span class="docEmphasis">ZDOTDIR</span> 
+  environment variable, if any;<span id="ENB3-3"><a class="docLink" href="#EN3-3"><sup>[3]</sup></a></span> 
+  otherwise, from <span class="docEmphasis">HOME</span>. All shells read the 
+  global <i>/etc/zshenv</i> and your <i>.zshenv</i> files. If the shell is a 
+  login shell, commands are read from <i>/etc/zprofile</i> and then your <i>.zprofile</i>. 
+  Then, if the shell is interactive, commands are read from <i>/etc/zshrc</i> 
+  and your <i>.zshrc</i>. Finally, if the shell is a login shell, <i>/etc/zlogin</i> 
+  and your <i>.zlogin</i> files are read. </p>
+  </dd>
+</dl>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-4">3.4 Login Shells, Interactive Shells</h3>
+<p class="docText">Each Unix shell (<i>sh</i>, <i>csh</i>, etc.) can be in
+<span class="docEmphasis">interactive</span> mode or <span class="docEmphasis">
+noninteractive</span> mode. A shell also can act as a <span class="docEmphasis">
+login</span> shell or a <span class="docEmphasis">nonlogin</span> shell. A shell 
+is a shell is a shell — e.g., a login <i>bash</i> shell is the same program 
+(like <i>/bin/bash</i>) as a nonlogin <span class="docEmphasis">bash</span> 
+shell. The difference is in the way that the shell acts: which setup files it 
+reads, whether it sets a shell prompt, and so on. </p>
+<h4  id="upt3-CHP-3-SECT-4.1" class="docSection2Title">3.4.1 Login Shells</h4>
+<p class="docText">When you first log in to a Unix system from a terminal, the 
+system normally <span class="docEmphBold">starts a</span>
+<span class="docEmphBold">login shell</span>. (<a class="docLink" href="#upt3-CHP-3-SECT-4">Section 
+3.4</a>) A login shell is typcally the top-level shell in the &quot;tree&quot; of 
+processes that starts with the <span class="docEmphBold">init</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-2">Section 
+24.2</a>) process. Many characteristics of processes are passed from parent to 
+child process down this &quot;tree&quot; — especially <span class="docEmphBold">
+environment variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>), such as the <span class="docEmphBold">search path</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+35.6</a>). The changes you make in a login shell will affect all the other 
+processes that the top-level shell starts — including any
+<span class="docEmphBold">subshells</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>). </p>
+<p class="docText">So, a login shell is where you do general setup that's done 
+only the first time you log in — initialize your terminal, set environment 
+variables, and so on. A shell <span class="docEmphBold">&quot;knows&quot;</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-19">Section 
+3.19</a>) when it's a login shell — and, if it is, the shell reads special
+<span class="docEmphBold">setup files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) for login shells. For instance, login C shells read your <i>.login</i> 
+file, and Bourne-type login shells read <i>.profile</i>. Bash may also read <i>
+/etc/profile</i>, and <i>~/.bash_profile</i> or <i>~/.bash_login</i> or <i>
+~/.profile</i>, depending on whether those files exist and whether the <i>-noprofile</i> 
+option has been passed (which would disable reading of any startup files). </p>
+<p class="docText">Nonlogin shells are either subshells (started from the login 
+shell), <span class="docEmphBold">shells started by your window system</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-20">Section 
+24.20</a>), or &quot;disconnected&quot; shells started by <span class="docEmphBold">at</span> 
+(<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-5">Section 
+25.5</a>), <span class="docEmphBold">rsh</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), etc. These shells don't read <i>.login</i> or <i>.profile</i>. In 
+addition, <i>bash</i> allows a nonlogin shell to read <i>~/.bashrc</i> or not, 
+depending on whether the <i>-norc</i> or <i>-rcfile</i> options have been passed 
+as arguments during invocation. The former simply disables reading of the file, 
+and the latter allows a substitute file to be specified as an argument. </p>
+<p class="docText">Some shells make it easy to know if a particular invocation 
+is a login shell. For instance, <i>tcsh</i> sets the variable
+<span class="docEmphasis">loginsh</span>. Check your shell's manual page for 
+details.
+<a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-12">
+Section 4.12</a> shows another solution: the <span class="docEmphasis">SHLVL</span> 
+variable that's set in most modern shells. Or you can add the following line to 
+the beginning of a <span class="docEmphBold">setup file that's only read by 
+login shells</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>). The line sets a <span class="docEmphBold">shell variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>) named <span class="docEmphasis">loginshell</span>: </p>
+<pre>set loginsh=yes   <i>...csh</i>
+
+loginshell=yes    <i>...bash and other sh-type shells</i></pre>
+<p class="docText">Now wherever you need to know the type of shell, use tests 
+like:</p>
+<p class="docText"><tt>if</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">
+Section 35.13</a></p>
+<pre>if ($?loginsh)   <i>...csh-type shells</i>
+
+if [ -n &quot;$loginshell&quot; ]   <i>...sh-type shells (including bash)</i></pre>
+<p class="docText">This works because the flag variable will only be defined if 
+a shell has read a setup file for login shells. Note that none of the variable 
+declarations use the &quot;export&quot; keyword — this is so that the variable is not 
+passed on to subsequent shells, thereby ruining its purpose as a flag specific 
+to login shells. </p>
+<h4  id="upt3-CHP-3-SECT-4.2" class="docSection2Title">3.4.2 Interactive Shells</h4>
+<p class="docText">In general, shells are used for two jobs. Sometimes, a shell 
+handles commands that you type at a prompt. These are <span class="docEmphasis">
+interactive shells</span>. Other times, a shell reads commands from a file — a
+<span class="docEmphBold">shell script</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-2">Section 
+35.2</a>). In this case, the shell doesn't need to print a prompt, to handle 
+command-line editing, and so on. These shells can be <span class="docEmphasis">
+noninteractive shells</span>. (There's no rule that only noninteractive shells 
+can read shell scripts or that only interactive shells can read commands from a 
+terminal. But this is generally true.) </p>
+<p class="docText">One other difference between interactive and noninteractive 
+shells is that interactive shells tie STDOUT and STDERR to the current terminal, 
+unless otherwise specified. </p>
+<p class="docText">It's usually easy to see whether a particular invocation of 
+your shell is interactive. In C shells, the <span class="docEmphasis">prompt</span> 
+variable will be set. In the Korn shell and <i>bash</i>, the <i>-i</i> flag is 
+set. Your current flags may be displayed using the <span class="docEmphasis">$-</span> 
+variable: </p>
+<pre>prompt$ echo $-
+imH</pre>
+<p class="docText">The previous example, from an interactive bash shell, shows 
+that the flags for an interactive shell (i), monitor mode (m), and history 
+substitution (H) have been set. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-5">3.5 What Goes in Shell Setup Files?</h3>
+<p class="docText">Setup files for <span class="docEmphBold">login shells</span> 
+(
+<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">
+Section 3.4</a>) — such as <i>.login</i> and <i>.profile</i> — typically do at 
+least the following: </p>
+<ul>
+  <li>
+  <p class="docList">Set the <span class="docEmphBold">search path</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-6">Section 
+  27.6</a>) if the system default path isn't what you want. </li>
+  <li>
+  <p class="docList">Set the <span class="docEmphBold">terminal type</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-3">Section 
+  5.3</a>) and <span class="docEmphBold">make various terminal settings</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-7">Section 
+  5.7</a>,
+  <a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-8">
+  Section 5.8</a>) if the system might not know your terminal (if you log in 
+  from various terminals over a dialup line or from a terminal emulator on a 
+  desktop machine, for instance). </li>
+  <li>
+  <p class="docList">Set <span class="docEmphBold">environment variables</span> 
+  (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+  35.3</a>) that might be needed by programs or scripts that you typically run.
+  </li>
+  <li>
+  <p class="docList">Run one or more commands that you want to run whenever you 
+  log in. For example, if your system <i>login</i> program doesn't show the 
+  message of the day, your setup file can. Many people also like to print an 
+  amusing or instructive fortune. You also might want to run
+  <span class="docEmphBold">who</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-8">Section 
+  2.8</a>) or <span class="docEmphBold">uptime</span> (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-4">Section 
+  26.4</a>) or <i>w</i> (a combination of the other two, but not found on all 
+  systems) for information about the system. </li>
+</ul>
+<p class="docText">In the C shell, the <span class="docEmphasis">.cshrc</span> 
+file is used to establish settings that will apply to every instance of the C 
+shell, not just login shells. For example, you typically want
+<span class="docEmphBold">aliases</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-2">Section 
+28.2</a>) available in every interactive shell you run — but these aren't passed 
+through the environment, so a setup file has to do the job. You may wish to put 
+all of your aliases into another file, such as <i>.aliases</i>, or qualify the 
+name with the shell's name, such as <i>.csh.aliases</i>, to allow for different 
+alias formats between shells, and then you can use the <i>source</i> command to 
+read in that file on startup from <i>.cshrc</i>. </p>
+<p class="docText">Even novices can write simple setup files. The trick is to 
+make these setup scripts really work for you. Here are some of the things you 
+might want to try: </p>
+<ul>
+  <li>
+  <p class="docList">Creating a custom prompt.</li>
+  <li>
+  <p class="docList">Coordinating custom setup files on different machines (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-18">Section 
+  3.18</a>). </li>
+  <li>
+  <p class="docList">Making different terminal settings depending on which 
+  terminal you're using (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-10">Section 
+  3.10</a> and others). </li>
+  <li>
+  <p class="docList">Seeing the message of the day only when it changes.</li>
+  <li>
+  <p class="docList">Doing all of the above without making your login take 
+  forever.</li>
+</ul>
+<p class="docText"><span class="docEmphasis">—TOR and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-6">3.6 Tip for Changing Account Setup: Keep a Shell 
+Ready</h3>
+<p class="docText">The shell is your interface to Unix. If you make a bad 
+mistake when you change your <span class="docEmphBold">setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) or your password, it can be tough to log in and fix things. </p>
+<p class="docText">Before you change your setup, it's a good idea to start a 
+login session to the same account from somewhere else. Use that session for 
+making your changes. Log in again elsewhere to test your changes. </p>
+<p class="docText">Don't have a terminal with multiple windows or another 
+terminal close to your desk? You can get the same result by using <i>rlogin</i> 
+or <span class="docEmphBold">telnet</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) to log in to your host again from the same terminal. What I mean is:
+</p>
+<pre>somehost% <b>vi .cshrc </b>
+   <i> ...Make edits to the file...</i>
+somehost% <b>rlogin localhost </b>
+   <i> ...Logs you in to your same account...</i>
+<i>An error message </i>
+somehost% <b>logout </b>
+Connection closed.
+somehost% <b>vi .cshrc </b>
+   <i> ...Edit to fix mistake...</i></pre>
+<p class="docText">If you don't have <i>rlogin</i> or <i>telnet</i>, the command
+<tt>su -</tt> <tt><i>username</i></tt>, where <tt><i>username</i></tt> is your 
+username, will do almost the same thing. Or, if you're testing your login shell 
+configuration, <i>login</i> will do as well. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-7">3.7 Use Absolute Pathnames in Shell Setup Files</h3>
+<p class="docText">One common mistake in <span class="docEmphBold">shell setup 
+files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) is lines like these: </p>
+<p class="docText"><tt>$$</tt>
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-17">
+Section 27.17</a>, <tt>`...`</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a></p>
+<pre>source .aliases
+
+echo &quot;Shell PID $$ started at `date`&quot; &gt;&gt; login.log</pre>
+<p class="docText">What's wrong with those lines? Both use
+<span class="docEmphBold">relative pathnames</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>) for the files (<span class="docEmphasis">.aliases</span>,
+<span class="docEmphasis">login.log</span>), assuming the files are in the home 
+directory. Those lines won't work when you start a <span class="docEmphBold">
+subshell</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>) from somewhere besides your home directory because your setup files 
+for nonlogin shells (like <span class="docEmphasis">.cshrc</span>) are read 
+whenever a shell starts. If you ever use the <span class="docEmphBold">source</span>
+<span class="docEmphBold">or . commands</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">Section 
+35.29</a>) to read the setup files from outside your home directory, you'll have 
+the same problem. </p>
+<p class="docText">Use absolute pathnames instead. As
+<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">
+Section 31.11</a> explains, the pathname of your home directory is in the tilde 
+(<tt>~</tt>) operator or the <tt>$HOME</tt> or <tt>$LOGDIR</tt> environment 
+variable: </p>
+<pre>source ~/.aliases
+echo &quot;Shell PID $$ started at `date`&quot; &gt;&gt; ~/login.log</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-8">3.8 Setup Files Aren't Read When You Want?</h3>
+<p class="docText">The C shell reads its <span class="docEmphasis">.cshrc</span>,
+<span class="docEmphasis">.login</span>, and <span class="docEmphasis">.logout</span> 
+setup files <span class="docEmphBold">at particular times</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>). Only <span class="docEmphBold">&quot;login&quot; C shells</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">Section 
+3.4</a>) will read the <span class="docEmphasis">.login</span> and
+<span class="docEmphasis">.logout</span> files. Back when <i>csh</i> was 
+designed, this restriction worked fine. The shell that started as you logged in 
+was flagged as a login shell, and it read all three files. You started other 
+shells (shell escapes, shell scripts, etc.) from that login shell, and they 
+would read only <span class="docEmphasis">.cshrc</span>. The same can be said of 
+other shell variants, such as <i>tcsh</i>, though they may have multiple startup 
+files — the problem of distinguishing between login and nonlogin shell startup 
+is the same. </p>
+<p class="docText">Now, Unix has interactive shells started by window systems 
+(like <span class="docEmphBold">xterm</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-20">Section 
+24.20</a>)), remote shells (like <span class="docEmphBold">rsh</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) or <i>ssh</i>), and other shells that might need some things set from 
+the <span class="docEmphasis">.login</span> or <span class="docEmphasis">.logout</span> 
+files. Depending on how these shells are invoked, these might not be login 
+shells — so they might read only <span class="docEmphasis">.cshrc</span> (or <i>
+.tcshrc</i>, etc.). How can you handle that? Putting all your setup commands in
+<span class="docEmphasis">.cshrc</span> isn't a good idea because all
+<span class="docEmphBold">subshells</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>) read it . . . you definitely don't want to run
+<span class="docEmphBold">terminal-setting commands like</span>
+<span class="docEmphBold">tset</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-3">Section 
+5.3</a>) during shell escapes! </p>
+<p class="docText">Most other shells have the same problem. Some, like <i>zsh</i> 
+and <i>bash</i>, have several setup files that are read at different times — and 
+probably can be set up to do what you want. For other shells, though, you'll 
+probably need to do some tweaking. </p>
+<p class="docText">To handle problems at login time, put almost all of your 
+setup commands in a file that's read by all instances of your shell, login or 
+nonlogin. (In the C shell, use <span class="docEmphasis">.cshrc</span> instead 
+of <span class="docEmphasis">.login</span>.) After the &quot;login-only&quot; commands 
+have been read from the setup file, set the <span class="docEmphasis">ENV_SET</span>
+<span class="docEmphBold">environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>) as a flag. (There's nothing special about this name. You can pick any 
+name you want.) You can then use this variable to test whether the login-only 
+commands have already been run and skip running them again in nonlogin shells.
+</p>
+<p class="docText">Because the environment variables from a parent process are 
+passed to any child processes it starts, the shell will copy the &quot;flag&quot; variable 
+to subshells, and the <span class="docEmphasis">.cshrc</span> can test for it. 
+If the variable exists, the login-only commands are skipped. That'll keep the 
+commands from being read again in a child shell. </p>
+<p class="docText">Here are parts of a <span class="docEmphasis">.cshrc</span> 
+that show the idea:</p>
+<pre>...<i>Normal .cshrc stuff</i>...
+if ($?prompt &amp;&amp; ! $?ENV_SET) then
+    # Do commands that used to go in .login file:
+    setenv EDITOR /usr/ucb/vi
+    tset
+        ...
+    setenv ENV_SET done
+endif</pre>
+<p class="docText">You might put a comment in the file you've bypassed — the <i>
+csh</i> <i>.login</i> file, the <i>ksh</i> <i>.profile</i> file, etc. — to 
+explain what you've done. </p>
+<p class="docText">The file that runs when you log out (in the C shell, that's
+<i>.logout</i>) should probably be read only once — when your last (&quot;top-level&quot;) 
+shell exits. If your top-level shell isn't a login shell, you can make it read 
+the logout file anyway. Here's how: first, along with the previous fixes to your
+<span class="docEmphasis">.cshrc</span>-type file, add an alias that will read 
+your logout file when you use the <i>exit</i> command. Also set your shell to
+<span class="docEmphBold">force you to use the</span> <span class="docEmphBold">
+exit</span> <span class="docEmphBold">command</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>) to log out — in <i>csh</i>, for example, use
+<span class="docEmphasis">set ignoreeof</span>. Here's what the chunk of your <i>
+.bashrc</i> will look like: </p>
+<p class="docText"><tt>case</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">
+Section 35.10</a>, <tt>/</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-25">
+Section 36.25</a>, <tt>function</tt>
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">
+Section 29.11</a>, <tt>.</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">
+Section 35.29</a></p>
+<pre>case &quot;$-/${ENV_SET:-no}&quot; in
+*i*/no)
+    # This is an interactive shell / $ENV_SET was not set earlier.
+    # Make all top-level interactive shells read .bash_logout file:
+    set -o ignoreeof
+    function exit {
+        . ~/.bash_logout
+        builtin exit
+    }
+    ;;
+esac</pre>
+<p class="docText">The <tt>builtin exit</tt> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-9">Section 
+27.9</a>) prevents a loop; it makes sure <i>bash</i> uses its internal <i>exit</i> 
+command instead of the <span class="docEmphasis">exit</span> function you've 
+just defined. In the C shell, use <tt>&quot;&quot;exit</tt> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-10">Section 
+27.10</a>) instead. This isn't needed on all shells though. If you can't tell 
+from your manual page, <span class="docEmphBold">test with another shell</span> 
+(<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-6">Section 
+3.6</a>) and be ready to <span class="docEmphBold">kill</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-12">Section 
+24.12</a>) a looping shell. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-9">3.9 Gotchas in set prompt Test</h3>
+<p class="docText">Lots of users add an <tt>if</tt> <tt>(! $?prompt)</tt> <tt>
+exit</tt> test to their <i>.cshrc</i> files. It's gotten so common that some 
+vendors add a workaround to defeat the test. For instance, some versions of the
+<span class="docEmphBold">which</span> <span class="docEmphBold">command</span> 
+(<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-6">Section 
+2.6</a>) set the <span class="docEmphasis">prompt</span> variable so that it can 
+see your aliases &quot;hidden&quot; inside the <tt>$?prompt</tt> test. I've also seen a 
+version of <i>at</i> that starts an interactive shell to run jobs. </p>
+<p class="docText">If you've buried commands after <tt>if</tt> <tt>(! $?prompt)</tt> 
+that should only be run on interactive shells or at login time, then you may 
+have trouble. </p>
+<p class="docText">There are workarounds. What you'll need depends on the 
+problem you're trying to work around. </p>
+<ul>
+  <li>
+  <p class="docList">The version of <i>which</i> on the CD-ROM [see
+  <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+  http://examples.oreilly.com/upt3</a>] works without reading your
+  <span class="docEmphasis">.cshrc</span> file, so there's no problem there.
+  </li>
+  <li>
+  <p class="docList">Here's a way to stop the standard <i>which</i> from reading 
+  parts of your <i>.cshrc</i> that you don't want it to read. The first time you 
+  log in, this scheme sets a <span class="docEmphasis">CSHRC_READ</span>
+  <span class="docEmphBold">environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+  35.3</a>). The variable will be copied into all <span class="docEmphBold">
+  subshells</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+  24.4</a>) (like the one that <i>which</i> starts). In subshells, the test <tt>
+  if</tt> <tt>($?CSHRC_READ)</tt> will branch to the end of your <i>.cshrc</i> 
+  file: </p>
+  <pre>if (! $?prompt) goto cshrc_end
+
+# COMMANDS BELOW HERE ARE READ ONLY BY INTERACTIVE SHELLS:
+alias foo bar
+   ...
+
+if ($?CSHRC_READ) goto cshrc_end
+
+
+# COMMANDS BELOW HERE ARE READ ONLY AT LOGIN TIME:
+setenv CSHRC_READ yes
+   ...
+
+cshrc_end:</pre>
+  </li>
+  <li>
+  <p class="docList">If you have a buggy version of <span class="docEmphBold">at</span> 
+  (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-5">Section 
+  25.5</a>) that runs jobs from interactive shells, make
+  <span class="docEmphBold">your own frontend to</span>
+  <span class="docEmphBold">at</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-1">Section 
+  29.1</a>) that sets an environment variable named <span class="docEmphasis">AT</span> 
+  temporarily before it submits the <i>at</i> job. Add a test to your
+  <span class="docEmphasis">.cshrc</span> that quits if
+  <span class="docEmphasis">AT</span> is set: </p>
+  <p class="docList"><tt>( )</tt>
+  <a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">
+  Section 43.7</a>, <tt>\at</tt>
+  <a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-8">
+  Section 29.8</a></p>
+  <pre># at JOBS RUN INTERACTIVE SHELLS ON MY BUGGY VERSION OF UNIX.
+# WORKAROUND IS HERE AND IN THE at ALIAS BELOW:
+if ($?AT) goto cshrc_end
+
+   ...
+alias at '(setenv AT yes; \at \!*)'
+   ...
+
+cshrc_end:</pre>
+  <p class="docList">Most modern versions of <i>at</i> save a copy of your 
+  environment when you submit the job and use it when the <i>at</i> job is run. 
+  At that time, the <span class="docEmphasis">AT</span> environment variable 
+  will be set; the C shell will skip the parts of your <i>.cshrc</i> that you 
+  want it to. It's ugly, but it works. </li>
+</ul>
+<p class="docText">Those workarounds probably won't solve all the problems on 
+your version of Unix, but I hope they'll give you some ideas. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-10">3.10 Automatic Setups for Different Terminals</h3>
+<p class="docText">If you work at several kinds of terminals or terminal 
+emulators, terminal setup can be tough. For instance, my X terminal sends a 
+backspace character when I push the upper-right key, but the same key on another 
+terminal sends a delete character — I want <span class="docEmphBold">stty erase</span> 
+(<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-8">Section 
+5.8</a>) to set the correct erase character automatically.<span id="ENB3-4"><a class="docLink" href="#EN3-4"><sup>[4]</sup></a></span> 
+Maybe you want a full set of calendar programs started when you log in to the 
+terminal at your desk, but not when you make a quick login from somewhere else.
+</p>
+<p class="docText">The next seven articles have ideas for changing your login 
+sequence automatically. Some examples are for the C shell and use that shell's
+<i>switch</i> and <i>if</i>. Examples for Bourne-type shells use
+<span class="docEmphBold">case</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">Section 
+35.10</a>) and <span class="docEmphBold">if</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">Section 
+35.13</a>). If you use the other type of shell, the idea still applies; just 
+swap the syntax. </p>
+<ul>
+  <li>
+  <p class="docList">If you use several kinds of terminals or terminal 
+  emulators, try <span class="docEmphBold">testing the</span>
+  <span class="docEmphasis">TERM</span> <span class="docEmphBold">environment 
+  variable</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-11">Section 
+  3.11</a>). <span class="docEmphBold">Testing other environment variables</span> 
+  (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-14">Section 
+  3.14</a>) can identify the frontend system (like a window system) you're 
+  using. </li>
+  <li>
+  <p class="docList"><span class="docEmphBold">Test the output of</span>
+  <span class="docEmphBold">who am i</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-12">Section 
+  3.12</a>) to find out about the remote system from which you've logged in.
+  </li>
+  <li>
+  <p class="docList">If you log into different kinds of ports — network, 
+  hardwired, and so on — <span class="docEmphBold">search for the port type</span> 
+  (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-15">Section 
+  3.15</a>) in a table like <i>/etc/ttys</i> (in BSD derivatives) or <i>/etc/inittab</i> 
+  (in some other variants). <span class="docEmphBold">Testing the port name</span> 
+  (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-13">Section 
+  3.13</a>) may also work. </li>
+  <li>
+  <p class="docList">In the X Window System, you can <span class="docEmphBold">
+  test the window size</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-16">Section 
+  3.16</a>) and make various settings based on that. <span class="docEmphBold">
+  Naming windows</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-17">Section 
+  3.17</a>) lets you identify a particular window by reading its environment.
+  </li>
+  <li>
+  <p class="docList">You can also handle some of these cases using the venerable 
+  but obscure <span class="docEmphBold">tset</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-3">Section 
+  5.3</a>) program to select and initialize the correct terminal type. Another 
+  program that sets the terminal type is <span class="docEmphBold">qterm</span> 
+  (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-4">Section 
+  5.4</a>). </li>
+</ul>
+<p class="docText">Because your terminal type doesn't change after you've logged 
+in, many of these tests probably belong in your <i>.profile</i> or <i>.login</i> 
+file. Those setup files are read when you first log in to a
+<span class="docEmphasis">tty</span>. Other tests, especially ones that involve 
+windows, will probably fit better in a per-shell setup file such as <i>.bashrc</i> 
+or <i>.cshrc</i>.
+<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">
+Section 3.3</a> can help you choose. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-11">3.11 Terminal Setup: Testing TERM</h3>
+<p class="docText">If you use several different kinds of terminals (or, as is 
+far more common these days, terminal emulators) and your TERM environment 
+variable is set differently on each terminal, you can add a test like this to 
+your C shell <i>.login</i> file: </p>
+<pre>switch ($TERM)
+case vt100:
+   <i>...do commands for vt100</i>
+   breaksw
+case <tt><i>xxx</i></tt>:
+   <i>...do commands for xxx</i>
+   breaksw
+default:
+   <i>...do commands for other terminals</i>
+   breaksw
+endsw</pre>
+<p class="docText">If you have a Bourne-type shell, use a
+<span class="docEmphBold">case</span> <span class="docEmphBold">statement</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">Section 
+35.10</a>) in your <i>.profile</i> instead: </p>
+<pre>case &quot;$TERM&quot; in
+    vt100)
+        <i>...do commands for vt100</i>
+        ;;
+    xterm)
+        <i>...do commands for xterm</i>
+        ;;
+    *)
+        <i>...do commands for other terminals</i>
+        ;;
+esac</pre>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-12">3.12 Terminal Setup: Testing Remote Hostname and X 
+Display</h3>
+<p class="docText">If you <span class="docEmphBold">log in from other hosts</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>) or from hosts running the <span class="docEmphBold">X Window System</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-20">Section 
+24.20</a>), the <i>who am i</i><span id="ENB3-5"><a class="docLink" href="#EN3-5"><sup>[5]</sup></a></span> 
+command will probably show a hostname and/or window information in parentheses:
+</p>
+<pre>schampeo@fugazi:1002 $ <b>who am i</b>
+schampeo ttyp7    Jun 19 03:28 (fugazi:0.0)</pre>
+<p class="docText">(Long hostnames may be truncated. Also, note that some 
+versions of <i>who am i</i> prepend the name of the local host to the username 
+and don't include the remote hostname at all in their output. Check yours before 
+you write this test.) The information in parentheses can help you configure your 
+terminal based on where you've logged in from and/or which display you're using. 
+To test it, add commands such as the following to your <i>.profile</i> file. (In 
+C-type shells, use a <i>switch</i> statement in <i>.login</i> instead.) </p>
+<p class="docText"><tt>case</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">
+Section 35.10</a></p>
+<pre>case &quot;`who am i | sed -n 's/.*(\(.*\))/\1/p'`&quot; in </pre>
+<p class="docText"><tt>\(..\) \1</tt>
+<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-11">
+Section 34.11</a></p>
+<pre>*0.0)   <i>...do commands for X display 0</i> ;;
+mac2*)  <i>...do commands for the host mac2.foo.com</i> ;;
+&quot;&quot;)     <i>...no output (probably not a remote login)</i> ;;
+*)      <i>...do commands for other situations</i> ;;
+esac</pre>
+<p class="docText">That uses <span class="docEmphBold">sed</span> (<a class="docLink" href="_chapter 34.htm#upt3-CHP-34-SECT-1">Section 
+34.1</a>) to give the text between the parentheses for that remote host to the
+<tt>case</tt>. This <tt>*0.0</tt> case matches lines ending with <tt>0.0</tt>; 
+the <tt>mac2</tt> case matches lines that start with <tt>mac2</tt>; an empty 
+string means <i>sed</i> probably didn't find any parentheses; and the <tt>*</tt> 
+case catches everything else. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-13">3.13 Terminal Setup: Testing Port</h3>
+<p class="docText">If you know that certain port (tty) numbers are used for 
+certain kinds of logins, you can test that and change your terminal setup based 
+on the <span class="docEmphasis">tty</span> you're currently using. For example, 
+some systems use <span class="docEmphasis">ttyp0</span>,
+<span class="docEmphasis">ttyq1</span>, etc. as network ports for
+<span class="docEmphBold">rlogin</span> <span class="docEmphBold">and</span>
+<span class="docEmphBold">ssh</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), while others use <span class="docEmphasis">pty0</span>, etc. This 
+Bourne-type <i>case</i> statement branches on the port name: </p>
+<p class="docText"><tt>tty</tt>
+<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">
+Section 2.7</a></p>
+<pre>case &quot;`tty`&quot; in
+/dev/tty[pqrs]?)
+   # rlogin, telnet:
+   ...
+/dev/tty02)
+   # terminal on my desk:
+   ...
+&quot;not a tty&quot;) ;;  <i>...not a terminal login session; do nothing</i>
+esac</pre>
+<p class="docText">In C-type shells, try a <i>switch</i> or <i>if</i> statement 
+instead. </p>
+<p class="docText">On Linux, you may need to look for patterns to match <i>
+/dev/pts/0</i>, <i>/dev/pts/1</i>, etc. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-14">3.14 Terminal Setup: Testing Environment Variables</h3>
+<p class="docText">Certain systems set certain environment variables. For 
+example, the X Window System sets a <span class="docEmphBold">DISPLAY</span>
+<span class="docEmphBold">environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">Section 
+35.5</a>). If you've logged in from a remote system using
+<span class="docEmphBold">ssh</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), look for variables like <span class="docEmphasis">SSH_CLIENT</span> 
+and <span class="docEmphasis">SSH_TTY</span> or <span class="docEmphasis">
+SSH_AUTH_SOCK</span> on the system you log in to. (If you aren't sure about your 
+system, use the <span class="docEmphBold">env</span> <span class="docEmphBold">
+or</span> <span class="docEmphBold">printenv</span> <span class="docEmphBold">
+command</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>) to look for changes in your environment at different systems.) </p>
+<p class="docText">Your <span class="docEmphBold">shell setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) makes decisions based on the environment variables that have been set. 
+Here are examples for both C-type and Bourne-type shells: </p>
+<p class="docText"><tt>[ ]</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">
+Section 35.26</a></p>
+<pre>if ($?DISPLAY) then                 if [ -n &quot;$DISPLAY&quot; ]; then
+   # on X window system                # on X window system
+   ...                                 ...
+else if ($?XDARWIN_VERSION) then    elif [ -n &quot;$XDARWIN_VERSION&quot; ]; then
+   # on MacOS X system                 # on MacOS X system
+   ...                                 ...
+else                                else
+   ...                                 ...
+endif                               fi</pre>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-15">3.15 Terminal Setup: Searching Terminal Table</h3>
+<p class="docText">Your system may have an <i>/etc/ttytab</i> or <i>/etc/ttys</i> 
+file that lists the type of each terminal port (<span class="docEmphBold">tty</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-6">Section 
+24.6</a>)).<span id="ENB3-6"><a class="docLink" href="#EN3-6"><sup>[6]</sup></a></span> 
+Here are lines from <span class="docEmphasis">/etc/ttys</span> on a NetBSD 
+system I use: </p>
+<pre>console &quot;/usr/libexec/getty std.9600&quot;    vt100      on  local
+tty00   &quot;/usr/libexec/getty std.9600&quot;    dialup     off local
+tty01   &quot;/usr/libexec/getty std.9600&quot;    plugboard  off local
+   ...
+ttyp0   none                             network    off
+   ...</pre>
+<p class="docText">For example, port <span class="docEmphasis">ttyp0</span> is
+<span class="docEmphasis">network</span>, the type used by
+<span class="docEmphBold">xterm</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-20">Section 
+24.20</a>), <span class="docEmphBold">telnet</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+1.21</a>), etc. </p>
+<p class="docText">To change your account configuration based on the tty port 
+type, match the first column of that file to the output of the
+<span class="docEmphBold">tty</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+2.7</a>) command, which shows your current tty pathname. The output of <i>tty</i> 
+starts with <span class="docEmphasis">/dev</span> or <span class="docEmphasis">
+/dev/pts</span>. So, to match your current tty to the file, you need to strip 
+the name to its tail. For example, in <i>bash</i> and <i>ksh</i>, these three 
+lines would put the terminal port type (<tt>vt100</tt>, <tt>plugboard</tt>, 
+etc.) into the <span class="docEmphasis">ttykind</span> shell variable: </p>
+<pre>tty=`tty`
+ttytail=${tty#/dev/}</pre>
+<p class="docText"><tt>awk</tt>
+<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-10">
+Section 20.10</a></p>
+<pre>ttykind=`awk '$1 == &quot;'$ttytail'&quot; {print $3}' /etc/ttys`</pre>
+<p class="docText">Then you can test the value with <span class="docEmphBold">
+case</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">Section 
+35.10</a>) or <span class="docEmphBold">if</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">Section 
+35.13</a>). In C shells, you can set <span class="docEmphasis">ttytail</span> by 
+using the <span class="docEmphBold">:t string modifier</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-5">Section 
+28.5</a>) and test its value with <i>switch</i> or <i>if</i>. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-16">3.16 Terminal Setup: Testing Window Size</h3>
+<p class="docText">I use several terminal windows of different sizes. I don't 
+stretch the windows after I open them; instead, I set the size as I start each
+<i>xterm</i>. Here's an excerpt from my <span class="docEmphBold">X setup file</span> 
+(<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-20">Section 
+3.20</a>) that opens the windows: </p>
+<p class="docText"><tt>-e</tt>
+<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-22">
+Section 5.22</a></p>
+<pre>xterm -title SETI -geometry 80x9+768+1 -e setiathome -verbose -nice 10 &amp;
+xterm -title &quot;work xterm&quot; -geometry 80x74+329-81 &amp;</pre>
+<p class="docText">The first window has 9 rows (<tt>80x9</tt>) and the second 
+has 74 rows (<tt>80x74</tt>).<span id="ENB3-7"><a class="docLink" href="#EN3-7"><sup>[7]</sup></a></span> 
+I'd like the <span class="docEmphBold">less</span> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+12.3</a>) pager to use different jump-target lines in larger windows. If the 
+window has more than 24 lines, I want <i>less</i> to use its option <i>-j3</i> 
+to show search-matches on the third line of the window instead of the first. </p>
+<p class="docText">On many systems, the command <i>stty</i> <i>size</i> gives 
+the number of rows and columns in the current window, like this: </p>
+<pre>$ <b>stty size</b>
+74 80</pre>
+<p class="docText">Your system might need the command <i>stty</i> -<i>a</i> 
+instead — or it could have environment variables named <span class="docEmphasis">
+LINES</span> and <span class="docEmphasis">COLUMNS</span>. We'll use <i>stty</i>
+<i>size</i> in the following Bourne shell setup file. The
+<span class="docEmphBold">set</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">Section 
+35.25</a>) command puts the number of rows into the <tt>$2</tt> shell parameter. 
+(Using <i>set</i> this way is portable to all shells, but it's a clumsy way to 
+split <i>stty</i>'s output into words. If you have a newer shell with array 
+support, it'll be easier.) Then a series of <span class="docEmphBold">if</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">Section 
+35.13</a>)<span class="docEmphBold">/then</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">Section 
+35.26</a>) tests handle different window sizes: </p>
+<pre>LESS=emqc; export LESS
+# Put number of rows into $2, configure session based on that:
+set x `stty size`
+if [ -z &quot;$2&quot; -o &quot;$2&quot; -lt 1 ]
+then echo &quot;.profile: bogus number of rows ($2) in window!?&quot; 1&gt;&amp;2
+elif [ &quot;$2&quot; -gt 24 ]
+then LESS=j3$LESS
+   ...
+fi</pre>
+<p class="docText">Additionally, you may be able to run <i>resize</i> on 
+machines with the X Window System installed; it may output something like this:
+</p>
+<pre>schampeo@fugazi:1046 $ <b>resize</b>
+COLUMNS=80;
+LINES=37;
+export COLUMNS LINES;</pre>
+<p class="docText">You may then capture the output and read it for the current 
+setting or simply check the COLUMNS or LINES environment variables. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-17">3.17 Terminal Setup: Setting and Testing Window 
+Name</h3>
+<p class="docText">I use several <i>xterm</i> windows. Here's an excerpt from my
+<span class="docEmphBold">X setup file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-20">Section 
+3.20</a>): </p>
+<pre>WINNAME=console xterm -C -title Console -geometry 80x9+0+0 &amp;
+WINNAME=work xterm -title &quot;work xterm&quot; -geometry 80x74+329-81 &amp;</pre>
+<p class="docText">The <tt>WINNAME=<i>name</i></tt> sets an environment variable 
+named <span class="docEmphasis">WINNAME</span> for the particular command line 
+it's on. This is passed through the environment, through the <i>xterm</i> 
+process, to the shell running inside the window. So the shell's setup file can 
+test for this variable — and, by knowing the window name stored in that 
+variable, do specific setup for just that window. For example, in <i>tcsh</i>:
+</p>
+<p class="docText"><tt>-f</tt><a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-10">Section 
+11.10</a>, <tt>{ }</tt><a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-4">Section 
+28.4</a></p>
+<pre>if ($?WINNAME) then
+    switch ($WINNAME)
+    case console:
+        # Watch logs:
+        tail -f /var/log/{messages,maillog,secure} ~/tmp/startx.log &amp;
+        breaksw
+    case work:
+        /usr/games/fortune
+        fetchmail
+        breaksw
+    endsw
+endif</pre>
+<p class="docText">On the console terminal, this <i>.tcshrc</i> file starts a 
+job <span class="docEmphBold">in the background</span> (<a class="docLink" href="_chapter 23.htm#upt3-CHP-23-SECT-2">Section 
+23.2</a>) to watch log files. On the work <i>xterm</i>, I get a fortune and grab 
+email from the POP server. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-18">3.18 A .cshrc.$HOST File for Per Host Setup</h3>
+<p class="docText">I work with different types of machines every day. It is 
+often necessary to set things up differently for, say, a Linux box than a 
+SPARCstation or a MacOS X box. Going beyond that, you may want to set things up 
+differently on a per-host basis. </p>
+<p class="docText">I have this test in my <span class="docEmphasis">.cshrc</span> 
+file:</p>
+<p class="docText"><tt>setenv</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">
+Section 35.3</a></p>
+<pre>setenv HOST &quot;`uname -n`&quot;</pre>
+<p class="docText"><tt>~</tt>
+<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">
+Section 31.11</a></p>
+<pre>if (-e ~/lib/cshrc.hosts/cshrc.$HOST) then
+   source ~/lib/cshrc.hosts/cshrc.$HOST
+endif</pre>
+<p class="docText">So, if I log in to a machine <span class="docEmphBold">named</span> 
+(<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-5">Section 
+2.5</a>) <span class="docEmphasis">bosco</span>, and I have a file called <i>
+~/lib/cshrc.hosts/cshrc.bosco</i>, I can <span class="docEmphBold">source</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">Section 
+35.29</a>) it to customize my environment for that one machine. These are 
+examples of things you would put in a <i>.cshrc.$HOST</i> file: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docEmphBold">Search path</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-6">Section 
+  27.6</a>)</span> </dt>
+  <dd>
+  <p class="docList">Some machines have <i>/usr/local/bin</i>, and some have <i>
+  /opt</i>. The same goes for <span class="docEmphBold">cdpath</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-5">Section 
+  31.5</a>). </dd>
+  <dt><span class="docPubcolor"><span class="docEmphBold">Terminal settings</span> 
+  (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-8">Section 
+  5.8</a>)</span> </dt>
+  <dd>
+  <p class="docList">I always like to reach for the upper-right part of a 
+  keyboard to erase characters. Sometimes this is the location for the BACKSPACE 
+  key, and sometimes it is the DELETE key. I set things up so that I can 
+  consistently get &quot;erase&quot; behavior from whatever key is there. </dd>
+  <dt><span class="docPubcolor">Other <span class="docEmphBold">shell variables</span> 
+  (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+  35.9</a>) and <span class="docEmphBold">environment variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+  35.3</a>)</span> </dt>
+  <dd>
+  <p class="docList">These may be different. You may run a package on a certain 
+  machine that relies on a few environment variables. No need to always set them 
+  and use up a little bit of memory if you only use them in one place! </dd>
+</dl>
+<p class="docText">In general, this idea allows you to group together whatever 
+exceptions you want for a machine, rather than having to write a series of <i>
+switch</i> or <i>if</i> statements throughout your <span class="docEmphasis">.cshrc</span> 
+and <span class="docEmphasis">.login</span> files. The principle carries over 
+directly to the newer shells as well. </p>
+<p class="docText"><span class="docEmphasis">—DS and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-19">3.19 Making a &quot;Login&quot; Shell</h3>
+<p class="docText">When you log in to most Unix systems, your shell is a
+<span class="docEmphasis">login shell</span>. When a shell is a login shell, it
+<span class="docEmphBold">acts differently</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">Section 
+3.4</a>). </p>
+<p class="docText">Sometimes, when you're testing an account or using a window 
+system, you want to start a login shell without logging in. Unix shells act like 
+login shells when they are executed with a name that starts with a dash (<tt>-</tt>).<span id="ENB3-8"><a class="docLink" href="#EN3-8"><sup>[8]</sup></a></span> 
+This is easy to do if you're using a system call in the
+<span class="docEmphasis">exec</span>(3) family. These system calls let a 
+C-language programmer give both the filename of an executable file, like
+<span class="docEmphasis">sh</span> or <i>/bin/sh</i>, as well as the name that 
+should be used to identify the process (in a <span class="docEmphBold">ps</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-5">Section 
+24.5</a>) listing, for example), like <span class="docEmphasis">-sh</span>. </p>
+<p class="docText">If you're currently using <i>zsh</i>, you can invoke another 
+shell this way by typing a dash and a space before the shell's name: </p>
+<pre>zsh% <b>- csh </b>
+   <i> ...C shell starts, acting like a login shell...</i>
+%</pre>
+<p class="docText">C programmers can write a little program that runs the actual 
+shell but tells the shell that its name starts with a dash. This is how the Unix
+<i>login</i> process does it: </p>
+<pre>run_login_csh( )
+{
+    execl(&quot;/bin/csh&quot;, &quot;-csh&quot;, 0);
+}</pre>
+<p class="docText">A more general solution is to make a
+<span class="docEmphBold">link</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-4">Section 
+10.4</a>) to the shell and give the link a filename starting with a dash. If 
+your own <span class="docEmphasis">bin</span> subdirectory is on the same 
+filesystem as <i>/bin</i> (or wherever the executable shell file is), you can 
+use a hard link. Otherwise, make a symbolic link, as shown here: </p>
+<p class="docText"><tt>bin</tt>
+<a class="docLink" href="_chapter 7.htm#upt3-CHP-7-SECT-4">
+Section 7.4</a>, <tt>./-</tt>
+<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-13">
+Section 14.13</a></p>
+<pre>$ <b>cd $HOME/bin</b>
+$ <b>ln -s /bin/csh ./-csh</b></pre>
+<p class="docText">Then you can execute your new shell by typing its name:</p>
+<pre>$ <b>-csh </b>
+   <i> ...normal C shell login process...</i>
+% <i> ...run whatever commands you want...</i>
+% <b>logout </b>
+$ <i> ...back to original shell</i></pre>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-20">3.20 RC Files</h3>
+<p class="docText">One way to set defaults for your applications is with
+<span class="docEmphBold">environment variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>) that the applications might read. This can get messy, though, if your 
+environment has tens or hundreds of variables in it. A lot of applications have 
+a different way to choose defaults: setup files, similar to
+<span class="docEmphBold">shell setup files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>). Most of these filenames end with <span class="docEmphasis">rc</span>, 
+so they're often called <span class="docEmphasis">RC files</span>.<span id="ENB3-9"><a class="docLink" href="#EN3-9"><sup>[9]</sup></a></span> 
+Today's more-complex applications also use their own setup subdirectories. 
+Almost all of these files and directories are <span class="docEmphBold">hidden</span> 
+(<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-9">Section 
+8.9</a>) in your home directory; you'll need <i>ls</i> <i>-A</i> to see them.
+</p>
+<p class="docText">This article describes some of the most common setup files. 
+For a more complete list, check your application's manpage: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><i>.emacs</i></span> </dt>
+  <dd>
+  <p class="docList">For the Emacs editor. See
+  <a class="docLink" href="_chapter 19.htm#upt3-CHP-19-SECT-3">
+  Section 19.3</a>.</dd>
+  <dt><span class="docPubcolor"><i>.exrc</i></span> </dt>
+  <dd>
+  <p class="docList">For the <i>vi</i> (actually, <i>ex</i>) editor. See
+  <a class="docLink" href="_chapter 17.htm#upt3-CHP-17-SECT-5">
+  Section 17.5</a>. </dd>
+  <dt><span class="docPubcolor"><i>.inputrc</i></span> </dt>
+  <dd>
+  <p class="docList">For the GNU Readline library and applications that use it, 
+  such as the <i>bash</i> shell. </dd>
+  <dt><span class="docPubcolor"><i>.mailrc</i></span> </dt>
+  <dd>
+  <p class="docList">For the <span class="docEmphBold">mail</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+  1.21</a>) program and others like it. This can be handy if you use <i>mail</i> 
+  from the command line to send quick messages. For example: </p>
+  <pre># If I send mail to &quot;bookquestions&quot;, send it to myself too:
+alias bookquestions bookquestions@oreilly.com, jerry
+# When I send a message, prompt me for &quot;cc:&quot; addresses:
+set askcc</pre>
+  </dd>
+  <dt><span class="docPubcolor"><i>.mh_profile</i></span> </dt>
+  <dd>
+  <p class="docList">For the MH email system.</dd>
+  <dt><span class="docPubcolor"><i>.netrc</i></span> </dt>
+  <dd>
+  <p class="docList">A listing of hostnames, accounts — and possibly passwords — 
+  used for connecting to remote hosts with <i>ftp</i> and some other programs. 
+  Should have <span class="docEmphBold">file access mode</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+  50.2</a>) 600 or 400 for security, but this may not be enough protection for 
+  passwords! Best used for <span class="docEmphasis">Anonymous ftp</span>. </dd>
+  <dt><span class="docPubcolor"><i>.newsrc</i></span> </dt>
+  <dd>
+  <p class="docList">For <span class="docEmphBold">news readers</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+  1.21</a>). (Some newer news readers have more complex files.) A list of 
+  newsgroups in the order you want to see them. For example: </p>
+  <pre>comp.security.announce: 1-118
+news.announce.important: 1
+comp.org.usenix: 1-1745
+comp.sys.palmtops! 1-55069,55071
+   ...</pre>
+  <p class="docList">A newsgroup name ending with a colon (:) means you want to 
+  read that newsgroup; an exclamation point (<tt>!</tt>) means you don't. After 
+  each name is a list of the article numbers you've read in that newsgroup; a 
+  range like <tt>1-55069</tt> means you've read all articles between number 1 
+  and number 55069. </dd>
+  <dt><span class="docPubcolor"><i>.rhosts</i></span> </dt>
+  <dd>
+  <p class="docList">A list of remote hostnames that are allowed to access your 
+  local machine with clients like <span class="docEmphBold">rsh</span>
+  <span class="docEmphBold">and</span> <span class="docEmphBold">rlogin</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-21">Section 
+  1.21</a>). Remote usernames are assumed the same as your local username unless 
+  the remote username is listed after the hostname. This file can be a security 
+  hole; make its <span class="docEmphBold">file access mode</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-2">Section 
+  50.2</a>) 600 or 400. We suggest you only use it if your system or network 
+  administrator approves. For example: </p>
+  <pre>rodan             <i>Allow a user with same username from host rodan</i>
+foo.bar.com joe   <i>Allow username joe from host foo.bar.com</i></pre>
+  </dd>
+  <dt><span class="docPubcolor"><i>.Xauthority</i></span> </dt>
+  <dd>
+  <p class="docList">For <i>xauth</i>, a program that handles authorization 
+  information used in connecting to the X Window System server. </dd>
+  <dt><span class="docPubcolor"><i>.Xdefaults</i></span> </dt>
+  <dd>
+  <p class="docList">A <span class="docEmphBold">resource file</span> (<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-5">Section 
+  6.5</a>) for the X Window System. Sometimes also called <i>.xrdb</i>. </dd>
+  <dt><span class="docPubcolor"><i>.xinitrc</i></span> </dt>
+  <dd>
+  <p class="docList">A <span class="docEmphBold">shell script</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-2">Section 
+  35.2</a>) that runs as you log in to an X Window System session using <i>xinit</i>. 
+  (Also see <i>.xsession</i>, later in this list.) </dd>
+</dl>
+<p class="docText">All commands <span class="docEmphasis">except the last</span> 
+typically end with an ampersand (<tt>&amp;</tt>), which makes those clients run in 
+the background. The last command becomes the <span class="docEmphasis">
+controlling process</span>; when that process exits (for instance, you use the 
+window manager's &quot;quit&quot; command), the window system shuts down. For example: </p>
+<p class="docText"><tt>$Id</tt>
+<a class="docLink" href="_chapter 39.htm#upt3-CHP-39-SECT-5">
+Section 39.5</a>, <tt>exec &gt;</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-5">
+Section 36.5</a>, <tt>-v</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">
+Section 35.25</a>, <tt>uname</tt> <tt>-n</tt>
+<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-5">
+Section 2.5</a> , <tt>${..:=..}</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">
+Section 36.7</a>, <tt>export</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">
+Section 35.3</a>, <tt>xrdb</tt>
+<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-8">
+Section 6.8</a>, <tt>sh</tt> <tt>-c</tt>
+<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-21">
+Section 24.21</a>, <tt>exec</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-5">
+Section 36.5</a></p>
+<pre>#! /bin/sh
+# $Id: ch03.xml,v 1.36 2002/10/13 03:50:01 troutman Exp troutman $
+# Usage: .xinitrc [DISPLAY]
+
+wm=fvwm2    # window manager
+
+# Put all output into log that you can watch from a window (tail -f):
+mv -f $HOME/tmp/startx.log $HOME/tmp/,startx.log
+exec &gt; $HOME/tmp/startx.log 2&gt;&amp;1
+set -v
+
+# Set DISPLAY from $1 if the X server isn't on same host as client:
+if [ $# -gt 0 ]
+then
+    if [ $# -ne 1 ]
+    then
+        echo &quot;Usage: .xintirc [DISPLAY]&quot; 1&gt;&amp;2
+        exit 1
+    else
+        DISPLAY=$1
+    fi
+else
+    host=`uname -n`
+    DISPLAY=${DISPLAY:=$host:0.0}
+fi
+export DISPLAY
+xrdb -load $HOME/.xrdb
+
+#
+# Clients
+#
+xterm -C -geometry 80x9+0+0 -sl 2000 &amp;
+oclock -geometry -1+1 &amp;
+xterm -title &quot;SETI console&quot; -bg blue -fg white -geometry 80x9+768+1 -e \
+    sh -c 'cd /var/cache/seti &amp;&amp; exec ./setiathome -nice 5 -verbose' &amp;
+# Don't use -e because Mozilla crashes; start by hand from prompt:
+xterm -title &quot;Mozilla console&quot; -bg orange -geometry 80x9-0+1 &amp;
+xterm -geometry 80x74+329-81 &amp;
+
+#
+# Start window manager
+#
+exec $wm</pre>
+<dl class="docList">
+  <dt><span class="docPubcolor"><i>.xsession</i></span> </dt>
+  <dd>
+  <p class="docList">An executable file (generally a <span class="docEmphBold">
+  shell script</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-2">Section 
+  35.2</a>), but it can be any executable) that runs as you log into an X Window 
+  System session using <i>xdm</i>. See <i>.xinitrc</i>, earlier in this list.
+  </dd>
+  <dt><span class="docPubcolor"><i>/etc/rc*</i></span> </dt>
+  <dd>
+  <p class="docList">Last but not least, your system probably has a lot of setup 
+  files in its <i>/etc</i> directory. Look for subdirectory or filenames 
+  starting with <span class="docEmphasis">rc</span>. These are read when your 
+  system reboots or changes its runlevel (for example, from single-user mode to 
+  multiuser mode). These files are basically <span class="docEmphBold">shell 
+  scripts</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-2">Section 
+  35.2</a>). If you know a little about shell programming, you can learn a lot 
+  about your system by looking around these files. </dd>
+</dl>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-21">3.21 Make Your Own Manpages Without Learning troff</h3>
+<p class="docText">We strongly suggest that you write a manual page for each 
+command that you place in your <span class="docEmphasis">bin</span> directory. 
+Unix manual pages typically have the following format, which we suggest you 
+follow: </p>
+<pre>NAME
+     The program's name; one line summary of what it does.
+
+SYNOPSIS
+     How to invoke the program, including all arguments and
+     command-line options. (Optional arguments are placed in
+     square brackets.)
+
+DESCRIPTION
+     A description of what the program does—as long as
+     is necessary.
+
+OPTIONS
+     An explanation of each option.
+
+EXAMPLES
+     One or more examples of how to use the program.
+
+ENVIRONMENT
+     Any environment variables that control the program's behavior.
+
+FILES
+     Files the program internals will read or write. May include
+     temporary files; doesn't include files on the command line.
+
+BUGS
+     Any known bugs. The standard manual pages don't take
+     bug recording seriously, but this can be very helpful.
+
+AUTHOR
+     Who wrote the program.</pre>
+<p class="docText">To see how a &quot;real&quot; manual page looks, type <tt>man ls</tt>.
+</p>
+<p class="docText">Feel free to add any other sections that you think are 
+necessary. You can use the <span class="docEmphBold">nroff -man</span>
+<span class="docEmphBold">macros</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-22">Section 
+3.22</a>) if you want a nicely formatted manual page. However, <i>nroff</i> is 
+fairly complicated and, for this purpose, not really necessary. Just create a 
+text file that looks like the one we showed previously. If you are using a BSD 
+system and want your manual pages formatted with <i>nroff</i>, look at any of 
+the files in <i>/usr/man/man1</i>, and copy it. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">If you insist on formatting your manual page 
+        properly, using the <i>troff</i> or <i>groff</i> &quot;man&quot; macros, you can 
+        use <i>nroff</i> to preview the file. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">The <span class="docEmphBold">man</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+2.1</a>) command is essentially the same as this: </p>
+<p class="docText"><tt>-s</tt>
+<a class="docLink" href="_chapter 11.htm#upt3-CHP-11-SECT-7">
+Section 11.7</a></p>
+<pre>% <b>nroff -e -man  </b><i>filename </i><b> | more -s </b></pre>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: gnroffawf</p>
+<p class="docText">You can safely omit the <i>-e</i> option to <i>nroff</i> and 
+the <i>-s</i> option to <i>more</i>, or even substitute in your favorite pager, 
+such as <i>less</i>. And remember that <i>nroff</i> may not be available on all 
+systems, but the web site has <i>gnroff</i> and <i>awf</i>. In fact, on some 
+systems, <i>nroff</i> is simply a script that emulates the real <i>nroff</i> 
+using <i>groff</i>. </p>
+<p class="docText">Now, you want to make this manual page &quot;readable&quot; by the 
+standard <i>man</i> command. There are a few ways to do this, depending on your 
+system. Create the directory <i>man</i> in your home directory; create the 
+directory <i>cat1</i> as a subdirectory of <i>man</i>; then copy your manual 
+entry into <i>cat1</i>, with the name <i>program.1</i> (where <i>program</i> is 
+the name of your special command). When you want to read the manual page, try 
+the command: </p>
+<p class="docText"><tt>~</tt>
+<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">
+Section 31.11</a></p>
+<pre>% <b>man -M ~/man  </b><i>program </i></pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">We like to be more strict about naming things 
+        properly, but you can omit the <i>man</i> directory and just put the <i>
+        cat1</i> directory into your home directory. In this case, the command 
+        would be as follows: </p>
+        <pre>% <b>man -M ~  </b><i>program </i></pre>
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">Some systems have a <span class="docEmphBold">MANPATH</span>
+<span class="docEmphBold">environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>), a colon-separated list of directories where the <i>man</i> command 
+should look. For example, my <span class="docEmphasis">MANPATH</span> contains:
+</p>
+<pre>/home/mike/man:/usr/local/man:/usr/man</pre>
+<p class="docText"><span class="docEmphasis">MANPATH</span> can be more 
+convenient than the <i>-M</i> option. </p>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">We are telling you to put the manual page into the <i>
+        cat1</i> directory rather than the <i>man1</i> directory because the <i>
+        man</i> program assumes that files in <i>cat1</i> are already formatted.
+        </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<p class="docText">If you are sharing your program with other people on the 
+system, you should put your manual entry in a public place. Become superuser and 
+copy your documentation into <i>/usr/local/man/catl</i>, giving it the name <i>
+program.l</i> (the &quot;l&quot; stands for &quot;local&quot;). You may need to create <i>/usr/local</i> 
+and <i>/usr/local/man</i> first. If you can't become superuser, get the system 
+administrator to do it for you. Make sure that everyone can read the manual 
+page; the permissions should be something like this: </p>
+<pre>% <b>ls -l /usr/local/man/catl</b>
+-r--r--r--  1 root          468 Aug  5 09:21 program.l</pre>
+<p class="docText">Then give the command <tt>man</tt> <tt><i>program</i></tt> to 
+read your documentation. </p>
+<p class="docText">If you are working on some other systems, the rules are a 
+little different. The organization of the manual pages and the <i>man</i> 
+command itself are slightly different — and really, not as good. Write your 
+manual entry, and place it in your <i>doc</i> directory. Then create the 
+following <span class="docEmphBold">C shell alias</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-3">Section 
+29.3</a>): </p>
+<p class="docText"><tt>less</tt>
+<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">
+Section 12.3</a></p>
+<pre>alias myman &quot;(cd ~/doc; man -d \!$ | less)&quot;</pre>
+<p class="docText">or <span class="docEmphBold">shell function</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>): </p>
+<pre>myman( ) { (cd $HOME/doc; man -d &quot;$1&quot; | less); }</pre>
+<p class="docText">Now the command <i>myman docfilename</i> will retrieve your 
+manual page. Note that if you use a section-number extension like <tt>.1</tt>, 
+you have to give the entire filename (e.g., <i>program.1</i>), not just the 
+program's name. </p>
+<p class="docText">If you want to make your manual page publicly available, copy 
+the file into the system manual page directory for section 1; you may have to 
+become superuser to do so. Make sure that anyone on the system can read your 
+file. If the entry is extremely long and you want to save space in your 
+filesystem, you can use the <span class="docEmphBold">gzip</span> (<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-6">Section 
+15.6</a>) utility on your documentation file. The resulting file will have the 
+name <i>program.1.gz</i>; newer versions of the <i>man</i> command will 
+automatically uncompress the file on-the-fly. </p>
+<p class="docText"><span class="docEmphasis">—ML and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-3-SECT-22">3.22 Writing a Simple Manpage with the -man Macros</h3>
+<p class="docText">If you're not satisfied with the simple manual pages we 
+discussed in
+<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-21">
+Section 3.21</a>, here's how to go all the way and create a &quot;real&quot; manual page. 
+As we said, the best way to create a manual page is to copy one that already 
+exists. So here's a sample for you to copy. Rather than discuss it blow by blow, 
+I'll include lots of comments (these start with <tt>.\&quot;</tt> or <tt>\&quot;</tt>).
+</p>
+<pre>.\&quot; Title: Program name, manual section, and date</pre>
+<p class="docText"><tt>1</tt>
+<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">
+Section 2.1</a></p>
+<pre>.TH GRIND 1
+.\&quot; Section heading: NAME, followed by command name and one line summary
+.\&quot; It's important to copy this exactly; the &quot;whatis&quot; database (used
+.\&quot; for apropos) looks for the summary line.
+.SH NAME
+grind \- create output from input
+.\&quot; Section heading: SYNOPSIS, followed by syntax summary
+.SH SYNOPSIS
+.B grind              \&quot; .B: bold font; use it for the command name.
+[ -b ] [ -c ] [ -d ]  \&quot; Put optional arguments in square brackets.
+[ input [ output ]]   \&quot; Arguments can be spread across several lines.
+.br                   \&quot; End the synopsis with an explicit line break (.br)
+.\&quot; A new section: DESCRIPTION, followed by what the command does
+.SH DESCRIPTION
+.I Grind       \&quot; .I:  Italic font for the word &quot;Grind&quot;
+performs lots of computations. Input to
+.IR grind ,    \&quot; .IR: One word italic, next word roman, no space between.
+is taken from the file
+.IR input ,
+and output is sent to the file
+.IR output ,
+which default to standard input and standard output if not specified.
+.\&quot; Another section: now we're going to discuss the -b, -c, and -d options
+.SH OPTIONS
+.\&quot; The .TP macro precedes each option
+.TP
+.B \-b  \&quot; print the -b option in bold.
+Print output in binary.
+.TP
+.B \-c  \&quot; \- requests a minus sign, which is preferable to a hyphen (-)
+Eliminate ASCII characters from input before processing.
+.TP
+.B \-d
+Cause daemons to overrun your computer.
+.\&quot; OK, we're done with the description and the options; now mention
+.\&quot; other requirements (like environment and files needed) as well as
+.\&quot; what can go wrong. You can add any other sections you want.
+.SH FILES
+.PD 0
+.TP 20
+.B /dev/null
+data file
+.TP
+.B /tmp/grind*
+temporary file (typically 314.159 Gigabytes)
+.PD
+.SH BUGS
+In order to optimize computational speed, this program always produces
+the same result, independent of the input.
+.\&quot; Use .LP between paragraphs
+.LP
+If the moon is full,
+.I grind
+may destroy your input file. To say nothing of your sex life.
+.\&quot; Good manual pages end by stating who wrote the program.
+.SH AUTHOR
+I wouldn't admit to this hack if my life depended on it.</pre>
+<p class="docText">After all that, you should have noticed that there are four 
+important macros (listed in <a class="docLink" href="#upt3-CHP-3-TABLE-1">Table 
+3-1</a>) to know about. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-3-TABLE-1" class="docTableTitle">Table 3-1. Important -man macros </h5>
+  </caption>
+  <colgroup span="2">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Macro</th>
+    <th class="docTableHeader">
+    <p class="docText">Meaning</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.TH</td>
+    <td class="docTableCell">
+    <p class="docText">Title of the manual page.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.SH</td>
+    <td class="docTableCell">
+    <p class="docText">Section heading; one for each section.</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.TP</td>
+    <td class="docTableCell">
+    <p class="docText">Formats options correctly (sets up the &quot;hanging indent&quot;).
+    </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">.LP</td>
+    <td class="docTableCell">
+    <p class="docText">Used between paragraphs in a section.</td>
+  </tr>
+</table>
+<p class="docText">For some arcane reason, all manual pages use the silly <tt>.B</tt>,
+<tt>.BI</tt>, etc. macros to make font changes. I've adhered to this style in 
+the example, but it's much easier to use inline font changes: <tt>\fI</tt> for
+<span class="docEmphasis">italic</span>, <tt>\fB</tt> for
+<span class="docEmphBold">bold</span>, and <tt>\fR</tt> for roman. There may be 
+some systems on which this doesn't work properly, but I've never seen any. </p>
+<p class="docText"><span class="docEmphasis">—ML and SJC</span></p>
+
+<blockquote><p class="docFootnote" id="EN3-1"><a class="docLink" href="#ENB3-1">[1]</a>&nbsp;&nbsp;If you write a <i>csh</i> (or <i>tcsh</i>) script, you probably should use the
+<i>-f</i> option to keep scripts from reading <i>.cshrc</i> (or <i>.tcshrc</i>). 
+However, you probably shouldn&#39;t use <i>csh</i> or <i>tcsh</i> for scripts.</p><p class="docFootnote" id="EN3-2"><a class="docLink" href="#ENB3-2">[2]</a>&nbsp;&nbsp;On Mac OS X, <i>/etc</i> 
+      is a symbolic link to <i>/private/etc</i>. The actual initialization files 
+      for <i>tcsh</i> are in <i>/usr/share/init/tcsh</i>.</p><p class="docFootnote" id="EN3-3"><a class="docLink" href="#ENB3-3">[3]</a>&nbsp;&nbsp;<span class="docEmphasis">
+    ZDOTDIR</span> may be hard to set on your first login — when your <i>zsh</i> 
+    is a login shell — because it's hard to set an environment variable before 
+    your first shell starts. (The system program that starts your shell, like <i>
+    login</i>(1), could do the job, I guess.)</p><p class="docFootnote" id="EN3-4"><a class="docLink" href="#ENB3-4">[4]</a>&nbsp;&nbsp;Of course, it is all 
+  arbitrary and contingent on your keyboard layout and configuration.</p><p class="docFootnote" id="EN3-5"><a class="docLink" href="#ENB3-5">[5]</a>&nbsp;&nbsp;Also try &quot;<i>who mom likes</i>&quot; 
+  or maybe &quot;<i>who is responsible?</i>&quot; — the <i>who</i> doesn't really care, as 
+  long as there are only two arguments. So, &quot;<i>who let the dogs out?</i>&quot;, as 
+  you might expect, causes an error.</p><p class="docFootnote" id="EN3-6"><a class="docLink" href="#ENB3-6">[6]</a>&nbsp;&nbsp;Then again, it may not. The 
+  RedHat Linux system I tested this on did not; the MacOS X 10.1.5 box I tested 
+  it on did.</p><p class="docFootnote" id="EN3-7"><a class="docLink" href="#ENB3-7">[7]</a>&nbsp;&nbsp;Both windows have 80 
+  columns. This is a Unix custom that comes from &quot;the old days&quot; when terminals 
+  all were 80 columns wide. But it's still a common width today — and a good 
+  default when you don't need a wider window. Some people are even sort of weird 
+  about it, especially for reading email.</p><p class="docFootnote" id="EN3-8"><a class="docLink" href="#ENB3-8">[8]</a>&nbsp;&nbsp;<i>bash</i> also has a 
+  command-line option, <i>-login</i>, that makes it act like a login shell. <i>
+  zsh</i> -<i>l</i> (lowercase L) does the same for <i>zsh</i>.</p><p class="docFootnote" id="EN3-9"><a class="docLink" href="#ENB3-9">[9]</a>&nbsp;&nbsp;Don't ask me why. It's one 
+  of those acronyms, like <span class="docEmphBold">spool</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">Section 
+  45.2</a>), that's open to interpretation, though one theory is that it is 
+  derived from &quot;runcom files,&quot; (possibly short for &quot;run commands&quot;) on the 
+  Compatible Time-Sharing System, c.1962-63 (source: The Jargon File).</p></blockquote>
+
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 2.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 4.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>

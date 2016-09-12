@@ -1,0 +1,2434 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Chapter 35</title>
+<link rel="stylesheet" type="text/css" href="docsafari.css">
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body><table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 34.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 36.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table>
+
+<h2 class="docChapterTitle">Chapter 35. Shell Programming for the Uninitiated</h2>
+<ul><li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-1">35.1 Writing a Simple Shell Program</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-2">35.2 Everyone Should Learn Some Shell Programming</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-3">35.3 What Environment Variables Are Good For</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-4">35.4 Parent-Child Relationships</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-5">35.5 Predefined Environment Variables</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-6">35.6 The PATH Environment Variable</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-7">35.7 PATH and path</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-8">35.8 The DISPLAY Environment Variable</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-9">35.9 Shell Variables</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-10">35.10 Test String Values with Bourne-Shell case</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-11">35.11 Pattern Matching in case Statements</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-12">35.12 Exit Status of Unix Processes</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-13">35.13 Test Exit Status with the if Statement</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-14">35.14 Testing Your Success</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-15">35.15 Loops That Test Exit Status</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-16">35.16 Set Exit Status of a Shell (Script)</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-17">35.17 Trapping Exits Caused by Interrupts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-18">35.18 read: Reading from the Keyboard</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-19">35.19 Shell Script &quot;Wrappers&quot; for awk, sed, etc.</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-20">35.20 Handling Command-Line Arguments in Shell Scripts</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-21">35.21 Handling Command-Line Arguments with a for Loop</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-22">35.22 Handling Arguments with while and shift</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-23">35.23 Loop Control: break and continue</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-24">35.24 Standard Command-Line Parsing</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-25">35.25 The Bourne Shell set Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-26">35.26 test: Testing Files and Strings</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-27">35.27 Picking a Name for a New Command</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-28">35.28 Finding a Program Name and Giving Your Program Multiple Names</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-29">35.29 Reading Files with the . and source Commands</a></li>
+<li>&nbsp;<a class="docLink" href="#upt3-CHP-35-SECT-30">35.30 Using Shell Functions in Shell Scripts</a></li>
+</ul>
+
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-1">35.1 Writing a Simple Shell Program</h3>
+<p class="docText">A shell script need be no more than a command line saved in a 
+file. For example, let's assume that you'd like a compact list of all the users 
+who are currently logged in on the system. </p>
+<p class="docText">A command like this might do the trick: </p>
+<pre>% <b>who | cut -c1-8 | sort -u | pr -l1 -8 -w78 -t</b></pre>
+<p class="docText">A list of logged-in users should come out in columns, looking 
+something like this: </p>
+<pre>abraham  appleton biscuit  charlie  charlott fizzie   howard   howie
+hstern   jerry    kosmo    linda    ocshner  peterson root     ross
+sutton   yuppie</pre>
+<p class="docText">We used four Unix commands joined with pipes: </p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList"><span class="docEmphBold">who</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-8">Section 
+  2.8</a>) gives a list of all users. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList"><span class="docEmphBold">cut -c1-8</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-14">Section 
+  21.14</a>) outputs columns 1-8 of the <i>who</i> output — the usernames.
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList"><span class="docEmphBold">sort -u</span> (<a class="docLink" href="_chapter 22.htm#upt3-CHP-22-SECT-6">Section 
+  22.6</a>) puts names in order and takes out names of users who are logged on 
+  more than once. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList"><span class="docEmphBold">pr -l1 -8 -w78 -t</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-15">Section 
+  21.15</a>,
+  <a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-6">
+  Section 45.6</a>) takes the list of usernames, one per line, and makes it into 
+  8 columns on 78-character-wide lines. (The <tt>-l1</tt> is the lowercase 
+  letter <span class="docEmphasis">L</span> followed by the digit
+  <span class="docEmphasis">1</span>.) </span></li>
+</ol>
+</span>
+<p class="docText">If you wanted to do this frequently, wouldn't it be better if 
+all you had to do was type something like: </p>
+<pre>% <b>loggedin</b></pre>
+<p class="docText">to get the same result? Here's how:</p>
+<span style="FONT-WEIGHT: bold">
+<ol class="docList" type="1">
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Start a text editor on a new file named <i>loggedin</i>.</span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">If your system supports the <span class="docEmphBold">
+  special #! notation</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-2">Section 
+  36.2</a>) (and it probably does), the first line of the script file should be:
+  </p>
+  <pre>#!/bin/sh</pre>
+  <p class="docList">Otherwise, leave the first line blank. (When the first line 
+  of a script is blank, most shells will start a Bourne shell to read it.
+  <a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-2">
+  Section 36.2</a> has more information.) </p>
+  <p class="docList">I think that the second line of a shell script should 
+  always be a comment to explain what the script does. (Use more than one line, 
+  if you want.) A comment starts with a hash mark (<tt>#</tt>); all characters 
+  after it on the line are ignored. Oh, and try to make sure there's a bit of 
+  whitespace between the comment character and the actual comment; that's a pet 
+  peeve of mine: </p>
+  <pre># loggedin - list logged-in users, once per user, in 8 columns</pre>
+  <p class="docList">Put this on the third line, just like you did on the 
+  command line:</p>
+  <pre>who | cut -c1-8 | sort -u | pr -l1 -8 -w78 -t</pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Save the file and leave the editor. You've just written a 
+  shell script. </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Next, you need to make the shell script executable. The
+  <span class="docEmphBold">chmod</span> (<a class="docLink" href="_chapter 50.htm#upt3-CHP-50-SECT-5">Section 
+  50.5</a>) (change mode) command is used to change permissions on a file. The 
+  plus sign followed by an x (<tt>+x</tt>) makes the file executable: </p>
+  <pre>% <b>chmod +x loggedin</b></pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">If your <span class="docEmphBold">login shell</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-4">Section 
+  3.4</a>) is <i>csh</i> or <i>tcsh</i>, you'll need to reset its command search 
+  table. To do that, type: </p>
+  <p class="docList"><tt>rehash</tt>
+  <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-6">
+  Section 27.6</a></p>
+  <pre>% <b>rehash</b></pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">Finally, try the script. Just type its name and it should 
+  run:</p>
+  <pre>% <b>loggedin</b></pre>
+  <p class="docList">If that doesn't run, your current directory may not be in 
+  your shell's <span class="docEmphBold">command search path</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+  35.6</a>,
+  <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-7">
+  Section 35.7</a>). In that case, try this: </p>
+  <pre>% <b>./loggedin</b></pre>
+  <p class="docList">If it still doesn't work, and you started the first line of 
+  your script with <tt>#!</tt>, be sure that the Bourne shell's pathname on that 
+  line (like <tt>/bin/sh</tt>) is correct. Another common error is to swap the
+  <tt>#</tt> and <tt>!</tt>, so check that, too. You should get an error like 
+  this, if that is the problem, although the script may itself run as well, 
+  depending on your system: </p>
+  <pre>!#/bin/sh: No such file or directory</pre>
+  </span></li>
+  <li><span style="FONT-WEIGHT: normal">
+  <p class="docList">If you want to run the script from somewhere other than the 
+  current directory, or if you want other programs and scripts you write to be 
+  able to use it, you need to put it in a directory that's in your search path 
+  and/or <span class="docEmphBold">change your search path</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-6">Section 
+  27.6</a>). If you're the only person who plans to use the script, you should 
+  put it in your personal <span class="docEmphBold">bin directory</span> (<a class="docLink" href="_chapter 7.htm#upt3-CHP-7-SECT-4">Section 
+  7.4</a>). Otherwise, you might ask your system administrator if there's a 
+  systemwide directory for local commands. </span></li>
+</ol>
+</span>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-2">35.2 Everyone Should Learn Some Shell Programming</h3>
+<p class="docText">One of the great things about Unix is that it's made up of 
+individual utilities, &quot;building blocks&quot; like <i>cat</i> and <i>grep</i>, that 
+you run from a shell prompt. Using pipes, redirection, filters, and so on, you 
+can combine those utilities to do an incredible number of things. Shell 
+programming lets you take the same commands you'd type at a shell prompt and put 
+them into a file you can run by just typing its name. You can make new programs 
+that combine Unix programs (and other shell scripts) in your own way to do 
+exactly what you need. If you don't like the way a program works, you can write 
+a shell script to do just what you want. </p>
+<p class="docText">Because many Unix users use the shell every day, they don't 
+need to learn a whole new language for programming, just some tips and 
+techniques. In fact, this chapter covers a lot of programming techniques that 
+you'll want to use even when you aren't programming. For example, loops and 
+tests are handy on the command line. </p>
+<p class="docText">(This series of articles does assume that you've written 
+programs in some language before or are generally familiar with programming 
+concepts. If you haven't and aren't, you might start with a more comprehensive 
+shell programming book.) </p>
+<div align="center">
+  <center>
+  <table cellSpacing="0" width="90%" border="1" style="border-collapse: collapse" bordercolor="#111111" cellpadding="5">
+    <tr>
+      <td>
+      <h2 class="docSidebarTitle">Summary Box</h2>
+      <p class="docText">Unix has plenty of other scripting languages — Perl, 
+      Python, and Tcl/Tk are some of the best known. So when should you write a 
+      script with the shell and when shouldn't you? That's a personal choice; as 
+      you learn more languages and their strengths and weaknesses, you're better 
+      able to choose the best one for a situation. My rule of thumb is something 
+      like this. I write a shell script if: </p>
+      <ul>
+        <li>
+        <p class="docList">It's a script I developed at the command line, so 
+        it's easy to just drop those same commands into a file. </li>
+        <li>
+        <p class="docList">I know some Unix utility that'll do just what I want.</li>
+        <li>
+        <p class="docList">It has to be portable to a system that might not have 
+        another scripting language I'd rather use. </li>
+        <li>
+        <p class="docList">The (possibly) slower speed of forking processes to 
+        run Unix utilities (especially in loops) doesn't matter. </li>
+        <li>
+        <p class="docList">The script simply has to make a few decisions — like 
+        whether standard input is a <span class="docEmphBold">tty</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-7">Section 
+        2.7</a>), checking options and arguments, or something else simple) — 
+        before the script ends by running some Unix utility. </li>
+        <li>
+        <p class="docList">It just feels natural to write a shell script, for 
+        whatever reason.</li>
+      </ul>
+      <p class="docText">On the other hand, maybe your script needs lots of
+      <span class="docEmphBold">pipes ( | )</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-5">Section 
+      1.5</a>) or temporary files, or you have out-of-band data that you have to 
+      keep passing in to each Unix utility (maybe because you can't shoehorn 
+      multiple types of data into a single chain of pipelines between 
+      utilities). In that case, you'll be happier with a scripting language that 
+      doesn't depend on Unix utilities and pipes. </p>
+      <p class="docText">Some of the topics you need to learn about as a 
+      beginning shell programmer have already been covered in other chapters. 
+      Here are the articles you'll probably want to read, in an order that makes 
+      sense if you're looking for something of a tutorial: </p>
+      <ul>
+        <li>
+        <p class="docList">To see how to write a simple shell program,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-1">
+        Section 35.1</a>. To embed scripts from other languages such as <i>sed</i> 
+        and <i>awk</i> in a shell script,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-19">
+        Section 35.19</a>. </li>
+        <li>
+        <p class="docList">For explanation of shells in general,
+        <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-3">
+        Section 27.3</a>. </li>
+        <li>
+        <p class="docList">To read about environment and shell variables,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">
+        Section 35.3</a> and
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">
+        Section 35.9</a>, respectively. </li>
+        <li>
+        <p class="docList">Shell quoting is explained in
+        <a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">
+        Section 27.12</a>.</li>
+        <li>
+        <p class="docList">Stepping through arguments or any list of words with 
+        a <i>for</i> loop is discussed in
+        <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-9">
+        Section 28.9</a> (as well as in
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">
+        Section 35.21</a>, later in this chapter). </li>
+      </ul>
+      <p class="docText">Then, once you've had your refresher, come on back and 
+      read the following articles: </p>
+      <ul>
+        <li>
+        <p class="docList">Test strings with a <i>case</i> statement,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">
+        Section 35.10</a>. Match patterns in a <i>case</i> statement,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-11">
+        Section 35.11</a>. </li>
+        <li>
+        <p class="docList">Use the output of one command as arguments to another 
+        command with command substitution,
+        <a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+        Section 28.14</a>. </li>
+        <li>
+        <p class="docList">Find out whether a program worked or failed with its 
+        exit status,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">
+        Section 35.12</a>. </li>
+        <li>
+        <p class="docList">Loop through a set of commands and use another 
+        command to control that loop,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-15">
+        Section 35.15</a>. </li>
+        <li>
+        <p class="docList">Set exit status of a shell (shell script),
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-16">
+        Section 35.16</a>. </li>
+        <li>
+        <p class="docList">Handle interrupts (like CTRL-c) and other signals,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">
+        Section 35.17</a>. </li>
+        <li>
+        <p class="docList">Read input from the keyboard,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-18">
+        Section 35.18</a>.</li>
+        <li>
+        <p class="docList">Handle command-line arguments (options, filenames, 
+        etc.),
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">
+        Section 35.20</a>. </li>
+        <li>
+        <p class="docList">Test a program's exit status and do different things 
+        if it worked or failed,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">
+        Section 35.13</a> and
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+        Section 35.14</a>. </li>
+        <li>
+        <p class="docList">Handle arguments with the <i>while</i> and <i>shift</i> 
+        commands,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-22">
+        Section 35.22</a>. </li>
+        <li>
+        <p class="docList">Handle command-line arguments in a more standard and 
+        portable way with <i>getopt</i>,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-24">
+        Section 35.24</a>. </li>
+        <li>
+        <p class="docList">Set shell options and command-line arguments with the
+        <i>set</i> command,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">
+        Section 35.25</a>. </li>
+        <li>
+        <p class="docList">Test files and strings of characters with the <i>test</i> 
+        command,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">
+        Section 35.26</a>. </li>
+        <li>
+        <p class="docList">Pick a name for a new command with no conflict,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-27">
+        Section 35.27</a>. </li>
+        <li>
+        <p class="docList">Find the name of a program and use it in the script,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-28">
+        Section 35.28</a>. </li>
+        <li>
+        <p class="docList">Use &quot;subprograms&quot; that can change the current 
+        environment,
+        <a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">
+        Section 35.29</a>. </li>
+      </ul>
+      </td>
+    </tr>
+  </table>
+  </center>
+</div>
+<p class="docText">This chapter discusses only Bourne shell programming. We 
+don't cover many features from more advanced Bourne-type shells, like <i>bash</i> 
+and <i>zsh</i>, because those can make your shell scripts nonportable; we stick 
+to concepts that should work almost anywhere. Also, in most cases, the C shell 
+isn't great for shell programming. </p>
+<p class="docText">A note about command versions: unfortunately, the same 
+commands on different versions of Unix can have different options. Some Bourne 
+shells are a little different from others. For instance, some
+<span class="docEmphBold">test</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">Section 
+35.26</a>) commands have a <i>-x</i> option to test for an executable file; 
+others don't. Some <i>echo</i> commands use a <i>-n</i> option to mean &quot;no 
+newline at the end of this string&quot;; others have you put <tt>\c</tt> at the end 
+of the string. And so on. Where there are differences, these articles generally 
+use the commands in original Berkeley Unix from the 1980s. If a command doesn't 
+seem to work on your system, check its online manual page or the <i>sh</i> 
+manual page. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-3">35.3 What Environment Variables Are Good For</h3>
+<p class="docText">Many Unix utilities, including the shell, need information 
+about you and what you're doing in order to do a reasonable job. </p>
+<p class="docText">What kinds of information? Well, to start with, a lot of 
+programs (particularly editors) need to know what kind of terminal you're using. 
+The shell needs to know where any commands you want to use are likely to be 
+found. Lots of Unix programs (like mail programs) include a command to start an 
+editor as a subprocess; they like to know your favorite editor. And so on. </p>
+<p class="docText">Of course, one could always write programs that made you put 
+all this information on the command line. For example, you might have to type 
+commands like: </p>
+<pre>% <b>mail -editor vi -term aardvark48 -favoritecolor blue_no_red</b></pre>
+<p class="docText">But your favorite editor probably doesn't change every day. 
+(Nor will your favorite color.) The terminal you use may change frequently, but 
+it certainly won't change from the time you log in until the time you log out. 
+And you certainly wouldn't want to type something like this whenever you want to 
+send mail. </p>
+<p class="docText">Rather than forcing you to type this information with every 
+command, Unix uses <span class="docEmphasis">environment variables</span> to 
+store information you'd rather not worry about. For example, the
+<span class="docEmphBold">TERM</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-2">Section 
+5.2</a>) environment variable tells programs what kind of terminal you're using. 
+Any programs that care about your terminal type know (or ought to know) that 
+they can read this variable, find out your terminal type, and act accordingly.
+</p>
+<p class="docText">Similarly, the directories that store the commands you want 
+to execute are listed in the <span class="docEmphBold">PATH</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+35.6</a>) variable. When you type a command, your shell looks through each 
+directory in your <span class="docEmphasis">PATH</span> variable to find that 
+command. Presumably, Unix wouldn't need a <span class="docEmphasis">PATH</span> 
+variable if all commands were located in the same directory, but you'll soon be 
+writing your own commands (if you aren't already), and storing them in your own
+<span class="docEmphBold">&quot;private&quot; command directories</span> (<a class="docLink" href="_chapter 7.htm#upt3-CHP-7-SECT-4">Section 
+7.4</a>), and you'll need to tell the shell <span class="docEmphBold">how to 
+find them</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-6">Section 
+27.6</a>). </p>
+<p class="docText">Environment variables are managed by your shell. The 
+difference between environment variables and regular <span class="docEmphBold">
+shell variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>) is that a shell variable is local to a particular instance of the 
+shell (such as a shell script), while environment variables are &quot;inherited&quot; by 
+any program you start, including <span class="docEmphBold">another shell</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>). That is, the new process gets its own copy of these variables, which 
+it can read, modify, and pass on in turn to its own children. In fact, every 
+Unix process (not just the shell) passes its environment variables to its child 
+processes. </p>
+<p class="docText">You can set environment variables with a command like this:</p>
+<pre>% <b>setenv  </b><i>NAME value  </i>        <i> C-type shells</i>
+$ <i>NAME=value </i><b>; export  </b><i>NAME     all Bourne-type shells</i>
+$ <b>export  </b><i>NAME=value </i>         <i> newer Bourne-type shells</i></pre>
+<p class="docText">There's nothing particularly special about the
+<span class="docEmphasis">NAME</span>; you can create environment variables with 
+any names you want. Of course, these don't necessarily do anything for you; 
+variables like <span class="docEmphasis">PATH</span> and
+<span class="docEmphasis">TERM</span> are important because lots of programs 
+have <span class="docEmphBold">&quot;agreed&quot;</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">Section 
+35.5</a>) that these names are important. But if you want to create an 
+environment variable that holds the name of your lover, that's your business:
+</p>
+<pre>% <b>setenv LOVER Judy</b></pre>
+<p class="docText">If you're so inclined, you could write a program called
+<span class="docEmphasis">valentine</span> that reads the
+<span class="docEmphasis">LOVER</span> environment variable and generates an 
+appropriate message. If you like short-term relationships or tend to forget 
+names, this might even be convenient! </p>
+<p class="docText">By convention, the names of environment variables use all 
+uppercase letters. There's nothing to enforce this convention — if you're making 
+your own names, you can use any capitalization you please. But there's no 
+advantage to violating the convention, either. The environment variables used by 
+standard Unix programs all have uppercase names. Making shell variable names 
+lowercase so it's easy to tell the difference is helpful. </p>
+<p class="docText">If you want the C shell to forget that an environment 
+variable ever existed, use the command <span class="docEmphasis">unsetenv NAME</span>. 
+The <span class="docEmphasis">tcsh</span> understands <span class="docEmphBold">
+filename wildcard</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+1.13</a>)-type expressions — for instance, <tt>unsetenv VAR*</tt> would unset 
+all environment variables whose names start with <span class="docEmphasis">VAR</span>. 
+Most Bourne-type shells, but not all, have a similar command,
+<span class="docEmphasis">unset NAME</span>, but it doesn't understand wildcards 
+like the <i>tcsh</i> version. The <i>bash</i> version accepts multiple names as 
+arguments, however, and can also unset functions with the <i>-f</i> option. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: printenv, env</p>
+<p class="docText">If you want to list all of your environment variables, use <i>
+printenv</i> or <i>env</i>. The <i>printenv</i> command also lets you ask about 
+a particular variable. Here's a typical report: </p>
+<pre>% <b>printenv EDITOR</b>
+EDITOR=/usr/local/bin/emacs
+% <b>printenv</b>
+HOME=/home/los/mikel
+SHELL=/bin/csh
+TERM=sun
+USER=mikel
+PATH=/usr/local/bin:/usr/ucb:/bin:/usr/bin:.:/home/los/mikel/bin
+LOGNAME=mikel
+PWD=/home/los/mikel/power/articles
+PRINTER=ps
+EDITOR=/usr/local/bin/emacs</pre>
+<p class="docText">The <i>set</i> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>) command provides a similar listing of shell variables and functions 
+(in newer Bourne-like shells such as <i>bash</i>). </p>
+<p class="docText">You can also use the <i>echo</i> command to show the value of 
+a particular variable by preceding the variable name with a dollar sign (which 
+tells the shell to substitute the value of the variable): </p>
+<pre>% <b>echo $TERM</b>
+xterm</pre>
+<p class="docText">Or — and this is particularly useful when you want a shell or 
+environment variable's value interpolated into a line — you can surround the 
+variable name with curly brackets: </p>
+<pre>% <b>echo ${TERM}</b>
+vt100
+% <b>echo ${TERM}-like</b>
+vt100-like</pre>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-4">35.4 Parent-Child Relationships</h3>
+<p class="docText">No, this is not about the psychology of computing. It's just 
+a reminder of one important point. </p>
+<p class="docText">In the environment variable <span class="docEmphBold">
+overview</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>) we said that each process gets its own copy of its parent's 
+environment variables. We chose those words carefully, and if you think about 
+them, you won't make one common mistake. </p>
+<p class="docText">Sooner or later, almost everyone writes a shell script that 
+gathers some information, sets a few environment variables, and quits. The 
+writer then wonders why there's no trace of the &quot;new&quot; environment variables to 
+be found. The problem is simple. A Unix <span class="docEmphBold">process</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>) cannot change its parent's environment; a Unix process gets its
+<span class="docEmphasis">own</span> copy of the parent's environment, and any 
+changes it makes it keeps to itself. A process can make changes and pass them to 
+its children, but there's no way of going in reverse. </p>
+<p class="docText">(You can't teach an old dog new tricks.)</p>
+<p class="docText">[This is important in window systems, too. Environment 
+variables set in one window (more exactly, in one <span class="docEmphasis">
+process</span>) probably won't affect any process running in any other window. 
+To affect all windows, set the environment variable before you start the window 
+system. For instance, if you log in and then type <i>startx</i> from a shell 
+prompt to start X, you can set environment variables from that prompt or from 
+that shell's <span class="docEmphBold">setup files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>). — <span class="docEmphasis">JP</span>] </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-5">35.5 Predefined Environment Variables</h3>
+<p class="docText">We've said that environment variables are used to store 
+information that you'd rather not worry about, and that there are a number of 
+standard environment variables that many Unix programs use. These are often 
+called &quot;predefined&quot; environment variables — not because their values are 
+predefined, but because their names and uses are predefined. Here are some 
+important ones: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docEmphBold">PATH</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+  35.6</a>) </span></dt>
+  <dd>
+  <p class="docList">contains your <span class="docEmphBold">command search path</span> 
+  (<a class="docLink" href="_chapter 26.htm#upt3-CHP-26-SECT-6">Section 
+  27.6</a>). This is a list of directories in which the shell looks to find 
+  commands. It's usually set in one of your <span class="docEmphBold">shell 
+  setup files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+  3.3</a>). </dd>
+  <dt><i><span class="docPubcolor">EDITOR and VISUAL </span></i></dt>
+  <dd>
+  <p class="docList">can be loaded with the name of your favorite editor. 
+  They're usually set in one of your shell setup files. Some programs 
+  distinguish between <span class="docEmphasis">EDITOR</span> (usually set to a
+  <span class="docEmphBold">line editor</span> (<a class="docLink" href="_chapter 20.htm#upt3-CHP-20-SECT-1">Section 
+  20.1</a>) such as <i>ed</i>) and <span class="docEmphasis">VISUAL</span> (set 
+  to a full-screen editor like <i>vi</i>). Many people don't follow that 
+  convention; they set both to the same editor. (The Korn shell checks
+  <span class="docEmphasis">VISUAL</span> and <span class="docEmphasis">EDITOR</span>, 
+  in that order, to determine your <span class="docEmphBold">command editing 
+  mode</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-14">Section 
+  30.14</a>).) </dd>
+  <dt><span class="docPubcolor"><span class="docEmphBold">PRINTER</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-4">Section 
+  45.4</a>) or LPDEST </span></dt>
+  <dd>
+  <p class="docList">can be loaded with the name of your default printer. This 
+  is quite useful at a site with many printers — you don't need to tell
+  <span class="docEmphBold">lpr or lp</span> (<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">Section 
+  45.2</a>) which printer to use. (<span class="docEmphasis">PRINTER</span> 
+  works on systems that print with <i>lpr</i> , and <span class="docEmphasis">
+  LPDEST</span> is for <i>lp</i>.) This variable is usually set in one of your 
+  shell setup files. </dd>
+  <dt><i><span class="docPubcolor">PWD</span></i> </dt>
+  <dd>
+  <p class="docList">may contain the absolute pathname of your current 
+  directory. It's set automatically by the cd command in some Unix shells. PWD 
+  may be fooled by cding through symbolic links. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphBold">HOME</span> (<a class="docLink" href="_chapter 31.htm#upt3-CHP-31-SECT-11">Section 
+  31.11</a>) (called <span class="docEmphasis">LOGDIR</span> on some systems)
+  </span></dt>
+  <dd>
+  <p class="docList">contains the absolute pathname of your home directory. It's 
+  set automatically when you log in. </dd>
+  <dt><i><span class="docPubcolor">SHELL </span></i></dt>
+  <dd>
+  <p class="docList">contains the absolute pathname of your login shell. It's 
+  set automatically whenever you log in. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">USER</span> or
+  <span class="docEmphasis">LOGNAME</span> </span></dt>
+  <dd>
+  <p class="docList">contains your username. It's set automatically when you log 
+  in. </dd>
+  <dt><i><span class="docPubcolor">TERM </span></i></dt>
+  <dd>
+  <p class="docList">contains the name of your terminal type in the
+  <span class="docEmphasis">termcap</span> or <span class="docEmphasis">terminfo</span> 
+  database. It's usually set in a shell setup file. On Darwin, in the Terminal 
+  program, the <span class="docEmphasis">TERM_PROGRAM</span> variable is also 
+  set. </dd>
+  <dt><i><span class="docPubcolor">TERMCAP </span></i></dt>
+  <dd>
+  <p class="docList">is an environment variable that can be loaded with the 
+  complete <span class="docEmphasis">termcap</span> database entry for the 
+  terminal you are using. This may make some programs start up more quickly, but 
+  it's not necessary. It's set (under some conditions) by the
+  <span class="docEmphasis">tset</span> command, which is usually run in your 
+  shell setup file. </dd>
+  <dt><i><span class="docPubcolor">ENV </span></i></dt>
+  <dd>
+  <p class="docList">contains the name of an initialization file to be executed 
+  whenever a new Korn shell is started. (See
+  <a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">
+  Section 3.3</a>.) Korn shell only. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">BASH_ENV</span> </span>
+  </dt>
+  <dd>
+  <p class="docList">contains the name of an initialization file to be executed 
+  whenever a new <i>bash</i> shell is started. (See
+  <a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">
+  Section 3.3</a>.) <i>bash</i> only. Often set to <i>.bashrc</i> by default.
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">PAGER</span> </span>
+  </dt>
+  <dd>
+  <p class="docList">can be set to the name of your favorite page-by-page screen 
+  display program like <i>less</i> (<a class="docLink" href="_chapter 12.htm#upt3-CHP-12-SECT-3">Section 
+  12.3</a>) or <i>more</i>. (Programs like <span class="docEmphBold">man</span> 
+  (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+  2.1</a>) use <span class="docEmphasis">PAGER</span> to determine which paging 
+  program to use if their output is longer than a single screen.) </dd>
+  <dt><i><span class="docPubcolor">PS1 </span></i></dt>
+  <dd>
+  <p class="docList">contains the primary prompt (i.e., interactive command 
+  prompt) for Bourne-type shells. You also can set it in a particular shell, as 
+  a shell variable with the same name, but it won't be passed to subshells 
+  automatically. (The C shell doesn't store the prompt in an environment 
+  variable. It uses a shell variable called <span class="docEmphasis">prompt</span> 
+  because the <span class="docEmphBold">.cshrc file</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+  3.3</a>) is read to set up each instance of the shell. See
+  <a class="docLink" href="_chapter 4.htm#upt3-CHP-4-SECT-4">
+  Section 4.4</a>.) </dd>
+  <dt><span class="docPubcolor"><span class="docEmphBold">PS2</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-12">Section 
+  28.12</a>) </span></dt>
+  <dd>
+  <p class="docList">contains the secondary prompt (used within compound 
+  commands like <i>while</i> and <i>for</i>) for Bourne shells. Some Bourne-type 
+  shells also use <span class="docEmphasis">PS3</span> and
+  <span class="docEmphasis">PS4</span>. As with <span class="docEmphasis">PS1</span>, 
+  these don't have to be stored in the environment. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphBold">MANPATH</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-21">Section 
+  3.21</a>) </span></dt>
+  <dd>
+  <p class="docList">if your <span class="docEmphBold">man</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+  2.1</a>) command supports it, is a colon-separated list of directories to 
+  search for manual pages. </dd>
+  <dt><i><span class="docPubcolor">TZ </span></i></dt>
+  <dd>
+  <p class="docList">contains the time zone. This is the name of a file in the
+  <span class="docEmphasis">zoneinfo</span> directory that provides time zone 
+  information for your locality. It is read by commands such as <i>date</i>.
+  </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">DISPLAY</span> </span>
+  </dt>
+  <dd>
+  <p class="docList">is used by the <span class="docEmphBold">X Window System</span> 
+  (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-22">Section 
+  1.22</a>) to identify the display server (keyboard and screen handling 
+  program) that will be used for input and output by X applications. It may be 
+  set by <i>ssh</i> when you log into a remote system, as well. </dd>
+  <dt><i><span class="docPubcolor">INPUTRC </span></i></dt>
+  <dd>
+  <p class="docList">lets you choose a setup filename for the Readline library 
+  instead of the default <span class="docEmphasis">$HOME/.inputrc</span>. </dd>
+  <dt><span class="docPubcolor"><span class="docEmphasis">LS_COLORS</span> (or
+  <span class="docEmphasis">LS_COLOURS</span>) </span></dt>
+  <dd>
+  <p class="docList">lists the colors used by the <span class="docEmphBold">
+  color ls command</span> (<a class="docLink" href="_chapter 8.htm#upt3-CHP-8-SECT-6">Section 
+  8.6</a>). </dd>
+</dl>
+<p class="docText">Because Bourne-type shells don't make as strict a distinction 
+between environment variables and shell variables as the C shell does, we've 
+included a few things here that might not be on other people's lists. </p>
+<p class="docText">But we haven't even tried to include everything. Here are two 
+good ways to see what's there. One is to look at the end of a command's
+<span class="docEmphBold">manual page</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-1">Section 
+2.1</a>) in the ENVIRONMENT section (if there is one). Another is to list your 
+current environment variables (with <span class="docEmphBold">env or printenv</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>)) and make some guesses from the names and corresponding values. </p>
+<p class="docText">We may have implied that environment variables are relatively 
+constant (like your favorite editor). That's not true. For example, in a 
+windowing environment, the current length of your window might be kept in an 
+environment variable. That can change as often as you resize your window. What 
+is true (fortunately) is exactly what we've said: environment variables store 
+information that you'd rather not have to worry about. </p>
+<p class="docText"><span class="docEmphasis">—ML, JP, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-6">35.6 The PATH Environment Variable</h3>
+<p class="docText">Of all the environment variables, the
+<span class="docEmphasis">PATH</span> and <span class="docEmphasis">TERM</span> 
+variables are the most important. The others are often great conveniences, but
+<span class="docEmphasis">PATH</span> and <span class="docEmphasis">TERM</span> 
+can make your life miserable if they get screwed up. </p>
+<p class="docText">The <span class="docEmphasis">PATH</span> variable is just a 
+list of directories separated by colon (:) characters. The shell searches 
+through these directories in order whenever it needs to find a command. So, if 
+you want to execute commands in <i>/bin</i>, <i>/usr/bin</i>, <i>/usr/local</i>, 
+the current directory, and your personal <i>bin</i> directory, you would put a 
+line like the one below in your <i>.login</i> file. An empty entry (: as the 
+first or last character, or <tt>::</tt> in the middle) means &quot;the current 
+directory.&quot; </p>
+<p class="docText"><tt>$HOME/bin</tt>
+<a class="docLink" href="_chapter 7.htm#upt3-CHP-7-SECT-4">
+Section 7.4</a></p>
+<pre>setenv PATH /bin:/usr/bin:/usr/local::$HOME/bin</pre>
+<p class="docText">
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-6">
+Section 27.6</a> explains more about setting the path. </p>
+<p class="docText">The most common problem with <span class="docEmphasis">PATH</span> 
+is that, somehow, it gets deleted. This usually happens if you try to change
+<span class="docEmphasis">PATH</span> and do so incorrectly. When
+<span class="docEmphasis">PATH</span> is deleted, your shell can find only its
+<span class="docEmphBold">built-in commands</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+1.9</a>) and commands for which you give the complete pathname. Here's a 
+demonstration: </p>
+<pre>% <b>setenv PATH    </b><i> Set PATH to null accidentally</i>
+% <b>ls </b>
+ls: Command not found.</pre>
+<p class="docText">Needless to say, this can be very frustrating — especially if 
+you can't figure out what's going on. There are a couple of easy fixes. The 
+easiest is just to log out and log back in again. (<span class="docEmphasis">logout</span> 
+is a built-in C shell command, so you won't have trouble finding it. If you get 
+an error message like &quot;Not login shell,&quot; try <i>exit</i> instead.) Another fix 
+is to <span class="docEmphBold">read</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">Section 
+35.29</a>) whichever initialization file defined your <span class="docEmphasis">
+PATH</span> variable, usually <i>.login</i> for C shell users or <i>.profile</i> 
+or <i>.bash_profile</i> for Bourne or <i>bash</i> shell users, respectively: </p>
+<pre>% <b>source ~/.login</b>
+$ <b>. $HOME/.profile</b>
+bash$ <b>. $HOME/.bash_profile</b></pre>
+<p class="docText">This will almost certainly give you <span class="docEmphasis">
+some</span> of your path back; the problem is that a lot of initialization files 
+merely add a few &quot;private&quot; directories to a system-wide default path. In this 
+case, just execute the system-wide initialization files first (if your system 
+has them). Their pathnames vary: </p>
+<pre>+$ <b>source /etc/profile</b>
+$ <b>source /etc/profile.d/*.sh</b>
+$ <b>source ~/.login</b>
+bash$ <b>source ~/.bash_profile</b></pre>
+<p class="docText">Your best bet, if you're unfamiliar with the quirks of your 
+system and how it sets up your shell, is to simply log out and log back in 
+again. Some newer Linux systems, for example, use <i>/etc/profile</i> for <i>
+bash</i> setup, inheriting the hardwired defaults set by the <i>login</i> 
+command, and then go on to read shell-specific files (often in <i>/etc/profile.d</i>, 
+for example). <i>tcsh</i> and <i>csh</i> are configured using the <i>/etc/csh.login</i>,
+<i>/etc/csh.cshrc</i>, and other files in <i>/etc/profile.d</i> in similar 
+fashion to <i>bash</i>. This allows package managers to install package specific 
+initialization without modifying (and potentially corrupting) the system's 
+default initialization. </p>
+<p class="docText">The other common <span class="docEmphasis">PATH</span> 
+problem is that users sometimes can't find the commands they want. This happens 
+most often when someone writes a new shell script with the same name as a 
+standard Unix command — say, <i>true</i>. He or she tries to execute it and 
+can't; in fact, all that happens is: </p>
+<pre>% <b>true</b>
+%</pre>
+<p class="docText">After staring at the script for a long time, the user 
+sometimes gets the right idea: the script is fine; it's the path that's wrong. 
+The <span class="docEmphasis">PATH</span> variable will look something like 
+this: </p>
+<pre>% <b>printenv PATH</b>
+/bin:/usr/local/bin:/usr/bin:/sbin::/home/schampeo/bin</pre>
+<p class="docText">The shell searches the <span class="docEmphasis">PATH</span> 
+in order; therefore, it finds the system's standard <i>true</i> command before 
+seeing the new one. The new command never gets a chance. You
+<span class="docEmphasis">could</span> fix this problem by putting the current 
+directory and <span class="docEmphasis">$HOME/bin</span> at the head of the 
+search path, in which case commands in the current directory and your private <i>
+bin</i> directory will override the standard commands. However, that's
+<span class="docEmphasis">not</span> recommended; it's a well-known security 
+hole. </p>
+<p class="docText">So what is recommended? Nothing much, except that if you 
+write shell scripts or other programs, give them names that are
+<span class="docEmphBold">different from the standard Unix utilities</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-27">Section 
+35.27</a>). If you really need an overlapping name, you can use a
+<span class="docEmphBold">relative pathname</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-16">Section 
+1.16</a>) to specify &quot;the program called <i>true</i> in the current directory&quot;:
+</p>
+<pre>% <b>./true</b></pre>
+<p class="docText">You can search your <span class="docEmphasis">PATH</span> for 
+a command with <span class="docEmphBold">which</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-6">Section 
+2.6</a>), <i>findcmd</i>, and <i>whereiz</i>.
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-7">
+Section 35.7</a> explains the pair of <span class="docEmphasis">path</span> 
+variables in <i>csh</i> and <i>zsh</i>. </p>
+<p class="docText"><span class="docEmphasis">—ML and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-7">35.7 PATH and path</h3>
+<p class="docText">For <i>csh</i> and <i>zsh</i>, it's slightly incorrect to say 
+that <span class="docEmphasis">PATH</span> contains the search list for 
+commands. It's a bit more complicated. The <span class="docEmphasis">PATH</span> 
+environment variable is used to set the <span class="docEmphasis">path</span> 
+shell variable; that is, whenever you use <span class="docEmphasis">setenv</span>
+<span class="docEmphBold">PATH</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-6">Section 
+35.6</a>) in <i>csh</i> or <span class="docEmphasis">export PATH</span> in <i>
+zsh</i>, the shell modifies <span class="docEmphasis">path</span> accordingly. 
+For example: </p>
+<pre>setenv PATH /bin:/usr/bin:/usr/local::$HOME/bin   <i>csh</i>
+export PATH=/bin:/usr/bin:/usr/local::$HOME/bin   <i>zsh</i></pre>
+<p class="docText">In <span class="docEmphasis">PATH</span>, an empty entry (<tt>::</tt>) 
+stands for the current directory. The shells' <span class="docEmphasis">path</span>
+<span class="docEmphBold">shell variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>) is the actual search list. Its syntax is slightly different; the list 
+of directories is enclosed in parentheses ([XREF: UPT-ART-0508]), and the 
+directories are separated by spaces. For example: </p>
+<p class="docText"><tt>~</tt>
+<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-11">
+Section 30.11</a></p>
+<pre>set path=(/bin /usr/bin /usr/local . ~/bin)   <i>csh</i>
+
+path=(/bin /usr/bin /usr/local . ~/bin)       <i>zsh</i></pre>
+<p class="docText">If you set the <span class="docEmphasis">path</span> shell 
+variable, the shell will automatically set the <span class="docEmphasis">PATH</span> 
+environment variable. You don't need to set both. Many people set the shell 
+variable instead of the environment variable. </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-8">35.8 The DISPLAY Environment Variable</h3>
+<p class="docText">The most important environment variable for X Window System 
+clients is DISPLAY. When a user logs in at an X terminal, the DISPLAY 
+environment variable in each <i>xterm</i> window is set to her X terminal's 
+hostname followed by <tt>:0.0</tt>. </p>
+<pre>ruby:joan % <b>echo $DISPLAY</b>
+ncd15.ora.com:0.0</pre>
+<p class="docText">When the same user logs in at the console of the workstation 
+named <span class="docEmphasis">sapphire</span> that's running X, the DISPLAY 
+environment variable is defined as just <tt>:0.0</tt>:<span id="ENB35-1"><a class="docLink" href="#EN35-1"><sup>[1]</sup></a></span>
+</p>
+<pre>sapphire:joan % <b>echo $DISPLAY</b>
+:0.0</pre>
+<p class="docText">The DISPLAY environment variable is used by all X clients to 
+determine what X server to display on. Since any X client can connect to any X 
+server that allows it, all X clients need to know what display to connect to 
+upon startup. If DISPLAY is not properly set, the client cannot execute: </p>
+<pre>sapphire:joan % <b>setenv DISPLAY foo:0</b>
+sapphire:joan % <b>xterm</b>
+xterm Xt error: Can't open display:</pre>
+<p class="docText">You can override the value of DISPLAY by using the <i>
+-display</i> command-line option. For example: </p>
+<pre>sapphire:joan % <b>xterm -display sapphire:0.0 &amp;</b></pre>
+<p class="docText">The first part of the display name (up to and including the 
+colon) identifies the type of connection to use and the host that the server is 
+running on. The second part (in most cases, the string <tt>0.0</tt>) identifies 
+a <span class="docEmphasis">server number</span> and an optional
+<span class="docEmphasis">screen number</span>. In most cases, the server and 
+screen numbers will both be 0. You can omit the screen number name if the 
+default (screen 0) is correct. </p>
+<p class="docText">Note that we used both <tt>:0.0</tt> and <tt>sapphire:0.0</tt> 
+to access the local console display of the workstation named
+<span class="docEmphasis">sapphire</span>. Although both these names will work, 
+they imply different ways of connecting to the X server. </p>
+<ul>
+  <li>
+  <p class="docList">The : character without an initial hostname specifies that 
+  the client should connect using UNIX domain sockets (IPC). </p>
+  <p class="docList">Since processes can communicate via IPC only if they are 
+  running on the same host, you can use a leading colon or the <tt>unix</tt> 
+  keyword in a display name only if both the client and server are running on 
+  the same host — that is, for local clients displaying to the local console 
+  display of a workstation. </li>
+  <li>
+  <p class="docList">Using the hostname followed by a colon (e.g., <tt>sapphire</tt>:) 
+  specifies that the client should connect using Internet domain sockets 
+  (TCP/IP). You can use TCP/IP connections for displaying clients on any X 
+  server on the TCP/IP network, as long as the client has permission to access 
+  that server. </li>
+</ul>
+<p class="docText">Note that like all other environment variables set in your 
+shell environment, the DISPLAY environment variable will
+<span class="docEmphBold">propagate</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>) to all processes you start from that shell. </p>
+<p class="docText">When you run clients from remote machines, some additional 
+problems with the DISPLAY environment variable need to be addressed. See
+<a class="docLink" href="_chapter 6.htm#upt3-CHP-6-SECT-10">
+Section 6.10</a> for more information on running remote clients. </p>
+<p class="docText"><span class="docEmphasis">—LM and EP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-9">35.9 Shell Variables</h3>
+<p class="docText">Shell variables are really just the &quot;general case&quot; of
+<span class="docEmphBold">environment variables</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>). If you're a programmer, remember that a Unix shell really runs an 
+interpreted programming language. Shell variables belong to the shell; you can 
+set them, print them, and work with them much as you can in a C program (or a 
+FORTRAN program or a BASIC program). If you're not a programmer, just remember 
+that shell variables are pigeonholes that store information for you or your 
+shell to use. </p>
+<p class="docText">If you've read the articles on environment variables, you 
+realize that we defined them in exactly the same way. How are shell variables 
+different from environment variables? Whenever you start a new shell or a Unix 
+program, it inherits all of its parent's environment variables. However, it does
+<span class="docEmphasis">not</span> inherit any shell variables; it starts with 
+a clean slate (except, possibly, variables in some <span class="docEmphBold">
+shell setup files</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>)). If you're a programmer, you can think of environment variables as 
+&quot;global&quot; variables, while shell variables are &quot;local&quot; variables. By convention, 
+shell variables have lowercase names. </p>
+<p class="docText">Just as some programs use certain environment variables, the 
+shell expects to use certain shell variables. For example, the C shell uses the
+<span class="docEmphBold">history</span> (<a class="docLink" href="_chapter 30.htm#upt3-CHP-30-SECT-1">Section 
+30.1</a>) variable to determine how many of your previous commands to remember; 
+if the <span class="docEmphBold">noclobber</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-6">Section 
+43.6</a>) variable is defined, the C shell prevents you from damaging files by 
+making mistakes with standard output. Most users insert code into their
+<span class="docEmphBold">.cshrc or .tcshrc</span> (<a class="docLink" href="_chapter 3.htm#upt3-CHP-3-SECT-3">Section 
+3.3</a>) files to define these important variables appropriately. Alternatively, 
+they split them up into context-specific files and then
+<span class="docEmphBold">read them into their environment</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">Section 
+35.29</a>) as needed. </p>
+<p class="docText">To set a shell variable, use one of these commands:</p>
+<pre>% <b>set  </b><i>name </i><b>= </b><i>value     C shell</i>
+$ <i>name </i><b>= </b><i>value       other shells</i></pre>
+<p class="docText">As a special case, if you omit <span class="docEmphasis">
+value</span>, the shell variable is set to a &quot;null&quot; value. For example, the 
+following commands are valid: </p>
+<pre>% <b>set  </b><i>name     C shell</i>
+$ <i>name </i><b>=       </b><i> other shells</i></pre>
+<p class="docText">This is important: giving a variable a null value is not the 
+same as deleting the value. Some programs look at variables to see whether or 
+not they exist; they don't care what the actual value is, and an empty value is 
+as good as anything else. </p>
+<p class="docText">Most newer shells — but not the original C and Bourne shells 
+— let you prevent accidental changes in a variable by marking it read-only after 
+you've stored its value: </p>
+<pre>% <b>set -r  </b><i>name </i>    <i> tcsh</i>
+$ <b>readonly  </b><i>name </i>  <i> other shells</i></pre>
+<p class="docText">(In <i>zsh</i>, you can mark a variable read-only as you 
+initialize it: <tt>readonly</tt> <tt><i>name=value</i></tt>.) If you want to 
+make the shell forget that a variable ever existed, use the <i>unset</i> 
+command. Note that, in general, you can't unset a read-only variable! Also, 
+older Bourne shells don't have a command like <i>unset</i>: </p>
+<pre>% <b>unset  </b><i>name     C shell</i>
+$ <b>unset  </b><i>name     others except old Bourne shell</i></pre>
+<p class="docText">If you want to list all of your environment variables, use 
+the command <span class="docEmphBold">printenv or env</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">Section 
+35.3</a>).<span id="ENB35-2"><a class="docLink" href="#EN35-2"><sup>[2]</sup></a></span> If 
+you want to list all of your Bourne or C shell variables, just type <tt>set</tt>. 
+Here's a typical report in the C shell: </p>
+<pre>% <b>set</b>
+argv    ( )
+cwd     /home/los/mikel/power/articles
+history 40
+home    /home/los/mikel
+noclobber
+path    (/home/los/mikel/bin /usr/local/bin /usr/ucb /bin /usr/bin .)
+prompt  los%
+shell   /bin/csh
+status  0
+term    sun
+user    mikel</pre>
+<p class="docText">If you want to print the value of an individual variable, 
+give the command: </p>
+<pre>% <b>echo &quot;$ </b><i>variablename </i><b>&quot; </b></pre>
+<p class="docText">(While the example above gives a C shell prompt, this command 
+works in all Unix shells.) The quotes aren't necessary for something as simple 
+as an <i>echo</i> statement, but if you want the value captured, for example, so 
+that you can apply it to another variable, they are recommended. </p>
+<p class="docText">Whenever you need the value of a shell variable — not just 
+with <i>echo</i> — you need to put a dollar sign (<tt>$</tt>) in front of the 
+name. Don't use the dollar sign when you're assigning a new value to a shell 
+variable. You can also stick curly braces (<tt>{}</tt>) around the name if you 
+want to (e.g., <tt>${<i>name</i>}</tt>); when you're writing shell programs, 
+this can often make your code much clearer. Curly braces are mostly used when 
+you need to separate the variable name from what comes after it. </p>
+<p class="docText">But that's getting us out of the range of interactive 
+variable use and into <span class="docEmphBold">shell programming</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-2">Section 
+35.2</a>). </p>
+<p class="docText"><span class="docEmphasis">—ML and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-10">35.10 Test String Values with Bourne-Shell case</h3>
+<p class="docText">Each time you type a command line at a shell prompt, you can 
+see what happens and decide what command to run next. But a shell script needs 
+to make decisions like that itself. A <i>case</i> statement helps the script 
+make decisions. A <i>case</i> statement compares a string (usually taken from a
+<span class="docEmphBold">shell or environment variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-3">
+Section 35.3</a>)) to one or more patterns. The patterns can be simple strings 
+(words, digits, etc.) or they can be <span class="docEmphBold">case wildcard 
+expressions</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-11">Section 
+35.11</a>). When the <i>case</i> statement finds a pattern that matches the 
+string, it executes one or more commands. </p>
+<p class="docText">Here's an example that tests your <span class="docEmphBold">
+TERM</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-2">Section 
+5.2</a>) environment variable. If you're using a vt100 or tk4023 terminal, it 
+runs a command to send some characters to your terminal. If you aren't on either 
+of those, it prints an error and quits: </p>
+<p class="docText"><tt>exit</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-16">
+Section 35.16</a></p>
+<pre>+case &quot;$TERM&quot; in
+vt100 echo 'ea[w' | tr 'eaw' '\033\001\027' ;;
+tk4023)  echo &quot;*[p23&quot; ;;
+*)  # Not a VT100 or tk4023.  Print error message:
+    echo &quot;progname: quitting: you aren't on a VT100 or tk4023.&quot; 1&gt;&amp;2
+    exit
+    ;;
+esac</pre>
+<p class="docText">Here are more details about how this works. The statement 
+compares the string between the words <tt>case</tt> and <tt>in</tt> to the 
+strings at the left-hand edge of the lines ending with a <tt>)</tt> (right 
+parenthesis) character. If it matches the first case (in this example, if it's 
+the <tt>vt100</tt>), the command up to the <tt>;;</tt> is executed. The <tt>;;</tt> 
+means &quot;jump to the <tt>esac</tt>&quot; (<i>esac</i> is &quot;case&quot; spelled backwards). You 
+can put as many commands as you want before each <tt>;;</tt>, but put each 
+command on a separate line (or separate commands on a line with
+<span class="docEmphBold">semicolons</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-16">Section 
+28.16</a>)). </p>
+<p class="docText">If the first pattern doesn't match, the shell tries the next 
+case — here, <span class="docEmphasis">tk4023</span>. As above, a match runs the 
+command and jumps to the <i>esac</i>. No match? The next pattern is the wildcard
+<tt>*</tt>. It matches any answer other than <span class="docEmphasis">vt100</span> 
+or <span class="docEmphasis">tk4023</span> (such as <i>xterm</i> or an empty 
+string). </p>
+<p class="docText">You can use as many patterns as you want to. The first one 
+that matches is used. It's okay if none of them match. The style doesn't matter 
+much. Pick one that's readable and be consistent. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-11">35.11 Pattern Matching in case Statements</h3>
+<p class="docText">A <span class="docEmphBold">case statement</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">Section 
+35.10</a>) is good at string pattern matching. Its &quot;wildcard&quot; pattern-matching 
+metacharacters work like the <span class="docEmphBold">filename wildcards</span> 
+(<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">Section 
+1.13</a>) in the shell, with a few twists. Here are some examples: </p>
+<dl class="docList">
+  <dt><span class="docPubcolor"><span class="docMonofont">?)</span></span> </dt>
+  <dd>
+  <p class="docList">Matches a string with exactly one character like <tt>a</tt>,
+  <tt>3</tt>, <tt>!</tt>, and so on. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">?*)</span></span> </dt>
+  <dd>
+  <p class="docList">Matches a string with one or more characters (a nonempty 
+  string). </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">[yY]|[yY][eE][sS])</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Matches <tt>y</tt>, <tt>Y</tt> or <tt>yes</tt>, <tt>YES</tt>,
+  <tt>YeS</tt>, etc. The <tt>|</tt> means &quot;or.&quot; </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">/*/*[0-9])</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Matches a file pathname, like <i>/xxx/yyy/somedir/file2</i>, 
+  that starts with a slash, contains at least one more slash, and ends with a 
+  digit. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">'What now?')</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Matches the pattern <tt>What now?</tt>. The
+  <span class="docEmphBold">quotes</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+  27.12</a>) tell the shell to treat the string literally: not to break it at 
+  the space and not to treat the <tt>?</tt> as a wildcard. </dd>
+  <dt><span class="docPubcolor"><span class="docMonofont">&quot;$msgs&quot;)</span></span>
+  </dt>
+  <dd>
+  <p class="docList">Matches the contents of the <span class="docEmphasis">msgs</span> 
+  variable. The double quotes let the shell substitute the variable's value; the 
+  quotes also protect spaces and other special characters from the shell. For 
+  example, if <span class="docEmphasis">msgs</span> contains <tt>first next</tt>, 
+  this would match the same string, <tt>first next</tt>. </dd>
+</dl>
+<p class="docText">To clarify: in <i>bash</i>, for example, the <i>case</i> 
+statement uses the same pathname expansion rules it uses elsewhere in the shell, 
+to determine how to expand the value. In other shells, such as <i>ksh</i>, there 
+are minor differences (such as a relaxation of special treatment for . and <tt>/</tt> 
+characters). See the manual page for your shell if you have any questions or 
+concerns about what rules your shell will follow. </p>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-12">35.12 Exit Status of Unix Processes</h3>
+<p class="docText">When a Unix process (command) runs, it can return a numeric 
+status value to the parent process that called (started) it. The status can tell 
+the calling process whether the command succeeded or failed. Many (but not all) 
+Unix commands return a status of zero if everything was okay and nonzero (1, 2, 
+etc.) if something went wrong. A few commands, such as <i>grep</i> and <i>diff</i>, 
+return a different nonzero status for different kinds of problems; see your 
+online manual pages (or just experiment!) to find out. </p>
+<p class="docText">The Bourne shell puts the exit status of the previous command 
+in the question mark (<tt>?</tt>) variable. You can get its value by preceding 
+it with a dollar sign (<tt>$</tt>), just like any other shell variable. For 
+example, when <i>cp</i> copies a file, it sets the status to 0. If something 
+goes wrong, <i>cp</i> sets the status to 1: </p>
+<pre>$ <b>cp afile /tmp</b>
+$ <b>echo $?</b>
+0
+$ <b>cp afiel /tmp</b>
+cp: afiel: No such file or directory
+$ <b>echo $?</b>
+1</pre>
+<p class="docText">In the C shell, use the <span class="docEmphasis">status</span> 
+variable instead (<i>tcsh</i> supports both): </p>
+<pre>% <b>cp afiel /tmp</b>
+cp: afiel: No such file or directory
+% <b>echo $status</b>
+1
+tcsh&gt; <b>cp afiel /tmp</b>
+cp: afiel: No such file or directory
+tcsh&gt; <b>echo $status</b>
+1</pre>
+<p class="docText">Of course, you usually don't have to display the exit status 
+in this way, because there are <span class="docEmphBold">several ways</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">Section 
+35.13</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+Section 35.14</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-15">
+Section 35.15</a>) to use the exit status of one command as a condition of 
+further execution. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: true, false</p>
+<p class="docText">Two simple Unix utilities do nothing but return an exit 
+status. <i>true</i> returns a status of 0 (zero); <i>false</i> returns 1 (one). 
+There are GNU versions on the web site — and no, they don't have any amazing 
+extra features. <tt>;-)</tt> </p>
+<p class="docText"><i>bash</i> and <i>zsh</i> have a handy way to reverse the 
+status of a command line: put an exclamation point (<tt>!</tt>) before it. Let's 
+look at a simple example (of course, you'd use <tt>!</tt> with something besides
+<i>true</i> or <i>false</i>): </p>
+<pre>bash$ <b>true</b>
+bash$ <b>echo $?</b>
+0
+bash$ <b>! true</b>
+bash$ <b>echo $?</b>
+1
+bash$ <b>false</b>
+bash$ <b>echo $?</b>
+1
+bash$ <b>! false</b>
+bash$ <b>echo $?</b>
+0</pre>
+<p class="docText"><i>tcsh</i> and <i>zsh</i> have a handy feature for work with 
+exit statuses. If you set the <i>tcsh</i> shell variable
+<span class="docEmphasis">printexitvalue</span> or the <i>zsh</i> shell option
+<i>PRINT_EXIT_VALUE</i> , the shell will print the exit status of any program 
+that doesn't return zero. For example: </p>
+<pre>zsh$ <b>setopt printexitvalue</b>
+zsh$ <b>grep '&lt;title&gt;' 0001.sgm</b>
+&lt;title&gt;Too Many Arguments for the Command Line&lt;/title&gt;
+zsh$ <b>grep '&lt;title&gt;' 0000.sgm</b>
+grep: 0000.sgm: No such file or directory
+zsh: exit 2     grep &lt;title&gt; 0000.sgm
+zsh$ <b>grep '&lt;ttle&gt;' 0001.sgm</b>
+zsh: exit 1     grep &lt;ttle&gt; 0001.sgm
+
+tcsh% <b>set printexitvalue</b>
+tcsh% <b>true</b>
+tcsh% <b>false</b>
+Exit 1</pre>
+<p class="docText">You can't test the exit status of a background job in the 
+Bourne shell unless you use the <i>wait</i> command to wait for it (in effect, 
+to bring the job out of the background). Pipelines, however, return the exit 
+status of the last program in the pipeline. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-13">35.13 Test Exit Status with the if Statement</h3>
+<p class="docText">If you are going to write a shell script of any complexity at 
+all, you need some way to write &quot;conditional expressions.&quot; Conditional 
+expressions are nothing more than statements that have a value of &quot;true&quot; or 
+&quot;false&quot;, such as &quot;Am I wearing pants today?&quot; or &quot;Is it before 5 p.m.?&quot; or &quot;Does 
+the file <span class="docEmphasis">indata</span> exist?&quot; or &quot;Is the value of <tt>
+$aardvark</tt> greater than 60?&quot; </p>
+<p class="docText">The Unix shell is a complete programming language. Therefore, 
+it allows you to write &quot;if&quot; statements with conditional expressions — just like 
+C, BASIC, Pascal, or any other language. Conditional expressions can also be 
+used in several other situations, but most obviously, they're the basis for any 
+sort of <i>if</i> statement. Here's the syntax of an <i>if</i> statement for the 
+Bourne shell: </p>
+<pre>+if <tt><i>conditional</i></tt>
+then
+    # do this if <tt><i>conditional</i></tt> returns a zero (&quot;true&quot;) status
+    <tt><i>one-or-more-commands</i></tt>
+else
+    # do this if <tt><i>conditional</i></tt> returns non-zero (&quot;false&quot;) status
+    <tt><i>one-or-more-commands</i></tt>
+fi</pre>
+<p class="docText">Depending on how many different ways the command might exit, 
+and thus the varying values its exit status may have, you may want to use either 
+a <i>case</i> statement or <i>elif</i> (for testing multiple conditionals in a 
+single <span class="docEmphasis">if/else</span> block.) </p>
+<p class="docText">You can omit the <i>else</i> and the block of code following 
+it. However, you can't omit the <i>then</i> or the <i>fi</i>. If you want to 
+omit the <i>then</i> (i.e., if you want to do something special when
+<span class="docEmphasis">condition</span> is false, but nothing when it is 
+true), write the statement like this: </p>
+<pre>if <tt><i>conditional</i></tt>
+then
+    :    # do nothing
+else
+    # do this if <tt><i>conditional</i></tt> returns non-zero (&quot;false&quot;) status
+    <tt><i>one-or-more-commands</i></tt>
+fi</pre>
+<p class="docText">Note that this uses a special null command, a
+<span class="docEmphBold">colon (:)</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-6">Section 
+36.6</a>). There's another, more useful way of expressing the inverse of a 
+condition (do something if <span class="docEmphasis">conditional</span> is not 
+&quot;true&quot;), the <span class="docEmphBold">|| operator</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">Section 
+35.14</a>) (two vertical bars). You can use this to write an <i>if</i>-type 
+statement without the <i>if</i>! </p>
+<p class="docText">Don't forget the <i>fi</i> terminating the statement. This is 
+a surprisingly common source of bugs (at least for me). </p>
+<p class="docText">Another common debugging problem: the manual pages that 
+discuss this material imply that you can smash the <i>if</i>, <i>then</i>, and
+<i>else</i> onto one line. Well, it's true, but it's not always easy. Do 
+yourself a favor: write your <i>if</i> statements <span class="docEmphasis">
+exactly</span> like the one above. You'll rarely be disappointed, and you may 
+even start writing programs that work correctly the first time. </p>
+<p class="docText">Here's a real-life example, a shell script named <i>bkedit</i> 
+that makes a backup copy of a file before editing it. If <i>cp</i> returns a 
+zero status, the script edits the file; otherwise, it prints a message. (The <tt>
+$1</tt> is replaced with the first filename from the command line — see
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">
+Section 35.20</a>.) </p>
+<pre>#!/bin/sh
+if cp &quot;$1&quot; &quot;$1.bak&quot;
+then
+    vi &quot;$1&quot;
+else
+echo &quot;bkedit quitting: can't make backup?&quot; 1&gt;&amp;2
+fi</pre>
+<p class="docText">You can try typing that shell script in and running it. Or 
+just type in the lines (starting with the <tt>if</tt>) on a terminal running the 
+Bourne shell; use a real filename instead of <tt>$1</tt>. </p>
+<p class="docText">The <i>if</i> statement is often used with a command named
+<span class="docEmphBold">test</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">Section 
+35.26</a>). The <i>test</i> command does a test and returns an exit status of 0 
+or 1. </p>
+<p class="docText"><span class="docEmphasis">—ML, JP, and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-14">35.14 Testing Your Success</h3>
+<p class="docText">The shells let you test for success right on the command 
+line. This gives you a very efficient way to write quick and comprehensible 
+shell scripts. </p>
+<p class="docText">I'm referring to the <tt>||</tt> and <tt>&amp;&amp;</tt> operators 
+and in particular, the <tt>||</tt> operator. <tt><i>comm1</i></tt> <tt>||</tt>
+<tt><i>comm2</i></tt> is typically explained as &quot;execute the command on the 
+right if the command on the left failed.&quot; I prefer to explain it as an 
+&quot;either-or&quot; construct: &quot;execute either <span class="docEmphasis">comm1</span> or
+<span class="docEmphasis">comm2</span>.&quot; While this isn't really precise, let's 
+see what it means in context:<span id="ENB35-3"><a class="docLink" href="#EN35-3"><sup>[3]</sup></a></span>
+</p>
+<pre>cat filea fileb &gt; filec || exit</pre>
+<p class="docText">This means &quot;either <i>cat</i> the files or <i>exit</i>.&quot; If 
+you can't <i>cat</i> the files (if <i>cat</i> returns an exit status of 1), you
+<span class="docEmphBold">exit</span> (<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>). If you can <i>cat</i> the files, you don't exit. You execute the left 
+side <span class="docEmphasis">or</span> the right side. </p>
+<p class="docText">I'm stretching normal terminology a bit here, but I think 
+it's necessary to clarify the purpose of <tt>||</tt>. By the way, we could give 
+the poor user an error message before flaming out (which, by the way, is a way 
+to write an &quot;inverse <span class="docEmphBold">if</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">Section 
+35.13</a>)): </p>
+<pre>cat filea fileb &gt; filec || {
+   echo sorry, no dice 1&gt;&amp;2
+   exit 1
+}</pre>
+<p class="docText">Similarly, <tt><i>comm1</i></tt> <tt>&amp;&amp;</tt> <tt><i>comm2</i></tt> 
+means &quot;execute <span class="docEmphasis">comm1</span> AND
+<span class="docEmphasis">comm2</span>,&quot; or execute <span class="docEmphasis">
+comm2</span> if <span class="docEmphasis">comm1</span> succeeds. (But if you 
+can't execute the first, don't do any.) This might be helpful if you want to 
+print a temporary file and delete it immediately. </p>
+<pre>lpr file &amp;&amp; rm file</pre>
+<p class="docText">If <i>lpr</i> fails for some reason, you want to leave the 
+file around. Again, I want to stress how to read this: print the file and delete 
+it. (Implicitly: if you don't print it, don't delete it.) </p>
+<p class="docText"><span class="docEmphasis">— ML</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-15">35.15 Loops That Test Exit Status</h3>
+<p class="docText">The Bourne shell has two kinds of loops that run a command 
+and test its exit status. An <i>until</i> loop will continue until the command 
+returns a zero status. A <i>while</i> loop will continue while the command 
+returns a zero status. </p>
+<h4  id="upt3-CHP-35-SECT-15.1" class="docSection2Title">35.15.1 Looping Until a Command Succeeds</h4>
+<p class="docText">The <i>until</i> loop runs a command repeatedly until it 
+succeeds. That is, if the command returns a nonzero status, the shell executes 
+the body of the loop and then runs the loop control command again. The shell 
+keeps running the command until it returns a zero status, as shown in the 
+following example: </p>
+<pre>% <b>cat sysmgr </b>
+#!/bin/sh
+until who | grep &quot;^barb &quot;
+do sleep 60
+done
+echo The system manager just logged on.
+% <b>sysmgr </b> <b>&amp; </b>
+[1] 2345
+     <i> ...time passes...</i>
+barb     ttyp7   Jul 15 09:30
+The system manager just logged on.</pre>
+<p class="docText">The loop runs <span class="docEmphBold">who</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-8">Section 
+2.8</a>) and pipes that output to <span class="docEmphBold">grep</span> (<a class="docLink" href="_chapter 13.htm#upt3-CHP-13-SECT-1">Section 
+13.1</a>), which searches for any line starting with <span class="docEmphasis">
+barb</span> and a space. (The space makes sure that usernames like
+<span class="docEmphasis">barbara</span> don't match.) If <i>grep</i> returns a 
+nonzero status (no lines matched), the shell waits 60 seconds. Then the loop 
+repeats, and the script tries the <tt>who</tt> <tt>|</tt> <tt>grep</tt> command 
+again. It keeps doing this until <i>grep</i> returns a zero status — then the 
+loop is broken and control goes past the <tt>done</tt> line. The <i>echo</i> 
+command prints a message and the script quits. (I ran this script in the 
+background so I could do something else while I waited for Barb.) </p>
+<p class="docText">This is also a useful way to get someone with whom you share 
+a machine to turn on their cell phone: just set a loop to wait until they login 
+and then send them a <i>write</i> message (in case they don't always check their 
+email, like a few nocturnal system administrators I know). </p>
+<p class="docText">[A Bourne shell <i>until</i> loop is
+<span class="docEmphasis">not</span> identical to the <i>until</i> construction 
+in most programming languages, because the condition is evaluated at the top of 
+the loop. Virtually all languages with an <i>until</i> loop evaluate the 
+condition at the bottom. <span class="docEmphasis">— ML</span>] </p>
+<h4  id="upt3-CHP-35-SECT-15.2" class="docSection2Title">35.15.2 Looping Until a Command Fails</h4>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> Go to
+<a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: catsaway</p>
+<p class="docText">The <i>while</i> loop is the opposite of the <i>until</i> 
+loop. A <i>while</i> loop runs a command and loops until the command fails 
+(returns a nonzero status). The <i>catsaway</i> program below uses a <i>while</i> 
+loop to watch the <i>who</i> output for the system manager to log off. It's the 
+opposite of the <i>sysmgr</i> script. </p>
+<p class="docText"><tt>/dev/null</tt>
+<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-12">
+Section 43.12</a></p>
+<pre>% <b>cat catsaway </b>
+#!/bin/sh
+while who | grep &quot;^barb &quot; &gt; /dev/null
+do sleep 60
+done
+echo &quot;The cat's away...&quot;
+% <b>catsaway &amp; </b>
+[1] 4567
+     <i> ...time passes...</i>
+The cat's away...</pre>
+<p class="docText"><span class="docEmphasis">— JP</span> </p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-16">35.16 Set Exit Status of a Shell (Script)</h3>
+<p class="docText">Most standard Unix toolbox commands return a
+<span class="docEmphBold">status</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>). Your shell script should, too. This section shows how to set the 
+right exit status for both normal exits and error exits. </p>
+<p class="docText">To end a shell script and set its exit status, use the <i>
+exit</i> command. Give <i>exit</i> the exit status that your script should have. 
+If it has no explicit status, it will exit with the status of the last command 
+run. </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: bkedit</p>
+<p class="docText">Here's an example, a rewrite of the <i>bkedit</i> script from
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-13">
+Section 35.13</a>. If the script can make a backup copy, the editor is run and 
+the script returns the exit status from <i>vi</i> (usually 0). If something goes 
+wrong with the copy, the script prints an error and returns an exit status of 1. 
+Here's the script: </p>
+<pre>#!/bin/sh
+if cp &quot;$1&quot; &quot;$1.bak&quot;
+then
+    vi &quot;$1&quot;
+    exit   # Use status from vi
+else
+    echo &quot;bkedit quitting: can't make backup?&quot; 1&gt;&amp;2
+    exit 1
+fi</pre>
+<p class="docText">Here's what happens if I run it without a filename:</p>
+<pre>$ <b>bkedit</b>
+cp: usage: cp fn1 fn2 or cp fn1 [fn2...] dir
+bkedit quitting: can't make backup?</pre>
+<p class="docText">And here's what's left in the exit status variable: </p>
+<pre>$ <b>echo $?</b>
+1</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-17">35.17 Trapping Exits Caused by Interrupts</h3>
+<p class="docText">If you're running a shell script and you press your
+<span class="docEmphBold">interrupt key</span> (<a class="docLink" href="_chapter 5.htm#upt3-CHP-5-SECT-8">Section 
+5.8</a>) (like CTRL-c), the shell quits right away. That can be a problem if you 
+use temporary files in your script, because the sudden exit might leave the 
+temporary files there. The <i>trap</i> command lets you tell the shell what to 
+do before it exits. A <i>trap</i> can be used for a normal exit, too. See
+<a class="docLink" href="#upt3-CHP-35-TABLE-1">Table 35-1</a>. </p>
+<table cellSpacing="0" cellPadding="1" width="100%" border="1">
+  <caption>
+  <h5 id="upt3-CHP-35-TABLE-1" class="docTableTitle">Table 35-1. Some Unix signal numbers for trap 
+  commands </h5>
+  </caption>
+  <colgroup span="3">
+  </colgroup>
+  <tr>
+    <th class="docTableHeader">
+    <p class="docText">Signal number</th>
+    <th class="docTableHeader">
+    <p class="docText">Signal name</th>
+    <th class="docTableHeader">
+    <p class="docText">Explanation</th>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">0</td>
+    <td class="docTableCell">
+    <p class="docText">EXIT</td>
+    <td class="docTableCell">
+    <p class="docText"><i>exit</i> command</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">1</td>
+    <td class="docTableCell">
+    <p class="docText">HUP</td>
+    <td class="docTableCell">
+    <p class="docText">When session disconnected</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">2</td>
+    <td class="docTableCell">
+    <p class="docText">INT</td>
+    <td class="docTableCell">
+    <p class="docText">Interrupt — often CTRL-c</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">3</td>
+    <td class="docTableCell">
+    <p class="docText">QUIT</td>
+    <td class="docTableCell">
+    <p class="docText">Quit — often CTRL-\</td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">9</td>
+    <td class="docTableCell">
+    <p class="docText">KILL</td>
+    <td class="docTableCell">
+    <p class="docText">Kill, often used as a way to stop an errant program (it 
+    cannot be caught, so don't bother to trap it) </td>
+  </tr>
+  <tr>
+    <td class="docTableCell">
+    <p class="docText">15</td>
+    <td class="docTableCell">
+    <p class="docText">TERM</td>
+    <td class="docTableCell">
+    <p class="docText">From <i>kill</i> command</td>
+  </tr>
+</table>
+<p class="docText">Here's a script named <i>zmore</i> that uses a temporary file 
+named <i>/tmp/zmore$$</i> in a system temporary-file directory. The shell will 
+replace <tt>$$</tt> with its <span class="docEmphBold">process ID number</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-3">Section 
+24.3</a>). Because no other process will have the same ID number, that file 
+should have a unique name. The script <span class="docEmphBold">uncompresses</span> 
+(<a class="docLink" href="_chapter 15.htm#upt3-CHP-15-SECT-6">Section 
+15.6</a>) the file named on its command line, then starts the <i>more</i> file 
+viewer.<span id="ENB35-4"><a class="docLink" href="#EN35-4"><sup>[4]</sup></a></span> The 
+script uses <i>trap</i>s, so it will clean up the temporary files, even if the 
+user presses CTRL-c. The script also sets a default exit status of 1 that's 
+reset to 0 if <i>more</i> quits on its own (without an interrupt). If you are on 
+a Linux system, you may find that <i>gzcat</i> is simply named <i>zcat</i>. </p>
+<p class="docText"><tt>exit</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-16">
+Section 35.16</a></p>
+<pre>#!/bin/sh
+# zmore - UNCOMPRESS FILE, DISPLAY WITH more
+# Usage: zmore file
+stat=1  # DEFAULT EXIT STATUS; RESET TO 0 BEFORE NORMAL EXIT
+temp=/tmp/zmore$$
+trap 'rm -f $temp; exit $stat' 0
+trap 'echo &quot;`basename $0`: Ouch! Quitting early.&quot; 1&gt;&amp;2' 1 2 15
+
+case $# in
+1) gzcat &quot;$1&quot; &gt;$temp
+   more $temp
+   stat=0
+   ;;
+*) echo &quot;Usage: `basename $0` filename&quot; 1&gt;&amp;2 ;;
+esac</pre>
+<p class="docText">There are two <i>trap</i>s in the script: </p>
+<ul>
+  <li>
+  <p class="docList">The first <i>trap</i>, ending with the number <tt>0</tt>, 
+  is executed for all shell exits — normal or interrupted. It runs the command 
+  line between the single quotes. In this example, there are two commands 
+  separated with a <span class="docEmphBold">semicolon (;)</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-16">Section 
+  28.16</a>). The first command removes the temporary file (using the
+  <span class="docEmphBold">-f option</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-10">Section 
+  14.10</a>), so <i>rm</i> won't give an error message if the file doesn't exist 
+  yet). The second command exits with the value stored in the
+  <span class="docEmphasis">stat</span> shell variable. Look ahead at the rest 
+  of the script — <tt>$stat</tt> will always be 1 unless the <i>more</i> command 
+  quit on its own, in which case <span class="docEmphasis">stat</span> will be 
+  reset to 0. Therefore, this shell script will always return the right exit 
+  status — if it's interrupted before it finishes, it'll return 1; otherwise, 0.<span id="ENB35-5"><a class="docLink" href="#EN35-5"><sup>[5]</sup></a></span>
+  </p>
+  </li>
+  <li>
+  <p class="docList">The second <i>trap</i> has the numbers <tt>1</tt> <tt>2</tt>
+  <tt>15</tt> at the end. These are signal numbers that correspond to different 
+  kinds of interrupts. On newer shells, you can use signal names instead of the 
+  numbers. There's a short list in
+  <a class="docLink" href="#upt3-CHP-35-TABLE-1">Table 35-1</a>. For a list of 
+  all signals, type <tt>kill -l</tt> (lowercase &quot;L&quot;) or see your online
+  <span class="docEmphasis">signal</span>(3) or <span class="docEmphasis">signal</span>(2) 
+  manual page. Alternatively, look for a file named <i>/usr/include/signal.h</i> 
+  or <i>/usr/include/linux/signal.h</i> (which itself just includes <i>/usr/include/asm/signal.h</i>, 
+  which is where the constants themselves are defined). </p>
+  <p class="docList">This trap is done on an abnormal exit (like CTRL-c). It 
+  prints a message, but it could run any list of commands. </li>
+</ul>
+<p class="docText">Shell scripts don't always have two <i>trap</i>s. Look at the
+<span class="docEmphBold">nom</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-8">Section 
+33.8</a>) script for an example. </p>
+<p class="docText">I usually don't trap signal 3 (QUIT) in scripts that I use 
+myself. That gives me an easy way to abort the script without springing the trap 
+(removing temporary files, etc.). In scripts for general use, though, I usually 
+do trap it. </p>
+<p class="docText">Also, notice that the <i>echo</i> commands in the script have
+<span class="docEmphBold">1&gt;&amp;2</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-16">Section 
+36.16</a>) at the end. This is the standard way to make error messages. In this 
+particular script, that doesn't matter much because the script is used 
+interactively. But it's a good habit to get into for all of your scripts. </p>
+<p class="docText">If your <i>trap</i> runs a series of commands, it's probably 
+neater to call a <span class="docEmphBold">shell function</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>) than a list of commands: </p>
+<pre>trap <tt><i>funcname</i></tt> 1 2 15</pre>
+<p class="docText"><span class="docEmphasis">—JP and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-18">35.18 read: Reading from the Keyboard</h3>
+<p class="docText">The Bourne shell <i>read</i> command reads a line of one or 
+more words from the keyboard (or standard input)<span id="ENB35-6"><a class="docLink" href="#EN35-6"><sup>[6]</sup></a></span>
+and stores the words in one or more shell variables. This is usually what you 
+use to read an answer from the keyboard. For example: </p>
+<pre>echo -n &quot;Type the filename: &quot;
+read filename</pre>
+<p class="docText">Here is how the <span class="docEmphasis">read</span> command 
+works:</p>
+<ul>
+  <li>
+  <p class="docList">If you give the name of one shell variable, <i>read</i> 
+  stores everything from the line into that variable: </p>
+  <pre>read <tt><i>varname</i></tt></pre>
+  </li>
+  <li>
+  <p class="docList">If you name more than one variable, the first word typed 
+  goes into the first variable, the second word into the second variable, and so 
+  on. All leftover words go into the last variable. For example, with these 
+  commands: </p>
+  <pre>echo -n &quot;Enter first and last name: &quot;
+read fn ln</pre>
+  <p class="docList">if a user types <tt>John</tt> <tt>Smith</tt>, the word
+  <span class="docEmphasis">John</span> would be available from <tt>$fn</tt> and
+  <span class="docEmphasis">Smith</span> would be in <tt>$ln</tt>. If the user 
+  types <tt>Jane</tt> <tt>de</tt> <tt>Boes</tt>, then <span class="docEmphasis">
+  Jane</span> would be in <tt>$fn</tt> and the two words
+  <span class="docEmphasis">de Boes</span> are in <tt>$ln</tt>. </li>
+</ul>
+<p class="docText">Some Bourne shells have a built-in function named <i>line</i> 
+that reads a line from standard input and writes it to standard output. Use it 
+with <span class="docEmphBold">command substitutions</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>): </p>
+<pre>value=`line`</pre>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: grabchars</p>
+<p class="docText">The <i>grabchars</i> program lets you read from the keyboard 
+without needing to press RETURN. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-19">35.19 Shell Script &quot;Wrappers&quot; for awk, sed, etc.</h3>
+<p class="docText">Although most scripts for most languages can
+<span class="docEmphBold">execute directly</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-3">Section 
+36.3</a>) without needing the Bourne shell, it's common to &quot;wrap&quot; other scripts 
+in a shell script to take advantage of the shell's strengths. For instance, <i>
+sed</i> can't accept arbitrary text on its command line, only commands and 
+filenames. So you can let the shell <span class="docEmphBold">handle the command 
+line</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">Section 
+35.20</a>) and pass information to <i>sed</i> via shell variables, command 
+substitution, and so on. Simply use correct <span class="docEmphBold">quoting</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) to pass information from the shell into the &quot;wrapped&quot; <i>sed</i> 
+script: </p>
+<p class="docText"><tt>||</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+Section 35.14</a></p>
+<pre>#!/bin/sh
+# seder - cd to directory in first command-line argument ($1),
+# read all files and substitute $2 with $3, write result to stdout
+cd &quot;$1&quot; || exit
+sed &quot;s/$2/$3/g&quot; *</pre>
+<p class="docText">In <span class="docEmphasis">SunExpert</span> magazine, in 
+his article on <i>awk</i> (January, 1991), Peter Collinson suggests a 
+stylization similar to this for <i>awk</i> programs in <span class="docEmphBold">
+shell scripts</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-2">Section 
+35.2</a>): </p>
+<pre>#!/bin/sh
+awkprog='
+/foo/{print $3}
+/bar/{print $4}'
+
+awk &quot;$awkprog&quot; $*</pre>
+<p class="docText">He argues that this is more intelligible in long pipelines 
+because it separates the program from the command. For example: </p>
+<pre>grep foo $input | sed .... | awk &quot;$awkprog&quot; - | ...</pre>
+<p class="docText">Not everyone is thrilled by the &quot;advantages&quot; of writing <i>
+awk</i> this way, but it's true that there are disadvantages to writing <i>awk</i> 
+the standard way. </p>
+<p class="docText">Here's an even more complex variation:</p>
+<p class="docText"><tt>&lt;&lt;\</tt>
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-16">
+Section 27.16</a></p>
+<pre>#!/bin/sh
+temp=/tmp/awk.prog.$$
+cat &gt; $temp &lt;&lt;\END
+/foo/{print $3}
+/bar/{print $4}
+END
+awk -f $temp $1
+rm -f $temp</pre>
+<p class="docText">This version makes it a bit easier to create complex programs 
+dynamically. The final <i>awk</i> command becomes the equivalent of a shell
+<span class="docEmphBold">eval</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-8">Section 
+27.8</a>); it executes something that has been built up at runtime. The first 
+strategy (program in shell variable) could also be massaged to work this way.
+</p>
+<p class="docText">As another example, a program that I used once was really 
+just one long pipeline, about 200 lines long. Huge <i>awk</i> scripts and <i>sed</i> 
+scripts intervened in the middle. As a result, it was almost completely 
+unintelligible. But if you start each program with a comment block and end it 
+with a pipe, the result can be fairly easy to read. It's more direct than using 
+big shell variables or temporary files, especially if there are several scripts.
+</p>
+<pre>#
+# READ THE FILE AND DO XXX WITH awk:
+#
+awk '
+   ...<i>the indented awk program </i>...
+   ...
+   ...
+' <b>| </b>
+#
+# SORT BY THE FIRST FIELD, THEN BY XXX:
+#
+sort +0n -1 +3r <b>| </b>
+#
+# MASSAGE THE LINES WITH sed AND XXX:
+#
+sed '
+   ...</pre>
+<p class="docText">Multiline pipes like that one are uglier in the C shell 
+because <span class="docEmphBold">each line has to end with a backslash (\)</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">Section 
+27.13</a>).
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">
+Section 27.12</a> and
+<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-13">
+Section 27.13</a> have more about quoting. </p>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-20">35.20 Handling Command-Line Arguments in Shell 
+Scripts</h3>
+<p class="docText">To write flexible shell scripts, you usually want to give 
+them command-line arguments. As you've seen in <span class="docEmphBold">other 
+articles</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-16">Section 
+35.16</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">
+Section 35.17</a>), <tt>$1</tt> holds the first command-line argument. The 
+Bourne shell can give you arguments through the ninth, <tt>$9</tt>. The Korn 
+shell and some other newer Bourne-type shells understand <tt>${10}</tt> for the 
+tenth argument, and so on. </p>
+<h4  id="upt3-CHP-35-SECT-20.1" class="docSection2Title">35.20.1 With the &quot;$@&quot; Parameter</h4>
+<p class="docText">If you've been reading this <span class="docEmphBold">series</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-2">Section 
+35.2</a>) of articles in order, you saw the <i>zmore</i> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">Section 
+35.17</a>) script that accepted just one command-line argument. If you put <tt>
+&quot;$@&quot;</tt> in a script, the shell will replace that string with a
+<span class="docEmphBold">quoted</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>) set of the script's command-line arguments. Then you can pass as many 
+arguments as you want, including pathnames with <span class="docEmphBold">
+unusual characters</span> (<a class="docLink" href="_chapter 14.htm#upt3-CHP-14-SECT-11">Section 
+14.11</a>): </p>
+<pre>% <b>zmore report memo &quot;savearts/What's next?&quot;</b></pre>
+<p class="docText">The third argument has a perfectly legal filename; we see 
+more and more of them on our system — especially filesystems that are networked 
+to computers like the Macintosh, or on systems that use windowing systems to run 
+graphical programs such as FrameMaker, where spaces and other &quot;special&quot; 
+characters in filenames are common. Double-quoting all arguments through the 
+script helps to be sure that the script can handle these unusual but legal 
+pathnames. </p>
+<p class="docText">In this case, we want the arguments to be passed to the GNU
+<i>zcat</i> command. Let's change the <i>zmore</i> script to read: </p>
+<pre>zcat &quot;$@&quot; &gt;$temp</pre>
+<p class="docText">When the shell runs the script with the arguments shown 
+above, the command line will become: </p>
+<pre>zcat &quot;report&quot; &quot;memo&quot; &quot;savearts/What's next?&quot; &gt;/tmp/zmore12345</pre>
+<table cellSpacing="0" cellPadding="1" width="90%" align="center" bgColor="black" border="0">
+  <tr>
+    <td>
+    <table cellSpacing="0" cellPadding="6" width="100%" bgColor="white" border="0">
+      <tr>
+        <td vAlign="top" width="60">
+        <img height="51" src="pushpin.gif" width="52"></td>
+        <td vAlign="top">
+        <p class="docText">On some Bourne shells, if there are no command-line 
+        arguments, the <tt>&quot;$@&quot;</tt> <span class="docEmphBold">becomes a single 
+        empty argument</span> (<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-5">Section 
+        37.5</a>), as if you'd typed this: </p>
+        <pre>zcat &quot;&quot; &gt;/tmp/zmore12345</pre>
+        <p class="docText">In this case, the <i>zcat</i> command would complain 
+        that it can't find a file. (Of course, in this script, the <i>case</i> 
+        would prevent this problem. But not all scripts test the number of 
+        arguments.) </p>
+        <p class="docText">On those shells, you can replace <tt>&quot;$@&quot;</tt> with
+        <span class="docEmphBold">${1+&quot;$@&quot;}</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-7">Section 
+        36.7</a>). That means that if <tt>$1</tt> is defined, <tt>&quot;$@&quot;</tt> 
+        should be used. A not-quite-as-good fix is to replace <tt>&quot;$@</tt>&quot; with
+        <tt>$*</tt>. It gives you an unquoted list of command-line arguments; 
+        that's usually fine but can cause trouble on pathnames with special 
+        characters in them. </td>
+      </tr>
+    </table>
+    </td>
+  </tr>
+</table>
+<h4  id="upt3-CHP-35-SECT-20.2" class="docSection2Title">35.20.2 With a Loop</h4>
+<p class="docText">A <span class="docEmphBold">for loop</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">Section 
+35.21</a>) can step through all command-line arguments, one by one. You can also 
+use a <span class="docEmphBold">while loop</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-15">Section 
+35.15</a>) that tests <tt>$#</tt> (see below) and removes the arguments one by 
+one with the <span class="docEmphBold">shift command</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-22">Section 
+35.22</a>). The <span class="docEmphBold">getopt and getopts</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-24">Section 
+35.24</a>) commands handle arguments in a more standard way. </p>
+<h4  id="upt3-CHP-35-SECT-20.3" class="docSection2Title">35.20.3 Counting Arguments with $#</h4>
+<p class="docText">The <tt>$#</tt> parameter counts the number of command-line 
+arguments. For instance, if there are three arguments, <tt>$#</tt> will contain
+<tt>3</tt>. This is usually used for error-checking (as in the <i>zmore</i> 
+script in
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">
+Section 35.17</a>) with <span class="docEmphBold">case</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">Section 
+35.10</a>) or <span class="docEmphBold">test</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">Section 
+35.26</a>). </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-21">35.21 Handling Command-Line Arguments with a for 
+Loop</h3>
+<p class="docText">Sometimes you want a script that will step through the 
+command-line arguments one by one. (The <span class="docEmphBold">&quot;$@&quot; parameter</span> 
+(<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">Section 
+35.20</a>) gives you all of them at once.) The Bourne shell <i>for</i> loop can 
+do this. The <i>for</i> loop looks like this: </p>
+<pre>for arg in <tt><i>list</i></tt>
+do
+    ...<tt><i>handle $arg</i></tt>...
+done</pre>
+<p class="docText">If you omit the <tt>in<i> list</i></tt>, the loop steps 
+through the command-line arguments. It puts the first command-line argument in
+<span class="docEmphasis">arg</span> (or whatever else you choose to call the
+<span class="docEmphBold">shell variable</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-9">Section 
+35.9</a>)), then executes the commands from <tt>do</tt> to <tt>done</tt>. Then 
+it puts the next command-line argument in <span class="docEmphasis">arg</span>, 
+does the loop, and so on, ending the loop after handling all the arguments. </p>
+<p class="docText">For an example of a <i>for</i> loop, let's hack on the
+<span class="docEmphBold">zmore</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-17">Section 
+35.17</a>) script. </p>
+<p class="docText"><tt>case</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-11">
+Section 35.11</a></p>
+<pre>#!/bin/sh
+# zmore - Uncompress file(s), display with &quot;more&quot;
+# Usage: zmore [more options] file [...files]
+stat=1  # Default exit status; reset to 0 before normal exit
+temp=/tmp/zmore$$
+trap 'rm -f $temp; exit $stat' 0
+trap 'echo &quot;`basename $0`: Ouch! Quitting early...&quot; 1&gt;&amp;2' 1 2 15
+
+files=  switches=
+for arg
+do
+    case &quot;$arg&quot; in
+    -*) switches=&quot;$switches $arg&quot; ;;
+    *)  files=&quot;$files $arg&quot; ;;
+    esac
+done
+
+case &quot;$files&quot; in
+&quot;&quot;) echo &quot;Usage: `basename $0` [more options] file [files]&quot; 1&gt;&amp;2 ;;
+*)  for file in $files
+    do
+        zcat &quot;$file&quot; | more $switches
+    done
+    stat=0
+    ;;
+esac</pre>
+<p class="docText">We added a <i>for</i> loop to get and check each command-line 
+argument. For example, let's say that a user typed the following: </p>
+<pre>% <b>zmore -s afile ../bfile</b></pre>
+<p class="docText">The first pass through the <i>for</i> loop, <tt>$arg</tt> is
+<tt>-s</tt>. Because the argument starts with a minus sign (<tt>-</tt>), the <i>
+case</i> treats it as an option. Now the <tt>switches</tt> variable is replaced 
+by its previous contents (an empty string), a space, and <tt>-s</tt>. Control 
+goes to the <span class="docEmphasis">esac</span> and the loop repeats with the 
+next argument. </p>
+<p class="docText">The next argument, <tt>afile</tt>, doesn't look like an 
+option. So now the <tt>files</tt> variable will contain a space and <tt>afile</tt>.
+</p>
+<p class="docText">The loop starts over once more with <tt>../bfile</tt> in <tt>
+$arg</tt>. Again, this looks like a file, so now <tt>$files</tt> has <tt>afile 
+../bfile</tt>. Because <tt>../bfile</tt> was the last argument, the loop ends;
+<tt>$switches</tt> has the options and <tt>$files</tt> has all the other 
+arguments. </p>
+<p class="docText">Next, we added another <i>for</i> loop. This one has the word
+<tt>in</tt> followed by <tt>$files</tt>, so the loop steps through the contents 
+of <tt>$files</tt>. The loop runs <i>zcat</i> on each file, piping it to <i>more</i> 
+with any switches you gave. </p>
+<p class="docText">Note that <tt>$switches</tt> isn't <span class="docEmphBold">
+quoted</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>). This way, if <tt>$switches</tt> is empty, the shell won't pass an 
+empty argument to <i>more</i>. Also, if <tt>$switches</tt> has more than one 
+switch, the shell will break the switches into separate arguments at the spaces 
+and pass them individually to <i>more</i>. </p>
+<p class="docText">You can use a <i>for</i> loop with any space-separated 
+(actually, <span class="docEmphBold">IFS</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-23">Section 
+36.23</a>)-separated) list of words — not just filenames. You don't have to use 
+a shell variable as the list; you can use <span class="docEmphBold">command 
+substitution</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) (backquotes) or <span class="docEmphBold">shell wildcards</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">Section 
+33.2</a>), or just &quot;hardcode&quot; the list of words: </p>
+<p class="docText"><tt>lpr</tt>
+<a class="docLink" href="_chapter 45.htm#upt3-CHP-45-SECT-2">
+Section 45.2</a></p>
+<pre>for person in Joe Leslie Edie Allan
+do
+   echo &quot;Dear $person,&quot; | cat - form_letter | lpr
+done</pre>
+<p class="docText">The <span class="docEmphBold">getopt and getopts</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-24">Section 
+35.24</a>) commands handle command-line arguments in a more standard way than <i>
+for</i> loops. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-22">35.22 Handling Arguments with while and shift</h3>
+<p class="docText">A <span class="docEmphBold">for loop</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">Section 
+35.21</a>) is great if you want to handle all of the command-line arguments to a 
+script, one by one. But, as is often the case, some arguments are options that 
+have their own arguments. For example, in the command <tt>grep -f</tt> <tt><i>
+filename</i></tt>, <tt><i>filename</i></tt> is an argument to <tt><i>-f</i></tt>; 
+the option and its argument need to be processed together. One good way to 
+handle this is with a combination of <span class="docEmphBold">while</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-15">Section 
+35.15</a>), <span class="docEmphBold">test</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">Section 
+35.26</a>), <span class="docEmphBold">case</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-10">Section 
+35.10</a>), and <i>shift</i>. Here's the basic construct: </p>
+<pre>while [ $# -gt 0 ]
+do
+    case &quot;$1&quot; in
+        -a) options=&quot;$options $1&quot;;;
+            ...
+        -f) options=&quot;$options $1&quot;
+            argfile=&quot;$2&quot;
+            shift
+            ;;
+         *) files=&quot;$files $1&quot;;;
+    esac
+    shift
+done</pre>
+<p class="docText">The trick is this: <i>shift</i> removes an argument from the 
+script's argument list, shifting all the others over by one (<tt>$1</tt> 
+disappears, <tt>$2</tt> becomes <tt>$1</tt>, <tt>$3</tt> becomes <tt>$2,</tt> 
+and so on). To handle an option with its own argument, do another <i>shift</i>. 
+The <i>while</i> loop uses <span class="docEmphBold">test</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">Section 
+35.26</a>) to check that <tt>$#</tt> — the number of arguments — is greater than 
+zero and keeps going until this is no longer true, which only happens when they 
+have all been used up. </p>
+<p class="docText">Meanwhile, all the <i>case</i> has to do is to test <tt>$1</tt> 
+against the desired option strings. In the simple example shown above, we simply 
+assume that anything beginning with a minus sign is an option, which we 
+(presumably) want to pass on to some program that is being invoked by the 
+script. So all we do is build up a shell variable that will eventually contain 
+all the options. It would be quite possible to do something else instead, 
+perhaps setting other shell variables or executing commands. </p>
+<p class="docText">We assume that anything without a minus sign is a file. This 
+last case could be written more robustly with a <i>test</i> to be sure the 
+argument is a file. Here's an example of a simple script that uses this 
+construct to pass an option and some files to <i>pr</i> and from there to a 
+program that converts text to PostScript and on to the print spooler (or you 
+could convert SGML or XML files to PDF, whatever): </p>
+<pre>while [ $# -ne 0 ]
+do
+   case $1 in
+        +*) pages=&quot;$1&quot; ;;
+         *) if [ -f &quot;$1&quot; ]; then
+              files=&quot;$files $1&quot;
+            else
+              echo &quot;$0: file $1 not found&quot; 1&gt;&amp;2
+            fi;;
+   esac
+   shift
+done
+pr $pages $files | psprint | lpr</pre>
+<p class="docText">This approach is perhaps obsolete if you have
+<span class="docEmphBold">getopts</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-24">Section 
+35.24</a>) (it's built into <i>bash</i>, for instance), since <i>getopts</i> 
+lets you recognize option strings like <tt>-abc</tt> as being equivalent to <tt>
+-a -b -c,</tt> but I still find it handy. [In this example, it's essential. The
+<i>pr</i> option <span class="docEmphasis">+page-list</span> starts with a plus 
+sign. <i>getopt</i> and <i>getopts</i> don't support those old-style options. —
+<span class="docEmphasis">JP</span>] </p>
+<p class="docText"><span class="docEmphasis">—TOR and SJC</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-23">35.23 Loop Control: break and continue</h3>
+<p class="docText">Normally a <span class="docEmphBold">for loop</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">Section 
+35.21</a>) iterates until it has processed all its word arguments.
+<span class="docEmphBold">while and until loops</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-15">Section 
+35.15</a>) iterate until the loop control command returns a certain status. But 
+sometimes — for instance, if there's an error — you want a loop to immediately 
+terminate or jump to the next iteration. That's where you use <i>break</i> and
+<i>continue</i>, respectively. </p>
+<p class="docText"><i>break</i> terminates the loop and takes control to the 
+line after <i>done</i>. <i>continue</i> skips the rest of the commands in the 
+loop body and starts the next iteration. Here's an example of both. An outer 
+loop is stepping through a list of directories. If we can't <i>cd</i> to one of 
+them, we'll abort the loop with <i>break</i>. The inner loop steps through all 
+entries in the directory. If one of the entries isn't a file or isn't readable, 
+we skip it and try the next one. </p>
+<p class="docText"><tt>'...'</tt>
+<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">
+Section 28.14</a>, <tt>||</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+Section 35.14</a>, <tt>*</tt>
+<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-13">
+Section 1.13</a>, <tt>test</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-26">
+Section 35.26</a></p>
+<pre>for dir in `find $HOME/projdir -type d -print`
+do
+    cd &quot;$dir&quot; || break
+    echo &quot;Processing $dir&quot;
+
+    for file in *
+    do
+        test -f &quot;$file&quot; -a -r &quot;$file&quot; || continue
+            <i>...process $dir/$file...</i>
+    done
+done</pre>
+<p class="docText">With nested loops (like the file loop above), which loop is 
+broken or continued? It's the loop being processed at that time. So the <i>
+continue</i> here restarts the inner (file) loop. The <i>break</i> terminates 
+the outer (directory) loop, which means the inner loop is also terminated. Note 
+also that the <i>-print</i> argument to <i>find</i> is often redundant in the 
+absence of another expression, depending on your version of <i>find</i>. </p>
+<p class="docText">Here we've used <i>break</i> and <i>continue</i> within <i>
+for</i> loops, after the shell's <tt>||</tt> operator. But you can use them 
+anywhere within the body of any loop — in an <i>if</i> statement within a <i>
+while</i> loop, for instance. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-24">35.24 Standard Command-Line Parsing</h3>
+<p class="docText">Most shell scripts need to handle command-line arguments — 
+options, filenames, and so on.
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">
+Section 35.20</a>,
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">
+Section 35.21</a>, and
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-22">
+Section 35.22</a> show how to parse command lines with any Bourne shell. Those 
+methods have two problems. You can't combine arguments with a single dash, e.g.,
+<tt>-abc</tt> instead of <tt>-a -b -c</tt>. You also can't specify arguments to 
+options without a space in between, e.g., <tt>-b<i>arg</i></tt> in addition to
+<tt>-b</tt> <tt><i>arg</i></tt>.<span id="ENB35-7"><a class="docLink" href="#EN35-7"><sup>[7]</sup></a></span>
+</p>
+<p class="docText">Your Bourne shell may have a built-in command named <i>
+getopts</i>.<span id="ENB35-8"><a class="docLink" href="#EN35-8"><sup>[8]</sup></a></span>
+<i>getopts</i> lets you deal with multiple complex options without these 
+constraints. To find out whether your shell has <i>getopts</i>, see your online
+<span class="docEmphasis">sh</span> or <span class="docEmphasis">getopts</span>(1) 
+manual page. </p>
+<p class="docText"><i>getopt</i> takes two or more arguments. The first is a 
+string that can contain letters and colons (:). Each letter names a valid 
+option; if a letter is followed by a colon, the option requires an argument. The 
+second and following arguments are the original command-line options; you'll 
+usually give <span class="docEmphBold">&quot;$@&quot;</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-20">Section 
+35.20</a>) to pass all the arguments to <i>getopt</i>. </p>
+<p class="docText"><i>getopt</i> picks each option off the command line, checks 
+to see if the option is valid, and writes the correct option to its standard 
+output. If an option has an argument, <i>getopt</i> writes the argument after 
+its option. When <i>getopt</i> finds the first nonoption argument (the first 
+argument that doesn't start with a <tt>-</tt> character), it outputs two dashes 
+(<tt>--</tt>) and the rest of the arguments. If <i>getopt</i> finds an invalid 
+option, or an option that should have an argument but doesn't, it prints an 
+error message and returns a nonzero <span class="docEmphBold">status</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>). </p>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: opttest</p>
+<p class="docText">Your script can use a loop to parse the <i>getopt</i> output. 
+Here's an example script named <i>opttest</i> that shows how <i>getopt</i> 
+works: </p>
+<p class="docText"><tt>||</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-14">
+Section 35.14</a>, <tt>:</tt>
+<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-6">
+Section 36.6</a></p>
+<pre>#!/bin/sh
+set -- `getopt &quot;ab:&quot; &quot;$@&quot;` || {
+    echo &quot;Usage: `basename $0` [-a] [-b name] [files]&quot; 1&gt;&amp;2
+    exit 1
+}
+echo &quot;Before loop, command line has: $*&quot;
+aflag=0  name=NONE
+while :
+do
+    case &quot;$1&quot; in
+    -a) aflag=1 ;;
+    -b) shift; name=&quot;$1&quot; ;;
+    --) break ;;
+    esac
+    shift
+done
+shift    # REMOVE THE TRAILING --
+echo &quot;aflag=$aflag / name=$name / Files are $*&quot;</pre>
+<p class="docText">The script has two legal options. The <i>-a</i> option sets 
+the variable named <span class="docEmphasis">aflag</span> to <tt>1</tt>. The <i>
+-b</i> option takes a single argument; the argument is stored in the variable 
+named <span class="docEmphasis">name</span>. Any other arguments are filenames.
+</p>
+<p class="docText">The script starts by running <i>getopt</i> inside
+<span class="docEmphBold">backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>) and using the <i>set</i> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">Section 
+35.25</a>) command to replace the command-line arguments with the <i>getopt</i> 
+output. The first argument to <i>set</i>, <span class="docEmphBold">-- (two 
+dashes)</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-25">Section 
+35.25</a>), is important: it makes sure that <i>set</i> passes the script's 
+options to <i>getopt</i> instead of treating them as options to the shell 
+itself. An <i>echo</i> command shows the output of <i>getopt</i>. Then the loop 
+parses the <i>getopt</i> output, setting shell variables as it goes. When the 
+loop finds the <tt>--</tt> argument from <span class="docEmphasis">getopt</span>, 
+it quits and leaves the remaining filenames (if any) in the command-line 
+arguments. A second <i>echo</i> shows what's in the shell variables and on the 
+command line after the loop. Here are a few examples: </p>
+<pre>% <b>opttest</b>
+Before loop, command line has: --
+aflag=0 / name=NONE / Files are
+% <b>opttest -b file1 -a file2 file3</b>
+Before loop, command line has: -b file1 -a -- file2 file3
+aflag=1 / name=file1 / Files are file2 file3
+% <b>opttest -q -b file1</b>
+getopt: illegal option -- q
+Usage: opttest [-a] [-b name] [files]
+% <b>opttest -bfile1</b>
+Before loop, command line has: -b file1 --
+aflag=0 / name=file1 / Files are
+% <b>opttest -ab</b>
+getopt: option requires an argument -- b
+Usage: opttest [-a] [-b name] [files]</pre>
+<p class="docText">Some old Bourne shells have <span class="docEmphBold">
+problems with an empty &quot;$@&quot; parameter</span> (<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-5">Section 
+37.5</a>). If the <i>opttest</i> script doesn't work with an empty command line, 
+as in the first example above, you can change the <tt>&quot;$@&quot;</tt> in the script to
+<tt>${1+&quot;$@&quot;}</tt>. If you find you're still having some trouble running the 
+script, particularly with <i>bash</i>, try setting the <span class="docEmphasis">
+GETOPT_COMPATIBLE</span> environment variable, which sets GNU <i>getopt</i> to 
+emulate the older, less featureful version. Also be sure to read the GNU
+<span class="docEmphasis">getopt</span>(1) manual page, as it details the 
+support for POSIX-style long options (which let you do things like pass <tt>--</tt><i>longoptions</i> 
+to programs such as GNU <i>getopt</i>.) </p>
+<p class="docText">The advantages of <i>getopt</i> are that it minimizes extra 
+code necessary to process options and fully supports the standard Unix option 
+syntax (as specified in <span class="docEmphasis">intro</span> of the User's 
+Manual). </p>
+<p class="docText"><span class="docEmphasis">—JP and BR</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-25">35.25 The Bourne Shell set Command</h3>
+<p class="docText">[Most of this article, except <i>IFS</i> and <tt>--</tt>, 
+also applies to the C shell. — JP] </p>
+<p class="docText">You can pass options and arguments to a shell as you start 
+it, as in:</p>
+<pre>sh -v file1 file2</pre>
+<p class="docText">and also when a script is invoked with <tt>#!</tt>. The <i>
+set</i> command lets you set command-line parameters, including most<span id="ENB35-9"><a class="docLink" href="#EN35-9"><sup>[9]</sup></a></span> 
+shell options, after you've started the shell. This simple idea has more uses 
+than you might realize. </p>
+<h4  id="upt3-CHP-35-SECT-25.1" class="docSection2Title">35.25.1 Setting Options</h4>
+<p class="docText">The Bourne shell command line can have options like <i>-e</i> 
+(exit if any command returns nonzero status). It can also have other arguments; 
+these are passed to shell scripts. You can set new command-line parameters while 
+you're typing interactive commands (at a shell prompt) or in a shell script. </p>
+<p class="docText">To reset the command-line parameters, just type <i>set</i> 
+followed by the new parameters. For example, to ask the shell to show expanded 
+versions of command lines after you type them, set the <span class="docEmphBold">
+-v (verbose) option</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-15">Section 
+27.15</a>): </p>
+<pre>$ <b>set -v</b>
+$ <b>mail $group1 &lt; message</b>
+mail andy ellen heather steve wilma &lt; message
+$ <b>mail $group2 &lt; message</b>
+mail jpeek@jpeek.com randy@xyz.edu yori@mongo.medfly.com &lt; message
+$ <b>set +v</b></pre>
+<p class="docText">On many Bourne shells, typing <tt>set +v</tt> cancels the <i>
+v</i> option. On other (mostly early) shells, there's no <tt>+</tt> feature. To 
+work around that problem, you could start a <span class="docEmphBold">subshell</span> 
+(<a class="docLink" href="_chapter 24.htm#upt3-CHP-24-SECT-4">Section 
+24.4</a>) with <tt>sh -v</tt>, run the commands there, then exit the subshell to 
+cancel the verbose option. </p>
+<h4  id="upt3-CHP-35-SECT-25.2" class="docSection2Title">35.25.2 Setting (and Parsing) Parameters</h4>
+<p class="docText">
+<img alt="figs/www.gif" src="www.gif" border="0" width="25" height="30"> 
+Go to <a class="docLink" href="http://examples.oreilly.com/upt3" target="_blank">
+http://examples.oreilly.com/upt3</a> for more information on: users</p>
+<p class="docText">You can put filenames or any other strings in the 
+command-line parameters interactively or from a shell script. That's handy for 
+storing and parsing the output of a Unix command with <span class="docEmphBold">
+backquotes</span> (<a class="docLink" href="_chapter 28.htm#upt3-CHP-28-SECT-14">Section 
+28.14</a>). For example, you can get a list of all logged-in users from the 
+parameters <tt>$1</tt>, <tt>$2</tt>, and so on. Use <i>users</i> (or <i>rusers</i> 
+to find all the logged in users on the local network) if your system has it. 
+Otherwise, use <span class="docEmphBold">who</span> (<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-8">Section 
+2.8</a>) and <span class="docEmphBold">cut</span> (<a class="docLink" href="_chapter 21.htm#upt3-CHP-21-SECT-14">Section 
+21.14</a>) to strip off everything but the usernames: </p>
+<p class="docText"><tt>for</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-21">
+Section 35.21</a></p>
+<pre>$ <b>set `users` </b>
+$ <b>set `who | cut -c1-8` </b>
+$ <b>for u </b>
+&gt; <b>do </b>
+&gt; <i> ...do something with each user ($u)...</i>
+&gt; <b>done </b></pre>
+<p class="docText">You can save the original parameters in another variable and 
+reset them later: </p>
+<pre>oldparms=&quot;$*&quot;
+set <tt><i>something new</i></tt>
+    <i>...use new settings...</i>
+set $oldparms</pre>
+<p class="docText">Be sure to watch your quoting (as the next section explains).</p>
+<p class="docText">If the first parameter you <i>set</i> starts with a dash, 
+like <tt>-e</tt>, the shell will treat it as its own option instead of as a 
+string to put into the command-line parameters. To avoid this, use <tt>--</tt> 
+(two dashes) as the first argument to <i>set</i>. In this example, <tt>$1</tt> 
+gets -<i>e</i>, and the filenames expanded from the wildcard pattern go into <tt>
+$2</tt>, <tt>$3</tt>, etc.: </p>
+<pre>set -- -e file*</pre>
+<h4  id="upt3-CHP-35-SECT-25.3" class="docSection2Title">35.25.3 (Avoiding?) set with No Arguments</h4>
+<p class="docText">If you type <i>set</i> by itself with no arguments, it will 
+show a list of all currently set shell variables. In newer Bourne-type shells, 
+it also shows <span class="docEmphBold">shell functions</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>) and other shell settings. </p>
+<p class="docText">This can cause you grief if you accidentally don't pass 
+arguments to <i>set</i> in the middle of a script, and screenfuls of variables 
+spew onto the user's screen. For example, your script runs <tt>set 'users'</tt> 
+from a <span class="docEmphBold">cron</span> (<a class="docLink" href="_chapter 25.htm#upt3-CHP-25-SECT-2">Section 
+25.2</a>) job, in the middle of the night when no one is logged on. The <i>users</i> 
+command returns an empty string, so <i>set</i> gets no arguments, so it outputs 
+a long list of junk. </p>
+<p class="docText">The standard workaround for this problem is to always use a 
+dummy first parameter — typically, a single <tt>x</tt> — when you're setting 
+parameters. Then use <span class="docEmphBold">shift</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-22">Section 
+35.22</a>) to shift away the <tt>x</tt>, leaving the other parameters (possibly 
+none). For example: </p>
+<pre>set x `users`
+shift</pre>
+<h4  id="upt3-CHP-35-SECT-25.4" class="docSection2Title">35.25.4 Watch Your Quoting</h4>
+<p class="docText">Because the shell parses and scans the new parameters before 
+it stores them, <span class="docEmphBold">wildcards</span> (<a class="docLink" href="_chapter 33.htm#upt3-CHP-33-SECT-2">Section 
+33.2</a>) and other <span class="docEmphBold">special characters</span> (<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-17">Section 
+27.17</a>) will be interpreted, so watch your <span class="docEmphBold">quoting</span> 
+(<a class="docLink" href="_chapter 27.htm#upt3-CHP-27-SECT-12">Section 
+27.12</a>). You can take advantage of this to parse lines of text into pieces 
+that aren't separated with the usual spaces and TABs — for instance, a line from 
+a database with colon-separated fields — by setting the
+<span class="docEmphBold">IFS</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-23">Section 
+36.23</a>) variable before the <i>set</i> command. </p>
+<p class="docText">If you want to save any special quoting on the original 
+command line, be careful: the quoting will be lost unless you're clever. For 
+example, if <tt>$1</tt> used to be <span class="docEmphasis">John Smith</span>, 
+it will be split after it's restored: <tt>$1</tt> will have
+<span class="docEmphasis">John</span> and <tt>$2</tt> will be
+<span class="docEmphasis">Smith</span>. A better solution might be to use a
+<span class="docEmphBold">subshell</span> (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-7">Section 
+43.7</a>) for the part of the script where you need to reset the command-line 
+parameters: </p>
+<pre># reset command-line parameters during subshell only:
+(set <tt><i>some new parameters</i></tt>
+   <i>...do something with new parameters...</i>
+)
+# original parameters aren't affected from here on...</pre>
+<h4  id="upt3-CHP-35-SECT-25.5" class="docSection2Title">35.25.5 Can't Set $0</h4>
+<p class="docText">One last note: <i>set</i> won't set <tt>$0</tt>, the name of 
+the script file. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-26">35.26 test: Testing Files and Strings</h3>
+<p class="docText">Unix has a command called <i>test</i> that does a lot of 
+useful tests. For instance, <i>test</i> can check whether a file is writable 
+before your script tries to write to it. It can treat the string in a shell 
+variable as a number and do comparisons (&quot;Is that number less than 1000?&quot;). You 
+can combine tests, too (&quot;If the file exists <span class="docEmphasis">and</span> 
+it's readable <span class="docEmphasis">and</span> the message number is more 
+than 500...&quot;). Some versions of <i>test</i> have more tests than others. For a 
+complete list, read your shell's manual page (if your shell has
+<span class="docEmphBold">test built in</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+1.9</a>)) or the online <i>test</i>(1) manual page. </p>
+<p class="docText">The <i>test</i> command returns a zero
+<span class="docEmphBold">status</span> (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-12">Section 
+35.12</a>) if the test was true and a nonzero status otherwise, so people 
+usually use <i>test</i> with <i>if</i> , <i>while</i>, or <i>until</i>. Here's a 
+way your program could check to see if the user has a readable file named <i>
+.signature</i> in the home directory: </p>
+<p class="docText"><tt>$HOME</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-5">
+Section 35.5</a>, <tt>$myname</tt>
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-28">
+Section 35.28</a></p>
+<pre>if test -r $HOME/.signature
+then
+    <i>...Do whatever...</i>
+else</pre>
+<pre>    echo &quot;$myname: Can't read your '.signature'.  Quitting.&quot; 1&gt;&amp;2
+    exit 1
+fi</pre>
+<p class="docText">The <i>test</i> command also lets you test for something that
+<span class="docEmphasis">isn't</span> true. Add an exclamation point (<tt>!</tt>) 
+before the condition you're testing. For example, the following test is true if 
+the <i>.signature</i> file is <span class="docEmphasis">not</span> readable: </p>
+<pre>if test ! -r $HOME/.signature
+then
+    echo &quot;$myname: Can't read your '.signature'.  Quitting.&quot; 1&gt;&amp;2
+    exit 1
+fi</pre>
+<p class="docText">Unix also has a version of <i>test</i> (a link to the same 
+program, actually) named <tt><i>[</i></tt>. Yes, that's a left bracket. You can 
+use it interchangeably with the <i>test</i> command with one exception: there 
+has to be a matching right bracket (<tt>]</tt>) at the end of the test. The 
+second example above could be rewritten this way: </p>
+<pre>if [ ! -r $HOME/.signature ]
+then
+    echo &quot;$myname: Can't read your '.signature'.  Quitting.&quot; 1&gt;&amp;2
+    exit 1
+fi</pre>
+<p class="docText">Be sure to leave space between the brackets and other text. 
+There are a couple of other common gotchas caused by empty arguments;
+<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-3">
+Section 37.3</a> and
+<a class="docLink" href="_chapter 37.htm#upt3-CHP-37-SECT-4">
+Section 37.4</a> have workarounds. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-27">35.27 Picking a Name for a New Command</h3>
+<p class="docText">When you write a new program or shell script, you'll probably 
+want to be sure that its name doesn't conflict with any other commands on the 
+system. For instance, you might wonder whether there's a command named <i>tscan</i>. 
+You can check by typing one of the commands in the following example. If you get 
+output (besides an error) from one of them, there's probably already a command 
+with the same name. (The <i>type</i> command works on <i>ksh</i>, <i>bash,</i> 
+and many Bourne shells; I've shown it with a dollar sign (<tt>$</tt>) prompt.)
+</p>
+<p class="docText"><tt>which</tt>
+<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-6">
+Section 2.6</a>, <tt>whereis</tt>
+<a class="docLink" href="_chapter 2.htm#upt3-CHP-2-SECT-3">
+Section 2.3</a>, <tt>alias</tt>
+<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-2">
+Section 29.2</a></p>
+<pre>% <b>man 1 tscan</b>
+No manual entry for tscan in section 1.
+% <b>which tscan</b>
+no tscan in . /xxx/ehuser/bin /usr/bin/X11 /usr/local/bin ...
+% <b>whereis tscan</b>
+tscan:
+% <b>alias tscan</b>
+%
+% <b>whatis tscan</b>
+tscan:
+$ <b>type tscan</b>
+tscan not found</pre>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-28">35.28 Finding a Program Name and Giving Your 
+Program Multiple Names</h3>
+<p class="docText">A Unix program should use its name as the first word in error 
+messages it prints. That's important when the program is running in the 
+background or as part of a pipeline — you need to know which program has the 
+problem: </p>
+<pre><tt><i>someprog</i></tt>: quitting: can't read file xxxxxx</pre>
+<p class="docText">It's tempting to use just the program name in the <i>echo</i> 
+commands: </p>
+<pre>echo &quot;<tt><i>someprog</i></tt>: quitting: can't read file $file&quot; 1&gt;&amp;2</pre>
+<p class="docText">If you ever change the program name, however, it's easy to 
+forget to fix the messages. A better way is to store the program name in a shell 
+variable at the top of the script file and use the variable in all messages: </p>
+<pre>myname=<tt><i>someprog</i></tt>
+   ...
+echo &quot;$myname: quitting: can't read file $file&quot; 1&gt;&amp;2</pre>
+<p class="docText">Even better, use the <tt>$0</tt> parameter. The shell 
+automatically puts the script's name there. But <tt>$0</tt> can have the 
+absolute pathname of the script, such as <i>/xxx/yyy/bin/someprog</i>. The
+<span class="docEmphBold">basename</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-13">Section 
+36.13</a>) program fixes this: <i>basename</i> strips off the head of a pathname 
+— everything but the filename. </p>
+<p class="docText">For example, if <tt>$0</tt> is <i>/u/ehuser/bin/sendit</i>:
+</p>
+<pre>myname=&quot;`basename $0`&quot;</pre>
+<p class="docText">would put <i>sendit</i> into the <span class="docEmphasis">
+myname</span> shell variable. </p>
+<p class="docText">Just as you can make <span class="docEmphBold">links</span> (<a class="docLink" href="_chapter 10.htm#upt3-CHP-10-SECT-3">Section 
+10.3</a>) to give Unix files several names, you can use links to
+<span class="docEmphBold">give your program several names</span> (<a class="docLink" href="_chapter 36.htm#upt3-CHP-36-SECT-8">Section 
+36.8</a>). For instance, see the script named <i>ll</i>, <i>lf</i>, <i>lg</i> 
+(...and so on). Use <tt>$0</tt> to get the current name of the program. </p>
+<p class="docText"><span class="docEmphasis">— JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-29">35.29 Reading Files with the . and source Commands</h3>
+<p class="docText">As
+<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-4">
+Section 35.4</a> explains, Unix programs can <span class="docEmphasis">never, 
+ever</span> modify the environment of their parents. A program can only modify 
+the environment that later will be passed to its children. This is a common 
+mistake that many new Unix users make: they try to write a program that changes 
+a directory (or does something else involving an environment variable) and 
+attempt to figure out why it doesn't work. You can't do this. If you write a 
+program that executes the <i>cd</i> command, that <i>cd</i> will be effective 
+within your program — but when the program finishes, you'll be back in your 
+original (parent) shell. </p>
+<p class="docText">One workaround is to &quot;source&quot; the shell script file (for <i>
+csh</i> and <i>bash</i>) or run it as a &quot;dot&quot; script (<i>sh</i>, <i>ksh,</i> and
+<i>bash,</i> too). For example, if the file named <span class="docEmphasis">
+change-my-directory</span> contains: </p>
+<pre>cd /somewhere/else</pre>
+<p class="docText">you could use the following commands to change the current 
+directory of the current shell: </p>
+<pre>% <b>source change-my-directory</b>
+$ <b>. change-my-directory</b></pre>
+<p class="docText">The <span class="docEmphasis">source</span> and <i>.</i> 
+commands read a script file into the current shell instead of starting a child 
+shell. These commands work only for shell script files (files containing command 
+lines as you'd type them at a shell prompt). You can't use <i>source</i> or <i>.</i> 
+to read a binary (directly executable) file into the shell. </p>
+<p class="docText">If your shell doesn't have <span class="docEmphBold">shell 
+functions</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>), you can <span class="docEmphBold">simulate them</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-14">Section 
+29.14</a>) with the . command. It acts a lot like a subroutine or function in a 
+programming language. </p>
+<p class="docText"><span class="docEmphasis">—ML and JP</span></p>
+<h3 class="docSection1Title" id="upt3-CHP-35-SECT-30">35.30 Using Shell Functions in Shell Scripts</h3>
+<p class="docText">So far, we have discussed <span class="docEmphBold">some 
+shell function basics</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>), using examples such as the <tt>mx( )</tt> function that uses <i>sed</i> 
+and <i>dig</i> to find out what host accepts mail for a given address. In that 
+example, we simply made a set of complex functionality available as a quick and 
+easy (and short) call from the command line. But you can also define functions 
+and use them within shell scripts, or you can use the . and <tt>source</tt> 
+commands to include those functions from an external file (<a class="docLink" href="_chapter 35.htm#upt3-CHP-35-SECT-29">Section 
+35.29</a>). </p>
+<p class="docText">We've also discussed using functions to
+<span class="docEmphBold">automate repetitive tasks</span> (<a class="docLink" href="_chapter 29.htm#upt3-CHP-29-SECT-11">Section 
+29.11</a>), such as calculating factorials. </p>
+<p class="docText">For now, let's demonstrate both of these approaches 
+specifically with respect to defining a function to automate a repetitive task 
+and then sharing the function with other shell scripts. Using the <tt>mx( )</tt> 
+function we defined earlier, let's put it into its own file, <i>mx.sh</i>, and 
+store it in our personal shell function library directory (in this case, <i>
+$HOME/lib)</i>: </p>
+<pre>$ cat &gt; ~/lib/mx.sh
+function mx( ) {
+# Look up mail exchanger for host(s)
+for host
+do
+    echo &quot;==== $host ====&quot;
+    dig &quot;$host&quot; mx in |
+    sed -n '/^;; ANSWER SECTION:/,/^$/{
+            s/^[^;].* //p
+    }'
+done
+}
+^D
+$ more !$
+function mx( ) {
+# Look up mail exchanger for host(s)
+for host
+do
+    echo &quot;==== $host ====&quot;
+    dig &quot;$host&quot; mx in |
+    sed -n '/^;; ANSWER SECTION:/,/^$/{
+            s/^[^;].* //p
+    }'
+done
+}
+$</pre>
+<p class="docText">Now the file <i>~/lib/mx.sh</i> contains a function named <tt>
+mx( )</tt> — fair enough, but let's say we want to be able to pass a list of 
+hosts (determined dynamically on a regular basis, say, from spam-fighting tools 
+that find open SMTP proxies) to a shell script, and have that shell script email 
+a form letter to the <tt>postmaster</tt> address at that host. We will call the 
+shell script <i>proxynotify</i>, and call it as follows: </p>
+<pre>$ <b>proxynotify </b> &lt; <i>proxyList </i></pre>
+<p class="docText"><tt><i>proxylist</i></tt> contains a list of hosts, one per 
+line, in the <tt>com</tt> domain. We want to iterate over them and mail the 
+postmaster for the domain, rather than mailing directly to an address such as
+<tt>postmaster@[<i>IP</i>]</tt>, on the assumption that maybe the top-level 
+postmaster can fix what may be an unmonitored relay. Just to verify that some 
+other system isn't responsible for delivering the mail, we will check using the
+<tt>mx( )</tt> shell function. We've also included a quickie shell function 
+named <tt>ip( )</tt> that returns the IP address for a given hostname. As you 
+can see, we use a local variable for the IP address, and we use the <tt>-z</tt> 
+test for zero length of a string. We also check whether the file is readable, 
+check the script arguments, and use a variety of other tricks. </p>
+<pre>#!/bin/sh
+# proxynotify demo
+
+# get our function
+. $HOME/lib/mx.sh
+
+function ip( ) {
+    for host
+    do
+        local ip=`dig in host $host |\
+        grep $host |\
+        grep &quot;TABATAB&quot; |\
+        awk '{print $5}'`
+        echo $ip
+    done
+}
+
+if [ -z &quot;$1&quot; ]
+then
+    echo &quot;Usage: $0 [file]&quot;
+    exit 1
+elif [ -r &quot;$1&quot; ]
+then
+    echo &quot;found a file and it is readable&quot;
+else
+    echo &quot;file $1 not readable or does not exist&quot;
+    exit 1
+fi
+
+    for domain in `cat &quot;$1&quot;`
+    do
+    echo &quot;processing $domain&quot;
+    themx=`mx $domain`
+    echo &quot;MX for $domain is '$themx'&quot;
+    if [ ! -z $themx ]
+    then
+        cat formletter | mail -s &quot;proxy&quot; postmaster@$themx
+    else
+        echo &quot;couldn't find MX for $domain,&quot;
+        echo &quot;mailing direct-to-IP instead.&quot;
+        theip=`ip $domain`
+        if [ ! -z $theip ]; then
+            cat formletter | mail -s &quot;proxy&quot; postmaster@$theip
+        else
+            echo &quot;giving up, can't find anyone to notify&quot;
+            echo &quot;$domain&quot; &gt;&gt; /tmp/proxybadlist.$$
+            return 1
+        fi
+   fi
+done
+mail -s &quot;bad proxies&quot; &lt;&lt;/tmp/proxybadlist.$$
+rm /tmp/proxybadlist.$$</pre>
+<p class="docText"><span class="docEmphasis">— SJC </span></p>
+<blockquote>
+<p class="docFootnote" id="EN35-1"><a class="docLink" href="#ENB35-1">[1]</a>&nbsp;&nbsp;Before X11 Release 5, the DISPLAY variable might appear as <tt>unix:0.0</tt>.</p><p class="docFootnote" id="EN35-2"><a class="docLink" href="#ENB35-2">[2]</a>&nbsp;&nbsp;<i>printenv</i> and <i>env</i> 
+  are <span class="docEmphBold">external</span> (<a class="docLink" href="_chapter 1.htm#upt3-CHP-1-SECT-9">Section 
+  1.9</a>) commands; they work with any shell.</p><p class="docFootnote" id="EN35-3"><a class="docLink" href="#ENB35-3">[3]</a>&nbsp;&nbsp;Others refer to it as a 
+  &quot;short-circuit&quot; operator.</p><p class="docFootnote" id="EN35-4"><a class="docLink" href="#ENB35-4">[4]</a>&nbsp;&nbsp;The script could run <tt>
+  gzcat $1 | more</tt> directly, but some versions of <i>more</i> can't back up 
+  when reading from a pipe. You may prefer to use <i>less</i>, at any rate.</p><p class="docFootnote" id="EN35-5"><a class="docLink" href="#ENB35-5">[5]</a>&nbsp;&nbsp;It's important to use 
+    single quotes rather than double quotes around the <i>trap</i>. That way, 
+    the value of <tt>$stat</tt> won't be interpreted until the trap is actually 
+    executed when the script exits.</p><p class="docFootnote" id="EN35-6"><a class="docLink" href="#ENB35-6">[6]</a>&nbsp;&nbsp;Some early versions of <i>
+  read</i> don't handle <tt>&lt;</tt> redirection (<a class="docLink" href="_chapter 43.htm#upt3-CHP-43-SECT-1">Section 
+  43.1</a>); they can only read from the terminal.</p><p class="docFootnote" id="EN35-7"><a class="docLink" href="#ENB35-7">[7]</a>&nbsp;&nbsp;Although most Unix commands 
+  allow this, it is actually contrary to the Command Syntax Standard Rules in
+  <span class="docEmphasis">intro</span> of the User's Manual. Check your 
+  shell's manual pages for whether it supports <i>getopts</i>.</p><p class="docFootnote" id="EN35-8"><a class="docLink" href="#ENB35-8">[8]</a>&nbsp;&nbsp;Both <i>bash</i> and <i>ksh</i> 
+  have it. <i>getopts</i> replaces the old command <i>getopt</i>; it is better 
+  integrated into the shell's syntax and runs more efficiently. C programmers 
+  will recognize <i>getopts</i> as very similar to the standard library routine
+  <span class="docEmphasis">getopt</span>(3).</p><p class="docFootnote" id="EN35-9"><a class="docLink" href="#ENB35-9">[9]</a>&nbsp;&nbsp;Some options for some shells 
+  can be set only from the command line as the shell is invoked. Check the 
+  shell's manual page.</p></blockquote>
+<table width="100%" border="1" bgcolor="#EBEBFF"><tr><td width="5%" align="left" valign="middle"><a href="_chapter 34.htm"><img src="Larrow.gif" width="17" height="19" border="0"></a></td><td align="center" valign="middle"><a class="docLink" href="Front matter.htm">CONTENTS</a></td><td width="5%" align="right" valign="middle"><a href="_chapter 36.htm"><img src="Rarrow.gif" width="17" height="19" border="0"></a></td></tr></table></body>
+
+</html>
